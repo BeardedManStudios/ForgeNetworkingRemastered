@@ -1,9 +1,0 @@
-C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Release\BeardedManStudios.dll
-C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Release\BeardedManStudios.pdb
-C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Release\BeardedManStudios.dll
-C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Release\BeardedManStudios.pdb
-C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Release\BeardedManStudios.csprojResolveAssemblyReference.cache
-G:\Work\BeardedManStudios\Forge-Networking-Remastered\BeardedManStudios\bin\Release\BeardedManStudios.dll
-G:\Work\BeardedManStudios\Forge-Networking-Remastered\BeardedManStudios\bin\Release\BeardedManStudios.pdb
-G:\Work\BeardedManStudios\Forge-Networking-Remastered\BeardedManStudios\obj\Release\BeardedManStudios.dll
-G:\Work\BeardedManStudios\Forge-Networking-Remastered\BeardedManStudios\obj\Release\BeardedManStudios.pdb
