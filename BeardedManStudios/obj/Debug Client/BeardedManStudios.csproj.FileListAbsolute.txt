@@ -1,0 +1,13 @@
+C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.dll
+C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.pdb
+C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.dll
+C:\Users\brent\Documents\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.pdb
+D:\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.dll
+D:\GitHub\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.pdb
+D:\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.dll
+D:\GitHub\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.pdb
+C:\git\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.dll
+C:\git\Forge-Networking-Remastered\BeardedManStudios\bin\Debug Client\BeardedManStudios.pdb
+C:\git\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.dll
+C:\git\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.pdb
+C:\git\Forge-Networking-Remastered\BeardedManStudios\obj\Debug Client\BeardedManStudios.csprojResolveAssemblyReference.cache

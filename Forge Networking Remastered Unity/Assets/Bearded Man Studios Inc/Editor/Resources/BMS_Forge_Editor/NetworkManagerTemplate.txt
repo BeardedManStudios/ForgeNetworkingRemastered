@@ -1,0 +1,63 @@
+using BeardedManStudios.Forge.Networking.Generated;
+using System;
+using UnityEngine;
+
+namespace BeardedManStudios.Forge.Networking.Unity
+{
+	public partial class NetworkManager : MonoBehaviour
+	{
+		public delegate void InstantiateEvent(INetworkBehavior unityGameObject, NetworkObject obj);
+		public event InstantiateEvent objectInitialized;
+
+		>:FOREACH networkObjects:<
+		public GameObject[] >:[i]:<NetworkObject = null;
+		>:ENDFOREACH:<
+
+		private void Start()
+		{
+			NetworkObject.objectCreated += (obj) =>
+			{
+				if (obj.CreateCode < 0)
+					return;
+				
+				>:FOREACH networkObjects:<
+				>:ELSEIF:< (obj is >:[i]:<NetworkObject && >:[i]:<NetworkObject.Length > 0 && >:[i]:<NetworkObject[obj.CreateCode] != null)
+				{
+					MainThreadManager.Run(() =>
+					{
+						var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
+						var newObj = go.GetComponent<NetworkBehavior>();
+						newObj.Initialize(obj);
+
+						if (objectInitialized != null)
+							objectInitialized(newObj, obj);
+					});
+				}
+				>:ENDFOREACH:<
+			};
+		}
+
+		private void InitializedObject(INetworkBehavior behavior, NetworkObject obj)
+		{
+			if (objectInitialized != null)
+				objectInitialized(behavior, obj);
+
+			obj.pendingInitialized -= InitializedObject;
+		}
+
+		>:FOREACH networkObjects:<
+		public >:[i]:<Behavior Instantiate>:[i]:<NetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null)
+		{
+			var go = Instantiate(>:[i]:<NetworkObject[index]);
+			var netBehavior = go.GetComponent<NetworkBehavior>() as >:[i]:<Behavior;
+			var obj = new >:[i]:<NetworkObject(Networker, netBehavior, index);
+			go.GetComponent<>:[i]:<Behavior>().networkObject = obj;
+
+			FinializeInitialization(go, netBehavior, obj, position, rotation);
+			
+			return netBehavior;
+		}
+
+		>:ENDFOREACH:<
+	}
+}

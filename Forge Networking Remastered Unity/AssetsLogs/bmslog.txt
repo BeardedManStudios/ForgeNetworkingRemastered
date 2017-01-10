@@ -1,0 +1,18 @@
+[10/31/2016 11:00:21 PM - EXCEPTION] Message: An existing connection was forcibly closed by the remote host.
+
+  at System.Net.Sockets.Socket.ReceiveFrom_nochecks_exc (System.Byte[] buf, Int32 offset, Int32 size, SocketFlags flags, System.Net.EndPoint& remote_end, Boolean throwOnError, System.Int32& error) [0x00000] in <filename unknown>:0 
+  at System.Net.Sockets.Socket.ReceiveFrom_nochecks (System.Byte[] buf, Int32 offset, Int32 size, SocketFlags flags, System.Net.EndPoint& remote_end) [0x00000] in <filename unknown>:0 
+  at System.Net.Sockets.Socket.ReceiveFrom (System.Byte[] buffer, System.Net.EndPoint& remoteEP) [0x00000] in <filename unknown>:0 
+  at BeardedManStudios.Forge.Networking.CachedUdpClient.Receive (System.Net.IPEndPoint& remoteEP, System.String& endpoint) [0x00033] in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Forge\Networking\CachedUdpClient.cs:340 
+  at BeardedManStudios.Forge.Networking.UDPClient.ReadNetwork () [0x0002d] in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Forge\Networking\UDPClient.cs:203 
+   at System.Environment.get_StackTrace() in /Users/builduser/buildslave/mono/build/mcs/class/corlib/System/Environment.cs:line 227
+   at BMSLogger.PutLogInFile(Logtype type, System.String log) in C:\git\Forge-Networking-Remastered\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Scripts\Logging\BMSLogger.cs:line 188
+   at BMSLogger.LogException(System.String log) in C:\git\Forge-Networking-Remastered\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Scripts\Logging\BMSLogger.cs:line 127
+   at BeardedManStudios.Forge.Logging.BMSLog.InternalLog(Logtype type, System.String text, System.Object[] args) in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Forge\Logging\BMSLog.cs:line 106
+   at BeardedManStudios.Forge.Logging.BMSLog.LogException(System.Exception ex) in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Forge\Logging\BMSLog.cs:line 54
+   at BeardedManStudios.Forge.Networking.UDPClient.ReadNetwork() in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Forge\Networking\UDPClient.cs:line 207
+   at BeardedManStudios.Threading.Task+<>c__DisplayClass1_0.<Queue>b__0(System.Object state) in C:\git\Forge-Networking-Remastered\BeardedManStudios\Source\Threading\Task.cs:line 72
+[10/31/2016 11:03:29 PM - INFO] DATA IS
+[10/31/2016 11:03:29 PM - INFO] BeardedManStudios.BMSByte
+[10/31/2016 11:03:29 PM - INFO] Read Dirty Flags is
+[10/31/2016 11:03:29 PM - INFO] System.Byte[]
