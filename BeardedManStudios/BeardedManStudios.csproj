@@ -116,10 +116,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)Forge Networking Remastered Unity\Assets\Plugins\$(TargetFileName)"
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Forge Networking Remastered Unity\Assets\Plugins\$(TargetName).pdb"
-copy "$(TargetPath)" "$(SolutionDir)..\Sandbox\Assets\Plugins\$(TargetFileName)"
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\Sandbox\Assets\Plugins\$(TargetName).pdb"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Plugins\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
