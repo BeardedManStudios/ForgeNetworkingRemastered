@@ -897,7 +897,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodName, receivers, false, Networker.Me, args);
+            SendRpc(null, methodName, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -910,7 +910,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodName, receivers, replacePrevious, Networker.Me, args);
+            SendRpc(null, methodName, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -923,7 +923,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, Receivers receivers, NetworkingPlayer sender, params object[] args)
 		{
-			SendRpc(null, methodName, receivers, false, sender, args);
+            SendRpc(null, methodName, false, receivers, sender, args);
 		}
 
 		/// <summary>
@@ -950,7 +950,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, Receivers receivers, params object[] args)
 		{
-			SendRpc(targetPlayer, methodName, receivers, false, Networker.Me, args);
+            SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -964,7 +964,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-			SendRpc(targetPlayer, methodName, receivers, replacePrevious, Networker.Me, args);
+            SendRpc(targetPlayer, methodName, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>

@@ -370,8 +370,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         public void SetName(string newName)
         {
             networkObject.SendRpc("AssignName",
-                Receivers.AllBuffered,
                 true,   // Replace previous
+                Receivers.AllBuffered,
                 newName,
                 networkObject.MyPlayerId);
         }

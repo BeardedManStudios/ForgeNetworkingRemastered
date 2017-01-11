@@ -396,10 +396,6 @@ namespace BeardedManStudios.Forge.Networking
 				action(networkObject);
 
 			missingObjectBuffer.Remove(networkObject.NetworkId);
-
-			//TODO: BRENT - Need a singular place that works for all sockets.
-			//Currently will throw an error in unity when this is registering for the connecting client, but never the host
-			Lobby.LobbyService.Instance.Initialize(this);
 		}
 
 		public void IteratePlayers(Action<NetworkingPlayer> expression)

@@ -1,5 +1,6 @@
 ﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking.Lobby;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -157,6 +158,8 @@ public class MultiplayerMenu : MonoBehaviour
 			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
 		mgr.Initialize(networker, masterServerHost, masterServerPort, useElo, eloRequired);
+
+		LobbyService.Instance.Initialize(networker);
 
 		if (useInlineChat && networker.IsServer)
 			SceneManager.sceneLoaded += CreateInlineChat;
