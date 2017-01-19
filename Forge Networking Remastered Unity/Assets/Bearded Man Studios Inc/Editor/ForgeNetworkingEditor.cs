@@ -80,7 +80,31 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			Modify
 		}
 
-		public enum AcceptableTypes
+		public enum AcceptableFieldTypes
+		{
+			//Unknown = -1, //Unsupported
+			BYTE = 0,
+			CHAR,
+			SHORT,
+			USHORT,
+			BOOL,
+			INT,
+			UINT,
+			FLOAT,
+			LONG,
+			ULONG,
+			DOUBLE,
+			//STRING, //Unsupported
+			VECTOR2,
+			VECTOR3,
+			VECTOR4,
+			QUATERNION,
+			COLOR,
+			//OBJECT_ARRAY, //Unsupported
+			BYTE_ARRAY
+		}
+
+		public enum AcceptableRPCTypes
 		{
 			Unknown = -1,
 			BYTE = 0,
@@ -405,7 +429,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			forgeClassDebug += "Methods:\n";
 #endif
-				List<List<AcceptableTypes>> rpcSupportedTypes = new List<List<AcceptableTypes>>();
+				List<List<AcceptableRPCTypes>> rpcSupportedTypes = new List<List<AcceptableRPCTypes>>();
 				if (typeData != null)
 				{
 					JSONArray currentRPCVariables = typeData["types"].AsArray;
@@ -416,10 +440,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							JSONArray singularArray = currentRPCVariables[i].AsArray;
 							if (singularArray != null)
 							{
-								List<AcceptableTypes> singularSupportedTypes = new List<AcceptableTypes>();
+								List<AcceptableRPCTypes> singularSupportedTypes = new List<AcceptableRPCTypes>();
 								for (int x = 0; x < singularArray.Count; ++x)
 								{
-									AcceptableTypes singularType = ForgeClassFieldValue.GetTypeFromAcceptable(singularArray[x].Value);
+									AcceptableRPCTypes singularType = ForgeClassFieldRPCValue.GetTypeFromAcceptable(singularArray[x].Value);
 									singularSupportedTypes.Add(singularType);
 								}
 								rpcSupportedTypes.Add(singularSupportedTypes);
@@ -430,7 +454,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				else
 				{
 					for (int i = 0; i < uniqueMethods.Count; ++i)
-						rpcSupportedTypes.Add(new List<AcceptableTypes>());
+						rpcSupportedTypes.Add(new List<AcceptableRPCTypes>());
 				}
 
 				List<List<string>> typeHelpers = new List<List<string>>();
@@ -566,13 +590,193 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			}
 		}
 
+		public class ForgeClassFieldRPCValue
+		{
+			public string FieldRPCName;
+			public object FieldRPCValue;
+			public bool Interpolate;
+			public float InterpolateValue;
+			public AcceptableRPCTypes FieldType;
+			public bool IsNetworkedObject { get { return FieldRPCName.ToLower() == "networkobject"; } }
+
+			public ForgeClassFieldRPCValue()
+			{
+				FieldRPCName = string.Empty;
+				FieldRPCValue = null;
+				Interpolate = false;
+				InterpolateValue = 0;
+				FieldType = AcceptableRPCTypes.BYTE;
+			}
+
+			public ForgeClassFieldRPCValue(string name, object value, AcceptableRPCTypes type, bool interpolate, float interpolateValue)
+			{
+				this.FieldRPCName = name;
+				this.FieldRPCValue = value;
+				this.FieldType = type;
+				this.Interpolate = interpolate;
+				this.InterpolateValue = interpolateValue;
+			}
+
+			public static ForgeClassFieldRPCValue GetClassField(FieldInfo field, Type t, bool interpolate, float interpolateValue)
+			{
+				string name = field.Name.Replace("_", string.Empty);
+				object value = null;
+				//if (!t.IsAbstract)
+				//    value = field.GetValue(t);
+
+				AcceptableRPCTypes type = AcceptableRPCTypes.BYTE;
+				Type fieldType = field.FieldType;
+				if (fieldType == typeof(int))
+					type = AcceptableRPCTypes.INT;
+				else if (fieldType == typeof(uint))
+					type = AcceptableRPCTypes.UINT;
+				else if (fieldType == typeof(bool))
+					type = AcceptableRPCTypes.BOOL;
+				else if (fieldType == typeof(byte))
+					type = AcceptableRPCTypes.BYTE;
+				else if (fieldType == typeof(char))
+					type = AcceptableRPCTypes.CHAR;
+				else if (fieldType == typeof(double))
+					type = AcceptableRPCTypes.DOUBLE;
+				else if (fieldType == typeof(float))
+					type = AcceptableRPCTypes.FLOAT;
+				else if (fieldType == typeof(long))
+					type = AcceptableRPCTypes.LONG;
+				else if (fieldType == typeof(ulong))
+					type = AcceptableRPCTypes.ULONG;
+				else if (fieldType == typeof(short))
+					type = AcceptableRPCTypes.SHORT;
+				else if (fieldType == typeof(ushort))
+					type = AcceptableRPCTypes.USHORT;
+				else if (fieldType == typeof(Color))
+					type = AcceptableRPCTypes.COLOR;
+				else if (fieldType == typeof(Quaternion))
+					type = AcceptableRPCTypes.QUATERNION;
+				else if (fieldType == typeof(Vector2))
+					type = AcceptableRPCTypes.VECTOR2;
+				else if (fieldType == typeof(Vector3))
+					type = AcceptableRPCTypes.VECTOR3;
+				else if (fieldType == typeof(Vector4))
+					type = AcceptableRPCTypes.VECTOR4;
+				else if (fieldType == typeof(string))
+					type = AcceptableRPCTypes.STRING;
+				else if (fieldType == typeof(object[]))
+					type = AcceptableRPCTypes.OBJECT_ARRAY;
+				else if (fieldType == typeof(byte[]))
+					type = AcceptableRPCTypes.BYTE_ARRAY;
+				else
+					type = AcceptableRPCTypes.Unknown;
+
+				return new ForgeClassFieldRPCValue(name, value, type, interpolate, interpolateValue);
+			}
+
+			public static Type GetTypeFromAcceptable(AcceptableRPCTypes type)
+			{
+				switch (type)
+				{
+					case AcceptableRPCTypes.INT:
+						return typeof(int);
+					case AcceptableRPCTypes.UINT:
+						return typeof(uint);
+					case AcceptableRPCTypes.BOOL:
+						return typeof(bool);
+					case AcceptableRPCTypes.BYTE:
+						return typeof(byte);
+					case AcceptableRPCTypes.CHAR:
+						return typeof(char);
+					case AcceptableRPCTypes.DOUBLE:
+						return typeof(double);
+					case AcceptableRPCTypes.FLOAT:
+						return typeof(float);
+					case AcceptableRPCTypes.LONG:
+						return typeof(long);
+					case AcceptableRPCTypes.ULONG:
+						return typeof(ulong);
+					case AcceptableRPCTypes.SHORT:
+						return typeof(short);
+					case AcceptableRPCTypes.USHORT:
+						return typeof(ushort);
+					case AcceptableRPCTypes.COLOR:
+						return typeof(Color);
+					case AcceptableRPCTypes.QUATERNION:
+						return typeof(Quaternion);
+					case AcceptableRPCTypes.VECTOR2:
+						return typeof(Vector2);
+					case AcceptableRPCTypes.VECTOR3:
+						return typeof(Vector3);
+					case AcceptableRPCTypes.VECTOR4:
+						return typeof(Vector4);
+					case AcceptableRPCTypes.STRING:
+						return typeof(string);
+					case AcceptableRPCTypes.OBJECT_ARRAY:
+						return typeof(object[]);
+					case AcceptableRPCTypes.BYTE_ARRAY:
+						return typeof(byte[]);
+					default:
+						return null;
+				}
+			}
+
+			public static AcceptableRPCTypes GetTypeFromAcceptable(string val)
+			{
+				switch (val.Replace(" ", string.Empty).ToLower())
+				{
+					case "int":
+						return AcceptableRPCTypes.INT;
+					case "uint":
+						return AcceptableRPCTypes.UINT;
+					case "bool":
+						return AcceptableRPCTypes.BOOL;
+					case "byte":
+						return AcceptableRPCTypes.BYTE;
+					case "char":
+						return AcceptableRPCTypes.CHAR;
+					case "double":
+						return AcceptableRPCTypes.DOUBLE;
+					case "float":
+						return AcceptableRPCTypes.FLOAT;
+					case "long":
+						return AcceptableRPCTypes.LONG;
+					case "ulong":
+						return AcceptableRPCTypes.ULONG;
+					case "short":
+						return AcceptableRPCTypes.SHORT;
+					case "ushort":
+						return AcceptableRPCTypes.USHORT;
+					case "color":
+						return AcceptableRPCTypes.COLOR;
+					case "quaternion":
+						return AcceptableRPCTypes.QUATERNION;
+					case "vector2":
+						return AcceptableRPCTypes.VECTOR2;
+					case "vector3":
+						return AcceptableRPCTypes.VECTOR3;
+					case "vector4":
+						return AcceptableRPCTypes.VECTOR4;
+					case "string":
+						return AcceptableRPCTypes.STRING;
+					case "object[]":
+						return AcceptableRPCTypes.OBJECT_ARRAY;
+					case "byte[]":
+						return AcceptableRPCTypes.BYTE_ARRAY;
+					default:
+						return AcceptableRPCTypes.Unknown;
+				}
+			}
+
+			public override string ToString()
+			{
+				return string.Format("[ Name: {0}, Value: {1}, Type: {2}, IsNetObj: {3}]", FieldRPCName, FieldRPCValue, FieldType, IsNetworkedObject);
+			}
+		}
+
 		public class ForgeClassFieldValue
 		{
 			public string FieldName;
 			public object FieldValue;
 			public bool Interpolate;
 			public float InterpolateValue;
-			public AcceptableTypes FieldType;
+			public AcceptableFieldTypes FieldType;
 			public bool IsNetworkedObject { get { return FieldName.ToLower() == "networkobject"; } }
 
 			public ForgeClassFieldValue()
@@ -581,10 +785,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				FieldValue = null;
 				Interpolate = false;
 				InterpolateValue = 0;
-				FieldType = AcceptableTypes.STRING;
+				FieldType = AcceptableFieldTypes.BYTE;
 			}
 
-			public ForgeClassFieldValue(string name, object value, AcceptableTypes type, bool interpolate, float interpolateValue)
+			public ForgeClassFieldValue(string name, object value, AcceptableFieldTypes type, bool interpolate, float interpolateValue)
 			{
 				this.FieldName = name;
 				this.FieldValue = value;
@@ -600,118 +804,118 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				//if (!t.IsAbstract)
 				//    value = field.GetValue(t);
 
-				AcceptableTypes type = AcceptableTypes.STRING;
+				AcceptableFieldTypes type = AcceptableFieldTypes.BYTE;
 				Type fieldType = field.FieldType;
 				if (fieldType == typeof(int))
-					type = AcceptableTypes.INT;
+					type = AcceptableFieldTypes.INT;
 				else if (fieldType == typeof(uint))
-					type = AcceptableTypes.UINT;
+					type = AcceptableFieldTypes.UINT;
 				else if (fieldType == typeof(bool))
-					type = AcceptableTypes.BOOL;
+					type = AcceptableFieldTypes.BOOL;
 				else if (fieldType == typeof(byte))
-					type = AcceptableTypes.BYTE;
+					type = AcceptableFieldTypes.BYTE;
 				else if (fieldType == typeof(char))
-					type = AcceptableTypes.CHAR;
+					type = AcceptableFieldTypes.CHAR;
 				else if (fieldType == typeof(double))
-					type = AcceptableTypes.DOUBLE;
+					type = AcceptableFieldTypes.DOUBLE;
 				else if (fieldType == typeof(float))
-					type = AcceptableTypes.FLOAT;
+					type = AcceptableFieldTypes.FLOAT;
 				else if (fieldType == typeof(long))
-					type = AcceptableTypes.LONG;
+					type = AcceptableFieldTypes.LONG;
 				else if (fieldType == typeof(ulong))
-					type = AcceptableTypes.ULONG;
+					type = AcceptableFieldTypes.ULONG;
 				else if (fieldType == typeof(short))
-					type = AcceptableTypes.SHORT;
+					type = AcceptableFieldTypes.SHORT;
 				else if (fieldType == typeof(ushort))
-					type = AcceptableTypes.USHORT;
+					type = AcceptableFieldTypes.USHORT;
 				else if (fieldType == typeof(Color))
-					type = AcceptableTypes.COLOR;
+					type = AcceptableFieldTypes.COLOR;
 				else if (fieldType == typeof(Quaternion))
-					type = AcceptableTypes.QUATERNION;
+					type = AcceptableFieldTypes.QUATERNION;
 				else if (fieldType == typeof(Vector2))
-					type = AcceptableTypes.VECTOR2;
+					type = AcceptableFieldTypes.VECTOR2;
 				else if (fieldType == typeof(Vector3))
-					type = AcceptableTypes.VECTOR3;
+					type = AcceptableFieldTypes.VECTOR3;
 				else if (fieldType == typeof(Vector4))
-					type = AcceptableTypes.VECTOR4;
-				else if (fieldType == typeof(string))
-					type = AcceptableTypes.STRING;
-				else if (fieldType == typeof(object[]))
-					type = AcceptableTypes.OBJECT_ARRAY;
-				else if (fieldType == typeof(byte[]))
-					type = AcceptableTypes.BYTE_ARRAY;
-				else
-					type = AcceptableTypes.Unknown;
+					type = AcceptableFieldTypes.VECTOR4;
+				//else if (fieldType == typeof(string))
+				//	type = AcceptableFieldTypes.STRING; //Unsupported
+				//else if (fieldType == typeof(object[]))
+				//	type = AcceptableFieldTypes.OBJECT_ARRAY; //Unsupported
+				//else if (fieldType == typeof(byte[]))
+					type = AcceptableFieldTypes.BYTE_ARRAY;
+				//else
+				//	type = AcceptableFieldTypes.Unknown; //Unsupported
 
 				return new ForgeClassFieldValue(name, value, type, interpolate, interpolateValue);
 			}
 
-			public static Type GetTypeFromAcceptable(AcceptableTypes type)
+			public static Type GetTypeFromAcceptable(AcceptableFieldTypes type)
 			{
 				switch (type)
 				{
-					case AcceptableTypes.INT:
+					case AcceptableFieldTypes.INT:
 						return typeof(int);
-					case AcceptableTypes.UINT:
+					case AcceptableFieldTypes.UINT:
 						return typeof(uint);
-					case AcceptableTypes.BOOL:
+					case AcceptableFieldTypes.BOOL:
 						return typeof(bool);
-					case AcceptableTypes.BYTE:
+					case AcceptableFieldTypes.BYTE:
 						return typeof(byte);
-					case AcceptableTypes.CHAR:
+					case AcceptableFieldTypes.CHAR:
 						return typeof(char);
-					case AcceptableTypes.DOUBLE:
+					case AcceptableFieldTypes.DOUBLE:
 						return typeof(double);
-					case AcceptableTypes.FLOAT:
+					case AcceptableFieldTypes.FLOAT:
 						return typeof(float);
-					case AcceptableTypes.LONG:
+					case AcceptableFieldTypes.LONG:
 						return typeof(long);
-					case AcceptableTypes.ULONG:
+					case AcceptableFieldTypes.ULONG:
 						return typeof(ulong);
-					case AcceptableTypes.SHORT:
+					case AcceptableFieldTypes.SHORT:
 						return typeof(short);
-					case AcceptableTypes.USHORT:
+					case AcceptableFieldTypes.USHORT:
 						return typeof(ushort);
-					case AcceptableTypes.COLOR:
+					case AcceptableFieldTypes.COLOR:
 						return typeof(Color);
-					case AcceptableTypes.QUATERNION:
+					case AcceptableFieldTypes.QUATERNION:
 						return typeof(Quaternion);
-					case AcceptableTypes.VECTOR2:
+					case AcceptableFieldTypes.VECTOR2:
 						return typeof(Vector2);
-					case AcceptableTypes.VECTOR3:
+					case AcceptableFieldTypes.VECTOR3:
 						return typeof(Vector3);
-					case AcceptableTypes.VECTOR4:
+					case AcceptableFieldTypes.VECTOR4:
 						return typeof(Vector4);
-					case AcceptableTypes.STRING:
-						return typeof(string);
-					case AcceptableTypes.OBJECT_ARRAY:
-						return typeof(object[]);
-					case AcceptableTypes.BYTE_ARRAY:
+					//case AcceptableFieldTypes.STRING: //Unsupported
+					//	return typeof(string);
+					//case AcceptableFieldTypes.OBJECT_ARRAY: //Unsupported
+					//	return typeof(object[]);
+					case AcceptableFieldTypes.BYTE_ARRAY:
 						return typeof(byte[]);
 					default:
 						return null;
 				}
 			}
 
-			public static string GetInterpolateFromAcceptable(AcceptableTypes type)
+			public static string GetInterpolateFromAcceptable(AcceptableFieldTypes type)
 			{
 				string returnValue = string.Empty;
 
 				switch (type)
 				{
-					case AcceptableTypes.FLOAT:
+					case AcceptableFieldTypes.FLOAT:
 						returnValue = "InterpolateFloat";
 						break;
-					case AcceptableTypes.VECTOR2:
+					case AcceptableFieldTypes.VECTOR2:
 						returnValue = "InterpolateVector2";
 						break;
-					case AcceptableTypes.VECTOR3:
+					case AcceptableFieldTypes.VECTOR3:
 						returnValue = "InterpolateVector3";
 						break;
-					case AcceptableTypes.VECTOR4:
+					case AcceptableFieldTypes.VECTOR4:
 						returnValue = "InterpolateVector4";
 						break;
-					case AcceptableTypes.QUATERNION:
+					case AcceptableFieldTypes.QUATERNION:
 						returnValue = "InterpolateQuaternion";
 						break;
 				}
@@ -719,17 +923,17 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				return !string.IsNullOrEmpty(returnValue) ? returnValue : "InterpolateUnknown";
 			}
 
-			public static bool IsInterpolatable(AcceptableTypes type)
+			public static bool IsInterpolatable(AcceptableFieldTypes type)
 			{
 				bool returnValue = false;
 
 				switch (type)
 				{
-					case AcceptableTypes.FLOAT:
-					case AcceptableTypes.VECTOR2:
-					case AcceptableTypes.VECTOR3:
-					case AcceptableTypes.VECTOR4:
-					case AcceptableTypes.QUATERNION:
+					case AcceptableFieldTypes.FLOAT:
+					case AcceptableFieldTypes.VECTOR2:
+					case AcceptableFieldTypes.VECTOR3:
+					case AcceptableFieldTypes.VECTOR4:
+					case AcceptableFieldTypes.QUATERNION:
 						returnValue = true;
 						break;
 				}
@@ -737,50 +941,51 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				return returnValue;
 			}
 
-			public static AcceptableTypes GetTypeFromAcceptable(string val)
+			public static AcceptableFieldTypes GetTypeFromAcceptable(string val)
 			{
 				switch (val.Replace(" ", string.Empty).ToLower())
 				{
 					case "int":
-						return AcceptableTypes.INT;
+						return AcceptableFieldTypes.INT;
 					case "uint":
-						return AcceptableTypes.UINT;
+						return AcceptableFieldTypes.UINT;
 					case "bool":
-						return AcceptableTypes.BOOL;
+						return AcceptableFieldTypes.BOOL;
 					case "byte":
-						return AcceptableTypes.BYTE;
+						return AcceptableFieldTypes.BYTE;
 					case "char":
-						return AcceptableTypes.CHAR;
+						return AcceptableFieldTypes.CHAR;
 					case "double":
-						return AcceptableTypes.DOUBLE;
+						return AcceptableFieldTypes.DOUBLE;
 					case "float":
-						return AcceptableTypes.FLOAT;
+						return AcceptableFieldTypes.FLOAT;
 					case "long":
-						return AcceptableTypes.LONG;
+						return AcceptableFieldTypes.LONG;
 					case "ulong":
-						return AcceptableTypes.ULONG;
+						return AcceptableFieldTypes.ULONG;
 					case "short":
-						return AcceptableTypes.SHORT;
+						return AcceptableFieldTypes.SHORT;
 					case "ushort":
-						return AcceptableTypes.USHORT;
+						return AcceptableFieldTypes.USHORT;
 					case "color":
-						return AcceptableTypes.COLOR;
+						return AcceptableFieldTypes.COLOR;
 					case "quaternion":
-						return AcceptableTypes.QUATERNION;
+						return AcceptableFieldTypes.QUATERNION;
 					case "vector2":
-						return AcceptableTypes.VECTOR2;
+						return AcceptableFieldTypes.VECTOR2;
 					case "vector3":
-						return AcceptableTypes.VECTOR3;
+						return AcceptableFieldTypes.VECTOR3;
 					case "vector4":
-						return AcceptableTypes.VECTOR4;
-					case "string":
-						return AcceptableTypes.STRING;
-					case "object[]":
-						return AcceptableTypes.OBJECT_ARRAY;
+						return AcceptableFieldTypes.VECTOR4;
+					//case "string":
+					//	return AcceptableFieldTypes.STRING; //Unsupported
+					//case "object[]":
+					//	return AcceptableFieldTypes.OBJECT_ARRAY; //Unsupported
 					case "byte[]":
-						return AcceptableTypes.BYTE_ARRAY;
+						return AcceptableFieldTypes.BYTE_ARRAY;
 					default:
-						return AcceptableTypes.Unknown;
+						return AcceptableFieldTypes.BYTE;
+						//return AcceptableFieldTypes.Unknown; //Unsupported
 				}
 			}
 
@@ -793,10 +998,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public class ForgeClassRPCValue
 		{
 			public string RPCName;
-			public List<AcceptableTypes> Arguments = new List<AcceptableTypes>();
+			public List<AcceptableRPCTypes> Arguments = new List<AcceptableRPCTypes>();
 			public List<string> HelperTypes = new List<string>();
 
-			public ForgeClassRPCValue(MethodInfo method, List<AcceptableTypes> args = null, List<string> helperTypes = null)
+			public ForgeClassRPCValue(MethodInfo method, List<AcceptableRPCTypes> args = null, List<string> helperTypes = null)
 			{
 				RPCName = method.Name;
 				ParameterInfo[] paramsInfo = method.GetParameters();
@@ -817,50 +1022,50 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				}
 			}
 
-			public static AcceptableTypes GetATypeFromPInfo(ParameterInfo pInfo)
+			public static AcceptableRPCTypes GetATypeFromPInfo(ParameterInfo pInfo)
 			{
-				AcceptableTypes type = AcceptableTypes.STRING;
+				AcceptableRPCTypes type = AcceptableRPCTypes.STRING;
 				Type fieldType = pInfo.ParameterType;
 				if (fieldType == typeof(int))
-					type = AcceptableTypes.INT;
+					type = AcceptableRPCTypes.INT;
 				else if (fieldType == typeof(uint))
-					type = AcceptableTypes.UINT;
+					type = AcceptableRPCTypes.UINT;
 				else if (fieldType == typeof(bool))
-					type = AcceptableTypes.BOOL;
+					type = AcceptableRPCTypes.BOOL;
 				else if (fieldType == typeof(byte))
-					type = AcceptableTypes.BYTE;
+					type = AcceptableRPCTypes.BYTE;
 				else if (fieldType == typeof(char))
-					type = AcceptableTypes.CHAR;
+					type = AcceptableRPCTypes.CHAR;
 				else if (fieldType == typeof(double))
-					type = AcceptableTypes.DOUBLE;
+					type = AcceptableRPCTypes.DOUBLE;
 				else if (fieldType == typeof(float))
-					type = AcceptableTypes.FLOAT;
+					type = AcceptableRPCTypes.FLOAT;
 				else if (fieldType == typeof(long))
-					type = AcceptableTypes.LONG;
+					type = AcceptableRPCTypes.LONG;
 				else if (fieldType == typeof(ulong))
-					type = AcceptableTypes.ULONG;
+					type = AcceptableRPCTypes.ULONG;
 				else if (fieldType == typeof(short))
-					type = AcceptableTypes.SHORT;
+					type = AcceptableRPCTypes.SHORT;
 				else if (fieldType == typeof(ushort))
-					type = AcceptableTypes.USHORT;
+					type = AcceptableRPCTypes.USHORT;
 				else if (fieldType == typeof(Color))
-					type = AcceptableTypes.COLOR;
+					type = AcceptableRPCTypes.COLOR;
 				else if (fieldType == typeof(Quaternion))
-					type = AcceptableTypes.QUATERNION;
+					type = AcceptableRPCTypes.QUATERNION;
 				else if (fieldType == typeof(Vector2))
-					type = AcceptableTypes.VECTOR2;
+					type = AcceptableRPCTypes.VECTOR2;
 				else if (fieldType == typeof(Vector3))
-					type = AcceptableTypes.VECTOR3;
+					type = AcceptableRPCTypes.VECTOR3;
 				else if (fieldType == typeof(Vector4))
-					type = AcceptableTypes.VECTOR4;
+					type = AcceptableRPCTypes.VECTOR4;
 				else if (fieldType == typeof(string))
-					type = AcceptableTypes.STRING;
+					type = AcceptableRPCTypes.STRING;
 				else if (fieldType == typeof(object[]))
-					type = AcceptableTypes.OBJECT_ARRAY;
+					type = AcceptableRPCTypes.OBJECT_ARRAY;
 				else if (fieldType == typeof(byte[]))
-					type = AcceptableTypes.BYTE_ARRAY;
+					type = AcceptableRPCTypes.BYTE_ARRAY;
 				else
-					type = AcceptableTypes.Unknown;
+					type = AcceptableRPCTypes.Unknown;
 
 				return type;
 			}
@@ -869,60 +1074,60 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public class ForgeClassRewindValue
 		{
 			public string RewindName;
-			public AcceptableTypes RewindType;
+			public AcceptableRPCTypes RewindType;
 			public int RewindTime;
 
-			public ForgeClassRewindValue(MethodInfo method, AcceptableTypes type, int time)
+			public ForgeClassRewindValue(MethodInfo method, AcceptableRPCTypes type, int time)
 			{
 				RewindName = method.Name;
 				RewindType = type;
 				RewindTime = time;
 			}
 
-			public static AcceptableTypes GetATypeFromPInfo(ParameterInfo pInfo)
+			public static AcceptableRPCTypes GetATypeFromPInfo(ParameterInfo pInfo)
 			{
-				AcceptableTypes type = AcceptableTypes.STRING;
+				AcceptableRPCTypes type = AcceptableRPCTypes.STRING;
 				Type fieldType = pInfo.ParameterType;
 				if (fieldType == typeof(int))
-					type = AcceptableTypes.INT;
+					type = AcceptableRPCTypes.INT;
 				else if (fieldType == typeof(uint))
-					type = AcceptableTypes.UINT;
+					type = AcceptableRPCTypes.UINT;
 				else if (fieldType == typeof(bool))
-					type = AcceptableTypes.BOOL;
+					type = AcceptableRPCTypes.BOOL;
 				else if (fieldType == typeof(byte))
-					type = AcceptableTypes.BYTE;
+					type = AcceptableRPCTypes.BYTE;
 				else if (fieldType == typeof(char))
-					type = AcceptableTypes.CHAR;
+					type = AcceptableRPCTypes.CHAR;
 				else if (fieldType == typeof(double))
-					type = AcceptableTypes.DOUBLE;
+					type = AcceptableRPCTypes.DOUBLE;
 				else if (fieldType == typeof(float))
-					type = AcceptableTypes.FLOAT;
+					type = AcceptableRPCTypes.FLOAT;
 				else if (fieldType == typeof(long))
-					type = AcceptableTypes.LONG;
+					type = AcceptableRPCTypes.LONG;
 				else if (fieldType == typeof(ulong))
-					type = AcceptableTypes.ULONG;
+					type = AcceptableRPCTypes.ULONG;
 				else if (fieldType == typeof(short))
-					type = AcceptableTypes.SHORT;
+					type = AcceptableRPCTypes.SHORT;
 				else if (fieldType == typeof(ushort))
-					type = AcceptableTypes.USHORT;
+					type = AcceptableRPCTypes.USHORT;
 				else if (fieldType == typeof(Color))
-					type = AcceptableTypes.COLOR;
+					type = AcceptableRPCTypes.COLOR;
 				else if (fieldType == typeof(Quaternion))
-					type = AcceptableTypes.QUATERNION;
+					type = AcceptableRPCTypes.QUATERNION;
 				else if (fieldType == typeof(Vector2))
-					type = AcceptableTypes.VECTOR2;
+					type = AcceptableRPCTypes.VECTOR2;
 				else if (fieldType == typeof(Vector3))
-					type = AcceptableTypes.VECTOR3;
+					type = AcceptableRPCTypes.VECTOR3;
 				else if (fieldType == typeof(Vector4))
-					type = AcceptableTypes.VECTOR4;
+					type = AcceptableRPCTypes.VECTOR4;
 				else if (fieldType == typeof(string))
-					type = AcceptableTypes.STRING;
+					type = AcceptableRPCTypes.STRING;
 				else if (fieldType == typeof(object[]))
-					type = AcceptableTypes.OBJECT_ARRAY;
+					type = AcceptableRPCTypes.OBJECT_ARRAY;
 				else if (fieldType == typeof(byte[]))
-					type = AcceptableTypes.BYTE_ARRAY;
+					type = AcceptableRPCTypes.BYTE_ARRAY;
 				else
-					type = AcceptableTypes.Unknown;
+					type = AcceptableRPCTypes.Unknown;
 
 				return type;
 			}
@@ -946,17 +1151,17 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			}
 		}
 
-		public class FNFieldTypes
+		public class FNRPCTypes
 		{
 			public string HelperName;
-			public AcceptableTypes Type;
+			public AcceptableRPCTypes Type;
 		}
 
 		public class ForgeEditorRPCField
 		{
 			public string FieldName;
 			public bool CanRender = true;
-			public List<FNFieldTypes> FieldTypes;
+			public List<FNRPCTypes> FieldTypes;
 			public int ArgumentCount { get { return FieldTypes.Count; } }
 			public bool DELETED;
 			public bool Dropdown;
@@ -964,7 +1169,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			public ForgeEditorRPCField()
 			{
 				FieldName = "";
-				FieldTypes = new List<FNFieldTypes>();
+				FieldTypes = new List<FNRPCTypes>();
 			}
 
 			public ForgeEditorRPCField Clone()
@@ -1018,12 +1223,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					{
 						GUILayout.BeginHorizontal();
 						FieldTypes[i].HelperName = EditorGUILayout.TextField(FieldTypes[i].HelperName);
-						FieldTypes[i].Type = (AcceptableTypes)EditorGUILayout.EnumPopup(FieldTypes[i].Type);
-						if (FieldTypes[i].Type == AcceptableTypes.Unknown)
-						{
-							Debug.LogError("Can't set the type to unknown (Not Allowed)");
-							FieldTypes[i].Type = AcceptableTypes.INT;
-						}
+						FieldTypes[i].Type = (AcceptableRPCTypes)EditorGUILayout.EnumPopup(FieldTypes[i].Type);
+						//if (FieldTypes[i].Type == AcceptableTypes.Unknown) //Unsupported
+						//{
+						//	Debug.LogError("Can't set the type to unknown (Not Allowed)");
+						//	FieldTypes[i].Type = AcceptableTypes.INT;
+						//}
 
 						Rect subtractBtn = EditorGUILayout.BeginVertical("Button", GUILayout.Width(75), GUILayout.Height(13));
 						GUI.color = Color.red;
@@ -1055,7 +1260,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					GUI.color = Color.green;
 					if (GUI.Button(addBtn, GUIContent.none))
 					{
-						FieldTypes.Add(new FNFieldTypes() { Type = AcceptableTypes.BYTE });
+						FieldTypes.Add(new FNRPCTypes() { Type = AcceptableRPCTypes.BYTE });
 					}
 					if (_proVersion)
 						GUI.color = Color.white;
@@ -1072,11 +1277,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				}
 			}
 
-			public void AddRange(AcceptableTypes[] types, string[] helperNames)
+			public void AddRange(AcceptableRPCTypes[] types, string[] helperNames)
 			{
 				for (int i = 0; i < types.Length; ++i)
 				{
-					FieldTypes.Add(new FNFieldTypes() { Type = types[i], HelperName = helperNames[i] });
+					FieldTypes.Add(new FNRPCTypes() { Type = types[i], HelperName = helperNames[i] });
 				}
 			}
 		}
@@ -1087,10 +1292,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			public bool CanRender = true;
 			public bool Interpolate;
 			public float InterpolateValue;
-			public AcceptableTypes FieldType;
+			public AcceptableFieldTypes FieldType;
 			public bool DELETED;
 
-			public ForgeEditorField(string name = "", bool canRender = true, AcceptableTypes type = AcceptableTypes.BYTE, bool interpolate = false, float interpolateValue = 0f)
+			public ForgeEditorField(string name = "", bool canRender = true, AcceptableFieldTypes type = AcceptableFieldTypes.BYTE, bool interpolate = false, float interpolateValue = 0f)
 			{
 				this.FieldName = name;
 				this.FieldType = type;
@@ -1109,12 +1314,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 				GUILayout.BeginHorizontal();
 				FieldName = GUILayout.TextField(FieldName);
-				FieldType = (AcceptableTypes)EditorGUILayout.EnumPopup(FieldType, GUILayout.Width(75));
-				if (FieldType == AcceptableTypes.Unknown)
-				{
-					Debug.LogError("Can't set the type to unknown (Not Allowed)");
-					FieldType = AcceptableTypes.INT;
-				}
+				FieldType = (AcceptableFieldTypes)EditorGUILayout.EnumPopup(FieldType, GUILayout.Width(75));
+				//if (FieldType == AcceptableFieldTypes.Unknown) //Unsupported
+				//{
+				//	Debug.LogError("Can't set the type to unknown (Not Allowed)");
+				//	FieldType = AcceptableTypes.INT;
+				//}
 
 				if (ForgeClassFieldValue.IsInterpolatable(FieldType))
 				{
@@ -1541,7 +1746,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					bool canInterpolate = TiedObject.Fields[i].Interpolate;
 					float interpolateValue = TiedObject.Fields[i].InterpolateValue;
 
-					ClassVariables.Add(new ForgeEditorField(TiedObject.Fields[i].FieldName, TiedObject.Fields[i].FieldType != AcceptableTypes.Unknown, TiedObject.Fields[i].FieldType, canInterpolate, interpolateValue));
+					ClassVariables.Add(new ForgeEditorField(TiedObject.Fields[i].FieldName, true, TiedObject.Fields[i].FieldType, canInterpolate, interpolateValue));
 				}
 				_defaultClassVariablesCount = ClassVariables.Count;
 
@@ -2139,7 +2344,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				StringBuilder innerHelperTypesJSON = new StringBuilder();
 				for (int x = 0; x < btn.RPCVariables[i].ArgumentCount; ++x)
 				{
-					Type t = ForgeClassFieldValue.GetTypeFromAcceptable(btn.RPCVariables[i].FieldTypes[x].Type);
+					Type t = ForgeClassFieldRPCValue.GetTypeFromAcceptable(btn.RPCVariables[i].FieldTypes[x].Type);
 
 					helperNames.AppendLine("\t\t/// " + _referenceVariables[t.Name] + " " + btn.RPCVariables[i].FieldTypes[x].HelperName);
 

@@ -83,6 +83,11 @@ namespace BeardedManStudios.Forge.Networking.Lobby
                             break;
                         }
                     }
+
+                    if (_myself == null)
+                    {
+
+                    }
                 }
 
                 return _myself;
@@ -287,7 +292,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         #endregion
 
         #region Nested Clases
-        private class LobbyServiceNetworkObject : NetworkObject
+        public class LobbyServiceNetworkObject : NetworkObject
         {
             public const int IDENTITY = -50;
             private byte[] _dirtyFields = new byte[0];
@@ -409,7 +414,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             if (networkObject.IsOwner && networkObject.IsServer)
             {
-                //I am the server, so disconnect the id passed in here!
+                //TODO: I am the server, so disconnect the id passed in here!
             }
         }
 
@@ -442,6 +447,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
             networkObject.RegisterRpc("MessageReceived", MessageReceived, typeof(uint), typeof(string));
             networkObject.RegistrationComplete();
             _initialized = true;
+
+            Logging.BMSLog.Log("SERVICE ID: " + networkObject.NetworkId);
 
             NetworkStart();
         }
@@ -481,6 +488,13 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
             MasterLobby.OnFNPlayerNameChanged(player);
         }
+
+        public void PlayerConnected(IClientMockPlayer player)
+        {
+            Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
+            player.Name = "Player " + player.NetworkId;
+            networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
+        }
         /// <summary>
         /// Arguments:
         /// uint playerid
@@ -489,6 +503,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             uint playerId = args.GetNext<uint>();
             var player = CreateClientMockPlayer(playerId, "Player " + playerId);
+            Logging.BMSLog.Log("PLAYER JOINED!! :" + playerId);
 
             MasterLobby.OnFNPlayerConnected(player);
         }
@@ -569,6 +584,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
         private void PlayerConnected(NetworkingPlayer player)
         {
+            Logging.BMSLog.Log("GG: " + player.Ip);
             player.Name = "Player " + player.NetworkId;
             networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
         }
@@ -576,6 +592,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         private void PlayerDisconnected(NetworkingPlayer player)
         {
             // TODO:  This should be called
+            Logging.BMSLog.Log("OH NO: " + player.Ip);
             BeardedManStudios.Forge.Logging.BMSLog.Log("Player disconnected");
             networkObject.SendRpc("PlayerLeft", Receivers.AllBuffered, player.NetworkId);
         }

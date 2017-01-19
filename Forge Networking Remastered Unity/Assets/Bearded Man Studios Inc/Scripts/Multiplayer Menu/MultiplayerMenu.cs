@@ -136,6 +136,7 @@ public class MultiplayerMenu : MonoBehaviour
 			server = new UDPServer(64);
 			((UDPServer)server).Connect();
 		}
+		LobbyService.Instance.Initialize(server);
 
 		Connected(server);
 	}
@@ -158,9 +159,7 @@ public class MultiplayerMenu : MonoBehaviour
 			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
 		mgr.Initialize(networker, masterServerHost, masterServerPort, useElo, eloRequired);
-
-		LobbyService.Instance.Initialize(networker);
-
+		
 		if (useInlineChat && networker.IsServer)
 			SceneManager.sceneLoaded += CreateInlineChat;
 

@@ -72,6 +72,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="timestep">The timestep for when this event happens</param>
 		public delegate void FieldEvent<T>(T field, ulong timestep);
 
+        /// <summary>
+        /// TODO: COMMENT THIS
+        /// </summary>
+        /// <param name="networker"></param>
+        /// <param name="identity"></param>
+        /// <param name="id"></param>
+        /// <param name="frame"></param>
+        /// <param name="callback"></param>
+        public delegate void CreateRequestEvent(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback);
+
 		/// <summary>
 		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
 		/// </summary>
@@ -81,6 +91,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// Occurs when a network object has been created on the network
 		/// </summary>
 		public static event NetworkObjectEvent objectCreated;
+
+        /// <summary>
+        /// TODO: COMMENT
+        /// </summary>
+        public static event CreateRequestEvent objectCreateRequested;
 
 		/// <summary>
 		/// Occurs when a binary message was received on the network for this object and is needed to be read
@@ -633,6 +648,7 @@ namespace BeardedManStudios.Forge.Networking
 			// Register this object with the networker and obtain it's unique id
 			Networker.RegisterNetworkObject(this, id);
 
+
 			if (Networker.PendCreates)
 			{
 				lock (pendingCreates)
@@ -653,8 +669,8 @@ namespace BeardedManStudios.Forge.Networking
 				if (pendingInitialized != null)
 					pendingInitialized(pendingBehavior, this);
 			}
-			else if (objectCreated != null)
-				objectCreated(this);
+            else if (objectCreated != null)
+                objectCreated(this);
 		}
 
 		public static void Flush(NetWorker target)
@@ -669,8 +685,8 @@ namespace BeardedManStudios.Forge.Networking
 					if (pendingCreates[i].onReady != null)
 						pendingCreates[i].onReady();
 
-					objectCreated(pendingCreates[i]);
-					pendingCreates.RemoveAt(i--);
+                    objectCreated(pendingCreates[i]);
+                    pendingCreates.RemoveAt(i--);
 				}
 			}
 
@@ -1276,6 +1292,15 @@ namespace BeardedManStudios.Forge.Networking
 					objectCreateAttach(identity, hash, id, frame);
 					return;
 				}
+
+                if (objectCreateRequested != null)
+                {
+                    objectCreateRequested(networker, identity, id, frame, (obj) =>
+                    {
+                        if (obj != null)
+                            networkObjects.Add(obj);
+                    });
+                }
 
 				// The server is dictating to create a new networked object
 				if (Factory != null)
