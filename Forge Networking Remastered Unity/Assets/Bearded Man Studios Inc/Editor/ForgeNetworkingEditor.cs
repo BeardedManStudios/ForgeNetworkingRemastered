@@ -84,48 +84,48 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		{
 			//Unknown = -1, //Unsupported
 			BYTE = 0,
-			CHAR,
-			SHORT,
-			USHORT,
-			BOOL,
-			INT,
-			UINT,
-			FLOAT,
-			LONG,
-			ULONG,
-			DOUBLE,
-			//STRING, //Unsupported
-			VECTOR2,
-			VECTOR3,
-			VECTOR4,
-			QUATERNION,
-			COLOR,
-			//OBJECT_ARRAY, //Unsupported
-			BYTE_ARRAY
+			CHAR = 1,
+			SHORT = 2,
+			USHORT = 3,
+			BOOL = 4,
+			INT = 5,
+			UINT = 6,
+			FLOAT = 7,
+			LONG = 8,
+			ULONG = 9,
+			DOUBLE = 10,
+			//STRING = 11, //Unsupported
+			VECTOR2 = 12,
+			VECTOR3 = 13,
+			VECTOR4 = 14,
+			QUATERNION = 15,
+			COLOR = 16,
+			//OBJECT_ARRAY = 17, //Unsupported
+			BYTE_ARRAY = 18
 		}
 
 		public enum AcceptableRPCTypes
 		{
 			Unknown = -1,
 			BYTE = 0,
-			CHAR,
-			SHORT,
-			USHORT,
-			BOOL,
-			INT,
-			UINT,
-			FLOAT,
-			LONG,
-			ULONG,
-			DOUBLE,
-			STRING,
-			VECTOR2,
-			VECTOR3,
-			VECTOR4,
-			QUATERNION,
-			COLOR,
-			OBJECT_ARRAY,
-			BYTE_ARRAY
+			CHAR = 1,
+			SHORT = 2,
+			USHORT = 3,
+			BOOL = 4,
+			INT = 5,
+			UINT = 6,
+			FLOAT = 7,
+			LONG = 8,
+			ULONG = 9,
+			DOUBLE = 10,
+			STRING = 11,
+			VECTOR2 = 12,
+			VECTOR3 = 13,
+			VECTOR4 = 14,
+			QUATERNION = 15,
+			COLOR = 16,
+			OBJECT_ARRAY = 17,
+			BYTE_ARRAY = 18
 		}
 
 		public enum ForgeBaseClassType
@@ -842,7 +842,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				//	type = AcceptableFieldTypes.STRING; //Unsupported
 				//else if (fieldType == typeof(object[]))
 				//	type = AcceptableFieldTypes.OBJECT_ARRAY; //Unsupported
-				//else if (fieldType == typeof(byte[]))
+				else if (fieldType == typeof(byte[]))
 					type = AcceptableFieldTypes.BYTE_ARRAY;
 				//else
 				//	type = AcceptableFieldTypes.Unknown; //Unsupported
