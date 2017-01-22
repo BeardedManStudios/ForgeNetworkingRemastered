@@ -136,7 +136,8 @@ public class MultiplayerMenu : MonoBehaviour
 			server = new UDPServer(64);
 			((UDPServer)server).Connect();
 		}
-		LobbyService.Instance.Initialize(server);
+		//TODO: Implement Lobby Service
+		//LobbyService.Instance.Initialize(server);
 
 		Connected(server);
 	}

@@ -448,7 +448,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
             networkObject.RegistrationComplete();
             _initialized = true;
 
-            Logging.BMSLog.Log("SERVICE ID: " + networkObject.NetworkId);
+            //Logging.BMSLog.Log("SERVICE ID: " + networkObject.NetworkId);
 
             NetworkStart();
         }
@@ -491,7 +491,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
         public void PlayerConnected(IClientMockPlayer player)
         {
-            Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
+            //Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
             player.Name = "Player " + player.NetworkId;
             networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
         }
@@ -503,7 +503,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             uint playerId = args.GetNext<uint>();
             var player = CreateClientMockPlayer(playerId, "Player " + playerId);
-            Logging.BMSLog.Log("PLAYER JOINED!! :" + playerId);
+            //Logging.BMSLog.Log("PLAYER JOINED!! :" + playerId);
 
             MasterLobby.OnFNPlayerConnected(player);
         }
@@ -584,7 +584,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
         private void PlayerConnected(NetworkingPlayer player)
         {
-            Logging.BMSLog.Log("GG: " + player.Ip);
+            //Logging.BMSLog.Log("GG: " + player.Ip);
             player.Name = "Player " + player.NetworkId;
             networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
         }
@@ -592,8 +592,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         private void PlayerDisconnected(NetworkingPlayer player)
         {
             // TODO:  This should be called
-            Logging.BMSLog.Log("OH NO: " + player.Ip);
-            BeardedManStudios.Forge.Logging.BMSLog.Log("Player disconnected");
+            //Logging.BMSLog.Log("OH NO: " + player.Ip);
+            //BeardedManStudios.Forge.Logging.BMSLog.Log("Player disconnected");
             networkObject.SendRpc("PlayerLeft", Receivers.AllBuffered, player.NetworkId);
         }
         #endregion
