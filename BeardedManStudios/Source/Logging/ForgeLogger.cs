@@ -28,7 +28,7 @@ namespace BeardedManStudios.Source.Logging
             else if (echoType == EchoType.Error)
                 UnityEngine.Debug.LogError(message);
             else if (echoType == EchoType.Exception)
-                UnityEngine.Debug.LogException(message);
+                UnityEngine.Debug.LogException(message is string ? new Exception(message.ToString()) : (Exception)message);
             else if (echoType == EchoType.WTF)
             {
                 UnityEngine.Debug.Log(message);

@@ -953,7 +953,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, Receivers receivers, bool replacePrevious, NetworkingPlayer sender, params object[] args)
 		{
-			SendRpc(null, methodName, receivers, replacePrevious, sender, args);
+			SendRpc(null, methodName, replacePrevious, receivers, sender, args);
 		}
 
 		/// <summary>
