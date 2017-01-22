@@ -32,8 +32,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private bool _lightsOff = true;
 		private static bool _proVersion = false;
 
-		private const string GENERATED_FOLDER_PATH = "Generated";
-		private const string USER_GENERATED_FOLDER_PATH = "Generated/UserGenerated";
+		private const string GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated";
+		private const string USER_GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated/UserGenerated";
 		private static int IDENTITIES = 0;
 
 		private Vector2 _scrollView;
