@@ -2160,7 +2160,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			GUILayout.EndScrollView();
 
-			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate Monobehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
+			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate MonoBehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
 
 			if (generatedMonobehavior)
 				ActiveButton.BaseType = ForgeBaseClassType.MonoBehavior;
@@ -2231,7 +2231,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			GUILayout.EndScrollView();
 
-			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate Monobehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
+			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate MonoBehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
 
 			if (generatedMonobehavior)
 				ActiveButton.BaseType = ForgeBaseClassType.MonoBehavior;

@@ -98,8 +98,6 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\CubeForgeGameNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraNetworkObject.cs" />
-    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\fasdgBehavior.cs" />
-    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\fasdgNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatMaker.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatManager.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Stand Alone Chat\StandAloneChat.cs" />
