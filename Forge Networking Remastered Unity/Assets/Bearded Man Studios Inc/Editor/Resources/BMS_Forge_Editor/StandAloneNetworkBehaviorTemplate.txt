@@ -10,7 +10,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	{
 		public >:networkObject:< networkObject = null;
 
-		public override void Initialize(NetworkObject obj)
+		public void Initialize(NetworkObject obj)
 		{
 			// We have already initialized this object
 			if (networkObject != null && networkObject.AttachedBehavior != null)
@@ -19,14 +19,13 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject = (>:networkObject:<)obj;
 			networkObject.AttachedBehavior = this;
 
-			base.SetupHelperRpcs(networkObject);
 			>:FOREVERY rpcs:<
 			networkObject.RegisterRpc(">:[0]:<", >:[0]:<>:[1]:<);
 			>:ENDFOREVERY:<
 			networkObject.RegistrationComplete();
 		}
 
-		public override void Initialize(NetWorker networker)
+		public void Initialize(NetWorker networker)
 		{
 			Initialize(new >:networkObject:<(networker));
 		}

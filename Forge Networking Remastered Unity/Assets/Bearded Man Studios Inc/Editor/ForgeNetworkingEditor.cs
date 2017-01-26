@@ -134,6 +134,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			Enums,
 			MonoBehavior,
 			NetworkObject,
+			NetworkBehavior,
 			ObjectFactory
 		}
 		#endregion
@@ -220,14 +221,18 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				if (currentType.BaseType != null)
 				{
 					Type baseType = currentType.BaseType;
+					Type networkBehavior = currentType.GetInterface("INetworkBehavior");
 					Type factoryInterface = currentType.GetInterface("INetworkObjectFactory");
+					bool isMonobehavior = currentType.IsSubclassOf(typeof(MonoBehaviour));
 
 					if (baseType == typeof(NetworkObject))
 					{
 						ObjectClassType = ForgeBaseClassType.NetworkObject;
 						IdentityValue = ++IDENTITIES;
 					}
-					else if (baseType == typeof(MonoBehaviour))
+					else if (networkBehavior != null && !isMonobehavior)
+						ObjectClassType = ForgeBaseClassType.NetworkBehavior;
+					else if (baseType == typeof(MonoBehaviour) || isMonobehavior)
 						ObjectClassType = ForgeBaseClassType.MonoBehavior;
 					else if (factoryInterface != null)
 						ObjectClassType = ForgeBaseClassType.ObjectFactory;
@@ -1375,6 +1380,23 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			public bool CanRender = true;
 			public bool IsCreated = false;
 			public bool MarkedForDeletion = false;
+			private ForgeBaseClassType _baseType = ForgeBaseClassType.MonoBehavior;
+			public ForgeBaseClassType BaseType
+			{
+				get
+				{
+					if (_tiedBehavior != null)
+						return _tiedBehavior.BaseType;
+					return _baseType;
+				}
+				set
+				{
+					if (_tiedBehavior != null)
+						_tiedBehavior.BaseType = value;
+					else
+						_baseType = value;
+				}
+			}
 
 			public bool CanRenderFields = true;
 			public bool CanRenderRPCS = true;
@@ -1413,6 +1435,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			public ForgeEditorButton(ForgeClassObject fcObj)
 			{
+				_baseType = fcObj.ObjectClassType;
 				TiedObject = fcObj;
 				Setup();
 
@@ -2137,6 +2160,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			GUILayout.EndScrollView();
 
+			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate Monobehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
+
+			if (generatedMonobehavior)
+				ActiveButton.BaseType = ForgeBaseClassType.MonoBehavior;
+			else
+				ActiveButton.BaseType = ForgeBaseClassType.NetworkBehavior;
+
 			GUILayout.BeginHorizontal();
 			if (canBack)
 			{
@@ -2200,6 +2230,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			ActiveButton.RenderExposed(_modifyUndo);
 
 			GUILayout.EndScrollView();
+
+			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate Monobehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
+
+			if (generatedMonobehavior)
+				ActiveButton.BaseType = ForgeBaseClassType.MonoBehavior;
+			else
+				ActiveButton.BaseType = ForgeBaseClassType.NetworkBehavior;
 
 			GUILayout.BeginHorizontal();
 			Rect backBtn = EditorGUILayout.BeginVertical("Button", GUILayout.Width(100), GUILayout.Height(50));
@@ -2326,7 +2363,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public string SourceCodeNetworkBehavior(ForgeClassObject cObj, ForgeEditorButton btn)
 		{
-			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/NetworkBehaviorTemplate");
+			string behaviorPath = string.Empty;
+
+			if (btn.BaseType == ForgeBaseClassType.NetworkBehavior)
+				behaviorPath = EDITOR_RESOURCES_DIR + "/StandAloneNetworkBehaviorTemplate";
+			else
+				behaviorPath = EDITOR_RESOURCES_DIR + "/NetworkBehaviorTemplate";
+
+			TextAsset asset = Resources.Load<TextAsset>(behaviorPath);
 			TemplateSystem template = new TemplateSystem(asset.text);
 
 			template.AddVariable("className", btn.StrippedSearchName + "Behavior");
@@ -2416,7 +2460,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			List<object> networkObjects = new List<object>();
 			for (int i = 0; i < _editorButtons.Count; ++i)
 			{
-				if (!_editorButtons[i].IsNetworkObject)
+				if (!_editorButtons[i].IsNetworkObject || _editorButtons[i].BaseType == ForgeBaseClassType.NetworkBehavior)
 					continue;
 
 				string name = _editorButtons[i].StrippedSearchName;
