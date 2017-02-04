@@ -483,12 +483,12 @@ namespace BeardedManStudios.Forge.Networking
 			if (targetPlayer == Networker.Me)
 				AssignOwnership(new RpcArgs { Args = new object[] { true } });
 			else
-				SendRpc(targetPlayer, "AssignOwnership", Receivers.Target, args: new object[] { true });
+				SendRpc(targetPlayer, "AssignOwnership", Receivers.Target, new object[] { true });
 
 			if (Owner == Networker.Me)
 				AssignOwnership(new RpcArgs { Args = new object[] { false } });
 			else
-				SendRpc(Owner, "AssignOwnership", Receivers.Target, args: new object[] { false });
+				SendRpc(Owner, "AssignOwnership", Receivers.Target, new object[] { false });
 
 			Owner = targetPlayer;
 		}

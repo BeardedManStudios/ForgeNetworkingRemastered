@@ -818,5 +818,14 @@ namespace BeardedManStudios
 			else
 				return base.Equals(obj);
 		}
+
+		/// <summary>
+		/// Get the hash code
+		/// </summary>
+		/// <returns></returns>
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 	}
 }
