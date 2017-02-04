@@ -28,7 +28,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		private float x, y, z, w;
 
-		private static UnityObjectMapper instance = null;
+		private static new UnityObjectMapper instance = null;
 		public static new UnityObjectMapper Instance
 		{
 			get
