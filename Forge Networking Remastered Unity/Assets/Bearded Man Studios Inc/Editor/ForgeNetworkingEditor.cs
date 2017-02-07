@@ -2016,7 +2016,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			GUILayout.FlexibleSpace();
 			EditorGUILayout.BeginVertical();
 			GUILayout.Label("Network Contract Wizard", EditorStyles.boldLabel);
-			GUILayout.Label("Forge Remastered Version: 1.3.0b", EditorStyles.boldLabel);
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.Separator();
