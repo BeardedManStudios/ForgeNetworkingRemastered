@@ -13,7 +13,7 @@ public class MultiplayerMenu : MonoBehaviour
     public string masterServerHost = string.Empty;
     public ushort masterServerPort = 15940;
     public string natServerHost = string.Empty;
-    public ushort natServerPort = 15940;
+    public ushort natServerPort = 15941;
     public bool connectUsingMatchmaking = false;
     public bool useElo = false;
     public int myElo = 0;
