@@ -73,16 +73,7 @@ namespace BeardedManStudios.Threading
 			};
 
 			// Set the method to be called on the separate thread to be the inline method we have just created
-			if (delayOrSleep == 0)
-				QueueExpression(inline);
-			else
-			{
-				QueueExpression((state) =>
-				{
-					Thread.Sleep(delayOrSleep);
-					inline(state);
-				});
-			}
+			QueueExpression(inline);
 		}
 
 #if WINDOWS_UWP

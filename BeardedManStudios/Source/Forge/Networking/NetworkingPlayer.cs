@@ -298,7 +298,14 @@ namespace BeardedManStudios.Forge.Networking
 							lock (currentComposer.PendingPackets)
 							{
 								if (currentComposer.PendingPackets.Count > 0)
+								{
+									if (Networker.LatencySimulation > 0)
+									{
+										Task.Sleep(Networker.LatencySimulation);
+									}
+
 									currentComposer.ResendPackets();
+								}
 							}
 
 							Task.Sleep(10);

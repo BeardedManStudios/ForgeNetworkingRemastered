@@ -202,6 +202,14 @@ namespace BeardedManStudios.Forge.Networking
 					{
 						// Read a packet from the network
 						packet = Client.Receive(ref groupEP, ref incomingEndpoint);
+
+						if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
+						{
+							// Skip this message
+							continue;
+						}
+
+						BandwidthIn += (ulong)packet.Size;
 					}
 					catch (SocketException /*ex*/)
 					{

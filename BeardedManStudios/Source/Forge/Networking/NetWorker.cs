@@ -232,6 +232,26 @@ namespace BeardedManStudios.Forge.Networking
 		/// A handle to the server cache to make cache requests
 		/// </summary>
 		public Cache ServerCache { get; private set; }
+
+		/// <summary>
+		/// Used to determine how much bandwidth (in bytes) hass been read
+		/// </summary>
+		public ulong BandwidthIn { get; protected set; }
+
+		/// <summary>
+		/// Used to determine how much bandwidth (in bytes) hass been written
+		/// </summary>
+		public ulong BandwidthOut { get; set; }
+
+		/// <summary>
+		/// Used to simulate packet loss, should be a number between 0.0f and 1.0f (percentage)
+		/// </summary>
+		public float PacketLossSimulation { get; set; }
+
+		/// <summary>
+		/// Used to simulate network latency to test experience at high pings
+		/// </summary>
+		public int LatencySimulation { get; set; }
 		#endregion
 
 		/// <summary>
