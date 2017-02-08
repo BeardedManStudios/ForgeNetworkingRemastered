@@ -64,7 +64,21 @@ namespace BeardedManStudios.Forge.Networking
 		public void ValidateParameters(object[] arguments)
 		{
 			if (arguments.Length != argumentTypes.Length)
-				throw new BaseNetworkException("There are " + arguments.Length + " supplied arguments, but this Rpc expects " + argumentTypes.Length);
+			{
+				string argTypes = "";
+
+				for (int i = 0; i < arguments.Length; i++)
+				{
+					if (!string.IsNullOrEmpty(argTypes))
+					{
+						argTypes += ", ";
+					}
+
+					argTypes += arguments[i].GetType();
+				}
+
+				throw new BaseNetworkException("There are " + arguments.Length + " supplied arguments, but this Rpc expects " + argumentTypes.Length + ". Args: " + argTypes);
+			}
 
 			for (int i = 0; i < arguments.Length; i++)
 			{

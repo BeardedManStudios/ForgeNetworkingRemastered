@@ -72,15 +72,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="timestep">The timestep for when this event happens</param>
 		public delegate void FieldEvent<T>(T field, ulong timestep);
 
-        /// <summary>
-        /// TODO: COMMENT THIS
-        /// </summary>
-        /// <param name="networker"></param>
-        /// <param name="identity"></param>
-        /// <param name="id"></param>
-        /// <param name="frame"></param>
-        /// <param name="callback"></param>
-        public delegate void CreateRequestEvent(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback);
+		/// <summary>
+		/// TODO: COMMENT THIS
+		/// </summary>
+		/// <param name="networker"></param>
+		/// <param name="identity"></param>
+		/// <param name="id"></param>
+		/// <param name="frame"></param>
+		/// <param name="callback"></param>
+		public delegate void CreateRequestEvent(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback);
 
 		/// <summary>
 		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
@@ -92,10 +92,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static event NetworkObjectEvent objectCreated;
 
-        /// <summary>
-        /// TODO: COMMENT
-        /// </summary>
-        public static event CreateRequestEvent objectCreateRequested;
+		/// <summary>
+		/// TODO: COMMENT
+		/// </summary>
+		public static event CreateRequestEvent objectCreateRequested;
 
 		/// <summary>
 		/// Occurs when a binary message was received on the network for this object and is needed to be read
@@ -669,8 +669,8 @@ namespace BeardedManStudios.Forge.Networking
 				if (pendingInitialized != null)
 					pendingInitialized(pendingBehavior, this);
 			}
-            else if (objectCreated != null)
-                objectCreated(this);
+			else if (objectCreated != null)
+				objectCreated(this);
 		}
 
 		public static void Flush(NetWorker target)
@@ -685,8 +685,8 @@ namespace BeardedManStudios.Forge.Networking
 					if (pendingCreates[i].onReady != null)
 						pendingCreates[i].onReady();
 
-                    objectCreated(pendingCreates[i]);
-                    pendingCreates.RemoveAt(i--);
+					objectCreated(pendingCreates[i]);
+					pendingCreates.RemoveAt(i--);
 				}
 			}
 
@@ -791,7 +791,7 @@ namespace BeardedManStudios.Forge.Networking
 				InvokeRpc(rpc.sender, rpc.timestep, rpc.data, rpc.receivers);
 
 			foreach (PendingLocalRPC rpc in pendingLocalRpcs)
-				SendRpc(rpc.TargetPlayer, rpc.MethodName, rpc.Receivers, false, rpc.Args);
+				SendRpc(rpc.TargetPlayer, rpc.MethodName, rpc.Receivers, rpc.Args);
 
 			pendingClientRegisterRpc.Clear();
 			pendingLocalRpcs.Clear();
@@ -913,7 +913,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, Receivers receivers, params object[] args)
 		{
-            SendRpc(null, methodName, false, receivers, Networker.Me, args);
+			SendRpc(null, methodName, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -926,7 +926,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-            SendRpc(null, methodName, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(null, methodName, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -939,7 +939,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(string methodName, Receivers receivers, NetworkingPlayer sender, params object[] args)
 		{
-            SendRpc(null, methodName, false, receivers, sender, args);
+			SendRpc(null, methodName, false, receivers, sender, args);
 		}
 
 		/// <summary>
@@ -966,7 +966,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, Receivers receivers, params object[] args)
 		{
-            SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
+			SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -980,7 +980,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-            SendRpc(targetPlayer, methodName, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(targetPlayer, methodName, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1293,14 +1293,14 @@ namespace BeardedManStudios.Forge.Networking
 					return;
 				}
 
-                if (objectCreateRequested != null)
-                {
-                    objectCreateRequested(networker, identity, id, frame, (obj) =>
-                    {
-                        if (obj != null)
-                            networkObjects.Add(obj);
-                    });
-                }
+				if (objectCreateRequested != null)
+				{
+					objectCreateRequested(networker, identity, id, frame, (obj) =>
+					{
+						if (obj != null)
+							networkObjects.Add(obj);
+					});
+				}
 
 				// The server is dictating to create a new networked object
 				if (Factory != null)
