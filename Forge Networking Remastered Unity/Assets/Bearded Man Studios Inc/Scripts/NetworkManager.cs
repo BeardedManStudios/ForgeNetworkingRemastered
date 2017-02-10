@@ -265,7 +265,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation);
 				}
 				else
-					components[i].WaitingForNetworkObject(Networker, ++startIndex);
+					components[i].AwaitNetworkBind(Networker, ++startIndex);
 			}
 
 			for (i = 0; i < obj.transform.childCount; i++)
@@ -328,7 +328,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
 					{
 						behaviors[i].Initialize(foundNetworkObject);
-
 						behaviors.RemoveAt(i--);
 					}
 				}

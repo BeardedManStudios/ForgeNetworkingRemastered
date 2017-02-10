@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -10,29 +11,39 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public int TempAttachCode { get; set; }
 		public bool Initialized { get; private set; }
 
+		private uint waitingForNetworkObjectId;
+
 		protected virtual void NetworkStart() { }
 		public abstract void Initialize(NetworkObject obj);
 		public abstract void Initialize(NetWorker networker);
 
-		private uint waitingForNetworkObjectId;
-		public void WaitingForNetworkObject(NetWorker networker, uint id)
+		public void AwaitNetworkBind(NetWorker networker, uint id)
 		{
+			// NetworkManager always has the id of 0 reserved, so 0 is an invalid binding
+			if (id == 0)
+				throw new Exception("An identifyer is required to be greater than 0");
+
 			waitingForNetworkObjectId = id;
-			NetworkObject.objectCreated += NetworkObjectReceived;
+			NetworkObject.objectCreated += NetworkBind;
 
 			NetworkObject target;
 			if (networker.NetworkObjects.TryGetValue(id, out target))
-				NetworkObjectReceived(target);
+				NetworkBind(target);
 		}
 
-		private void NetworkObjectReceived(NetworkObject obj)
+		private void NetworkBind(NetworkObject obj)
 		{
-			if (obj.NetworkId != waitingForNetworkObjectId)
+			// This is always the network manager and should be ignored on late bindings
+			if (obj.NetworkId == 0)
+				return;
+
+			if (obj.NetworkId != waitingForNetworkObjectId && obj.CreateCode != TempAttachCode)
 				return;
 
 			Initialize(obj);
+			skipAttachIds.Remove(obj.NetworkId);
 
-			NetworkObject.objectCreated -= NetworkObjectReceived;
+			NetworkObject.objectCreated -= NetworkBind;
 		}
 
 		protected void SetupHelperRpcs(NetworkObject networkObject)

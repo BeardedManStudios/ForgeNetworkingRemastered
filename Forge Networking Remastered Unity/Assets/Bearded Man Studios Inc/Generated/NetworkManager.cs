@@ -1,5 +1,4 @@
 using BeardedManStudios.Forge.Networking.Generated;
-using System;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -17,9 +16,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			NetworkObject.objectCreated += (obj) =>
 			{
-				if (obj.CreateCode < 0)
+				if (obj.CreateCode < 0 || NetworkBehavior.skipAttachIds.Contains(obj.NetworkId))
 					return;
-				
+
 				if (obj is ChatManagerNetworkObject && ChatManagerNetworkObject.Length > 0 && ChatManagerNetworkObject[obj.CreateCode] != null)
 				{
 					MainThreadManager.Run(() =>
@@ -75,7 +74,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-			
+
 			return netBehavior;
 		}
 
@@ -87,7 +86,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-			
+
 			return netBehavior;
 		}
 
@@ -99,7 +98,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-			
+
 			return netBehavior;
 		}
 

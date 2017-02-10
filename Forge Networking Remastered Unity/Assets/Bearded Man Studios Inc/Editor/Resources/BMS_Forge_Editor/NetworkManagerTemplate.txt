@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			NetworkObject.objectCreated += (obj) =>
 			{
-				if (obj.CreateCode < 0)
+				if (obj.CreateCode < 0 || NetworkBehavior.skipAttachIds.Contains(obj.NetworkId))
 					return;
 				
 				>:FOREACH networkObjects:<
