@@ -38,6 +38,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.onDestroy -= DestroyGameObject;
 		}
 
+		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode)
+		{
+			return new NetworkCameraNetworkObject(networker, this, createCode);
+		}
+
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

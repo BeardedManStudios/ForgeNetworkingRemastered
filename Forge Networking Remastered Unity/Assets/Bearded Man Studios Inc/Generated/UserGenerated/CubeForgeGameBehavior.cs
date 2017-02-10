@@ -42,6 +42,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.onDestroy -= DestroyGameObject;
 		}
 
+		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode)
+		{
+			return new CubeForgeGameNetworkObject(networker, this, createCode);
+		}
+
 		/// <summary>
 		/// Arguments:
 		/// Vector3 minimum

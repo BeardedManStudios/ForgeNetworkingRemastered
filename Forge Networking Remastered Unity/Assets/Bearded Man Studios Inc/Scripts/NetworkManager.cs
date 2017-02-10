@@ -245,6 +245,33 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SceneReady(scene, mode);
 		}
 
+		private void ProcessOthers(Transform obj, uint startIndex)
+		{
+			int i;
+
+			var components = obj.GetComponents<NetworkBehavior>();
+
+			// Create each network object that is available
+			for (i = 0; i < components.Length; i++)
+			{
+				if (components[i].Initialized)
+					continue;
+
+				var no = components[i].CreateNetworkObject(Networker, 0);
+
+				if (Networker.IsServer)
+				{
+					NetworkBehavior.skipAttachIds.Add(no.NetworkId);
+					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation);
+				}
+				else
+					components[i].WaitingForNetworkObject(Networker, ++startIndex);
+			}
+
+			for (i = 0; i < obj.transform.childCount; i++)
+				ProcessOthers(obj.transform.GetChild(i), startIndex);
+		}
+
 		private void FinializeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null)
 		{
 			if (Networker is IServer)
@@ -266,6 +293,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					go.transform.position = position.Value;
 				}
 			}
+
+			// Go through all associated network behaviors in the hierarchy (including self) and
+			// Assign their TempAttachCode for lookup later. Should use an incrementor or something
 		}
 
 		public void SceneReady(Scene scene, LoadSceneMode mode)
@@ -285,7 +315,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			foreach (NetworkBehavior behavior in behaviors)
 			{
-				behavior.TempAttachCode = scene.buildIndex << 8;
+				behavior.TempAttachCode = scene.buildIndex << 16;
 				behavior.TempAttachCode += currentAttachCode++;
 				behavior.TempAttachCode = -behavior.TempAttachCode;
 			}

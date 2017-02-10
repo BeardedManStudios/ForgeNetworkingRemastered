@@ -84,6 +84,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		protected override void ReadDirtyFields(BMSByte data, ulong timestep)
 		{
+			if (readDirtyFlags == null)
+				Initialize();
+
 			Buffer.BlockCopy(data.byteArr, data.StartIndex(), readDirtyFlags, 0, readDirtyFlags.Length);
 			data.MoveStartIndex(readDirtyFlags.Length);
 
@@ -116,7 +119,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		private void Initialize()
 		{
-			readDirtyFlags = new byte[1];
+			if (readDirtyFlags == null)
+				readDirtyFlags = new byte[1];
 
 		}
 

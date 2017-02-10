@@ -39,6 +39,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.onDestroy -= DestroyGameObject;
 		}
 
+		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode)
+		{
+			return new ChatManagerNetworkObject(networker, this, createCode);
+		}
+
 		/// <summary>
 		/// Arguments:
 		/// string username
