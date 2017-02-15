@@ -331,6 +331,10 @@ namespace BeardedManStudios.Forge.Networking
 			Networker = networker;
 			CreateNativeRpcs();
 
+			// Whatever called this method is the owner
+			Owner = networker.Me;
+			IsOwner = true;
+
 			if (networker is IServer)
 				CreateObjectOnServer(null);
 			else
@@ -372,10 +376,6 @@ namespace BeardedManStudios.Forge.Networking
 
 				//TODO: FROM HERE (#1)
 			}
-
-			// Whatever called this method is the owner
-			Owner = networker.Me;
-			IsOwner = true;
 		}
 
 		/// <summary>

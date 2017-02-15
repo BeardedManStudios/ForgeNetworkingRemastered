@@ -245,34 +245,31 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SceneReady(scene, mode);
 		}
 
-		private void ProcessOthers(Transform obj, uint startIndex)
+		private void ProcessOthers(Transform obj, NetworkObject createTarget, uint idOffset, NetworkBehavior netBehavior = null)
 		{
 			int i;
 
-			var components = obj.GetComponents<NetworkBehavior>();
+			var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
 
 			// Create each network object that is available
 			for (i = 0; i < components.Length; i++)
 			{
-				if (components[i].Initialized)
+				if (components[i] == netBehavior)
 					continue;
 
 				var no = components[i].CreateNetworkObject(Networker, 0);
 
 				if (Networker.IsServer)
-				{
-					NetworkBehavior.skipAttachIds.Add(no.NetworkId);
-					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation);
-				}
+					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation, true);
 				else
-					components[i].AwaitNetworkBind(Networker, ++startIndex);
+					components[i].AwaitNetworkBind(Networker, createTarget, idOffset++);
 			}
 
 			for (i = 0; i < obj.transform.childCount; i++)
-				ProcessOthers(obj.transform.GetChild(i), startIndex);
+				ProcessOthers(obj.transform.GetChild(i), createTarget, idOffset);
 		}
 
-		private void FinializeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null)
+		private void FinializeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool skipOthers = false)
 		{
 			if (Networker is IServer)
 				InitializedObject(netBehavior, obj);
@@ -294,8 +291,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				}
 			}
 
-			// Go through all associated network behaviors in the hierarchy (including self) and
-			// Assign their TempAttachCode for lookup later. Should use an incrementor or something
+			if (!skipOthers)
+			{
+				// Go through all associated network behaviors in the hierarchy (including self) and
+				// Assign their TempAttachCode for lookup later. Should use an incrementor or something
+				ProcessOthers(go.transform, obj, 1, (NetworkBehavior)netBehavior);
+			}
 		}
 
 		public void SceneReady(Scene scene, LoadSceneMode mode)
@@ -303,7 +304,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			// Go through all of the current NetworkBehaviors in the order that Unity finds them in
 			// and associate them with the id that the network will be giving them as a lookup
 			int currentAttachCode = 1;
-			var behaviors = FindObjectsOfType<NetworkBehavior>().Where(b => !b.Initialized).ToList();
+			var behaviors = FindObjectsOfType<NetworkBehavior>().Where(b => !b.Initialized)
+				.OrderBy(b => b.GetType().ToString())
+				.OrderBy(b => b.name)
+				.OrderBy(b => Vector3.Distance(Vector3.zero, b.transform.position))
+				.ToList();
 
 			if (behaviors.Count == 0)
 			{

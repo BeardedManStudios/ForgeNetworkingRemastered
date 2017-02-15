@@ -1,33 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
 {
 	public abstract class NetworkBehavior : MonoBehaviour, INetworkBehavior
 	{
-		public static List<uint> skipAttachIds = new List<uint>();
+		public static Dictionary<uint, NetworkBehavior> skipAttachIds = new Dictionary<uint, NetworkBehavior>();
 
 		public int TempAttachCode { get; set; }
 		public bool Initialized { get; private set; }
 
-		private uint waitingForNetworkObjectId;
+		private NetworkObject waitingForNetworkObject;
+		private uint waitingForNetworkObjectOffset;
 
 		protected virtual void NetworkStart() { }
 		public abstract void Initialize(NetworkObject obj);
 		public abstract void Initialize(NetWorker networker);
 
-		public void AwaitNetworkBind(NetWorker networker, uint id)
+		public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
 		{
-			// NetworkManager always has the id of 0 reserved, so 0 is an invalid binding
-			if (id == 0)
-				throw new Exception("An identifyer is required to be greater than 0");
+			waitingForNetworkObject = createTarget;
+			waitingForNetworkObjectOffset = idOffset;
 
-			waitingForNetworkObjectId = id;
 			NetworkObject.objectCreated += NetworkBind;
 
+			if (createTarget.NetworkId == 0)
+				return;
+
 			NetworkObject target;
-			if (networker.NetworkObjects.TryGetValue(id, out target))
+			if (networker.NetworkObjects.TryGetValue(createTarget.NetworkId + idOffset, out target))
 				NetworkBind(target);
 		}
 
@@ -37,7 +39,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (obj.NetworkId == 0)
 				return;
 
-			if (obj.NetworkId != waitingForNetworkObjectId && obj.CreateCode != TempAttachCode)
+			if (obj.NetworkId != waitingForNetworkObject.NetworkId + waitingForNetworkObjectOffset && obj.CreateCode != TempAttachCode)
 				return;
 
 			Initialize(obj);
@@ -75,5 +77,24 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		protected virtual void InitializedTransform() { }
+
+		protected void ProcessOthers(Transform obj, uint idOffset)
+		{
+			int i;
+
+			var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
+
+			// Create each network object that is available
+			for (i = 0; i < components.Length; i++)
+			{
+				if (components[i] == this)
+					continue;
+
+				skipAttachIds.Add(idOffset++, components[i]);
+			}
+
+			for (i = 0; i < obj.transform.childCount; i++)
+				ProcessOthers(obj.transform.GetChild(i), idOffset);
+		}
 	}
 }

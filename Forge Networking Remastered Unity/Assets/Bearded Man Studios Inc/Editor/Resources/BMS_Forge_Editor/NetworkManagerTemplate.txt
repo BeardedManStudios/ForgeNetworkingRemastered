@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			NetworkObject.objectCreated += (obj) =>
 			{
-				if (obj.CreateCode < 0 || NetworkBehavior.skipAttachIds.Contains(obj.NetworkId))
+				if (obj.CreateCode < 0)
 					return;
 				
 				>:FOREACH networkObjects:<
@@ -25,8 +25,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				{
 					MainThreadManager.Run(() =>
 					{
-						var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
-						var newObj = go.GetComponent<NetworkBehavior>();
+						NetworkBehavior newObj = null;
+						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+						{
+							var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<NetworkBehavior>();
+						}
+
 						newObj.Initialize(obj);
 
 						if (objectInitialized != null)
