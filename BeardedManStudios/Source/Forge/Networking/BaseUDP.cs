@@ -117,7 +117,7 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// A wrapper for the messageConfirmed event call that chindren of this can call
+		/// A wrapper for the messageConfirmed event call that children of this can call
 		/// </summary>
 		protected void OnMessageConfirmed(NetworkingPlayer player, UDPPacket packet)
 		{

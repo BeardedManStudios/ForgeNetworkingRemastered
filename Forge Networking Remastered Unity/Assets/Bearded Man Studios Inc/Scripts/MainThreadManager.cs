@@ -66,6 +66,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// A list of functions to run
 		/// </summary>
 		private static Queue<Action> mainThreadActions = new Queue<Action>();
+		private static Queue<Action> mainThreadActionsRunner = new Queue<Action>();
 
 		// Setup the singleton in the Awake
 		private void Awake()
@@ -117,13 +118,20 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			lock (mainThreadActions)
 			{
-				// If there are any functions in the list, then run
-				// them all and then clear the list
+				// Flush the list to unlock the thread as fast as possible
 				if (mainThreadActions.Count > 0)
 				{
 					while (mainThreadActions.Count > 0)
-						mainThreadActions.Dequeue()();
+						mainThreadActionsRunner.Enqueue(mainThreadActions.Dequeue());
 				}
+			}
+
+			// If there are any functions in the list, then run
+			// them all and then clear the list
+			if (mainThreadActionsRunner.Count > 0)
+			{
+				while (mainThreadActionsRunner.Count > 0)
+					mainThreadActionsRunner.Dequeue()();
 			}
 		}
 

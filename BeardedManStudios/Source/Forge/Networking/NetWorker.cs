@@ -414,8 +414,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			foreach (var action in actions)
 				action(networkObject);
-
-			missingObjectBuffer.Remove(networkObject.NetworkId);
 		}
 
 		public void IteratePlayers(Action<NetworkingPlayer> expression)
@@ -547,7 +545,7 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// A wrapper for the bindFailure event call that chindren of this can call
+		/// A wrapper for the bindFailure event call that children of this can call
 		/// </summary>
 		protected void OnBindFailure()
 		{

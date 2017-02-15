@@ -81,9 +81,6 @@ public class MultiplayerMenu : MonoBehaviour
 		else
 		{
 			client = new UDPClient();
-
-			client.PacketLossSimulation = 0.1f;
-
 			if (natServerHost.Trim().Length == 0)
 				((UDPClient)client).Connect(ipAddress.text, (ushort)port);
 			else
@@ -141,9 +138,7 @@ public class MultiplayerMenu : MonoBehaviour
 		else
 		{
 			server = new UDPServer(64);
-
-			server.PacketLossSimulation = 0.1f;
-
+			
 			if (natServerHost.Trim().Length == 0)
 				((UDPServer)server).Connect();
 			else
