@@ -21,17 +21,23 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					return;
 				
 				>:FOREACH networkObjects:<
-				>:ELSEIF:< (obj is >:[i]:<NetworkObject && >:[i]:<NetworkObject.Length > 0 && >:[i]:<NetworkObject[obj.CreateCode] != null)
+				>:ELSEIF:< (obj is >:[i]:<NetworkObject)
 				{
 					MainThreadManager.Run(() =>
 					{
 						NetworkBehavior newObj = null;
 						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
 						{
-							var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							if (>:[i]:<NetworkObject.Length > 0 && >:[i]:<NetworkObject[obj.CreateCode] != null)
+							{
+								var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
+								newObj = go.GetComponent<NetworkBehavior>();
+							}
 						}
 
+						if (newObj == null)
+							return;
+						
 						newObj.Initialize(obj);
 
 						if (objectInitialized != null)
@@ -51,14 +57,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		>:FOREACH networkObjects:<
-		public >:[i]:<Behavior Instantiate>:[i]:<NetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null)
+		public >:[i]:<Behavior Instantiate>:[i]:<NetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(>:[i]:<NetworkObject[index]);
 			var netBehavior = go.GetComponent<NetworkBehavior>() as >:[i]:<Behavior;
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation);
+			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
