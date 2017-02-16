@@ -17,6 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+
 namespace BeardedManStudios.Forge.Networking.Frame
 {
 	public class Binary : FrameStream
@@ -28,6 +29,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 		public override byte ControlByte { get { return CONTROL_BYTE; } }
 
+		public Binary() : base() { }
 		public Binary(ulong timestep, bool useMask, Receivers receivers, int groupId, bool isStream, byte routerId = 0) : base(timestep, useMask, receivers, groupId, isStream, routerId) { }
 		public Binary(ulong timestep, bool useMask, byte[] payload, Receivers receivers, int groupId, bool isStream, byte routerId = 0) : base(timestep, useMask, payload, receivers, groupId, isStream, routerId) { }
 		public Binary(ulong timestep, bool useMask, BMSByte payload, Receivers receivers, int groupId, bool isStream, byte routerId = 0) : base(timestep, useMask, payload, receivers, groupId, isStream, routerId) { }
@@ -47,6 +49,11 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			payloadStart++;
 
 			base.ReadFrame(frame, payloadStart, receivers);
+		}
+
+		public override object Clone()
+		{
+			return BaseClone(new Binary());
 		}
 	}
 }

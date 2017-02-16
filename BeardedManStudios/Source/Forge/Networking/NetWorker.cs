@@ -19,6 +19,7 @@
 
 using BeardedManStudios.Forge.Networking.DataStore;
 using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Source.Forge.Networking;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
@@ -670,8 +671,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (frame is Binary)
 			{
 				byte routerId = ((Binary)frame).RouterId;
-
-				if (routerId == Rpc.ROUTER_ID || routerId == NetworkObject.BINARY_DATA_ROUTER_ID || routerId == NetworkObject.CREATED_OBJECT_ROUTER_ID)
+				if (routerId == RouterIds.RPC_ROUTER_ID || routerId == RouterIds.BINARY_DATA_ROUTER_ID || routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
 				{
 					uint id = frame.StreamData.GetBasicType<uint>();
 					NetworkObject targetObject = null;
@@ -699,8 +699,10 @@ namespace BeardedManStudios.Forge.Networking
 
 					ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
 				}
-				else if (routerId == NetworkObject.ROUTER_ID)
+				else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
 					NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
+				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
+					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
 				else if (binaryMessageReceived != null)
 					binaryMessageReceived(player, (Binary)frame);
 			}
@@ -713,11 +715,11 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void ExecuteRouterAction(byte routerId, NetworkObject networkObject, Binary frame, NetworkingPlayer player)
 		{
-			if (routerId == Rpc.ROUTER_ID)
+			if (routerId == RouterIds.RPC_ROUTER_ID)
 				networkObject.InvokeRpc(player, frame.TimeStep, frame.StreamData, frame.Receivers);
-			else if (routerId == NetworkObject.BINARY_DATA_ROUTER_ID)
+			else if (routerId == RouterIds.BINARY_DATA_ROUTER_ID)
 				networkObject.ReadBinaryData(frame);
-			else if (routerId == NetworkObject.CREATED_OBJECT_ROUTER_ID)
+			else if (routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
 				networkObject.CreateConfirmed(player);
 		}
 

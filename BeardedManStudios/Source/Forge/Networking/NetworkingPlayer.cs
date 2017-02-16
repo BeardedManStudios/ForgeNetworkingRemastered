@@ -300,14 +300,13 @@ namespace BeardedManStudios.Forge.Networking
 								if (currentComposer.PendingPackets.Count > 0)
 								{
 									if (Networker.LatencySimulation > 0)
-									{
 										Task.Sleep(Networker.LatencySimulation);
-									}
 
 									currentComposer.ResendPackets();
 								}
 							}
 
+							// TODO:  Wait the latency for this
 							Task.Sleep(10);
 						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.ExitingApplication);
 					}

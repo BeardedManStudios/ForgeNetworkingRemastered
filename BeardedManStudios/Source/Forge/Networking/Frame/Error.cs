@@ -30,6 +30,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 		public override byte ControlByte { get { return CONTROL_BYTE; } }
 
+		public Error() : base() { }
 		public Error(ulong timestep, bool useMask, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, receivers, groupId, isStream) { }
 		public Error(ulong timestep, bool useMask, byte[] payload, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, payload, receivers, groupId, isStream) { }
 		public Error(ulong timestep, bool useMask, BMSByte payload, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, payload, receivers, groupId, isStream) { }
@@ -38,6 +39,11 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		public static Error CreateErrorMessage(ulong timestep, string message, bool useMask, int groupId, bool isStream)
 		{
 			return new Error(timestep, useMask, Encoding.UTF8.GetBytes(message), Receivers.Target, groupId, isStream);
+		}
+
+		public override object Clone()
+		{
+			return BaseClone(new Binary());
 		}
 	}
 }

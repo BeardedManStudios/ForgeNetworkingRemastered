@@ -60,6 +60,7 @@
     <Compile Include="Source\Forge\Networking\IClientMockPlayer.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\ILobbyMaster.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\LobbyService.cs" />
+    <Compile Include="Source\Forge\Networking\RouterIds.cs" />
     <Compile Include="Source\Forge\Networking\RpcArgs.cs" />
     <Compile Include="Source\Forge\Networking\RPCInfo.cs" />
     <Compile Include="Source\Forge\Networking\Enums\Receivers.cs" />

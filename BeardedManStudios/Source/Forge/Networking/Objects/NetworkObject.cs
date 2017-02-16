@@ -18,6 +18,7 @@
 \------------------------------+------------------------------*/
 
 using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Source.Forge.Networking;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
@@ -113,14 +114,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event NetWorker.BaseNetworkEvent onReady;
 		public event NetWorker.BaseNetworkEvent onDestroy;
-
-		// TODO:  Move these to a single  class so we know what values are available
-		/// <summary>
-		/// The router id that is used for when sending or getting binary messages
-		/// </summary>
-		public const byte ROUTER_ID = 1;
-		public const byte BINARY_DATA_ROUTER_ID = 3;
-		public const byte CREATED_OBJECT_ROUTER_ID = 4;
 
 		/// <summary>
 		/// The unique id for this object on the current networker
@@ -358,7 +351,7 @@ namespace BeardedManStudios.Forge.Networking
 				WritePayload(data);
 
 				bool useMask = networker is TCPClient;
-				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, ROUTER_ID);
+				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
 
 				NetWorker.BaseNetworkEvent request = () =>
 				{
@@ -426,7 +419,7 @@ namespace BeardedManStudios.Forge.Networking
 				BMSByte createdByteData = new BMSByte();
 				ObjectMapper.Instance.MapBytes(createdByteData, serverId);
 
-				Binary createdFrame = new Binary(Networker.Time.Timestep, Networker is TCPClient, createdByteData, Receivers.Server, MessageGroupIds.GetId("NO_CREATED_" + NetworkId), Networker is BaseTCP, CREATED_OBJECT_ROUTER_ID);
+				Binary createdFrame = new Binary(Networker.Time.Timestep, Networker is TCPClient, createdByteData, Receivers.Server, MessageGroupIds.GetId("NO_CREATED_" + NetworkId), Networker is BaseTCP, RouterIds.CREATED_OBJECT_ROUTER_ID);
 
 				if (networker is UDPClient)
 					((UDPClient)networker).Send(createdFrame, true);
@@ -583,7 +576,7 @@ namespace BeardedManStudios.Forge.Networking
 			// Write all of the most up to date data for this object
 			WritePayload(data);
 
-			Binary createObject = new Binary(CreateTimestep, false, data, Receivers.All, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, Networker is BaseTCP, ROUTER_ID);
+			Binary createObject = new Binary(CreateTimestep, false, data, Receivers.All, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, Networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
 
 			if (targetHash != 0)
 				return createObject;
@@ -606,23 +599,42 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				lock (player)
 				{
+					BMSByte targetData = new BMSByte();
+					ulong timestep = 0;
+					NetWorker networker = null;
+					List<int> indexes = new List<int>();
+
 					foreach (NetworkObject obj in networkObjects)
 					{
 						if (obj.Owner == player)
 							continue;
 
-						BMSByte targetData = new BMSByte();
+						indexes.Add(targetData.Size);
+
 						ObjectMapper.Instance.MapBytes(targetData, obj.UniqueIdentity, 0, obj.NetworkId, obj.CreateCode);
 
 						// Write all of the most up to date data for this object
 						obj.WritePayload(targetData);
 
-						Binary targetCreateObject = new Binary(obj.CreateTimestep, false, targetData, Receivers.Target, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, obj.Networker is BaseTCP, ROUTER_ID);
+						timestep = obj.CreateTimestep;
+						networker = obj.Networker;
+					}
 
-						if (obj.Networker is UDPServer)
-							((UDPServer)obj.Networker).Send(player, targetCreateObject, true);
+					BMSByte indexBytes = new BMSByte();
+					ObjectMapper.Instance.MapBytes(indexBytes, indexes.Count);
+					for (int i = 0; i < indexes.Count; i++)
+						ObjectMapper.Instance.MapBytes(indexBytes, indexes[i]);
+
+					targetData.InsertRange(0, indexBytes);
+
+					if (targetData.Size > 0 && networker != null)
+					{
+						Binary targetCreateObject = new Binary(timestep, false, targetData, Receivers.Target, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.ACCEPT_MULTI_ROUTER_ID);
+
+						if (networker is UDPServer)
+							((UDPServer)networker).Send(player, targetCreateObject, true);
 						else
-							((TCPServer)obj.Networker).Send(player.TcpClientHandle, targetCreateObject);
+							((TCPServer)networker).Send(player.TcpClientHandle, targetCreateObject);
 					}
 				}
 			});
@@ -1095,7 +1107,7 @@ namespace BeardedManStudios.Forge.Networking
 		private void FinalizeSendRpc(BMSByte data, Receivers receivers, string methodName, ulong timestep, NetworkingPlayer targetPlayer = null, NetworkingPlayer sender = null)
 		{
 			// Generate a binary frame with a router
-			Binary rpcFrame = new Binary(timestep, Networker is TCPClient, data, receivers, MessageGroupIds.GetId("NO_RPC_" + NetworkId + "_" + methodName), Networker is BaseTCP, Rpc.ROUTER_ID);
+			Binary rpcFrame = new Binary(timestep, Networker is TCPClient, data, receivers, MessageGroupIds.GetId("NO_RPC_" + NetworkId + "_" + methodName), Networker is BaseTCP, RouterIds.RPC_ROUTER_ID);
 			rpcFrame.SetSender(sender);
 
 			if (targetPlayer != null && Networker is IServer)
@@ -1142,7 +1154,7 @@ namespace BeardedManStudios.Forge.Networking
 				sendBinaryData.Append(data);
 
 				// Generate a binary frame with a router
-				Binary frame = new Binary(Networker.Time.Timestep, Networker is TCPClient, sendBinaryData, receivers, MessageGroupIds.GetId("NO_BIN_DATA_" + NetworkId), Networker is BaseTCP, BINARY_DATA_ROUTER_ID);
+				Binary frame = new Binary(Networker.Time.Timestep, Networker is TCPClient, sendBinaryData, receivers, MessageGroupIds.GetId("NO_BIN_DATA_" + NetworkId), Networker is BaseTCP, RouterIds.BINARY_DATA_ROUTER_ID);
 
 				if (Networker is TCPServer)
 					((TCPServer)Networker).SendAll(frame, skipPlayer);
@@ -1310,6 +1322,29 @@ namespace BeardedManStudios.Forge.Networking
 						networkObjects.Add(obj);
 					});
 				}
+			}
+		}
+
+		public static void CreateMultiNetworkObject(NetWorker networker, NetworkingPlayer player, Binary frame)
+		{
+			int index, count = frame.StreamData.GetBasicType<int>();
+			int head = frame.StreamData.StartIndex();
+
+			for (int i = 0; i < count; i++)
+			{
+				// Return to the head and then move forward to the next index
+				frame.StreamData.MoveStartIndex(-frame.StreamData.StartIndex() + i * sizeof(int) + head);
+				index = frame.StreamData.GetBasicType<int>(false);
+
+				// Move to the end of the count where the main payload starts
+				frame.StreamData.MoveStartIndex((count - i) * sizeof(int));
+
+				// Move to the index specified by the payload
+				frame.StreamData.MoveStartIndex(index);
+
+				// Create an isolated frame for this object
+				Binary subFrame = (Binary)frame.Clone();
+				CreateNetworkObject(networker, player, subFrame);
 			}
 		}
 

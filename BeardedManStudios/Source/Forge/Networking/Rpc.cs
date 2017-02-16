@@ -25,9 +25,6 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class Rpc
 	{
-		// TODO:  Move these to a single  class so we know what values are available
-		public const byte ROUTER_ID = 2;
-
 		public static IThreadRunner MainThreadRunner { get; set; }
 
 		public byte Id { get; private set; }

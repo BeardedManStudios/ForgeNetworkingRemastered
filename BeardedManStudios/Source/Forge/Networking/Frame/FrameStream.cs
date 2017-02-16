@@ -21,7 +21,7 @@ using System;
 
 namespace BeardedManStudios.Forge.Networking.Frame
 {
-	public abstract class FrameStream
+	public abstract class FrameStream : ICloneable
 	{
 		/// <summary>
 		/// Get the control byte for this frame
@@ -86,6 +86,8 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		{
 			Sender = sender;
 		}
+
+		public FrameStream() { }
 
 		/// <summary>
 		/// This constructor will take a payload and create a new frame with the appropriate structure
@@ -295,5 +297,23 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// </summary>
 		/// <returns>The raw byte data prepared by this frame</returns>
 		public byte[] GetData() { return StreamData.CompressBytes(); }
+
+		protected FrameStream BaseClone(FrameStream target)
+		{
+			target.StreamData = new BMSByte();
+			target.StreamData.Clone(StreamData);
+			target.mask = mask;
+			target.payloadStart = payloadStart;
+			target.TimeStep = TimeStep;
+			target.UniqueId = UniqueId;
+			target.RouterId = RouterId;
+			target.GroupId = GroupId;
+			target.Receivers = Receivers;
+			target.Sender = Sender;
+
+			return target;
+		}
+
+		public abstract object Clone();
 	}
 }

@@ -30,6 +30,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 		public override byte ControlByte { get { return CONTROL_BYTE; } }
 
+		public Text() : base() { }
 		public Text(ulong timestep, bool useMask, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, receivers, groupId, isStream) { }
 		public Text(ulong timestep, bool useMask, byte[] payload, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, payload, receivers, groupId, isStream) { }
 		public Text(ulong timestep, bool useMask, BMSByte payload, Receivers receivers, int groupId, bool isStream) : base(timestep, useMask, payload, receivers, groupId, isStream) { }
@@ -55,5 +56,10 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// </summary>
 		/// <returns>The string representation of the data bytes for this frame</returns>
 		public override string ToString() { return Encoding.UTF8.GetString(StreamData.CompressBytes()); }
+
+		public override object Clone()
+		{
+			return BaseClone(new Binary());
+		}
 	}
 }
