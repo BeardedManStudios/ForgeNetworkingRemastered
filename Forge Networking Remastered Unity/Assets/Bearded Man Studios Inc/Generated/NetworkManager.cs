@@ -1,4 +1,5 @@
 using BeardedManStudios.Forge.Networking.Generated;
+using System;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -16,15 +17,20 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			NetworkObject.objectCreated += (obj) =>
 			{
-				if (obj.CreateCode < 0 || NetworkBehavior.skipAttachIds.Contains(obj.NetworkId))
+				if (obj.CreateCode < 0)
 					return;
-
+				
 				if (obj is ChatManagerNetworkObject && ChatManagerNetworkObject.Length > 0 && ChatManagerNetworkObject[obj.CreateCode] != null)
 				{
 					MainThreadManager.Run(() =>
 					{
-						var go = Instantiate(ChatManagerNetworkObject[obj.CreateCode]);
-						var newObj = go.GetComponent<NetworkBehavior>();
+						NetworkBehavior newObj = null;
+						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+						{
+							var go = Instantiate(ChatManagerNetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<NetworkBehavior>();
+						}
+
 						newObj.Initialize(obj);
 
 						if (objectInitialized != null)
@@ -35,8 +41,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				{
 					MainThreadManager.Run(() =>
 					{
-						var go = Instantiate(CubeForgeGameNetworkObject[obj.CreateCode]);
-						var newObj = go.GetComponent<NetworkBehavior>();
+						NetworkBehavior newObj = null;
+						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+						{
+							var go = Instantiate(CubeForgeGameNetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<NetworkBehavior>();
+						}
+
 						newObj.Initialize(obj);
 
 						if (objectInitialized != null)
@@ -47,8 +58,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				{
 					MainThreadManager.Run(() =>
 					{
-						var go = Instantiate(NetworkCameraNetworkObject[obj.CreateCode]);
-						var newObj = go.GetComponent<NetworkBehavior>();
+						NetworkBehavior newObj = null;
+						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+						{
+							var go = Instantiate(NetworkCameraNetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<NetworkBehavior>();
+						}
+
 						newObj.Initialize(obj);
 
 						if (objectInitialized != null)
@@ -74,7 +90,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-
+			
 			return netBehavior;
 		}
 
@@ -86,7 +102,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-
+			
 			return netBehavior;
 		}
 
@@ -98,7 +114,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation);
-
+			
 			return netBehavior;
 		}
 

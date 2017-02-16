@@ -29,6 +29,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			MainThreadManager.Run(NetworkStart);
 
 			networkObject.onDestroy += DestroyGameObject;
+
+			if (!obj.IsOwner)
+			{
+				if (!skipAttachIds.ContainsKey(obj.NetworkId))
+					ProcessOthers(gameObject.transform, obj.NetworkId + 1);
+				else
+					skipAttachIds.Remove(obj.NetworkId);
+			}
 		}
 
 		public override void Initialize(NetWorker networker)
