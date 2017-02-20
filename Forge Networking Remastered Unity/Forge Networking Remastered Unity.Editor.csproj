@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}</ProjectGuid>
+    <ProjectGuid>{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -99,9 +99,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Forge Networking Remastered Unity.CSharp.csproj">
-      <Project>{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}</Project>
-      <Name>Forge Networking Remastered Unity.CSharp</Name>
+    <ProjectReference Include="Forge Networking Remastered Unity.csproj">
+      <Project>{7101BF79-1CBC-B118-A920-3B09B7453F1D}</Project>
+      <Name>Forge Networking Remastered Unity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -128,5 +128,6 @@
     <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
     <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2012\UnityVS.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

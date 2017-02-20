@@ -17,36 +17,95 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	public class ForgeNetworkingEditor : EditorWindow
 	{
 		#region Constants
+		/// <summary>
+		/// This is the default interpolation we will be using
+		/// </summary>
 		public const float DEFAULT_INTERPOLATE_TIME = 0.15f;
+		/// <summary>
+		/// This is the editor directory to pull any extra files from
+		/// </summary>
 		private const string EDITOR_RESOURCES_DIR = "BMS_Forge_Editor";
+		/// <summary>
+		/// REGEX for matching words on so that the user doesn't type invalid characters
+		/// </summary>
 		public const string REGEX_MATCH = @"^[a-zA-Z]+"; //Must be either lowercase or uppercase characters
 		#endregion
 
 		#region Private Variables
+		/// <summary>
+		/// This is a singleton class because we need to access it in our nested classes
+		/// </summary>
 		private static ForgeNetworkingEditor _instance;
 		public static ForgeNetworkingEditor Instance { get { return _instance; } }
 
+		/// <summary>
+		/// This is the network class we are searching for
+		/// </summary>
 		private string _searchField = "";
+		/// <summary>
+		/// This is the path we are storing the Forge Networking generated classes
+		/// </summary>
 		private string _storingPath;
+		/// <summary>
+		/// This is the path we are storing the Forge Networking generated classes that the user has made
+		/// </summary>
 		private string _userStoringPath;
+		/// <summary>
+		/// This will toggle the lighting background of the window
+		/// </summary>
 		private bool _lightsOff = true;
+		/// <summary>
+		/// Determined for whether they are on the pro skin or not, this will allow the text to be the proper colors
+		/// </summary>
 		public static bool ProVersion = false;
 
+		/// <summary>
+		/// This is the generated folder path
+		/// </summary>
 		private const string GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated";
+		/// <summary>
+		/// This is the user generated folder path
+		/// </summary>
 		private const string USER_GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated/UserGenerated";
 
+		/// <summary>
+		/// This is our scrolling bar we will use for looking through the classes
+		/// </summary>
 		private Vector2 _scrollView;
+		/// <summary>
+		/// This is the active forge networking class we are working with
+		/// </summary>
 		public ForgeEditorButton ActiveButton;
+		/// <summary>
+		/// These are all the classes we have for this user
+		/// </summary>
 		public List<ForgeEditorButton> _editorButtons;
 
+		/// <summary>
+		/// This is a reference to all the variables that can be generated
+		/// </summary>
 		private Dictionary<object, string> _referenceVariables = new Dictionary<object, string>();
+		/// <summary>
+		/// This is the bitwise 
+		/// </summary>
 		private List<string> _referenceBitWise = new List<string>();
 
+		/// <summary>
+		/// This is the undo action available when we hit the create button
+		/// </summary>
 		private Action _createUndo;
+		/// <summary>
+		/// This is the undo action available when we hit the modify button
+		/// </summary>
 		private Action _modifyUndo;
 
+		/// <summary>
+		/// The current menu we are looking at
+		/// </summary>
 		private ForgeEditorActiveMenu _currentMenu = ForgeEditorActiveMenu.Main;
 
+		//COLORS!
+		//Reference to all the cool colors we use!
 		public static Color Gold = new Color(1, 0.8f, 0.6f);
 		public static Color TealBlue = new Color(0.5f, 0.87f, 1f);
 		public static Color CoolBlue = new Color(0.4f, 0.7f, 1);
@@ -57,6 +116,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public static Color LightsOnBackgroundColor = new Color(0.0118f, 0.18f, 0.286f);
 
 		#region Textures
+		//TEXTURES! ALL THE TEXTURES
 		public static Texture2D Arrow;
 		public static Texture2D SideArrow;
 		public static Texture2D SideArrowInverse;
@@ -72,6 +132,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Nested Enums
+		/// <summary>
+		/// We have different states we can access from the editor window
+		/// </summary>
 		public enum ForgeEditorActiveMenu
 		{
 			Main = 0,
@@ -98,6 +161,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			}
 		}
 
+		/// <summary>
+		/// Setup all the variables to be used within the editor
+		/// </summary>
 		public void Initialize()
 		{
 			titleContent = new GUIContent("Forge Wizard");
@@ -259,6 +325,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 		#endregion
 
+		/// <summary>
+		/// Changes the menu to a different one of the editor
+		/// </summary>
+		/// <param name="nextMenu"></param>
 		public void ChangeMenu(ForgeEditorActiveMenu nextMenu)
 		{
 			_currentMenu = nextMenu;
@@ -323,6 +393,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 
 		#region Menu Renders
+		/// <summary>
+		/// This will render the main menu
+		/// </summary>
 		private void RenderMainMenu()
 		{
 			if (_editorButtons == null)
@@ -430,6 +503,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			EditorGUILayout.EndVertical();
 		}
 
+		/// <summary>
+		/// This will render the create menu
+		/// </summary>
 		private void RenderCreateMenu()
 		{
 			if (_editorButtons == null)
@@ -504,6 +580,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			GUILayout.EndHorizontal();
 		}
 
+		/// <summary>
+		/// This will render the modify window
+		/// </summary>
 		private void RenderModifyWindow()
 		{
 			if (_editorButtons == null || ActiveButton == null)
@@ -573,7 +652,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Forge Factory
-
+		/// <summary>
+		/// Generate the forge factory class
+		/// </summary>
 		public void MakeForgeFactory()
 		{
 			string classGenerationFactory = SourceCodeFactory();
@@ -587,7 +668,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Code Generation
-
+		/// <summary>
+		/// Generate a source network object based on the class and button provided
+		/// </summary>
+		/// <param name="cObj">The class we a generating</param>
+		/// <param name="btn">The button that holds key information to this class</param>
+		/// <param name="identity">The network identity that we will assing this class</param>
+		/// <returns>The generated string to save to a file</returns>
 		public string SourceCodeNetworkObject(ForgeClassObject cObj, ForgeEditorButton btn, int identity)
 		{
 			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/NetworkObjectTemplate");
@@ -649,6 +736,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			return template.Parse();
 		}
 
+		/// <summary>
+		/// Generate a network behavior from a class object and a button that contains key information about the class
+		/// </summary>
+		/// <param name="cObj">The class object</param>
+		/// <param name="btn">The button containing key information</param>
+		/// <returns>The generated string to save to a file</returns>
 		public string SourceCodeNetworkBehavior(ForgeClassObject cObj, ForgeEditorButton btn)
 		{
 			string behaviorPath = string.Empty;
@@ -718,6 +811,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			return template.Parse();
 		}
 
+		/// <summary>
+		/// Generates the code factory for all our custom network objects
+		/// </summary>
+		/// <returns>The string for the save file</returns>
 		public string SourceCodeFactory()
 		{
 			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/NetworkObjectFactoryTemplate");
@@ -740,6 +837,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			return template.Parse();
 		}
 
+		/// <summary>
+		/// Generates the network manager that will allow the instantiation of these new network objects
+		/// </summary>
+		/// <returns>The string to save to a file</returns>
 		public string SourceCodeNetworkManager()
 		{
 			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/NetworkManagerTemplate");
@@ -765,7 +866,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Compiling
-
+		/// <summary>
+		/// Compiles our generated code for the user
+		/// </summary>
 		public void Compile()
 		{
 			if (ActiveButton == null)
@@ -857,7 +960,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Checks
-
+		/// <summary>
+		/// REGEX check for whether there is any invalid characters in the name provided
+		/// </summary>
+		/// <param name="expression">The name to check</param>
+		/// <returns>Whether it is invalid or not</returns>
 		public static bool IsValidName(string expression)
 		{
 			return (System.Text.RegularExpressions.Regex.IsMatch(expression, REGEX_MATCH, System.Text.RegularExpressions.RegexOptions.IgnoreCase));
