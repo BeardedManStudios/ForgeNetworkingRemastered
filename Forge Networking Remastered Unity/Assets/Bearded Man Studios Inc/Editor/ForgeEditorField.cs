@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is a editor field for the network object
+	/// </summary>
 	public class ForgeEditorField
 	{
 		public string FieldName;

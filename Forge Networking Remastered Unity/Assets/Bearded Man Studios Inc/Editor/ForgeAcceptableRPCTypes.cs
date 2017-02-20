@@ -1,5 +1,8 @@
 ﻿namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// The acceptable rpc types we allow
+	/// </summary>
 	public enum ForgeAcceptableRPCTypes
 	{
 		Unknown = -1,

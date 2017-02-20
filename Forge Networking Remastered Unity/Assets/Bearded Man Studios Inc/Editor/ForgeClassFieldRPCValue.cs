@@ -14,6 +14,9 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is a class object that contains the rpc value
+	/// </summary>
 	public class ForgeClassFieldRPCValue
 	{
 		public string FieldRPCName;

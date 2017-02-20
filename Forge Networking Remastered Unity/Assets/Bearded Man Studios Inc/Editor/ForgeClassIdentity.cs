@@ -1,5 +1,8 @@
 ﻿namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is the class identity of this object
+	/// </summary>
 	public class ForgeClassIdentity
 	{
 		public string IdentityName;

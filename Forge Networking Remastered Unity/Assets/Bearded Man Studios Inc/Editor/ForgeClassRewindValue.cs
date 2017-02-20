@@ -14,6 +14,9 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is the rewind value for this class object
+	/// </summary>
 	public class ForgeClassRewindValue
 	{
 		public string RewindName;
