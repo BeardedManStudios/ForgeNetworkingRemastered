@@ -519,10 +519,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			EditorGUILayout.Space();
 			_scrollView = GUILayout.BeginScrollView(_scrollView);
-
-			bool canBack = ActiveButton.RenderExposed(_createUndo);
-
+			bool canBack = ActiveButton.TiedObject == null;
+			bool renderedSuccessful = ActiveButton.RenderExposed(_createUndo);
 			GUILayout.EndScrollView();
+
+			if (!renderedSuccessful)
+				return;
 
 			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate MonoBehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
 
@@ -594,9 +596,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			EditorGUILayout.Space();
 			_scrollView = GUILayout.BeginScrollView(_scrollView);
 
-			ActiveButton.RenderExposed(_modifyUndo);
-
+			bool renderSuccessful = ActiveButton.RenderExposed(_modifyUndo);
 			GUILayout.EndScrollView();
+
+			if (!renderSuccessful)
+				return;
 
 			bool generatedMonobehavior = EditorGUILayout.Toggle("Generate MonoBehavior", ActiveButton.BaseType != ForgeBaseClassType.NetworkBehavior);
 

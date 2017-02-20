@@ -175,14 +175,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public bool RenderExposed(Action callback = null, bool ignoreButton = false)
 		{
-			bool returnValue = false;
+			bool returnValue = true;
 			if (TiedObject == null)
 			{
 				EditorStyles.boldLabel.alignment = TextAnchor.MiddleLeft;
 				GUILayout.Label("Name", EditorStyles.boldLabel);
 				EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
 				ButtonName = GUILayout.TextField(ButtonName, GUILayout.Width(ForgeNetworkingEditor.Instance.position.width - 50));
-				returnValue = true;
 			}
 			else if (!ignoreButton)
 			{
