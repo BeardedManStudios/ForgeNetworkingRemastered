@@ -956,7 +956,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			AssetDatabase.Refresh();
 
-			_editorButtons.Remove(ActiveButton);
+			//_editorButtons.Remove(ActiveButton);
 			ActiveButton = null;
 			CloseFinal();
 		}
