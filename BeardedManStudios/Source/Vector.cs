@@ -37,12 +37,12 @@ namespace BeardedManStudios
 			}
 		}
 
-		public Vector(float xyz)
+		public Vector(float xyz) : this()
 		{
 			x = y = z = xyz;
 		}
 
-		public Vector(float x, float y, float z)
+		public Vector(float x, float y, float z) : this()
 		{
 			this.x = x;
 			this.y = y;

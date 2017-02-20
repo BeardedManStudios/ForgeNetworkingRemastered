@@ -114,6 +114,7 @@
     <Compile Include="Source\Threading\Task.cs" />
     <Compile Include="Source\Templating\TemplateSystem.cs" />
     <Compile Include="Source\Threading\IThreadRunner.cs" />
+    <Compile Include="Source\Vector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
