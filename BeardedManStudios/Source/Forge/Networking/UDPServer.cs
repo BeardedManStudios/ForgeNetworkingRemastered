@@ -87,6 +87,17 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 					}
 
+					// Check to see if the request is based on proximity
+					if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
+					{
+						// If the target player is not in the same proximity zone as the sender
+						// then it should not be sent to that player
+						if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > ProximityDistance)
+						{
+							continue;
+						}
+					}
+
 					try
 					{
 						Send(player, frame, reliable);

@@ -154,6 +154,12 @@ namespace BeardedManStudios.Forge.Networking
 		public NetWorker Networker { get; private set; }
 
 		/// <summary>
+		/// This is used for proximity based updates, this should update with
+		/// the player location to properly be used with the NetWorker::ProximityDistance
+		/// </summary>
+		public Vector ProximityLocation { get; set; }
+
+		/// <summary>
 		/// Constructor for the NetworkingPlayer
 		/// </summary>
 		/// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
