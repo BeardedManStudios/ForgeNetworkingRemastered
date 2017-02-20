@@ -101,7 +101,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			if (GUILayout.Button("Trello Board", GUILayout.Height(50)))
 			{
-				Application.OpenURL(EDITOR_DEVELOPER_PORTAL_LINK);
+				Application.OpenURL(EDITOR_TRELLO_LINK);
 			}
 
 			if (GUILayout.Button("Forum Link", GUILayout.Height(50)))
