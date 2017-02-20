@@ -184,6 +184,17 @@ namespace BeardedManStudios.Forge.Networking
 							return;
 					}
 
+					// Check to see if the request is based on proximity
+					if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
+					{
+						// If the target player is not in the same proximity zone as the sender
+						// then it should not be sent to that player
+						if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > ProximityDistance)
+						{
+							return;
+						}
+					}
+
 					try
 					{
 						Send(player.TcpClientHandle, frame);
@@ -225,6 +236,17 @@ namespace BeardedManStudios.Forge.Networking
 						// Don't send a message to the sending player if it was meant for others
 						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
 							continue;
+					}
+
+					// Check to see if the request is based on proximity
+					if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
+					{
+						// If the target player is not in the same proximity zone as the sender
+						// then it should not be sent to that player
+						if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > ProximityDistance)
+						{
+							continue;
+						}
 					}
 
 					try

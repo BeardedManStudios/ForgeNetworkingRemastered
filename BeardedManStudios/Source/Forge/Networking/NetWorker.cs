@@ -256,6 +256,12 @@ namespace BeardedManStudios.Forge.Networking
 		#endregion
 
 		/// <summary>
+		/// The distance from the proximity location in order to receive proximity
+		/// messages from other players
+		/// </summary>
+		public float ProximityDistance { get; set; }
+
+		/// <summary>
 		/// Allows the newly created network object to be queued for the flush call
 		/// </summary>
 		public bool PendCreates { get; set; }

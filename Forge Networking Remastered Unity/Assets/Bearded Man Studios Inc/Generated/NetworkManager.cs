@@ -11,6 +11,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public GameObject[] ChatManagerNetworkObject = null;
 		public GameObject[] CubeForgeGameNetworkObject = null;
+		public GameObject[] ExampleProximityPlayerNetworkObject = null;
 		public GameObject[] NetworkCameraNetworkObject = null;
 
 		private void Start()
@@ -53,6 +54,29 @@ namespace BeardedManStudios.Forge.Networking.Unity
 							if (CubeForgeGameNetworkObject.Length > 0 && CubeForgeGameNetworkObject[obj.CreateCode] != null)
 							{
 								var go = Instantiate(CubeForgeGameNetworkObject[obj.CreateCode]);
+								newObj = go.GetComponent<NetworkBehavior>();
+							}
+						}
+
+						if (newObj == null)
+							return;
+						
+						newObj.Initialize(obj);
+
+						if (objectInitialized != null)
+							objectInitialized(newObj, obj);
+					});
+				}
+				else if (obj is ExampleProximityPlayerNetworkObject)
+				{
+					MainThreadManager.Run(() =>
+					{
+						NetworkBehavior newObj = null;
+						if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+						{
+							if (ExampleProximityPlayerNetworkObject.Length > 0 && ExampleProximityPlayerNetworkObject[obj.CreateCode] != null)
+							{
+								var go = Instantiate(ExampleProximityPlayerNetworkObject[obj.CreateCode]);
 								newObj = go.GetComponent<NetworkBehavior>();
 							}
 						}
@@ -118,6 +142,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var netBehavior = go.GetComponent<NetworkBehavior>() as CubeForgeGameBehavior;
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
+
+			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
+
+		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			var go = Instantiate(ExampleProximityPlayerNetworkObject[index]);
+			var netBehavior = go.GetComponent<NetworkBehavior>() as ExampleProximityPlayerBehavior;
+			var obj = netBehavior.CreateNetworkObject(Networker, index);
+			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
