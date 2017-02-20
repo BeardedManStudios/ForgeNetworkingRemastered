@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is the rpc field for the network object
+	/// </summary>
 	public class ForgeEditorRPCField
 	{
 		public string FieldName;

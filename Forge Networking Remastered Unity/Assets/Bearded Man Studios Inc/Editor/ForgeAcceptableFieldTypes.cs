@@ -1,5 +1,8 @@
 ﻿namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// The acceptable field types we allow
+	/// </summary>
 	public enum ForgeAcceptableFieldTypes
 	{
 		//Unknown = -1, //Unsupported

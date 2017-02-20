@@ -14,6 +14,9 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is a class object that contains the field value
+	/// </summary>
 	public class ForgeClassFieldValue
 	{
 		public string FieldName;

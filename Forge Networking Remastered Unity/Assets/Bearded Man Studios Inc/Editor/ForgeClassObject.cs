@@ -14,6 +14,9 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is the forge class object we generate from a file
+	/// </summary>
 	public class ForgeClassObject
 	{
 		public string FileLocation;

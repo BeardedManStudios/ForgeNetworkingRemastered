@@ -36,7 +36,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private Vector2 _scroll;
 		#endregion
 
-
 		private static void Init()
 		{
 			IgnoreEditorStartup = EditorPrefs.GetBool(EDITOR_PREF_IGNORE, false);
@@ -74,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public void Setup()
 		{
-			this.titleContent = new GUIContent("FNR About");
+			this.titleContent = new GUIContent("Forge About");
 			ProVersion = EditorGUIUtility.isProSkin;
 			IgnoreEditorStartup = EditorPrefs.GetBool(EDITOR_PREF_IGNORE);
 			_scroll = new Vector2();
@@ -125,7 +124,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			GUILayout.FlexibleSpace();
 			GUILayout.BeginHorizontal();
-			bool currentSetup = GUILayout.Toggle(IgnoreEditorStartup, "Ignore Startup");
+			bool currentSetup = GUILayout.Toggle(IgnoreEditorStartup, "Don't Show On Start");
 			if (currentSetup != IgnoreEditorStartup)
 			{
 				IgnoreEditorStartup = currentSetup;

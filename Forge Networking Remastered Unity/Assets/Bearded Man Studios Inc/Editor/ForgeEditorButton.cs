@@ -5,6 +5,9 @@ using UnityEditor;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
+	/// <summary>
+	/// This is the forge editor button that contains key information to the behavior or network object
+	/// </summary>
 	public class ForgeEditorButton
 	{
 		public string ButtonName;
