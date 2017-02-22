@@ -160,7 +160,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			if (receivers == 255)
 			{
 				Receivers = (Receivers)frame[end - 1];
-				end--;
+				//end--;
 			}
 			else
 				Receivers = (Receivers)receivers;
