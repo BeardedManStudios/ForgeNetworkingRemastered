@@ -1359,7 +1359,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// This is used to destroy this object on the network
 		/// </summary>
-		/// <param name="remoteCall">Used to knwo if this call was made over the network</param>
+		/// <param name="remoteCall">Used to know if this call was made over the network</param>
 		private void Destroy(bool remoteCall)
 		{
 			if (IsOwner || (Networker is IServer && !remoteCall))

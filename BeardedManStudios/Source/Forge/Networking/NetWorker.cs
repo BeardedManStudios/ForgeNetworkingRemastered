@@ -66,7 +66,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		public static List<BroadcastEndpoints> LocalConnections { get; private set; }
+		public static List<BroadcastEndpoints> LocalEndpoints { get; private set; }
 
 		public static bool ExitingApplication { get; private set; }
 
@@ -75,6 +75,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// A base delegate for any kind of network event
 		/// </summary>
 		public delegate void BaseNetworkEvent();
+
+		/// <summary>
+		/// Used to fire events that relate to a broadcast endpoint
+		/// </summary>
+		public delegate void BroadcastEndpointEvent(BroadcastEndpoints endpoint);
 
 		/// <summary>
 		/// A base delegate for any kind of network ping event
@@ -110,6 +115,11 @@ namespace BeardedManStudios.Forge.Networking
 		#endregion
 
 		#region Events
+		/// <summary>
+		/// Occurs when a local server has been located by calling the static SetupLocalUdpListings method
+		/// </summary>
+		public static event BroadcastEndpointEvent localServerLocated;
+
 		/// <summary>
 		/// Occurs when tcp listener has successfully bound
 		/// </summary>
@@ -829,16 +839,22 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// A method to find all of the local UDP servers and clients on the network
+		/// </summary>
 		public static void SetupLocalUdpListings()
 		{
-			if (LocalConnections == null)
-				LocalConnections = new List<BroadcastEndpoints>();
+			// Initialize the list to hold all of the local network endpoints that respond to the request
+			if (LocalEndpoints == null)
+				LocalEndpoints = new List<BroadcastEndpoints>();
 
-			lock (LocalConnections)
+			// Make sure to clear out the existing endpoints
+			lock (LocalEndpoints)
 			{
-				LocalConnections.Clear();
+				LocalEndpoints.Clear();
 			}
 
+			// Create a client to write on the network and discover other clients and servers
 			localListingsClient = new CachedUdpClient(19375);
 			localListingsClient.EnableBroadcast = true;
 			Task.Queue(() => { CloseLocalListingsClient(); }, 1000);
@@ -863,9 +879,15 @@ namespace BeardedManStudios.Forge.Networking
 						string address = parts[0];
 						ushort port = ushort.Parse(parts[1]);
 						if (data[0] == SERVER_BROADCAST_CODE)
-							LocalConnections.Add(new BroadcastEndpoints(address, port, true));
+						{
+							var ep = new BroadcastEndpoints(address, port, true);
+							LocalEndpoints.Add(ep);
+
+							if (localServerLocated != null)
+								localServerLocated(ep);
+						}
 						else if (data[0] == CLIENT_BROADCAST_CODE)
-							LocalConnections.Add(new BroadcastEndpoints(address, port, false));
+							LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
 					}
 				}
 				catch { }

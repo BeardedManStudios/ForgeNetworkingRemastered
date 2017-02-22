@@ -54,7 +54,15 @@ public class MultiplayerMenu : MonoBehaviour
 			Rpc.MainThreadRunner = MainThreadManager.Instance;
 
 		if (getLocalNetworkConnections)
+		{
+			NetWorker.localServerLocated += LocalServerLocated;
 			NetWorker.SetupLocalUdpListings();
+		}
+	}
+
+	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint)
+	{
+		Debug.Log("Found endpoint: " + endpoint.Address + ":" + endpoint.Port);
 	}
 
 	public void Connect()
@@ -138,7 +146,7 @@ public class MultiplayerMenu : MonoBehaviour
 		else
 		{
 			server = new UDPServer(64);
-			
+
 			if (natServerHost.Trim().Length == 0)
 				((UDPServer)server).Connect();
 			else
