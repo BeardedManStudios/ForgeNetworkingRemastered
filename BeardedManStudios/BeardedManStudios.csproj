@@ -50,12 +50,12 @@
     <Compile Include="Source\BeardedMath.cs" />
     <Compile Include="Source\BMSByte.cs" />
     <Compile Include="Source\BMSExtensions.cs" />
+    <Compile Include="Source\Forge\DataStore\Cache.cs" />
     <Compile Include="Source\Forge\Logging\BMSLog.cs" />
     <Compile Include="Source\Forge\Logging\IBMSLogger.cs" />
     <Compile Include="Source\Forge\Networking\BaseTCP.cs" />
     <Compile Include="Source\Forge\Networking\BaseUDP.cs" />
     <Compile Include="Source\Forge\Networking\CachedUdpClient.cs" />
-    <Compile Include="Source\Forge\Networking\DataStore\Cache.cs" />
     <Compile Include="Source\Forge\Networking\Filters\IConnectionFilter.cs" />
     <Compile Include="Source\Forge\Networking\IClientMockPlayer.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\ILobbyMaster.cs" />

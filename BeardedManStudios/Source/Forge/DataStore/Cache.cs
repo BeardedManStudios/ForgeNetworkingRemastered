@@ -32,6 +32,8 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 	/// </remarks>
 	public class Cache
 	{
+		public const int DEFAULT_CACHE_SERVER_PORT = 15942;
+
 		// Default expiry datetime for a cached object.
 		private readonly DateTime maxDateTime = DateTime.MaxValue;
 
@@ -61,7 +63,8 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 			{ 8, typeof(bool) },
 			{ 9, typeof(float) },
 			{ 10, typeof(double) },
-			{ 11, typeof(string) },/*
+			{ 11, typeof(string) },
+			{ 12, typeof(Vector) },/*
 			{ 12, typeof(Vector2) },
 			{ 13, typeof(Vector3) },
 			{ 14, typeof(Vector4) },
