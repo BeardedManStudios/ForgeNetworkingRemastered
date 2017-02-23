@@ -82,6 +82,7 @@ namespace BeardedManStudios.Forge.Logging
 
         private void InternalLog(Logtype type, string text, params object[] args)
 		{
+#if !UNITY_IOS
             if (_loggerService == null)
                 return;
 
@@ -106,6 +107,7 @@ namespace BeardedManStudios.Forge.Logging
                         _loggerService.LogException(text);
                     break;
             }
+#endif
 		}
 	}
 }
