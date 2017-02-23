@@ -156,6 +156,11 @@ namespace BeardedManStudios.Forge.Networking
 		public event PlayerEvent playerDisconnected;
 
 		/// <summary>
+		/// Occurs when a player has timed out
+		/// </summary>
+		public event PlayerEvent playerTimeout;
+
+		/// <summary>
 		/// Occurs when the player has connected and been validated by the server
 		/// </summary>
 		public event PlayerEvent playerAccepted;
@@ -605,6 +610,12 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (playerDisconnected != null)
 				playerDisconnected(player);
+		}
+
+		protected void OnPlayerTimeout(NetworkingPlayer player)
+		{
+			if (playerTimeout != null)
+				playerTimeout(player);
 		}
 
 		/// <summary>

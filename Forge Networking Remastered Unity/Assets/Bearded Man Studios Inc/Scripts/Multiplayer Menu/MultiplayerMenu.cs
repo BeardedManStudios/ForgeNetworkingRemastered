@@ -152,10 +152,23 @@ public class MultiplayerMenu : MonoBehaviour
 			else
 				((UDPServer)server).Connect(natHost: natServerHost, natPort: natServerPort);
 		}
+
+		server.playerTimeout += (player) =>
+		{
+			Debug.Log("Player " + player.NetworkId + " timed out");
+		};
 		//TODO: Implement Lobby Service
 		//LobbyService.Instance.Initialize(server);
 
 		Connected(server);
+	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.H))
+			Host();
+		else if (Input.GetKeyDown(KeyCode.C))
+			Connect();
 	}
 
 	public void Connected(NetWorker networker)

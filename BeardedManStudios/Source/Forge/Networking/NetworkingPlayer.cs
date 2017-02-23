@@ -18,7 +18,6 @@
 \------------------------------+------------------------------*/
 
 using BeardedManStudios.Threading;
-using System;
 using System.Collections.Generic;
 using System.Net;
 
@@ -114,7 +113,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Last ping sent to the NetworkingPlayer
 		/// </summary>
-		public DateTime LastPing { get; private set; }
+		public ulong LastPing { get; private set; }
 
 		/// <summary>
 		/// Whether this player is the one hosting
@@ -145,9 +144,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// The amount of time in seconds to disconnect this player if no messages are sent
 		/// </summary>
-		public float InactiveTimeoutSeconds { get; set; }
+		public uint TimeoutMilliseconds { get; set; }
 
-		private const float PLAYER_TIMEOUT_DISCONNECT = 180.0f;
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 10000;
 
 		private bool composerReady = false;
 
@@ -173,8 +172,8 @@ namespace BeardedManStudios.Forge.Networking
 			Ip = ip.Split('+')[0];
 			IsHost = isHost;
 			SocketEndpoint = socketEndpoint;
-			LastPing = DateTime.Now;
-			InactiveTimeoutSeconds = PLAYER_TIMEOUT_DISCONNECT;
+			LastPing = networker.Time.Timestep;
+			TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
 
 			if (SocketEndpoint != null)
 			{
@@ -228,7 +227,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void Ping()
 		{
-			LastPing = DateTime.Now;
+			LastPing = Networker.Time.Timestep;
+		}
+
+		/// <summary>
+		/// Called by the server to check and see if this player has timed out
+		/// </summary>
+		/// <returns>True if the player has timed out</returns>
+		public bool TimedOut()
+		{
+			return LastPing + TimeoutMilliseconds <= Networker.Time.Timestep;
 		}
 
 		/// <summary>

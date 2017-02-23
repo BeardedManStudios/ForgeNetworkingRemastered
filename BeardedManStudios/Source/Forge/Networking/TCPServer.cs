@@ -302,6 +302,9 @@ namespace BeardedManStudios.Forge.Networking
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadClients);
 
+				// Create the thread that will check for player timeouts
+				Task.Queue(CheckClientTimeout);
+
 				// Do any generic initialization in result of the successful bind
 				OnBindSuccessful();
 
@@ -503,6 +506,8 @@ namespace BeardedManStudios.Forge.Networking
 								{
 									lock (Players[i].MutexLock)
 									{
+										Players[i].Ping();
+
 										// Get the frame that was sent by the client, the client
 										// does send masked data
 										//TODO: THIS IS CAUSING ISSUES!!! WHY!?!?!!?
@@ -543,6 +548,39 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					Logging.BMSLog.LogException(ex);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Checks all of the clients to see if any of them are timed out
+		/// </summary>
+		private void CheckClientTimeout()
+		{
+			List<NetworkingPlayer> timedoutPlayers = new List<NetworkingPlayer>();
+			while (IsBound)
+			{
+				IteratePlayers((player) =>
+				{
+					if (player.TimedOut())
+					{
+						timedoutPlayers.Add(player);
+					}
+				});
+
+				if (timedoutPlayers.Count > 0)
+				{
+					foreach (NetworkingPlayer player in timedoutPlayers)
+					{
+						Disconnect(player, true);
+						OnPlayerTimeout(player);
+						CleanupDisconnections();
+					}
+
+					timedoutPlayers.Clear();
+				}
+
+				// Wait a second before checking again
+				Thread.Sleep(1000);
 			}
 		}
 

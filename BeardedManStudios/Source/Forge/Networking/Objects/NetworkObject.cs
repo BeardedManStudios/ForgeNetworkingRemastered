@@ -1034,10 +1034,15 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				// Don't execute the RPC if the server is sending it to receivers
 				// that don't include itself
-				if ((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
-					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity)
+				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
+					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
+					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
 				{
 					Rpcs[id].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
+
+					// We don't need to do any extra work if the target player is the server
+					if (targetPlayer == Networker.Me)
+						return;
 				}
 			}
 
@@ -1112,6 +1117,11 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (targetPlayer != null && Networker is IServer)
 			{
+				if (targetPlayer == Owner)
+				{
+
+				}
+
 				if (Networker is TCPServer)
 					((TCPServer)Networker).Send(targetPlayer.TcpClientHandle, rpcFrame);
 				else

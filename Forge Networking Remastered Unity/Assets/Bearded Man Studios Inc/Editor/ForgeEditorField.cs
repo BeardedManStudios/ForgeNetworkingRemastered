@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -49,9 +48,17 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					Interpolate = !Interpolate;
 
 				if (Interpolate)
-					InterpolateValue = EditorGUILayout.FloatField(InterpolateValue, GUILayout.Width(50));
+				{
+					if (InterpolateValue == 0)
+						InterpolateValue = ForgeNetworkingEditor.DEFAULT_INTERPOLATE_TIME;
+					else
+						InterpolateValue = EditorGUILayout.FloatField(InterpolateValue, GUILayout.Width(50));
+				}
 				else
-					InterpolateValue = ForgeNetworkingEditor.DEFAULT_INTERPOLATE_TIME;
+				{
+					InterpolateValue = 0;
+					//InterpolateValue = ForgeNetworkingEditor.DEFAULT_INTERPOLATE_TIME;
+				}
 			}
 
 			GUI.color = Color.white;
