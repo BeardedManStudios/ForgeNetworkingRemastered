@@ -254,7 +254,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (strBytes.Length > 0)
 					bytes.Append(strBytes);
 			}
-			if (type == typeof(Vector))
+			else if (type == typeof(Vector))
 			{
 				Vector vec = (Vector)o;
 				bytes.Append(BitConverter.GetBytes(vec.x));
