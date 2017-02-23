@@ -58,7 +58,9 @@ namespace BeardedManStudios.Forge.Networking
 			object obj = null;
 
 			if (type == typeof(string))
-				obj = MapString(stream);
+				obj = stream.GetBasicType<string>();
+			else if (type == typeof(Vector))
+				obj = stream.GetBasicType<Vector>();
 			else if (type.IsArray)
 				obj = MapArray(type, stream);
 			else if (type == typeof(BMSByte))
@@ -83,7 +85,9 @@ namespace BeardedManStudios.Forge.Networking
 			var genericType = typeof(T);
 
 			if (genericType == typeof(string))
-				obj = MapString(stream);
+				obj = stream.GetBasicType<string>();
+			else if (genericType == typeof(Vector))
+				obj = stream.GetBasicType<Vector>();
 			else if (genericType.IsArray)
 				obj = MapArray(genericType, stream);
 			else if (genericType == typeof(BMSByte))
@@ -130,19 +134,11 @@ namespace BeardedManStudios.Forge.Networking
 				return stream.GetBasicType<double>();
 			else if (type == typeof(string))
 				return stream.GetBasicType<string>();
+			else if (type == typeof(Vector))
+				return stream.GetBasicType<Vector>();
 			else
 				// TODO:  Make this an object mapper exception
 				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
-		}
-
-		/// <summary>
-		/// Map a string from the BMSByte
-		/// </summary>
-		/// <param name="stream">BMSByte to be used</param>
-		/// <returns>Returns a string out of the BMSByte</returns>
-		public object MapString(BMSByte stream)
-		{
-			return stream.GetBasicType<string>();
 		}
 
 		/// <summary>
@@ -257,6 +253,13 @@ namespace BeardedManStudios.Forge.Networking
 
 				if (strBytes.Length > 0)
 					bytes.Append(strBytes);
+			}
+			if (type == typeof(Vector))
+			{
+				Vector vec = (Vector)o;
+				bytes.Append(BitConverter.GetBytes(vec.x));
+				bytes.Append(BitConverter.GetBytes(vec.y));
+				bytes.Append(BitConverter.GetBytes(vec.z));
 			}
 			else if (type == null) //TODO: Check if this causes other issues
 				bytes.Append(new byte[1] { 0 });
