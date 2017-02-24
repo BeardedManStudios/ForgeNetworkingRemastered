@@ -74,6 +74,16 @@ namespace BeardedManStudios.Forge.Networking
 		public delegate void FieldEvent<T>(T field, ulong timestep);
 
 		/// <summary>
+		/// Used for when any specific field change occurs, will pass the name of the field and the value
+		/// You are encouraged to used this event for debugging only and use the explicit events
+		/// during production
+		/// </summary>
+		/// <param name="fieldName">The name of the field that is being changed</param>
+		/// <param name="value">The value of the changed filed</param>
+		/// <param name="timestep">The timestep for when this event happens</param>
+		public delegate void FieldChangedEvent(string fieldName, object value, ulong timestep);
+
+		/// <summary>
 		/// TODO: COMMENT THIS
 		/// </summary>
 		/// <param name="networker"></param>
@@ -1117,11 +1127,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (targetPlayer != null && Networker is IServer)
 			{
-				if (targetPlayer == Owner)
-				{
-
-				}
-
 				if (Networker is TCPServer)
 					((TCPServer)Networker).Send(targetPlayer.TcpClientHandle, rpcFrame);
 				else

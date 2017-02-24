@@ -1,15 +1,12 @@
 ﻿//#define FORGE_EDITOR_DEBUGGING
 
 using BeardedManStudios.Forge.Networking.Generated;
-using BeardedManStudios.Templating;
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using UnityEditor;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
@@ -179,89 +176,53 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			#region IGNORES
 			for (int i = 0; i < uniqueFields.Count; ++i)
 			{
-				if (uniqueFields[i].Name == "IDENTITY")
+				switch (uniqueFields[i].Name)
 				{
-					uniqueFields.RemoveAt(i);
-					i--;
-					continue;
-				}
-
-				if (uniqueFields[i].Name == "networkObject")
-				{
-					uniqueFields.RemoveAt(i);
-					i--;
-					continue;
+					case "IDENTITY":
+					case "networkObject":
+					case "fieldAltered":
+					case "_dirtyFields":
+					case "dirtyFields":
+						uniqueFields.RemoveAt(i--);
+						//TODO: Store the types for re-use
+						continue;
 				}
 
 				if (uniqueFields[i].Name.EndsWith("Changed"))
 				{
-					uniqueFields.RemoveAt(i);
-					i--;
-					continue;
-				}
-
-				if (uniqueFields[i].Name == "_dirtyFields")
-				{
-					uniqueFields.RemoveAt(i);
-
-					//TODO: Store the types for re-use
-					i--;
+					uniqueFields.RemoveAt(i--);
 					continue;
 				}
 
 				if (uniqueFields[i].Name.EndsWith("Interpolation"))
 				{
-					uniqueFields.RemoveAt(i);
+					uniqueFields.RemoveAt(i--);
 
 					//TODO: Store the types for re-use
-					i--;
-					continue;
-				}
-
-				if (uniqueFields[i].Name == "dirtyFields")
-				{
-					uniqueFields.RemoveAt(i);
-
-					//TODO: Store the types for re-use
-					i--;
 					continue;
 				}
 			}
 
 			for (int i = 0; i < uniqueMethods.Count; ++i)
 			{
-				if (uniqueMethods[i].Name.ToLower() == "initialize")
+				switch (uniqueMethods[i].Name.ToLower())
 				{
-					uniqueMethods.RemoveAt(i);
-					--i;
-					continue;
-				}
-
-				if (uniqueMethods[i].Name.ToLower() == "networkcreateobject")
-				{
-					uniqueMethods.RemoveAt(i);
-					--i;
-					continue;
+					case "initialize":
+					case "networkcreateobject":
+						uniqueMethods.RemoveAt(i--);
+						continue;
 				}
 
 				if (uniqueMethods[i].Name.EndsWith("Changed"))
 				{
-					uniqueMethods.RemoveAt(i);
-					--i;
+					uniqueMethods.RemoveAt(i--);
 					continue;
 				}
 
-				if (uniqueMethods[i].Name.StartsWith("get_"))
+				if (uniqueMethods[i].Name.StartsWith("get_") ||
+					uniqueMethods[i].Name.StartsWith("set_"))
 				{
-					uniqueMethods.RemoveAt(i);
-					--i;
-					continue;
-				}
-
-				if (uniqueMethods[i].Name.StartsWith("set_"))
-				{
-					uniqueMethods.RemoveAt(i);
-					--i;
+					uniqueMethods.RemoveAt(i--);
 					continue;
 				}
 			}
