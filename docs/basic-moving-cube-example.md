@@ -51,7 +51,7 @@ When we use the **Network Contract Wizard (NCW)** we are actually generating a l
 4. Write the rest of the logic for the cube as seen below
 
 ### BasicCube
-```cs
+```csharp
 using UnityEngine;
  using BeardedManStudios.Forge.Networking.Generated;
 public class BasicCube : BasicCubeBehavior

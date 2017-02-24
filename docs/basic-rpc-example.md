@@ -68,7 +68,7 @@ When we use the **Network Contract Wizard (NCW)** we are actually generating a l
 
 ### Code if option 1 was selected
 ####MoveCube
-```cs
+```csharp
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
@@ -121,7 +121,7 @@ As you can see from the code snippet above an RPC is called using the **networkO
 
 ### Code if option 2 was selected
 #### MoveCube
-```cs
+```csharp
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;

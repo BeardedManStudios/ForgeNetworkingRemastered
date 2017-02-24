@@ -5,7 +5,7 @@ If you have done any RPC calls by now, then you will notice that they all are su
 Example:  Let's say that the client wanted to assign its name on the server and so it sends a string via RPC to request the name assignment. Using the **SendingPlayer** from the RpcInfo we can easily get the player object and assign the name.
 
 ### Using RpcInfo
-```cs
+```csharp
 // Client calls this code somewhere
 networkObject.SendRpc("AssignName", Receivers.Server, "My New Name");
 
