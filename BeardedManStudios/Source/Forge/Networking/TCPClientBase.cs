@@ -62,6 +62,8 @@ namespace BeardedManStudios.Forge.Networking
 		protected NetworkingPlayer server = null;
 		public NetworkingPlayer Server { get { return server; } }
 
+		public event BaseNetworkEvent connectAttemptFailed;
+
 		/// <summary>
 		/// Used to determine what happened during the read method and what actions
 		/// that should be taken if it was called from an infinite loop thread
@@ -122,7 +124,17 @@ namespace BeardedManStudios.Forge.Networking
 				client = new StreamSocket();
 				await client.ConnectAsync(new HostName(host), port.ToString());
 #else
-				client = new TcpClient(host, port);
+				try
+				{
+					client = new TcpClient(host, port);
+				}
+				catch
+				{
+					if (connectAttemptFailed != null)
+						connectAttemptFailed();
+
+					return;
+				}
 #endif
 
 				// This was a successful bind so fire the events for it
