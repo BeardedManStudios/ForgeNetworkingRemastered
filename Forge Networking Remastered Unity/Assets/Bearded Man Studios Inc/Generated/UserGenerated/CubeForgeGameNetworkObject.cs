@@ -12,6 +12,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		private byte[] _dirtyFields = new byte[0];
 
+		public event FieldChangedEvent fieldAltered;
 
 		protected override void OwnershipChanged()
 		{
