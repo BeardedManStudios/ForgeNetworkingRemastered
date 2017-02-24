@@ -115,7 +115,8 @@ public class MoveCube : MoveCubeBehavior
 			transform.position += Vector3.down;
 		});
 	}
-}```
+}
+```
 
 As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method and the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). **Note** _: In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved._ **Note 2** _: Notice that we use_ **MainThreadManager** _to run the move logic in this example, if you have not used the_ **MainThreadManager** _before or would like more information about threading in Unity, please view_ _this page__._
 
@@ -154,7 +155,8 @@ public class MoveCube : MoveCubeBehavior {
 			transform.position += args.GetNext<Vector3>();
 		});
 	}
-}```
+}
+```
 	
 As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method, the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc, and the last argument(s) are the arguments for the method. The arguments are mapped to the **object[] args** of the method in the order that they were sent in. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). **Note** _: In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved._ **Note 2** _: Notice that we use_ **MainThreadManager** _to run the move logic in this example, if you have not used the_ **MainThreadManager** _before or would like more information about threading in Unity, please view_ _this page__._
 

@@ -13,6 +13,7 @@ protected override bool ServerAllowRpc(string methodName, Receivers receivers, R
 	// The methodName is the name of the RPC that is trying to be called right now
 	// The receivers is who the client is trying to send the RPC to
 	// The args are the arguments that were sent as part of the RPC message and what the receivers will receive as arguments to the call
-}```
+}
+```
 
 Notice that you need to return a boolean from this function. If you return **true** then the RPC will be allowed to go through, it will be invoked on the server and on the clients (if specified in Receivers). If you return **false** then the RPC will not be invoked at all and will be dropped.

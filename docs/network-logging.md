@@ -34,7 +34,8 @@ BeardedManStudios.Forge.Logging.BMSLog.LogWarning("ANYTHING YOU WANT TO LOGHERE!
 BeardedManStudios.Forge.Logging.BMSLog.LogWarningFormat("FOLLOWING A FORMAT[{0}]", "ANYTHING YOU WANT TO LOG HERE!");
 BeardedManStudios.Forge.Logging.BMSLog.LogException([System.Exception]); 
 BeardedManStudios.Forge.Logging.BMSLog.LogException("ANYTHING YOU WANT TOLOG HERE!");
-BeardedManStudios.Forge.Logging.BMSLog.LogExceptionFormat("FOLLOWING AFORMAT [{0}]", "ANYTHING YOU WANT TO LOG HERE!");```
+BeardedManStudios.Forge.Logging.BMSLog.LogExceptionFormat("FOLLOWING AFORMAT [{0}]", "ANYTHING YOU WANT TO LOG HERE!");
+```
 
 Above is code examples of how to call the logger to use it for logging purposes.
 

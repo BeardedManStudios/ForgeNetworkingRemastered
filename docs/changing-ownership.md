@@ -13,6 +13,7 @@ The one that we want to focus on in this example is the generated NetworkObject.
 protected override bool AllowOwnershipChange(NetworkingPlayer newOwner)
 {
 	// The newOwner is the NetworkingPlayer that is requesting the ownership change, you can get the current owner with just "Owner"
-}```
+}
+```
 
 Notice that you need to return a boolean from this function. If you return **true** then the ownership change will be allowed to go through, it will be invoked on the server and on the clients. If you return **false** then the ownership change will not be invoked at all and will be dropped.

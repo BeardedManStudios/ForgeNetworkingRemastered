@@ -18,4 +18,5 @@ public override void AssignName(RpcArgs args)
 	string playerName = args.GetNext<string>();
 	RPCInfo info = args.Info;
 	info.SendingPlayer.Name = playerName;
-}```
+}
+```

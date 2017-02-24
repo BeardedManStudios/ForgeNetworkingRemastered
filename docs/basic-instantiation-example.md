@@ -100,7 +100,8 @@ public class PlayerCube : PlayerCubeBehavior
 		// Note: Forge Networking takes care of only sending the delta, so there
 		// is no need for you to do that manually
     }
-}```
+}
+```
 
 ## Setting up prefab
 
@@ -159,7 +160,8 @@ public class GameLogic : MonoBehaviour
 	{
 		NetworkManager.Instance.InstantiatePlayerCubeNetworkObject();
 	}
-}```
+}
+```
 
 ## Test
 

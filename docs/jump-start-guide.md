@@ -263,7 +263,8 @@ public class Player : PlayerBehavior
 		// be the name for this player
 		Name = args.GetNext<string>();
 	}
-}```
+}
+```
 
 This is all the code we need to allow for all of the connections to see the movement of the players. The next thing we need is to be able to actually instantiate our **Player** prefab since it will not be in the scene at the start of the game. To do this let's open the **NCW** window again.
 
@@ -317,7 +318,8 @@ public class GameLogic : GameLogicBehavior
 		// Update the UI to show the last player that scored
 		scoreLabel.text = "Last player to score was: " + playerName;
 	}
-}```
+}
+```
 
 Now we are able to not only spawn the player, but we are also able to print out the last player that scored to the screen. Talking about scoring, we possibly want to get the ball rolling (if you would excuse the expression) and instantiate the **ball** and serialize it's position to all the clients. However just before that, lets fill out our scoreLabel object on our **Game Logic** Game Object.
 
@@ -427,7 +429,8 @@ public class GameBall : GameBallBehavior
 		// Reset the ball
 		Reset();
 	}
-}```
+}
+```
 
 With the ball complete, we are finally ready to move onto the last script that we will need to create, the behavior for the trigger that starts the whole game!
 
@@ -484,7 +487,8 @@ public class GameTrigger : MonoBehaviour
 		// We no longer need this trigger, the game has started
 		Destroy(gameObject);
 	}
-}```
+}
+```
 
 **Finalization of our game!**
 

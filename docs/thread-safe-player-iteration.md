@@ -9,7 +9,8 @@ If you were to use a simple lock, then let's say we had a reference to a **NetWo
 lock (myNetWorker.Players)
 {
 	// Do your player iteration logic here
-}```
+}
+```
 
 The second way would be to use the **NetWorker::IteratePlayers** method as described above. There are two ways that you can do this, the first being to provide a lambda expression [INSERT LINK] for quick inline actions and the other is to provide a function pointer.
 
@@ -19,7 +20,8 @@ The second way would be to use the **NetWorker::IteratePlayers** method as descr
 myNetWorker.IteratePlayers((player) =>
 {
 	// Do your player iteration logic here
-});```
+});
+```
 
 ### Function Pointer
 ```csharp
@@ -30,4 +32,5 @@ myNetWorker.IteratePlayers(GoThroughPlayers);
 private void GoThroughPlayers(NetworkingPlayer player)
 {
 	// Do your player iteration logic here
-}```
+}
+```

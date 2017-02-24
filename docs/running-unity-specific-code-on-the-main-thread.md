@@ -13,7 +13,8 @@ public override void MyCustomRPC(object[] args)
 private void OtherFunction()
 {
 	Debug.Log("Hello World!");
-}```
+}
+```
 
 You can see that the above example requires another accessible method in order to pass it into the main thread manager's Run method.
 
@@ -23,7 +24,8 @@ public override void MyCustomRPC(object[] args)
 {
 	// Setup a temporary method call (lambda expression) to be executed on the main thread
 	MainThreadManager.Run(() => { Debug.Log("Hello World!"); });
-}```
+}
+```
 
 **The above is the preferred**  **method**
 
