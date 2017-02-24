@@ -4,11 +4,11 @@ The Network Contract Wizard is the new way for you to implement networking for y
 
 To do so you will need to go to **Window->Forge Networking->Network Contract Wizard** as shown in the example below.
 
-##### MISSING IMAGE TODO
+![open-ncw](images/ncw-1.jpg "Open NCW")
 
 After opening the window you will be presented with this.
 
-##### MISSING IMAGE TODO
+![ncw-main-view](images/ncw-2.jpg "NCW Main View")
 
 1. 1)Toggle lighting on/off for the editor window only. This will make it easier for your eyes depending on what lighting situation you have.
 2. 2)Create, this will make networked objects for you to use for your game/app. (You will spend most of your time hitting this beautifully designedbutton).
@@ -18,7 +18,7 @@ After opening the window you will be presented with this.
 
 **Creation Menu**
 
-##### MISSING IMAGE TODO
+![create-network-object-view](images/ncw-3.jpg "Create Network Object View")
 
 1. 1)Name field for you to name your networked object (Do not use the same name as ones already made)
 2. 2)Add fields (This is where you would add variables to sync across the network)
@@ -26,7 +26,7 @@ After opening the window you will be presented with this.
 
 **Adding a Field**
 
-##### MISSING IMAGE TODO
+![adding-a-field](images/ncw-4.jpg "Adding a Field")
 
 1. 1)The name of the variable
 2. 2)The type of variable this will be
@@ -34,7 +34,7 @@ After opening the window you will be presented with this.
 
 **Adding a RPC**
 
-##### MISSING IMAGE TODO
+![adding-a-rpc](images/ncw-5.jpg "Adding a RPC")
 
 1. 1)Name of the RPC
 2. 2)Arguments for this RPC that will be sent across the network.
@@ -45,14 +45,14 @@ After opening the window you will be presented with this.
 
 **Main Menu Deletion**
 
-##### MISSING IMAGE TODO
+![deleting-a-network-object](images/ncw-6.jpg "Deleting a Network Object")
 
 1. 1)This will trash this Networked Object correctly.
 2. 2)You will be prompted with this window when doing so.
 
 **Project Directory**
 
-##### MISSING IMAGE TODO
+![generated-code-output-location](images/ncw-7.jpg "Generated Code Output Location")
 
 You will notice that all generated code will be located in your project directory under **Generated**.
 

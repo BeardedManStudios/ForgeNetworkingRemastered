@@ -6,4 +6,4 @@ The following is collection of examples/tutorials to get you up and running with
 * [Basic RPC Example](basic-rpc-example)
 * [Basic Instantiation Example](basic-instantiation-example)
 * [Jump Start Guide](jump-start-guide)
-* [Game Lobby Example](game-lobby-example)
+* Game Lobby Example

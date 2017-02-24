@@ -12,7 +12,7 @@ Now for the reveal of the biggest change to Forge Networking, the Network Object
 
 Of course you will find many things that you once knew such as [Network Instantiation](http://baflink.com:8090/display/FN/Network+Instantiation), Remote Procedure Calls RPC, **MainThreadManager** (Threading in Unity) however you will find that some of the older models (such as **NetSync** ) have been removed. I know, I know, **NetSync** is awesome and it works kinda like UNET's **SyncVar** ; however, we believe we have a much simpler, more controlled, less magical, and more powerful approach to serializing network variables. Since we have abstracted all the network code to be an attachment, you will find a new fancy **network Object** variable that is a part of the class you create. This object will house all of your network variables and allow you to set the sync time as well as access any variable from the network easily. This means you can **choose** when to use the network variable, choices are good, yes?
 
-Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!
+![smile](images/smile.png "Smile") Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!
 
 So, what are the difference highlights?
 * Instantiation is done through **NetworkManager.Instance.Instantiate...**
@@ -48,13 +48,13 @@ __Note that some of these are not links because the documentation is still being
     * [Changing Ownership](changing-ownership)
     * [Destroying the Network Object](destroying-the-network-object)
     * [Fields](fields)
-    * [Remote Procedure Calls RPCs](remote-procedure-calls-rpcs)
+    * Remote Procedure Calls RPCs
         * [Clearing Buffered RPCs](clearing-buffered-rpcs)
         * Replacing Previous Buffered RPCs
         * RpcArgs and the RpcInfo "Info" Struct
         * [RPC Validation by Server](rpc-validation-by-server)
     * Unity Integration
-        * [Main Threading RPCs](main-thread-rpcs)
+        * [Main Threading RPCs](main-threading-rpcs)
         * Network Manager
             * Network Instantiation
         * [Threading in Unity](threading-in-unity)
