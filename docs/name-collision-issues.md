@@ -1,0 +1,3 @@
+# Name Collision Issues
+
+As you may have read in Network Object, the network object has an owner. This owner is responsible for updating the Fields. Since there is one owner of an object, you may want to update who owns an object at runtime. For example, if there is a car on the street, it may be currently owned by the server (because the server spawned the object), however a player gets into the car to drive it, now we would want the player to own the car and update it's variables. To do this we have two methods that are a part of the Network Object and one extra method to override to validate ownership changes on the server.

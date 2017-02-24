@@ -1,3 +1,5 @@
+# Authoritative Design
+
 Often you will hear the term **authoritative server** and in most cases, it is used to mean **authoritative game logic**. So, we would like to first go over the difference between the two as we often state that Forge Networking (including Remastered) is **authoritative server** by design.
 
 Authoritative Server:  When all network traffic goes through the server before it is relayed to other clients. In other words, clients do not communicate with each other directly.
