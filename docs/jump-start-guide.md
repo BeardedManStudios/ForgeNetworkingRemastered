@@ -181,7 +181,7 @@ What this will do is create and modify some classes in the **Generated** folder 
 7. Open the **Player.cs** script you just created 8.  Insert the following code
 
 ### Player.cs**
-```csharp
+```cs
 // We use this namespace as it is where our PlayerBehavior was generated using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Generated;
 using UnityEngine;
@@ -288,7 +288,7 @@ What this will do is create and modify some classes in the **Generated** folder 
 7. Open the **GameLogic.cs** script you just created 8.  Insert the following code
 
 ### GameManager.cs
-```csharp
+```cs
 // We use this namespace as it is where our GameLogicBehavior was generated
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
@@ -346,7 +346,7 @@ What this will do is create and modify some classes in the **Generated** folder 
 7. Open the **GameBall.cs** script you just created 8.  Insert the following code
 
 ### GameBall.cs**
-```csharp
+```cs
 // We use this namespace as it is where our BallBehavior was generated
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Generated;
@@ -440,7 +440,7 @@ With the ball complete, we are finally ready to move onto the last script that w
 7. Open the **GameTrigger.cs** script you just created 8.  Insert the following code
 
 ### GameTrigger.cs
-```csharp
+```cs
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
 

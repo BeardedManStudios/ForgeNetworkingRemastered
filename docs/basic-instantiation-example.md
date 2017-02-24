@@ -52,7 +52,7 @@ When we use the **Network Contract Wizard (NCW)** we are actually generating a l
 4. Write the rest of the logic for the cube as seen below
 
 ### PlayerCube
-```csharp
+```cs
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 
@@ -150,7 +150,7 @@ Now that we have setup our **NetworkManager** we are ready to make our instantia
 9. Add your **GameScene** scene as the second scene
 
 ### GameLogic
-```csharp
+```cs
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Unity;
 public class GameLogic : MonoBehaviour

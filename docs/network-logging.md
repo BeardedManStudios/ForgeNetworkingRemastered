@@ -27,7 +27,7 @@ Windows Build Location: ExecutableDirectoryExecutableName\_DataLogsbmslog.txt
 **Using the Logger yourself for development purposes**
 
 ### Example Logging
-```csharp
+```cs
 BeardedManStudios.Forge.Logging.BMSLog.Log("ANYTHING YOU WANT TO LOGHERE!");
 BeardedManStudios.Forge.Logging.BMSLog.LogFormat("FOLLOWING A FORMAT[{0}]", "ANYTHING YOU WANT TO LOG HERE!");
 BeardedManStudios.Forge.Logging.BMSLog.LogWarning("ANYTHING YOU WANT TO LOGHERE!");

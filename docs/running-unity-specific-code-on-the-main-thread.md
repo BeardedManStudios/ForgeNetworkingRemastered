@@ -3,7 +3,7 @@
 We have created a helper class for you to be able to offload any logic to the main thread from a separate thread. This helper class is called **MainT hreadManager** and there are 2 main ways that you can use this class. The entry point for both methods of use is the static method **Run** ; see the code snippets below for practical uses. The examples below emulate a RPC method's contents.
 
 ### MainThreadManager.Run Function Pointer
-```csharp
+```cs
 public override void MyCustomRPC(object[] args)
 {
 	// Register the private function within this class to be called on the main thread
@@ -18,7 +18,7 @@ private void OtherFunction()
 You can see that the above example requires another accessible method in order to pass it into the main thread manager's Run method.
 
 ### MainThreadManager.Run Lambda Expression
-```csharp
+```cs
 public override void MyCustomRPC(object[] args)
 {
 	// Setup a temporary method call (lambda expression) to be executed on the main thread

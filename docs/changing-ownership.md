@@ -9,7 +9,7 @@ When we use the Network Contract Wizard (NCW), it will create 2 generated classe
 The one that we want to focus on in this example is the generated NetworkObject. So let's say that we opened up the Network Contract Wizard (NCW) and we created a contract named **Car** ; this will generate a NetworkObject class named **CarNetworkObject**. Now in another folder (not in the Generated folder) you will create a new C# script called **CarNetworkObject**. In here you will create your [partial class](https://msdn.microsoft.com/en-us/library/wa80x488.aspx) for the **CarNetworkObje ct** and you will override the **AllowOwnershipChange** method like so:
 
 ### AllowOwnershipChange
-```csharp
+```cs
 protected override bool AllowOwnershipChange(NetworkingPlayer newOwner)
 {
 	// The newOwner is the NetworkingPlayer that is requesting the ownership change, you can get the current owner with just "Owner"
