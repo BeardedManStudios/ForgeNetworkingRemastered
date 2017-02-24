@@ -53,7 +53,8 @@ When we use the **Network Contract Wizard (NCW)** we are actually generating a l
 ### BasicCube
 ```csharp
 using UnityEngine;
- using BeardedManStudios.Forge.Networking.Generated;
+
+using BeardedManStudios.Forge.Networking.Generated;
 public class BasicCube : BasicCubeBehavior
 {
 	/// <summary>
@@ -84,7 +85,8 @@ public class BasicCube : BasicCubeBehavior
 		// Note: Forge Networking takes care of only sending the delta, so there
 		// is no need for you to do that manually
 	}
-}```
+}
+```
 
 As you can see from the code snippet above, you can determine if the current player is the owner of the object using the **networkObject.IsOwner** boolean comparison. This will allow you to make code specifically based on the owner of the object. In this case, since the cube is going to be in the scene at start, it's owner is the **server**. In the snippet above the client (non owner) will update the transform position and rotation of the cube (the object this script is going to be attached to) to the position and rotation received from the server. Since we turned on interpolation, all of the smoothing is done "behind the scenes". Now the server in this case will just assign the **position** and **rotation** variables of the networkObject. These **are** the two fields we created in the NCW by the way. All generated network objects from the NCW will have a **networkObject** member variable that you can access from the deriving child. Whenever you assign a field of this object it is replicated across the network if the assigning user is the owner of the object.
 
