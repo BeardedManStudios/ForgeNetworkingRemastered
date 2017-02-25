@@ -51,12 +51,13 @@ __Note that some of these are not links because the documentation is still being
     * Remote Procedure Calls RPCs
         * [Clearing Buffered RPCs](clearing-buffered-rpcs)
         * Replacing Previous Buffered RPCs
-        * RpcArgs and the RpcInfo "Info" Struct
+        * [RpcArgs and RpcInfo Structs](rpcargs-and-rpcinfo-structs)
         * [RPC Validation by Server](rpc-validation-by-server)
     * Unity Integration
         * [Main Threading RPCs](main-threading-rpcs)
         * Network Manager
-            * Network Instantiation
+            * [Network Instantiation](network-instantiation)
+        * Network Object Without Prefab
         * [Threading in Unity](threading-in-unity)
     * Rewinding
     * Master Server
@@ -68,9 +69,8 @@ __Note that some of these are not links because the documentation is still being
         * playerConnected vs playerAccepted Events
         * Temporarily Blocking Connections
         * [Thread Safe Player Iteration](thread-safe-player-iteration)
-    * NAT Traversal Server
-        * [NAT Hole Punching](nat-hole-punching)
-    * Working With Multiple Sockets
+    * [NAT Hole Punching](nat-hole-punching)
+    * [Working With Multiple Sockets](working-with-multiple-sockets)
     * Modules
         * Chat
         * Lobby
