@@ -70,5 +70,20 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		>:ENDFOREACH:<
+
+		>:FOREACH networkObjects:<
+		public >:[i]:<Behavior Instantiate>:[i]:<(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			var go = Instantiate(>:[i]:<NetworkObject[index]);
+			var netBehavior = go.GetComponent<NetworkBehavior>() as >:[i]:<Behavior;
+			var obj = netBehavior.CreateNetworkObject(Networker, index);
+			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
+
+			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
+
+		>:ENDFOREACH:<
 	}
 }
