@@ -51,6 +51,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			return new NetworkCameraNetworkObject(networker, this, createCode);
 		}
 
+		protected override void InitializedTransform()
+		{
+			networkObject.SnapInterpolations();
+		}
+
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

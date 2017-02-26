@@ -76,7 +76,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			});
 		}
 
-		protected virtual void InitializedTransform() { }
+		protected abstract void InitializedTransform();
 
 		protected void ProcessOthers(Transform obj, uint idOffset)
 		{

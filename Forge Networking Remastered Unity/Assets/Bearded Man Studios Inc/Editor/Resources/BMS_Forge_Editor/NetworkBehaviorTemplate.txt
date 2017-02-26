@@ -54,6 +54,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			return new >:networkObject:<(networker, this, createCode);
 		}
 
+		protected override void InitializedTransform()
+		{
+			networkObject.SnapInterpolations();
+		}
+
 		>:FOREVERY rpcs:<
 		/// <summary>
 		/// Arguments:

@@ -51,8 +51,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		
 		public void SnapInterpolations()
 		{
-			positionInterpolation.current = _position;
-			positionInterpolation.target = _position;
+			positionInterpolation.current = positionInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }

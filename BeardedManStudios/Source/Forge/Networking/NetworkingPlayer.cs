@@ -146,7 +146,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public uint TimeoutMilliseconds { get; set; }
 
-		private const uint PLAYER_TIMEOUT_DISCONNECT = 10000;
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 90000;
 
 		private bool composerReady = false;
 

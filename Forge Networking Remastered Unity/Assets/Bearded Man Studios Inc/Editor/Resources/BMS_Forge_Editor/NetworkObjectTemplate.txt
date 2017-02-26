@@ -57,8 +57,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public void SnapInterpolations()
 		{
 			>:FOREVERY variables:<
-			>:[1]:<Interpolation.current = _>:[1]:<;
-			>:[1]:<Interpolation.target = _>:[1]:<;
+			>:[1]:<Interpolation.current = >:[1]:<Interpolation.target;
 			>:ENDFOREVERY:<
 		}
 

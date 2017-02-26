@@ -52,6 +52,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			return new ChatManagerNetworkObject(networker, this, createCode);
 		}
 
+		protected override void InitializedTransform()
+		{
+			networkObject.SnapInterpolations();
+		}
+
 		/// <summary>
 		/// Arguments:
 		/// string username

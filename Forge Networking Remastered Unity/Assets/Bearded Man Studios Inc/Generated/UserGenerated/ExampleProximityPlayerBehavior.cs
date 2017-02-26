@@ -52,6 +52,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			return new ExampleProximityPlayerNetworkObject(networker, this, createCode);
 		}
 
+		protected override void InitializedTransform()
+		{
+			networkObject.SnapInterpolations();
+		}
+
 		/// <summary>
 		/// Arguments:
 		/// Color color

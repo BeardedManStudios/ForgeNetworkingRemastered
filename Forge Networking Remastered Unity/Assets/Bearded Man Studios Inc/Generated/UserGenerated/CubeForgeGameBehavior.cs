@@ -55,6 +55,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			return new CubeForgeGameNetworkObject(networker, this, createCode);
 		}
 
+		protected override void InitializedTransform()
+		{
+			networkObject.SnapInterpolations();
+		}
+
 		/// <summary>
 		/// Arguments:
 		/// Vector3 minimum

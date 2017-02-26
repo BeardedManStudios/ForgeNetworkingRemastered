@@ -280,20 +280,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				if (rotation != null)
 				{
-					if (sendTransform)
-						obj.SendRpc("SetupTransform", Receivers.OthersBuffered, position.Value, rotation.Value);
-
 					go.transform.position = position.Value;
 					go.transform.rotation = rotation.Value;
 				}
 				else
-				{
-					if (sendTransform)
-						obj.SendRpc("SetupPosition", Receivers.OthersBuffered, position.Value);
-
 					go.transform.position = position.Value;
-				}
 			}
+
+			if (sendTransform)
+				obj.SendRpc("SetupTransform", Receivers.OthersBuffered, go.transform.position, go.transform.rotation);
 
 			if (!skipOthers)
 			{
