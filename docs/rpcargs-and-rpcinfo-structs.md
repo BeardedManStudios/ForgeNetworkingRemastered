@@ -21,3 +21,6 @@ int num = args.GetNext<int>();
 
 ## Using the Info
 Currently, at the time of this writing, the `Info` member variable in the `RpcArgs` has 2 properties. A `NetworkingPlayer` named `SendingPlayer` and a `ulong` named `TimeStep`. The `NetworkingPlayer` is the sender of this RPC. **NOTE** This is only useful on the server, clients will always see the server as the sending player since all network traffic first goes though the server. The `ulong` is used to know what timestamp that this message was sent at from the sender (this is time in milliseconds since the server started).
+
+## SendingPlayer.Networker.IsServer and SendingPlayer.IsHost
+You may notice in client execution that the value of `SendingPlayer.Networker.IsServer` is **False** but the value of `SendingPlayer.IsHost` is **True** and this has caused some confusion for the community. The way that you should think of `SendingPlayer.Networker` is that it is the NetWorker that is **used TO** communicate **with** the server, it is not the server's NetWorker. So if it is the NetWorker used to talk to the server, then it is this client's NetWorker, which makes the `IsServer` getter **False**. This is actually why we created the **IsHost** boolean to help aid this confusion and it is less code to get to.

@@ -25,6 +25,19 @@ You may recall from the above #1 that you can set various prefabs to spawn for a
 
 Let's say that we first put a sphere into the array and then we put a cube into the array. You will notice that the sphere has an index of **0** and the cube will have an index of **1**. This is the value that you will supply to the instantiate method when you call it. If you were to pass **0**, you would get a sphere and if you were to pass a **1** you would get a cube.
 
+## Getting the GameObject From Instantiate
+What you may notice is that when you instantiate the **SuperBall** it will return a **NetworkBehavior** which will be your **SuperBallBehavior** that was generated. This object actually derives from the `MonoBehaviour` so you can directly access the gameObject, transform, and any standard `MonoBehaviour` field, property, and method as you would do normally.
+
+```csharp
+var ball = NetworkManager.Instance.InstantiateSuperBall();
+
+// Access any standard MonoBehaviour elements as seen below from the ball reference
+Debug.Log(ball.gameObject.name);
+Debug.Log(ball.transform.position);
+```
+
+----------
+
 ## Notes
 So you may be thinking, well gee, a numbered index might be a little bit hard to keep track of, and if you do, then you are probably correct. Like all things software there are many ways that you can setup your project, but here are just 2 ideas that you can use to have a little better time managing the various prefabs you may use.
 
