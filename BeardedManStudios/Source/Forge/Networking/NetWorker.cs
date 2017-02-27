@@ -44,8 +44,11 @@ namespace BeardedManStudios.Forge.Networking
 
 		public static IPEndPoint ResolveHost(string host, ushort port)
 		{
+			// Check for any localhost type addresses
 			if (host == "0.0.0.0" || host == "127.0.0.1" || host == "::0")
 				return new IPEndPoint(IPAddress.Parse(host), port);
+			else if (host == "localhost")
+				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
