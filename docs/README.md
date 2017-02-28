@@ -75,6 +75,7 @@ __Note that some of these are not links because the documentation is still being
     * [Thread Safe Player Iteration](thread-safe-player-iteration)
 * [NAT Hole Punching](nat-hole-punching)
 * [Working With Multiple Sockets](working-with-multiple-sockets)
+* [UDP LAN Discovery (Find Servers On Local Area Network)](lan-discovery)
 * Modules
     * Chat
     * Lobby
