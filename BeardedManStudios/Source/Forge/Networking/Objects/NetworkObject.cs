@@ -986,9 +986,22 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="methodName">The name of the RPC to be called</param>
 		/// <param name="receivers">The clients / server to receive the message</param>
 		/// <param name="args">The input arguments for the method call</param>
+		[Obsolete("Use the target player SendRpc that doesn't require the receivers parameter")]
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, Receivers receivers, params object[] args)
 		{
 			SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
+		}
+
+		/// <summary>
+		/// Build the network frame (message) data for this RPC call so that it is properly
+		/// delegated on the network
+		/// </summary>
+		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+		/// <param name="methodName">The name of the RPC to be called</param>
+		/// <param name="args">The input arguments for the method call</param>
+		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, params object[] args)
+		{
+			SendRpc(targetPlayer, methodName, false, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>

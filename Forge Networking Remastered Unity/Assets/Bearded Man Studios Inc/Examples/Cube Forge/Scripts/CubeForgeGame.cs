@@ -90,7 +90,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 			// information through the rpc attached to this object
 			NetworkManager.Instance.Networker.playerAccepted += (player) =>
 			{
-				MainThreadManager.Run(() => { networkObject.SendRpc(player, "InitializeMap", Receivers.Target, min, max, SerializeMap()); });
+				MainThreadManager.Run(() => { networkObject.SendRpc(player, "InitializeMap", min, max, SerializeMap()); });
 			};
 		}
 		else
