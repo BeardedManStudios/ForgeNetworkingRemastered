@@ -52,7 +52,7 @@ __Note that some of these are not links because the documentation is still being
         * [Sending RPC To Single Player](sending-rpc-to-single-player)
         * [RpcArgs and RpcInfo Structs](rpcargs-and-rpcinfo-structs)
         * [RPC Validation by Server](rpc-validation-by-server)
-        * Replacing Previous Buffered RPCs
+        * [Replacing Previous Buffered RPCs](replacing-previous-buffered-rpcs)
         * [Clearing Buffered RPCs](clearing-buffered-rpcs)
 * Unity Integration
     * [GameObject Execution Order](gameobject-execution-order)
@@ -65,15 +65,16 @@ __Note that some of these are not links because the documentation is still being
     * [Connection Cycle Events](connection-cycle-events)
 * Rewinding
 * Master Server
+    * Quick Start Guide
     * Matchmaking
 * Debugging
     * [Network Logging](network-logging)
 * NetWorker
     * NetworkingPlayer
-    * playerConnected vs playerAccepted Events
-    * Temporarily Blocking Connections
+    * [Temporarily Blocking Connections](temporarily-blocking-connections)
     * [Thread Safe Player Iteration](thread-safe-player-iteration)
 * [NAT Hole Punching](nat-hole-punching)
+    * Quick Start Guide
 * [Working With Multiple Sockets](working-with-multiple-sockets)
 * [UDP LAN Discovery (Find Servers On Local Area Network)](lan-discovery)
 * Modules
@@ -82,3 +83,4 @@ __Note that some of these are not links because the documentation is still being
     * Stand Alone Chat
     * VOIP
 * [Troubleshooting Network](troubleshooting-network)
+* How to Make "Offline" Mode
