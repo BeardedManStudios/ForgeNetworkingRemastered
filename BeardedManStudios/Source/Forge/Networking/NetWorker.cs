@@ -71,7 +71,7 @@ namespace BeardedManStudios.Forge.Networking
 
 		public static List<BroadcastEndpoints> LocalEndpoints { get; private set; }
 
-		public static bool ExitingApplication { get; private set; }
+		public static bool EndingSession { get; private set; }
 
 		#region Delegates
 		/// <summary>
@@ -828,9 +828,9 @@ namespace BeardedManStudios.Forge.Networking
 			});
 		}
 
-		public static void ApplicationExit()
+		public static void EndSession()
 		{
-			ExitingApplication = true;
+			EndingSession = true;
 			CloseLocalListingsClient();
 		}
 
@@ -882,7 +882,7 @@ namespace BeardedManStudios.Forge.Networking
 
 				try
 				{
-					while (localListingsClient != null && !ExitingApplication)
+					while (localListingsClient != null && !EndingSession)
 					{
 						var data = localListingsClient.Receive(ref groupEp, ref endpoint);
 

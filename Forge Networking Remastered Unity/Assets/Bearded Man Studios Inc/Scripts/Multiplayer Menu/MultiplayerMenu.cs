@@ -215,6 +215,6 @@ public class MultiplayerMenu : MonoBehaviour
 	private void OnApplicationQuit()
 	{
 		if (getLocalNetworkConnections)
-			NetWorker.ApplicationExit();
+			NetWorker.EndSession();
 	}
 }

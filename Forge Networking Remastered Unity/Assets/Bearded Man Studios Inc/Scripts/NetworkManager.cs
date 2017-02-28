@@ -223,12 +223,27 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			MasterServerNetworker = client;
 		}
 
+		public void Disconnect()
+		{
+			if (Networker != null)
+				Networker.Disconnect(false);
+
+			NetWorker.EndSession();
+
+			pendingObjects.Clear();
+			pendingNetworkObjects.Clear();
+			MasterServerNetworker = null;
+			Networker = null;
+			Instance = null;
+			Destroy(gameObject);
+		}
+
 		private void OnApplicationQuit()
 		{
 			if (Networker != null)
 				Networker.Disconnect(false);
 
-			NetWorker.ApplicationExit();
+			NetWorker.EndSession();
 		}
 
 		private void FixedUpdate()

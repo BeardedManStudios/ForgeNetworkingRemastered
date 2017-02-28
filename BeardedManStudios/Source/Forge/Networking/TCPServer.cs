@@ -394,7 +394,7 @@ namespace BeardedManStudios.Forge.Networking
 		private void ReadClients()
 		{
 			// Intentional infinite loop
-			while (IsBound && !NetWorker.ExitingApplication)
+			while (IsBound && !NetWorker.EndingSession)
 			{
 				try
 				{

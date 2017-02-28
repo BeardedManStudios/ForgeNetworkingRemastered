@@ -294,7 +294,7 @@ namespace BeardedManStudios.Forge.Networking
 				currentComposer = reliableComposers[0];
 			}
 
-			if (!composerReady && Networker.IsBound && !NetWorker.ExitingApplication)
+			if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
 			{
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
@@ -322,7 +322,7 @@ namespace BeardedManStudios.Forge.Networking
 
 							// TODO:  Wait the latency for this
 							Task.Sleep(10);
-						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.ExitingApplication);
+						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.EndingSession);
 					}
 				});
 
