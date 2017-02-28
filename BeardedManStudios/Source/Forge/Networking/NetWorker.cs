@@ -856,7 +856,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A method to find all of the local UDP servers and clients on the network
 		/// </summary>
-		public static void SetupLocalUdpListings()
+		public static void RefreshLocalUdpListings(int responseBuffer = 1000)
 		{
 			// Initialize the list to hold all of the local network endpoints that respond to the request
 			if (LocalEndpoints == null)
@@ -871,7 +871,7 @@ namespace BeardedManStudios.Forge.Networking
 			// Create a client to write on the network and discover other clients and servers
 			localListingsClient = new CachedUdpClient(19375);
 			localListingsClient.EnableBroadcast = true;
-			Task.Queue(() => { CloseLocalListingsClient(); }, 1000);
+			Task.Queue(() => { CloseLocalListingsClient(); }, responseBuffer);
 
 			Task.Queue(() =>
 			{
