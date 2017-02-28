@@ -1366,9 +1366,17 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// This is used to destroy this object on the network
 		/// </summary>
-		public void Destroy()
+		public void Destroy(int timeInMilliseconds = 0)
 		{
-			Destroy(false);
+			if (timeInMilliseconds > 0)
+			{
+				Task.Queue(() =>
+				{
+					Destroy(false);
+				}, timeInMilliseconds);
+			}
+			else
+				Destroy(false);
 		}
 
 		/// <summary>
