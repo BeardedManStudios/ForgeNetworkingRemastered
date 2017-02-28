@@ -23,6 +23,7 @@ using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -177,16 +178,22 @@ namespace BeardedManStudios.Forge.Networking
 
 			lock (Players)
 			{
-				// Stop listening for new connections
-				Client.Close();
-				bool hostDisconnected = false;
-
 				// Go through all of the players and disconnect them
 				foreach (NetworkingPlayer player in Players)
 				{
-					Disconnect(player, forced);
-					if (player == Me)
-						hostDisconnected = true;
+					if (player != Me)
+						Disconnect(player, forced);
+				}
+
+				CleanupDisconnections();
+
+				int counter = 0;
+				for (; ; counter++)
+				{
+					if (counter >= 10 || Players.Count == 1)
+						break;
+
+					Thread.Sleep(100);
 				}
 
 				// Send signals to the methods registered to the disconnect events
@@ -195,8 +202,8 @@ namespace BeardedManStudios.Forge.Networking
 				else
 					OnForcedDisconnect();
 
-				if (hostDisconnected)
-					CleanupDisconnections();
+				// Stop listening for new connections
+				Client.Close();
 			}
 		}
 
@@ -224,6 +231,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
+			// Tell the player that they are getting disconnected
+			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
+
+			Thread.Sleep(500);
+
 			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
 		}
@@ -261,7 +273,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Wait a second before checking again
-				System.Threading.Thread.Sleep(1000);
+				Thread.Sleep(1000);
 			}
 		}
 
@@ -373,7 +385,7 @@ namespace BeardedManStudios.Forge.Networking
 				Send(Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
 
 				// Send the close connection frame to the client
-				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
 
 				return;
 			}

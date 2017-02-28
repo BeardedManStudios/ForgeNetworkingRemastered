@@ -4,6 +4,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CubeForgeGame : CubeForgeGameBehavior
 {
@@ -92,6 +93,17 @@ public class CubeForgeGame : CubeForgeGameBehavior
 				MainThreadManager.Run(() => { networkObject.SendRpc(player, "InitializeMap", Receivers.Target, min, max, SerializeMap()); });
 			};
 		}
+		else
+		{
+			NetworkManager.Instance.Networker.disconnected += DisconnectedFromServer;
+		}
+	}
+
+	private void DisconnectedFromServer()
+	{
+		NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
+		NetworkManager.Instance.Disconnect();
+		SceneManager.LoadScene(0);
 	}
 
 	private void PingReceived(double ping)

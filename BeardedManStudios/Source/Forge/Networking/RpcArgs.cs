@@ -27,10 +27,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		public RpcArgs(object[] args, RPCInfo info) : this()
 		{
-            this.Args = args;
-            this.Info = info;
-            this.ReadIndex = 0;
-        }
+			this.Args = args;
+			this.Info = info;
+			this.ReadIndex = 0;
+		}
 
 		public T GetNext<T>()
 		{
