@@ -8,7 +8,7 @@ The one that we want to focus on in this example is the generated NetworkObject.
 
 ### ServerAllowRpc
 
-```
+```csharp
 protected override bool ServerAllowRpc(string methodName, Receivers receivers, RpcArgs args)
 {
 	// The methodName is the name of the RPC that is trying to be called right now
