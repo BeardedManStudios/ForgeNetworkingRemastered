@@ -73,7 +73,7 @@ public class ExampleProximityPlayer : ExampleProximityPlayerBehavior
         // If we press the spacebar we will pick a new random color to assign to the object
         // Notice that the receivers are proximity based
         if (Input.GetKeyDown(KeyCode.Space))
-            networkObject.SendRpc("SendColor", Receivers.AllProximity, new Color(Random.value, Random.value, Random.value));
+            networkObject.SendRpc(RPC_SEND_COLOR, Receivers.AllProximity, new Color(Random.value, Random.value, Random.value));
 
         if (networkObject.Networker.IsServer)
             UpdatePlayerProximityOnServer();

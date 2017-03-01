@@ -8,6 +8,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedRPCVariableNames("{\"types\":[>:generatedHelperTypes:<]")]
 	public abstract partial class >:className:< : INetworkBehavior
 	{
+		>:FOREVERY constRpcs:<
+		public const byte RPC_>:[0]:< = >:[idx]:< + 5;
+		>:ENDFOREVERY:<
+		
 		public >:networkObject:< networkObject = null;
 
 		public void Initialize(NetworkObject obj)

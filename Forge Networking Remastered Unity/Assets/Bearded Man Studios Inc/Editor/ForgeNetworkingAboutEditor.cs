@@ -1,6 +1,5 @@
-﻿using System.Collections;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -27,7 +26,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private const string EDITOR_FORUM_LINK = "https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/";
 		private const string EDITOR_SLACK_LINK = "https://forgenetworking.slack.com/";
 		private const string EDITOR_EMAIL_LINK = "support@beardedmangames.com";
-		private static bool ProVersion = false;
+		//private static bool ProVersion = false;
 		private static bool IgnoreEditorStartup = false;
 		#endregion
 
@@ -74,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public void Setup()
 		{
 			this.titleContent = new GUIContent("Forge About");
-			ProVersion = EditorGUIUtility.isProSkin;
+			//ProVersion = EditorGUIUtility.isProSkin;
 			IgnoreEditorStartup = EditorPrefs.GetBool(EDITOR_PREF_IGNORE);
 			_scroll = new Vector2();
 

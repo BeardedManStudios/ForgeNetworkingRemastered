@@ -4,97 +4,89 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
 {
-	public abstract class NetworkBehavior : MonoBehaviour, INetworkBehavior
-	{
-		public static Dictionary<uint, NetworkBehavior> skipAttachIds = new Dictionary<uint, NetworkBehavior>();
+    public abstract class NetworkBehavior : MonoBehaviour, INetworkBehavior
+    {
+        public const byte RPC_SETUP_TRANSFORM = 4;
 
-		public int TempAttachCode { get; set; }
-		public bool Initialized { get; private set; }
+        public static Dictionary<uint, NetworkBehavior> skipAttachIds = new Dictionary<uint, NetworkBehavior>();
 
-		private NetworkObject waitingForNetworkObject;
-		private uint waitingForNetworkObjectOffset;
+        public int TempAttachCode { get; set; }
+        public bool Initialized { get; private set; }
 
-		protected virtual void NetworkStart() { }
-		public abstract void Initialize(NetworkObject obj);
-		public abstract void Initialize(NetWorker networker);
+        private NetworkObject waitingForNetworkObject;
+        private uint waitingForNetworkObjectOffset;
 
-		public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
-		{
-			waitingForNetworkObject = createTarget;
-			waitingForNetworkObjectOffset = idOffset;
+        protected virtual void NetworkStart() { }
+        public abstract void Initialize(NetworkObject obj);
+        public abstract void Initialize(NetWorker networker);
 
-			NetworkObject.objectCreated += NetworkBind;
+        public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
+        {
+            waitingForNetworkObject = createTarget;
+            waitingForNetworkObjectOffset = idOffset;
 
-			if (createTarget.NetworkId == 0)
-				return;
+            NetworkObject.objectCreated += NetworkBind;
 
-			NetworkObject target;
-			if (networker.NetworkObjects.TryGetValue(createTarget.NetworkId + idOffset, out target))
-				NetworkBind(target);
-		}
+            if (createTarget.NetworkId == 0)
+                return;
 
-		private void NetworkBind(NetworkObject obj)
-		{
-			// This is always the network manager and should be ignored on late bindings
-			if (obj.NetworkId == 0)
-				return;
+            NetworkObject target;
+            if (networker.NetworkObjects.TryGetValue(createTarget.NetworkId + idOffset, out target))
+                NetworkBind(target);
+        }
 
-			if (obj.NetworkId != waitingForNetworkObject.NetworkId + waitingForNetworkObjectOffset && obj.CreateCode != TempAttachCode)
-				return;
+        private void NetworkBind(NetworkObject obj)
+        {
+            // This is always the network manager and should be ignored on late bindings
+            if (obj.NetworkId == 0)
+                return;
 
-			Initialize(obj);
-			skipAttachIds.Remove(obj.NetworkId);
+            if (obj.NetworkId != waitingForNetworkObject.NetworkId + waitingForNetworkObjectOffset && obj.CreateCode != TempAttachCode)
+                return;
 
-			NetworkObject.objectCreated -= NetworkBind;
-		}
+            Initialize(obj);
+            skipAttachIds.Remove(obj.NetworkId);
 
-		protected void SetupHelperRpcs(NetworkObject networkObject)
-		{
-			networkObject.RegisterRpc("SetupPosition", SetupPosition, typeof(Vector3));
-			networkObject.RegisterRpc("SetupTransform", SetupTransform, typeof(Vector3), typeof(Quaternion));
-			Initialized = true;
-		}
+            NetworkObject.objectCreated -= NetworkBind;
+        }
 
-		public abstract NetworkObject CreateNetworkObject(NetWorker networker, int createCode);
+        protected void SetupHelperRpcs(NetworkObject networkObject)
+        {
+            networkObject.RegisterRpc("SetupTransform", SetupTransform, typeof(Vector3), typeof(Quaternion));
+            Initialized = true;
+        }
 
-		private void SetupPosition(RpcArgs args)
-		{
-			MainThreadManager.Run(() =>
-			{
-				transform.position = args.GetNext<Vector3>();
-				InitializedTransform();
-			});
-		}
+        public abstract NetworkObject CreateNetworkObject(NetWorker networker, int createCode);
 
-		private void SetupTransform(RpcArgs args)
-		{
-			MainThreadManager.Run(() =>
-			{
-				transform.position = args.GetNext<Vector3>();
-				transform.rotation = args.GetNext<Quaternion>();
-				InitializedTransform();
-			});
-		}
+        private void SetupTransform(RpcArgs args)
+        {
+            MainThreadManager.Run(() =>
+            {
+                transform.position = args.GetNext<Vector3>();
+                transform.rotation = args.GetNext<Quaternion>();
+                InitializedTransform();
+            });
+        }
 
-		protected abstract void InitializedTransform();
+        protected abstract void InitializedTransform();
 
-		protected void ProcessOthers(Transform obj, uint idOffset)
-		{
-			int i;
+        protected void ProcessOthers(Transform obj, uint idOffset)
+        {
+            int i;
 
-			var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
+            var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
 
-			// Create each network object that is available
-			for (i = 0; i < components.Length; i++)
-			{
-				if (components[i] == this)
-					continue;
+            // Create each network object that is available
+            for (i = 0; i < components.Length; i++)
+            {
+                if (components[i] == this)
+                    continue;
 
-				skipAttachIds.Add(idOffset++, components[i]);
-			}
+                skipAttachIds.Add(idOffset++, components[i]);
+            }
 
-			for (i = 0; i < obj.transform.childCount; i++)
-				ProcessOthers(obj.transform.GetChild(i), idOffset);
-		}
-	}
+            for (i = 0; i < obj.transform.childCount; i++)
+                ProcessOthers(obj.transform.GetChild(i), idOffset);
+        }
+    }
 }
