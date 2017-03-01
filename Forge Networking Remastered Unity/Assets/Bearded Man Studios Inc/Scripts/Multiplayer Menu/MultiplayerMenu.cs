@@ -148,7 +148,7 @@ public class MultiplayerMenu : MonoBehaviour
 			server = new UDPServer(64);
 
 			if (natServerHost.Trim().Length == 0)
-				((UDPServer)server).Connect();
+				((UDPServer)server).Connect(ipAddress.text, ushort.Parse(portNumber.text));
 			else
 				((UDPServer)server).Connect(natHost: natServerHost, natPort: natServerPort);
 		}
