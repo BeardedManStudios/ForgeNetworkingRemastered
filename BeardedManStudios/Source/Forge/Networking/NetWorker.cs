@@ -856,7 +856,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A method to find all of the local UDP servers and clients on the network
 		/// </summary>
-		public static void RefreshLocalUdpListings(int responseBuffer = 1000)
+		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
 			// Initialize the list to hold all of the local network endpoints that respond to the request
 			if (LocalEndpoints == null)
@@ -878,7 +878,7 @@ namespace BeardedManStudios.Forge.Networking
 				IPEndPoint groupEp = default(IPEndPoint);
 				string endpoint = string.Empty;
 
-				localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3, new IPEndPoint(IPAddress.Parse("255.255.255.255"), DEFAULT_PORT));
+				localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3, new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
 
 				try
 				{
