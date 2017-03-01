@@ -83,4 +83,4 @@ __Note that some of these are not links because the documentation is still being
     * Stand Alone Chat
     * VOIP
 * [Troubleshooting Network](troubleshooting-network)
-* How to Make "Offline" Mode
+* [How to Make "Offline" Mode](offline-mode)
