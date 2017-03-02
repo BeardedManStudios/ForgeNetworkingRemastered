@@ -36,51 +36,52 @@ Do not put NetworkManager into your scene, it will be spawned on its own.
 __Note that some of these are not links because the documentation is still being written, they are just stubs to remind the developers on what documentation the community is asking for__
 * [Authoritative Design](authoritative-design)
 * [Getting Started](getting-started)
-    * [Basic Moving Cube Example](basic-moving-cube-example)
-    * [Basic RPC Example](basic-rpc-example)
-    * [Basic Instantiation Example](basic-instantiation-example)
-    * [Jump Start Guide](jump-start-guide)
-    * Game Lobby Example
+    - [Basic Moving Cube Example](basic-moving-cube-example)
+    - [Basic RPC Example](basic-rpc-example)
+    - [Basic Instantiation Example](basic-instantiation-example)
+    - [Jump Start Guide](jump-start-guide)
+    - Game Lobby Example
 * [Network Contract Wizard (NCW)](network-contract-wizard-ncw)
-    * [Extending Generated Classes](extending-generated-classes)
-    * [Name Collision Issues](name-collision-issues)
+    - [Extending Generated Classes](extending-generated-classes)
+    - [Name Collision Issues](name-collision-issues)
 * Network Object
-    * [Changing Ownership](changing-ownership)
-    * [Destroying the Network Object](destroying-the-network-object)
-    * [Fields](fields)
-    * Remote Procedure Calls RPCs
-        * [Sending RPC To Single Player](sending-rpc-to-single-player)
-        * [RpcArgs and RpcInfo Structs](rpcargs-and-rpcinfo-structs)
-        * [RPC Validation by Server](rpc-validation-by-server)
-        * [Replacing Previous Buffered RPCs](replacing-previous-buffered-rpcs)
-        * [Clearing Buffered RPCs](clearing-buffered-rpcs)
+    - [Changing Ownership](changing-ownership)
+    - [Destroying the Network Object](destroying-the-network-object)
+    - [Fields](fields)
+    - [Remote Procedure Calls (RPCs)](remote-procedure-calls)
+        + [Buffered RPCs](buffered-rpcs)
+        + [Sending RPC To Single Player](sending-rpc-to-single-player)
+        + [RpcArgs and RpcInfo Structs](rpcargs-and-rpcinfo-structs)
+        + [RPC Validation by Server](rpc-validation-by-server)
+        + [Replacing Previous Buffered RPCs](replacing-previous-buffered-rpcs)
+        + [Clearing Buffered RPCs](clearing-buffered-rpcs)
 * Unity Integration
-    * [GameObject Execution Order](gameobject-execution-order)
-    * [Main Threading RPCs](main-threading-rpcs)
-    * Network Manager
-        * [Network Instantiation](network-instantiation)
-    * Network Object Without Prefab
-    * [Threading in Unity](threading-in-unity)
+    - [GameObject Execution Order](gameobject-execution-order)
+    - [Main Threading RPCs](main-threading-rpcs)
+    - Network Manager
+    - [Network Instantiation](network-instantiation)
+    - Network Object Without Prefab
+    - [Threading in Unity](threading-in-unity)
 * Events
-    * [Connection Cycle Events](connection-cycle-events)
+    - [Connection Cycle Events](connection-cycle-events)
 * Rewinding
 * Master Server
-    * Quick Start Guide
-    * Matchmaking
+    - Quick Start Guide
+    - Matchmaking
 * Debugging
-    * [Network Logging](network-logging)
+    - [Network Logging](network-logging)
 * NetWorker
-    * NetworkingPlayer
-    * [Temporarily Blocking Connections](temporarily-blocking-connections)
-    * [Thread Safe Player Iteration](thread-safe-player-iteration)
+    - NetworkingPlayer
+    - [Temporarily Blocking Connections](temporarily-blocking-connections)
+    - [Thread Safe Player Iteration](thread-safe-player-iteration)
 * [NAT Hole Punching](nat-hole-punching)
-    * Quick Start Guide
+    - Quick Start Guide
 * [Working With Multiple Sockets](working-with-multiple-sockets)
 * [UDP LAN Discovery (Find Servers On Local Area Network)](lan-discovery)
 * Modules
-    * Chat
-    * Lobby
-    * Stand Alone Chat
-    * VOIP
+    - Chat
+    - Lobby
+    - Stand Alone Chat
+    - VOIP
 * [Troubleshooting Network](troubleshooting-network)
 * [How to Make "Offline" Mode](offline-mode)
