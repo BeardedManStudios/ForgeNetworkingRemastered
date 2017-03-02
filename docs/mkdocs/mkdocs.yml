@@ -1,0 +1,53 @@
+site_name: Forge Networking Remastered
+pages:
+    - Home:
+        - index.md
+        - authoritative-design.md
+    - Getting Started:
+        - getting-started.md
+        - basic-moving-cube-example.md
+        - basic-rpc-example.md
+        - basic-instantiation-example.md
+        - jump-start-guide.md
+#       - Game Lobby Example
+    - Network Contract Wizard (NCW):
+        - network-contract-wizard-ncw.md
+        - extending-generated-classes.md
+        - name-collision-issues.md
+    - Network Object:
+        - changing-ownership.md
+        - destroying-the-network-object.md
+        - fields.md
+        - Remote Procedure Calls (RPCs):
+            - remote-procedure-calls.md
+            - buffered-rpcs.md
+            - sending-rpc-to-single-player.md
+            - rpcargs-and-rpcinfo-structs.md
+            - rpc-validation-by-server.md
+            - replacing-previous-buffered-rpcs.md
+            - clearing-buffered-rpcs.md
+    - Unity Integration:
+        - gameobject-execution-order.md
+        - main-threading-rpcs.md
+#        - Network Manager
+        - network-instantiation.md
+#        - Network Object Without Prefab
+        - threading-in-unity.md
+    - Events:
+        - connection-cycle-events.md
+    - Rewinding: rewinding.md
+#    - Master Server:
+#        - Quick Start Guide
+#        - Matchmaking
+    - Debugging:
+        - network-logging.md
+    - NetWorker:
+#        - NetworkingPlayer
+        - temporarily-blocking-connections.md
+        - thread-safe-player-iteration.md
+    - NAT Hole Punching: nat-hole-punching.md
+    - Working With Multiple Sockets: working-with-multiple-sockets.md
+    - LAN Discovery: lan-discovery.md
+    - Troubleshooting: troubleshooting.md
+    - Offline Mode: offline-mode.md
+theme: readthedocs
