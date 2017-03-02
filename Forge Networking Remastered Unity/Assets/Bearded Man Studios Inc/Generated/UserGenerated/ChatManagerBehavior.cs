@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedRPCVariableNames("{\"types\":[[\"username\", \"message\"]]")]
 	public abstract partial class ChatManagerBehavior : NetworkBehavior
 	{
-		public const byte RPC_SEND_MESSAGE = 0 + 4;
+		public const byte RPC_SEND_MESSAGE = 0 + 5;
 		
 		public ChatManagerNetworkObject networkObject = null;
 

@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedRPCVariableNames("{\"types\":[[\"color\"]]")]
 	public abstract partial class ExampleProximityPlayerBehavior : NetworkBehavior
 	{
-		public const byte RPC_SEND_COLOR = 0 + 4;
+		public const byte RPC_SEND_COLOR = 0 + 5;
 		
 		public ExampleProximityPlayerNetworkObject networkObject = null;
 

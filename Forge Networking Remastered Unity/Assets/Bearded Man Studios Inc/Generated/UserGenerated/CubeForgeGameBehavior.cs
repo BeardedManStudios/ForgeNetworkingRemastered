@@ -8,10 +8,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedRPCVariableNames("{\"types\":[[\"minimum\", \"maximum\", \"data\"][\"typebyte\", \"position\"][\"position\"][\"message\"]]")]
 	public abstract partial class CubeForgeGameBehavior : NetworkBehavior
 	{
-		public const byte RPC_INITIALIZE_MAP = 0 + 4;
-		public const byte RPC_CREATE_PRIMITIVE = 1 + 4;
-		public const byte RPC_DESTROY_PRIMITIVE = 2 + 4;
-		public const byte RPC_TEST_ME = 3 + 4;
+		public const byte RPC_INITIALIZE_MAP = 0 + 5;
+		public const byte RPC_CREATE_PRIMITIVE = 1 + 5;
+		public const byte RPC_DESTROY_PRIMITIVE = 2 + 5;
+		public const byte RPC_TEST_ME = 3 + 5;
 		
 		public CubeForgeGameNetworkObject networkObject = null;
 
