@@ -491,12 +491,12 @@ namespace BeardedManStudios.Forge.Networking
 			if (targetPlayer == Networker.Me)
 				AssignOwnership(new RpcArgs { Args = new object[] { true } });
 			else
-				SendRpc(targetPlayer, RPC_ASSIGN_OWNERSHIP, Receivers.Target, new object[] { true });
+				SendRpc(targetPlayer, RPC_ASSIGN_OWNERSHIP, true);
 
 			if (Owner == Networker.Me)
 				AssignOwnership(new RpcArgs { Args = new object[] { false } });
 			else
-				SendRpc(Owner, RPC_ASSIGN_OWNERSHIP, Receivers.Target, new object[] { false });
+				SendRpc(Owner, RPC_ASSIGN_OWNERSHIP, false);
 
 			Owner = targetPlayer;
 		}
@@ -792,6 +792,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (Rpcs.Count >= byte.MaxValue)
 				throw new BaseNetworkException("You are only allowed to register " + byte.MaxValue + " Rpc methods per network object");
 
+
 			// The id for this RPC is goign to be the next index in the dictionary
 			byte id = (byte)Rpcs.Count;
 			Rpcs.Add(id, new Rpc(callback, argumentTypes));
@@ -940,12 +941,39 @@ namespace BeardedManStudios.Forge.Networking
 		/// Build the network frame (message) data for this RPC call so that it is properly
 		/// delegated on the network
 		/// </summary>
+		/// <param name="methodName">The name of the RPC to be called</param>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="args">The input arguments for the method call</param>
+		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+		public void SendRpc(string methodName, Receivers receivers, params object[] args)
+		{
+			SendRpc(null, methodName, false, receivers, Networker.Me, args);
+		}
+
+		/// <summary>
+		/// Build the network frame (message) data for this RPC call so that it is properly
+		/// delegated on the network
+		/// </summary>
 		/// <param name="methodId">The id of the RPC to be called</param>
 		/// <param name="receivers">The clients / server to receive the message</param>
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(byte methodId, Receivers receivers, params object[] args)
 		{
 			SendRpc(null, methodId, false, receivers, Networker.Me, args);
+		}
+
+		/// <summary>
+		/// Build the network frame (message) data for this RPC call so that it is properly
+		/// delegated on the network
+		/// </summary>
+		/// <param name="methodName">The name of the RPC to be called</param>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
+		/// <param name="args">The input arguments for the method call</param>
+		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+		public void SendRpc(string methodName, bool replacePrevious, Receivers receivers, params object[] args)
+		{
+			SendRpc(null, methodName, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -965,27 +993,27 @@ namespace BeardedManStudios.Forge.Networking
 		/// Build the network frame (message) data for this RPC call so that it is properly
 		/// delegated on the network
 		/// </summary>
-		/// <param name="methodId">The id of the RPC to be called</param>
+		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+		/// <param name="methodName">The name of the RPC to be called</param>
 		/// <param name="receivers">The clients / server to receive the message</param>
-		/// <param name="sender">The sender of this rpc (to be assigned by the server)</param>
 		/// <param name="args">The input arguments for the method call</param>
-		public void SendRpc(byte methodId, Receivers receivers, NetworkingPlayer sender, params object[] args)
+		[Obsolete("Use the target player SendRpc that doesn't require the receivers parameter")]
+		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodId, false, receivers, sender, args);
+			SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
 		/// Build the network frame (message) data for this RPC call so that it is properly
 		/// delegated on the network
 		/// </summary>
-		/// <param name="methodId">The id of the RPC to be called</param>
-		/// <param name="receivers">The clients / server to receive the message</param>
-		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
-		/// <param name="sender">The sender of this rpc (to be assigned by the server)</param>
+		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+		/// <param name="methodName">The name of the RPC to be called</param>
 		/// <param name="args">The input arguments for the method call</param>
-		public void SendRpc(byte methodId, Receivers receivers, bool replacePrevious, NetworkingPlayer sender, params object[] args)
+		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, params object[] args)
 		{
-			SendRpc(null, methodId, replacePrevious, receivers, sender, args);
+			SendRpc(targetPlayer, methodName, false, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1005,13 +1033,28 @@ namespace BeardedManStudios.Forge.Networking
 		/// delegated on the network
 		/// </summary>
 		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+		/// <param name="methodName">The name of the RPC to be called</param>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
+		/// <param name="args">The input arguments for the method call</param>
+		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, bool replacePrevious, Receivers receivers, params object[] args)
+		{
+			SendRpc(targetPlayer, methodName, replacePrevious, receivers, Networker.Me, args);
+		}
+
+		/// <summary>
+		/// Build the network frame (message) data for this RPC call so that it is properly
+		/// delegated on the network
+		/// </summary>
+		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
 		/// <param name="methodId">The id of the RPC to be called</param>
 		/// <param name="receivers">The clients / server to receive the message</param>
 		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
 		/// <param name="args">The input arguments for the method call</param>
-		public void SendRpc(NetworkingPlayer targetPlayer, byte methodId, bool replacePrevious, Receivers receivers, params object[] args)
+		public void SendRpc(NetworkingPlayer targetPlayer, bool replacePrevious, byte methodId, params object[] args)
 		{
-			SendRpc(targetPlayer, methodId, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, replacePrevious, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>
