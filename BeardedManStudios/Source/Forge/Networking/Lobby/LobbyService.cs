@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace BeardedManStudios.Forge.Networking.Lobby
 {
@@ -12,6 +11,13 @@ namespace BeardedManStudios.Forge.Networking.Lobby
     /// </summary>
     public class LobbyService : INetworkBehavior
     {
+        public const byte RPC_ASSIGN_NAME = 4;
+        public const byte RPC_ASSIGN_AVATAR = 5;
+        public const byte RPC_ASSIGN_TEAM = 6;
+        public const byte RPC_MESSAGE_RECEIVED = 7;
+        public const byte RPC_PLAYER_JOINED = 8;
+        public const byte RPC_PLAYER_LEFT = 9;
+
         #region Private Data
         private LobbyServiceNetworkObject networkObject = null;
         private bool _initialized;
@@ -374,7 +380,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         /// <param name="newName">The next name you will be referred as</param>
         public void SetName(string newName)
         {
-            networkObject.SendRpc("AssignName",
+            networkObject.SendRpc(RPC_ASSIGN_NAME,
                 true,   // Replace previous
                 Receivers.AllBuffered,
                 newName,
@@ -387,7 +393,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         /// <param name="avatarID">Next avatar id</param>
         public void SetAvatar(int avatarID)
         {
-            networkObject.SendRpc("AssignAvatar", Receivers.All, networkObject.MyPlayerId, avatarID);
+            networkObject.SendRpc(RPC_ASSIGN_AVATAR, Receivers.All, networkObject.MyPlayerId, avatarID);
         }
 
         /// <summary>
@@ -397,7 +403,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         public void SetTeamId(int teamId)
         {
             // TODO:  When someone joins they need to get the current players selections
-            networkObject.SendRpc("AssignTeam", Receivers.All, networkObject.MyPlayerId, teamId);
+            networkObject.SendRpc(RPC_ASSIGN_TEAM, Receivers.All, networkObject.MyPlayerId, teamId);
         }
 
         /// <summary>
@@ -407,7 +413,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         public void SendPlayerMessage(string message)
         {
             // TODO:  When someone joins they need to get the current players selections
-            networkObject.SendRpc("MessageReceived", Receivers.All, networkObject.MyPlayerId, message);
+            networkObject.SendRpc(RPC_MESSAGE_RECEIVED, Receivers.All, networkObject.MyPlayerId, message);
         }
 
         public void KickPlayer(uint id)
@@ -493,7 +499,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             //Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
             player.Name = "Player " + player.NetworkId;
-            networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
+            networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.AllBuffered, player.NetworkId);
         }
         /// <summary>
         /// Arguments:
@@ -586,7 +592,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             //Logging.BMSLog.Log("GG: " + player.Ip);
             player.Name = "Player " + player.NetworkId;
-            networkObject.SendRpc("PlayerJoined", Receivers.AllBuffered, player.NetworkId);
+            networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.AllBuffered, player.NetworkId);
         }
 
         private void PlayerDisconnected(NetworkingPlayer player)
@@ -594,7 +600,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
             // TODO:  This should be called
             //Logging.BMSLog.Log("OH NO: " + player.Ip);
             //BeardedManStudios.Forge.Logging.BMSLog.Log("Player disconnected");
-            networkObject.SendRpc("PlayerLeft", Receivers.AllBuffered, player.NetworkId);
+            networkObject.SendRpc(RPC_PLAYER_LEFT, Receivers.AllBuffered, player.NetworkId);
         }
         #endregion
     }

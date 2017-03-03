@@ -1,6 +1,7 @@
 ﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -288,7 +289,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	/// </param>
 	public override void DestroyPrimitive(RpcArgs args)
 	{
-		MainThreadManager.Run(() =>
+		Action execute = () =>
 		{
 			var pos = args.GetNext<Vector3>();
 			if (!primitiveInstances.ContainsKey(pos))
@@ -299,7 +300,14 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 			// TODO:  Adjust the min / max
 			// TODO:  Send the bit index and remove using that
-		});
+		};
+
+		// Normally you can just call the method, however since we don't know if
+		// you are using the main thread runner in this example, we cover both cases
+		if (Rpc.MainThreadRunner != null)
+			execute();
+		else
+			MainThreadManager.Run(execute);
 	}
 
 	public override void TestMe(RpcArgs args)

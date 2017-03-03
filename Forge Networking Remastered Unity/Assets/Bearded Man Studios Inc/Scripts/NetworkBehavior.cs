@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -60,12 +61,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void SetupTransform(RpcArgs args)
 		{
-			MainThreadManager.Run(() =>
+			Action execute = () =>
 			{
 				transform.position = args.GetNext<Vector3>();
 				transform.rotation = args.GetNext<Quaternion>();
 				InitializedTransform();
-			});
+			};
+
+			if (Rpc.MainThreadRunner != null)
+				execute();
+			else
+				MainThreadManager.Run(execute);
 		}
 
 		protected abstract void InitializedTransform();
