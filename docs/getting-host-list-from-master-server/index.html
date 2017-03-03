@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Gameobject execution order - Forge Networking Remastered</title>
+  <title>Getting host list from master server - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Gameobject execution order";
-    var mkdocs_page_input_path = "gameobject-execution-order.md";
-    var mkdocs_page_url = "/gameobject-execution-order/";
+    var mkdocs_page_name = "Getting host list from master server";
+    var mkdocs_page_input_path = "getting-host-list-from-master-server.md";
+    var mkdocs_page_url = "/getting-host-list-from-master-server/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -232,19 +232,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Gameobject execution order</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#gameobject-execution-order">GameObject Execution Order</a></li>
-                
-                    <li><a class="toctree-l4" href="#networkstart">NetworkStart</a></li>
-                
-                    <li><a class="toctree-l4" href="#update-and-fixedupdate">Update and FixedUpdate</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../gameobject-execution-order/">Gameobject execution order</a>
         
     </li>
 
@@ -322,8 +311,19 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../getting-host-list-from-master-server/">Getting host list from master server</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Getting host list from master server</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#getting-host-list-from-master-server">Getting Host List From Master Server</a></li>
+                
+                    <li><a class="toctree-l4" href="#request-stages">Request stages</a></li>
+                
+                    <li><a class="toctree-l4" href="#refresh-complete-sample">Refresh Complete Sample</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -440,11 +440,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Master Server &raquo;</li>
         
       
     
-    <li>Gameobject execution order</li>
+    <li>Getting host list from master server</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -454,25 +454,179 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="gameobject-execution-order">GameObject Execution Order</h1>
-<p>You may be use to the standard method execution order in Unity and this can cause some confusion when it comes to when you are able to access the network object on a client. You see, when you create a network object <strong>on the client</strong> it takes some time to get to the server, validate, and return back to the client. Because of this, the <code>networkObject</code> you are use to using may be null during the <code>Start</code> and <code>Awake</code> methods of your MonoBehaviour.</p>
-<h2 id="networkstart">NetworkStart</h2>
-<p>To resolve the issue with starting things once the networkObject has been setup, we have created a <code>protected</code> method you can <code>override</code> that will be called once the networkObject has been setup. You should do any initialization logic that is required for the network object in this method <strong>don't forget to call the <code>base.NetworkStart()</code> method</strong>.</p>
-<pre><code class="csharp">protected override void NetworkStart()
-{
-    base.NetworkStart();
-    // TODO:  Your initialization code that relies on network setup for this object goes here
+                <h1 id="getting-host-list-from-master-server">Getting Host List From Master Server</h1>
+<p><em>If you have not already, we would suggest reviewing the <a href="../master-server-quick-start">Master Server Quick Start</a> documentation to get familiar with the Master Server and to setup the stand alone executable and then reviewing <a href="../connecting-to-master-server">Connecting to Master Server</a> to learn how to register your game server on the master server.</em></p>
+<h2 id="request-stages">Request stages</h2>
+<p>There are a few stages when requesting the list of servers from the master server:</p>
+<ol>
+<li>Connect to Master Server</li>
+<li>Create a JSONNode request</li>
+<li>Send the request to the server</li>
+<li>Get response from the server</li>
+<li>Parse response from server</li>
+<li>Implement your code</li>
+</ol>
+<p>(1) So the very first thing you have to do is to connect to the master server. We have created a helper class to get you doing this quickly:</p>
+<pre><code class="csharp">// TODO:  This will be the address of the machine your master server is running on
+string host = &quot;127.0.0.1&quot;;
+
+ushort port = 15937;
+
+// The Master Server communicates over TCP
+TCPMasterClient client = new TCPMasterClient();
+
+// Just call the connect method and you are ready to go
+client.Connect(host, ort);
+</code></pre>
+
+<p>(2) Once your server is accepted (which you can use the <code>serverAccepted</code> event) you can create your request to the master server. The request is a JSONNode object that follows this structure:</p>
+<pre><code>{
+    get:
+    {
+        id: &quot;myGame&quot;,
+        type: &quot;any&quot;,
+        mode: &quot;all&quot;
+    }
 }
 </code></pre>
 
-<h2 id="update-and-fixedupdate">Update and FixedUpdate</h2>
-<p>If the network is a little slow, it is very possible that the <code>networkObject</code> is not setup by the time the first call to the <code>Update</code> or <code>FixedUpdate</code> happens in Unity. So make sure to do your <code>null</code> checks or set some-kind of flag for when the object is ready to be used.</p>
-<pre><code class="csharp">private void Update()
+<p>You can do this with code similar to the following:</p>
+<pre><code class="csharp">// The overall game id to select from
+string gameId = &quot;myGame&quot;;
+
+// The game type to choose from, if &quot;any&quot; then all types will be returned
+string gameType = &quot;any&quot;;
+
+// The game mode to choose from, if &quot;all&quot; then all game modes will be returned
+string gameMode = &quot;all&quot;;
+
+// Create the get request with the desired filters
+JSONNode sendData = JSONNode.Parse(&quot;{}&quot;);
+JSONClass getData = new JSONClass();
+
+// The id of the game to get
+getData.Add(&quot;id&quot;, gameId);
+getData.Add(&quot;type&quot;, gameType);
+getData.Add(&quot;mode&quot;, gameMode);
+
+sendData.Add(&quot;get&quot;, getData);
+</code></pre>
+
+<p>(3) Now that we have the json <code>sendData</code> we need to send it to the server. Since JSON can be a string representation, you can send it directly to the server as a <strong>Text</strong> frame in Forge:</p>
+<pre><code class="csharp">// Send the request to the server
+client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+</code></pre>
+
+<p>(4) If you listen to the <code>textMessageReceived</code> event on the <code>client</code> object you will be able to capture the response from the server. This response will contain any errors (if any) and most importantly, your game list!</p>
+<p>(5) Now that you have the JSON response from the server, you will need to parse it into the <code>MasterServerResponse</code> object. Lets imagine that your json response variable is called <code>data</code>, then the code you will need to parse the response to this object is:</p>
+<pre><code class="csharp">// Create a C# object for the response from the master server
+MasterServerResponse response = new MasterServerResponse(data[&quot;hosts&quot;].AsArray);
+</code></pre>
+
+<p><strong>Note</strong>: If <code>data["hosts"]</code> is null, then there was an error.</p>
+<p>(6) Now that you have the <code>MasterServerResponse</code> object, you are ready to start writing your code for the UI and any other behaviors you want to execute based on the server listing.</p>
+<pre><code class="csharp">foreach (MasterServerResponse.Server server in response.serverResponse)
 {
-    if (networkObject != null)
+    // TODO:  Do something with the server information here!
+}
+</code></pre>
+
+<h2 id="refresh-complete-sample">Refresh Complete Sample</h2>
+<p>Below is a compelte example of how to:</p>
+<ul>
+<li>Connect to master server</li>
+<li>Request the games list from the master server</li>
+<li>Process the list of games returned from the master server</li>
+<li>Disconnect from the master server</li>
+</ul>
+<p>The below example can be used to refresh the current listings of hosts from the master server. Please be sure to read the comments within the code to better understand what is going on. It is also good to scroll up and reference the top of this page to see why and when things happen in this sample.</p>
+<pre><code class="csharp">public void Refresh()
+{
+    // TODO:  Clear out any previously listed servers
+
+    // The Master Server communicates over TCP
+    TCPMasterClient client = new TCPMasterClient();
+
+    // Once this client has been accepted by the master server it should sent it's get request
+    client.serverAccepted += () =&gt;
     {
-        // TODO:  Whatever you need to do with the networkObject
-    }
+        try
+        {
+            // The overall game id to select from
+            string gameId = &quot;myGame&quot;;
+
+            // The game type to choose from, if &quot;any&quot; then all types will be returned
+            string gameType = &quot;any&quot;;
+
+            // The game mode to choose from, if &quot;all&quot; then all game modes will be returned
+            string gameMode = &quot;all&quot;;
+
+            // Create the get request with the desired filters
+            JSONNode sendData = JSONNode.Parse(&quot;{}&quot;);
+            JSONClass getData = new JSONClass();
+
+            // The id of the game to get
+            getData.Add(&quot;id&quot;, gameId);
+            getData.Add(&quot;type&quot;, gameType);
+            getData.Add(&quot;mode&quot;, gameMode);
+
+            sendData.Add(&quot;get&quot;, getData);
+
+            // Send the request to the server
+            client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+        }
+        catch
+        {
+            // If anything fails, then this client needs to be disconnected
+            client.Disconnect(true);
+            client = null;
+        }
+    };
+
+    // An event that is raised when the server responds with hosts
+    client.textMessageReceived += (player, frame) =&gt;
+    {
+        try
+        {
+            // Get the list of hosts to iterate through from the frame payload
+            JSONNode data = JSONNode.Parse(frame.ToString());
+            if (data[&quot;hosts&quot;] != null)
+            {
+                // Create a C# object for the response from the master server
+                MasterServerResponse response = new MasterServerResponse(data[&quot;hosts&quot;].AsArray);
+
+                if (response != null &amp;&amp; response.serverResponse.Count &gt; 0)
+                {
+                    // Go through all of the available hosts and add them to the server browser
+                    foreach (MasterServerResponse.Server server in response.serverResponse)
+                    {
+                        Debug.Log(&quot;Name: &quot; + server.Name);
+                        Debug.Log(&quot;Address: &quot; + server.Address);
+                        Debug.Log(&quot;Port: &quot; + server.Port);
+                        Debug.Log(&quot;Comment: &quot; + server.Comment);
+                        Debug.Log(&quot;Type: &quot; + server.Type);
+                        Debug.Log(&quot;Mode: &quot; + server.Mode);
+                        Debug.Log(&quot;Players: &quot; + server.Players);
+                        Debug.Log(&quot;Max Players: &quot; + server.MaxPlayers);
+                        Debug.Log(&quot;Protocol: &quot; + server.Protocol);
+
+                        // TODO:  Update UI or something with the above data
+                    }
+                }
+            }
+        }
+        finally
+        {
+            if (client != null)
+            {
+                // If we succeed or fail the client needs to disconnect from the Master Server
+                client.Disconnect(true);
+                client = null;
+            }
+        }
+    };
+
+    client.Connect(masterServerHost, (ushort)masterServerPort);
 }
 </code></pre>
               
@@ -482,10 +636,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../network-instantiation/" class="btn btn-neutral float-right" title="Network instantiation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../network-logging/" class="btn btn-neutral float-right" title="Network logging">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../clearing-buffered-rpcs/" class="btn btn-neutral" title="Clearing buffered rpcs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../connecting-to-master-server/" class="btn btn-neutral" title="Connecting to master server"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -511,10 +665,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../clearing-buffered-rpcs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../connecting-to-master-server/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../network-instantiation/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../network-logging/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

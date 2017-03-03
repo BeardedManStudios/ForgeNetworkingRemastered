@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Gameobject execution order - Forge Networking Remastered</title>
+  <title>Master server quick start - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Gameobject execution order";
-    var mkdocs_page_input_path = "gameobject-execution-order.md";
-    var mkdocs_page_url = "/gameobject-execution-order/";
+    var mkdocs_page_name = "Master server quick start";
+    var mkdocs_page_input_path = "master-server-quick-start.md";
+    var mkdocs_page_url = "/master-server-quick-start/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -232,19 +232,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Gameobject execution order</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#gameobject-execution-order">GameObject Execution Order</a></li>
-                
-                    <li><a class="toctree-l4" href="#networkstart">NetworkStart</a></li>
-                
-                    <li><a class="toctree-l4" href="#update-and-fixedupdate">Update and FixedUpdate</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../gameobject-execution-order/">Gameobject execution order</a>
         
     </li>
 
@@ -308,8 +297,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../master-server-quick-start/">Master server quick start</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Master server quick start</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#master-server-quick-start">Master Server Quick Start</a></li>
+                
+                    <li><a class="toctree-l4" href="#getting-the-master-server">Getting the Master Server</a></li>
+                
+                    <li><a class="toctree-l4" href="#running-the-master-server">Running the Master Server</a></li>
+                
+                    <li><a class="toctree-l4" href="#using-the-master-server">Using the Master Server</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -440,11 +442,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Master Server &raquo;</li>
         
       
     
-    <li>Gameobject execution order</li>
+    <li>Master server quick start</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -454,27 +456,34 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="gameobject-execution-order">GameObject Execution Order</h1>
-<p>You may be use to the standard method execution order in Unity and this can cause some confusion when it comes to when you are able to access the network object on a client. You see, when you create a network object <strong>on the client</strong> it takes some time to get to the server, validate, and return back to the client. Because of this, the <code>networkObject</code> you are use to using may be null during the <code>Start</code> and <code>Awake</code> methods of your MonoBehaviour.</p>
-<h2 id="networkstart">NetworkStart</h2>
-<p>To resolve the issue with starting things once the networkObject has been setup, we have created a <code>protected</code> method you can <code>override</code> that will be called once the networkObject has been setup. You should do any initialization logic that is required for the network object in this method <strong>don't forget to call the <code>base.NetworkStart()</code> method</strong>.</p>
-<pre><code class="csharp">protected override void NetworkStart()
-{
-    base.NetworkStart();
-    // TODO:  Your initialization code that relies on network setup for this object goes here
-}
-</code></pre>
-
-<h2 id="update-and-fixedupdate">Update and FixedUpdate</h2>
-<p>If the network is a little slow, it is very possible that the <code>networkObject</code> is not setup by the time the first call to the <code>Update</code> or <code>FixedUpdate</code> happens in Unity. So make sure to do your <code>null</code> checks or set some-kind of flag for when the object is ready to be used.</p>
-<pre><code class="csharp">private void Update()
-{
-    if (networkObject != null)
-    {
-        // TODO:  Whatever you need to do with the networkObject
-    }
-}
-</code></pre>
+                <h1 id="master-server-quick-start">Master Server Quick Start</h1>
+<p>The Master Server is a stand alone server that allows for games to be publically (or privately with password) listed for the world to join. If you've ever played an online game with friends, chances are that you have had to get their IP address in order to join their hosted games. The Master Server gives your game the ability to have these fancy server listings.</p>
+<h2 id="getting-the-master-server">Getting the Master Server</h2>
+<p>To start with your Master Server adventures you must first purchase the Independent Master Server. <strong>AHH!!</strong> another purchase? Well yes, Forge Networking sells addons to help support the team to continue developing for Forge Networking. We've been around since 2014 so something has to be working with this model :). Speaking of which, <strong>THANK YOU</strong> sooooo much for supporting Forge Networking, it means a lot to us and the community!</p>
+<p>Alright, where were we, ah yes; downloading the Master Server. The first thing you need to do is head over to your <a href="http://developers.forgepowered.com/Profile">Forge Networking developer profile</a> and scroll down towards the bottom. You will see the addon section with <strong>Unity Independent Master Server</strong> listed right. Once you purchase this addon through PayPal you will immediately have it in your account for download.</p>
+<h2 id="running-the-master-server">Running the Master Server</h2>
+<p>At this poing we are assuming that you have already purchased the Master Server addon and you are looking to get it up and running. The very first thing you do on any operating system is to head over to your <a href="http://developers.forgepowered.com/Profile">developer profile</a> and locate the download for the <strong>Unity Independent Master Server</strong>. Upon downloading this file (a .zip file) you will find that within the contents is a README file to get you started and the .exe file to be run.</p>
+<h3 id="windows">Windows</h3>
+<p>In windows it is very simple to host a Master Server. Just double click the <code>MasterServer.exe</code> and you are up and running!</p>
+<h3 id="other-platforms">Other Platforms</h3>
+<p>On any platform other than Windows, as you may know, you can not run an <strong>.exe</strong> file. However with the power of Mono you will be abel to do such things without any extra coding needed. Please follow the instructions required to install mono onto your respecive platform. After this you can open up a terminal window in the location where the <strong>.exe</strong> file was extracted and you can run the program by doing <code>mono MasterServer.exe</code>.</p>
+<h3 id="firewall">Firewall</h3>
+<p>So in order for your MasterServer to be effective, you will need to allow the process through your machine firewall (see instructions on how to allow a process on your operating system through the firewall). Once you have allowed the process on your machine through your machine's firewall, it is time for you to allow the port to your machine on the network. Yes, there are technically 2 firewalls that you have to setup to allow an application to be visible to the outside world. Every router is different and so there are many different ways to allow port forwarding to your machine. Please veiew an online guide on how to set this up for your router make/model. The default port number for the master server is <strong>15940</strong>.</p>
+<h2 id="using-the-master-server">Using the Master Server</h2>
+<p>So now that we have the master server up and running on our machine, it is time to give it a test and see what all is needed to use it. Lets begin by making sure that everything is working properly by running the built in testing method for Master Servers that come with Forge Networking.</p>
+<ol>
+<li>Open your project with Forge Netwroking</li>
+<li>Open the demo Multiplayer Menu scene</li>
+<li>Make sure your build settings have a scene after the Multiplayer Menu scene in it</li>
+<li>Locate the <strong>Canvas</strong> game object in the hierarchy and select it</li>
+<li>Locate the <strong>Master Server Host</strong> and <strong>Master Server Port</strong> in the Inspector
+<img alt="default-master-server-unity" src="../images/default-master-server-unity.png" /></li>
+<li>Input the local or static IP address of the machine your Master Server is running on</li>
+<li>Input <strong>15940</strong> as the port number for the Master Server</li>
+<li>Click the play button in Unity</li>
+<li>Click this <strong>Host</strong> button to start a game server</li>
+</ol>
+<p>If you look at the Master Server command/terminal you should notice that a message appears with your game servers IP address and port number saying that it has been registered. At this point any clients can now connect to your Master Server and get the host listings. If the message did not appear then you've probably not setup the firewall settings correctly on either your machine or your router/network.</p>
               
             </div>
           </div>
@@ -482,10 +491,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../network-instantiation/" class="btn btn-neutral float-right" title="Network instantiation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../connecting-to-master-server/" class="btn btn-neutral float-right" title="Connecting to master server">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../clearing-buffered-rpcs/" class="btn btn-neutral" title="Clearing buffered rpcs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../rewinding/" class="btn btn-neutral" title="Rewinding"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -511,10 +520,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../clearing-buffered-rpcs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../rewinding/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../network-instantiation/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../connecting-to-master-server/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

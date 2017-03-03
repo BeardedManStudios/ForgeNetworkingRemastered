@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Gameobject execution order - Forge Networking Remastered</title>
+  <title>Connecting to master server - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Gameobject execution order";
-    var mkdocs_page_input_path = "gameobject-execution-order.md";
-    var mkdocs_page_url = "/gameobject-execution-order/";
+    var mkdocs_page_name = "Connecting to master server";
+    var mkdocs_page_input_path = "connecting-to-master-server.md";
+    var mkdocs_page_url = "/connecting-to-master-server/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -232,19 +232,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Gameobject execution order</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#gameobject-execution-order">GameObject Execution Order</a></li>
-                
-                    <li><a class="toctree-l4" href="#networkstart">NetworkStart</a></li>
-                
-                    <li><a class="toctree-l4" href="#update-and-fixedupdate">Update and FixedUpdate</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../gameobject-execution-order/">Gameobject execution order</a>
         
     </li>
 
@@ -315,8 +304,15 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../connecting-to-master-server/">Connecting to master server</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Connecting to master server</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#connecting-to-master-server">Connecting to Master Server</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -440,11 +436,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Master Server &raquo;</li>
         
       
     
-    <li>Gameobject execution order</li>
+    <li>Connecting to master server</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -454,27 +450,31 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="gameobject-execution-order">GameObject Execution Order</h1>
-<p>You may be use to the standard method execution order in Unity and this can cause some confusion when it comes to when you are able to access the network object on a client. You see, when you create a network object <strong>on the client</strong> it takes some time to get to the server, validate, and return back to the client. Because of this, the <code>networkObject</code> you are use to using may be null during the <code>Start</code> and <code>Awake</code> methods of your MonoBehaviour.</p>
-<h2 id="networkstart">NetworkStart</h2>
-<p>To resolve the issue with starting things once the networkObject has been setup, we have created a <code>protected</code> method you can <code>override</code> that will be called once the networkObject has been setup. You should do any initialization logic that is required for the network object in this method <strong>don't forget to call the <code>base.NetworkStart()</code> method</strong>.</p>
-<pre><code class="csharp">protected override void NetworkStart()
-{
-    base.NetworkStart();
-    // TODO:  Your initialization code that relies on network setup for this object goes here
-}
+                <h1 id="connecting-to-master-server">Connecting to Master Server</h1>
+<p><em>If you have not already, we would suggest reviewing the <a href="../master-server-quick-start">Master Server Quick Start</a> documentation to get familiar with the Master Server and to setup the stand alone executable.</em></p>
+<p>When you first initialize your <strong>NetworkManager</strong> (as seen in <code>MultiplayerMenu.cs</code>) you will need to provide it with the NetWorker that you wish to use for standard game network communications. To do this the NetworkManager has a method <code>MasterServerRegisterData</code> that you can use in order to get the registration data object to allow you to register your game server with the Master Server. Below is an example of how to use the <code>MasterServerRegisterData</code> method to generate the json data needed to register the game server.</p>
+<pre><code class="csharp">string serverId = &quot;myGame&quot;;
+string serverName = &quot;Forge Game&quot;;
+string type = &quot;Deathmatch&quot;;
+string mode = &quot;Teams&quot;;
+string comment = &quot;Demo comment...&quot;;
+bool useElo = false;
+int eloRequired = 0;
+
+JSONNode masterServerData = NetworkManager.Instance.MasterServerRegisterData(networker, serverId, serverName, type, mode, comment, useElo, eloRequired);
 </code></pre>
 
-<h2 id="update-and-fixedupdate">Update and FixedUpdate</h2>
-<p>If the network is a little slow, it is very possible that the <code>networkObject</code> is not setup by the time the first call to the <code>Update</code> or <code>FixedUpdate</code> happens in Unity. So make sure to do your <code>null</code> checks or set some-kind of flag for when the object is ready to be used.</p>
-<pre><code class="csharp">private void Update()
-{
-    if (networkObject != null)
-    {
-        // TODO:  Whatever you need to do with the networkObject
-    }
-}
+<p>You may be curious what to do next with this data and the answer is to send it into the NetworkManager's <code>Initialize</code> method as seen below.</p>
+<pre><code class="csharp">// This should be the IP address of the machine that your master server is hosted on
+string masterServerHost = &quot;127.0.0.1&quot;;
+
+// This can be left as the default port (15940) if you did not change it when hosting the master server
+ushort masterServerPort = 15940;
+
+NetworkManager.Instance.Initialize(networker, masterServerHost, masterServerPort, masterServerData);
 </code></pre>
+
+<p>With all of this setup your game server should now be automatically registered on the Master Server once this method is called.</p>
               
             </div>
           </div>
@@ -482,10 +482,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../network-instantiation/" class="btn btn-neutral float-right" title="Network instantiation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../getting-host-list-from-master-server/" class="btn btn-neutral float-right" title="Getting host list from master server">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../clearing-buffered-rpcs/" class="btn btn-neutral" title="Clearing buffered rpcs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../master-server-quick-start/" class="btn btn-neutral" title="Master server quick start"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -511,10 +511,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../clearing-buffered-rpcs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../master-server-quick-start/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../network-instantiation/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../getting-host-list-from-master-server/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

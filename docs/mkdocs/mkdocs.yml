@@ -37,8 +37,10 @@ pages:
     - Events:
         - connection-cycle-events.md
     - Rewinding: rewinding.md
-#    - Master Server:
-#        - Quick Start Guide
+    - Master Server:
+        - master-server-quick-start.md
+        - connecting-to-master-server.md
+        - getting-host-list-from-master-server.md
 #        - Matchmaking
     - Debugging:
         - network-logging.md
