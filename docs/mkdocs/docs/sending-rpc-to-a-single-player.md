@@ -1,4 +1,4 @@
-# Sending RPC to Single Player
+# Sending RPC to a Single Player
 During your development process you may find that you have to send an RPC to a single player and nobody else. This is especially useful to target players that are just connecting to the server to send them needed data that is not buffered already.
 
 ### General Example

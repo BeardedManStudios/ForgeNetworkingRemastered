@@ -21,18 +21,19 @@ pages:
         - Remote Procedure Calls (RPCs):
             - remote-procedure-calls.md
             - buffered-rpcs.md
-            - sending-rpc-to-single-player.md
+            - sending-rpc-to-a-single-player.md
             - rpcargs-and-rpcinfo-structs.md
             - rpc-validation-by-server.md
             - replacing-previous-buffered-rpcs.md
             - clearing-buffered-rpcs.md
     - Unity Integration:
         - gameobject-execution-order.md
-        - main-threading-rpcs.md
 #        - Network Manager
         - network-instantiation.md
 #        - Network Object Without Prefab
         - threading-in-unity.md
+        - main-threading-rpcs.md
+        - running-unity-specific-code-on-the-main-thread.md
     - Events:
         - connection-cycle-events.md
     - Rewinding: rewinding.md
@@ -50,4 +51,6 @@ pages:
     - LAN Discovery: lan-discovery.md
     - Troubleshooting: troubleshooting.md
     - Offline Mode: offline-mode.md
+    - Contributing:
+        - adding-and-updating-docs.md
 theme: readthedocs

@@ -40,7 +40,7 @@ Lets begin by naming our Network Object:
 10. Click the **Interpolate** button
 11. Set the interpolate time (the text field that pops up after clicking the **Interpolate** button) as **0.15** 12.  Click the **Save & Compile** button
 
-![player-cube](images/plqyer-cube.jpg "Player Cube")
+![player-cube](images/player-cube.jpg "Player Cube")
 
 ## Extending Generated Classes
 

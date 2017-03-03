@@ -347,7 +347,7 @@ What this will do is create and modify some classes in the **Generated** folder 
 6. Select the **Scripts** folder
 7. Open the **GameBall.cs** script you just created 8.  Insert the following code
 
-### GameBall.cs**
+### GameBall.cs
 ```csharp
 // We use this namespace as it is where our BallBehavior was generated
 using BeardedManStudios.Forge.Networking;

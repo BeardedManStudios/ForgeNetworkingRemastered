@@ -1,7 +1,5 @@
 # Troubleshooting
 
-## Common Issues
-
 ## Network Issues
 If you are having trouble setting up your network, or you are having trouble connecting your game, please review this page and follow the steps completely. There are many stages of network communication that you can troubleshoot to test your game. In this document we will go over the various steps to troubleshooting so that you can figure out what could be wrong with the setup on your machine, local network, or internet connections.
 

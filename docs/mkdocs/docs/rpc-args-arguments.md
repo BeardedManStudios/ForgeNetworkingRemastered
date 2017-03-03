@@ -1,3 +1,0 @@
-# RpcArgs Arguments
-
-The RpcArgs struct has helper functions to be able to get the variables that were sent across the network as arguments. There are two main functions to achieve this behavior **RpcArgs::GetNext<T>** and **RpcArgs::GetAt<T>**. When you call a RPC the arguments provided are received in the order that they were sent. The **GetAt** call will allow you to provide the index you wish to get. So if you were to do something like **SendRpc(" MyRpcFunc", Receivers.All, "cat", 9, true)** then if you were to call **args.GetAt<int>(1)** you would get the value **9**. The **GetNext** method has an internal counter that is used to quickly go through and get all of the variables. So using the same **MyRpcFunc** example above you could do the following:

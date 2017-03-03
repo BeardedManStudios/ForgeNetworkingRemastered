@@ -102,7 +102,7 @@ namespace BeardedManStudios.Forge.Networking
         /// will out the lower and upper if found to allow for getting median
         /// </summary>
         /// <param name="timestep">The time step that a value should be pulled for</param>
-        /// <param name="lower">The lover value relative to the timestep</param>
+        /// <param name="lower">The lower value relative to the timestep</param>
         /// <param name="upper">The upper value relative to the timestep</param>
         /// <returns>The value of the tracked variable at the given time stamp or default() if no history is available</returns>
         public T Get(ulong timestep, out T lower, out T upper)
