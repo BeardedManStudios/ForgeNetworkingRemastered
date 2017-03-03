@@ -110,12 +110,6 @@
     </url>
         
     <url>
-     <loc>/main-threading-rpcs/</loc>
-     <lastmod>2017-03-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
      <loc>/network-instantiation/</loc>
      <lastmod>2017-03-02</lastmod>
      <changefreq>daily</changefreq>
@@ -123,6 +117,18 @@
         
     <url>
      <loc>/threading-in-unity/</loc>
+     <lastmod>2017-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/main-threading-rpcs/</loc>
+     <lastmod>2017-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/running-unity-specific-code-on-the-main-thread/</loc>
      <lastmod>2017-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
@@ -211,6 +217,16 @@
      <lastmod>2017-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
+    
+
+    
+        
+    <url>
+     <loc>/adding-and-updating-docs/</loc>
+     <lastmod>2017-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
 </urlset>

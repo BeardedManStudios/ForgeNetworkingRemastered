@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>NAT Hole Punching - Forge Networking Remastered</title>
+  <title>Running unity specific code on the main thread - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "NAT Hole Punching";
-    var mkdocs_page_input_path = "nat-hole-punching.md";
-    var mkdocs_page_url = "/nat-hole-punching/";
+    var mkdocs_page_name = "Running unity specific code on the main thread";
+    var mkdocs_page_input_path = "running-unity-specific-code-on-the-main-thread.md";
+    var mkdocs_page_url = "/running-unity-specific-code-on-the-main-thread/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -260,8 +260,19 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../running-unity-specific-code-on-the-main-thread/">Running unity specific code on the main thread</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Running unity specific code on the main thread</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#running-unity-specific-code-on-the-main-thread">Running Unity specific code on the main thread</a></li>
+                
+                    <li><a class="toctree-l4" href="#mainthreadmanagerrun-function-pointer">MainThreadManager.Run Function Pointer</a></li>
+                
+                    <li><a class="toctree-l4" href="#mainthreadmanagerrun-lambda-expression">MainThreadManager.Run Lambda Expression</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -329,15 +340,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">NAT Hole Punching</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#nat-hole-punching">NAT Hole Punching</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../nat-hole-punching/">NAT Hole Punching</a>
         
     </li>
 <li>
@@ -406,8 +410,12 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Unity Integration &raquo;</li>
+        
+      
     
-    <li>NAT Hole Punching</li>
+    <li>Running unity specific code on the main thread</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -417,10 +425,34 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="nat-hole-punching">NAT Hole Punching</h1>
-<p>Nat hole punching is a way for users behind a firewall to be able to connect to each other without requireing them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.</p>
-<p>When you look at the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> classes you will notice that there are 2 optional parameters related to nat traversal. One is the NAT host address and the other is the NAT server port. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ServerUDP</strong> object, you will be telling the server where it needs to register itself and you will be opening communication with the NAT server for it to forward client connection requests. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ClientUDP</strong> object, you will be telling the client to communicate with that specific NAT host to open communications with the desired server.</p>
-<p>Setting the correct NAT host in the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> is all you will need to do in order to enable NAT hole punching in your application.</p>
+                <h1 id="running-unity-specific-code-on-the-main-thread">Running Unity specific code on the main thread</h1>
+<p>We have created a helper class for you to be able to offload any logic to the main thread from a separate thread. This helper class is called <strong>MainT hreadManager</strong> and there are 2 main ways that you can use this class. The entry point for both methods of use is the static method <strong>Run</strong> ; see the code snippets below for practical uses. The examples below emulate a RPC method's contents.</p>
+<h3 id="mainthreadmanagerrun-function-pointer">MainThreadManager.Run Function Pointer</h3>
+<pre><code class="csharp">public override void MyCustomRPC(object[] args)
+{
+    // Register the private function within this class to be called on the main thread
+    MainThreadManager.Run(OtherFunction);
+}
+
+private void OtherFunction()
+{
+    Debug.Log(&quot;Hello World!&quot;);
+}
+</code></pre>
+
+<p>You can see that the above example requires another accessible method in order to pass it into the main thread manager's Run method.</p>
+<h3 id="mainthreadmanagerrun-lambda-expression">MainThreadManager.Run Lambda Expression</h3>
+<pre><code class="csharp">public override void MyCustomRPC(object[] args)
+{
+    // Setup a temporary method call (lambda expression) to be executed on the main thread
+    MainThreadManager.Run(() =&gt; { Debug.Log(&quot;Hello World!&quot;); });
+}
+</code></pre>
+
+<p><strong>The above is the preferred</strong>  <strong>method</strong></p>
+<p>The lambda expression is a native C# feature that allows you to essentially create an inline function at runtime. Please see <a href="http://www.dotnetperls.com/lambda">this website</a> or the <a href="https://msdn.microsoft.com/en-us/library/bb397687.aspx">offi</a> <a href="https://msdn.microsoft.com/en-us/library/bb397687.aspx">cial documentation</a> for more information on lambda expressions.</p>
+<p><strong>What does the Main Thread Manager do?</strong></p>
+<p>The Main Thread Manager is actually a pretty small and simple singleton class. When you send a method pointer or inline expression into the Run method it will be added to a queue. The Main Thread Manager is a Unity Game Object and will automatically create itself if one is not created already. Every <strong>FixedUpdate</strong> for this object, it will check to see if there are any pending methods in the queue, if so it will run them and remove them from the queue. By running these methods in the <strong>FixedUpdate</strong> they are automatically ran on the main thread.</p>
               
             </div>
           </div>
@@ -428,10 +460,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../working-with-multiple-sockets/" class="btn btn-neutral float-right" title="Working With Multiple Sockets">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../connection-cycle-events/" class="btn btn-neutral float-right" title="Connection cycle events">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../thread-safe-player-iteration/" class="btn btn-neutral" title="Thread safe player iteration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../main-threading-rpcs/" class="btn btn-neutral" title="Main threading rpcs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -457,10 +489,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../thread-safe-player-iteration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../main-threading-rpcs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../working-with-multiple-sockets/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../connection-cycle-events/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

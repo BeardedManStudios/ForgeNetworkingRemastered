@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>NAT Hole Punching - Forge Networking Remastered</title>
+  <title>Sending rpc to a single player - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "NAT Hole Punching";
-    var mkdocs_page_input_path = "nat-hole-punching.md";
-    var mkdocs_page_url = "/nat-hole-punching/";
+    var mkdocs_page_name = "Sending rpc to a single player";
+    var mkdocs_page_input_path = "sending-rpc-to-a-single-player.md";
+    var mkdocs_page_url = "/sending-rpc-to-a-single-player/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -186,8 +186,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../sending-rpc-to-a-single-player/">Sending rpc to a single player</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Sending rpc to a single player</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#sending-rpc-to-a-single-player">Sending RPC to a Single Player</a></li>
+                
+                    <li><a class="toctree-l4" href="#general-example">General Example</a></li>
+                
+                    <li><a class="toctree-l4" href="#player-accept-join-example">Player Accept (join) Example</a></li>
+                
+                    <li><a class="toctree-l4" href="#notes">Notes</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -329,15 +342,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">NAT Hole Punching</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#nat-hole-punching">NAT Hole Punching</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../nat-hole-punching/">NAT Hole Punching</a>
         
     </li>
 <li>
@@ -406,8 +412,16 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Network Object &raquo;</li>
+        
+      
+        
+          <li>Remote Procedure Calls (RPCs) &raquo;</li>
+        
+      
     
-    <li>NAT Hole Punching</li>
+    <li>Sending rpc to a single player</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -417,10 +431,31 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="nat-hole-punching">NAT Hole Punching</h1>
-<p>Nat hole punching is a way for users behind a firewall to be able to connect to each other without requireing them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.</p>
-<p>When you look at the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> classes you will notice that there are 2 optional parameters related to nat traversal. One is the NAT host address and the other is the NAT server port. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ServerUDP</strong> object, you will be telling the server where it needs to register itself and you will be opening communication with the NAT server for it to forward client connection requests. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ClientUDP</strong> object, you will be telling the client to communicate with that specific NAT host to open communications with the desired server.</p>
-<p>Setting the correct NAT host in the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> is all you will need to do in order to enable NAT hole punching in your application.</p>
+                <h1 id="sending-rpc-to-a-single-player">Sending RPC to a Single Player</h1>
+<p>During your development process you may find that you have to send an RPC to a single player and nobody else. This is especially useful to target players that are just connecting to the server to send them needed data that is not buffered already.</p>
+<h3 id="general-example">General Example</h3>
+<pre><code class="csharp">// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else
+// args is an object array
+
+networkObject.SendRpc(targetPlayer, &quot;RpcName&quot;, Receivers.Target, args);
+</code></pre>
+
+<h3 id="player-accept-join-example">Player Accept (join) Example</h3>
+<pre><code class="csharp">// Somewhere in your code
+
+if (networker.IsServer)
+    networker.playerAccepted += PlayerAcceptedSetup;
+
+// ...
+
+private void PlayerAcceptedSetup(NetworkingPlayer newPlayer)
+{
+    networkObject.SendRpc(newPlayer, &quot;RpcName&quot;, Receivers.Target, args);
+}
+</code></pre>
+
+<h2 id="notes">Notes</h2>
+<p>This player targeting with RPCs are done on the server. Clients do not have direct access to each other since all network traffic goes through the server (which makes it <a href="../authoritative-design">authoritative</a>). You can use Receivers.Owner to target the owning player of the network object from any client though.</p>
               
             </div>
           </div>
@@ -428,10 +463,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../working-with-multiple-sockets/" class="btn btn-neutral float-right" title="Working With Multiple Sockets">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../rpcargs-and-rpcinfo-structs/" class="btn btn-neutral float-right" title="Rpcargs and rpcinfo structs">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../thread-safe-player-iteration/" class="btn btn-neutral" title="Thread safe player iteration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../buffered-rpcs/" class="btn btn-neutral" title="Buffered rpcs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -457,10 +492,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../thread-safe-player-iteration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../buffered-rpcs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../working-with-multiple-sockets/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../rpcargs-and-rpcinfo-structs/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

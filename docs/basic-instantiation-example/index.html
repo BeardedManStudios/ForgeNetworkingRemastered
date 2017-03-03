@@ -208,7 +208,7 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../sending-rpc-to-single-player/">Sending rpc to single player</a>
+        <a class="" href="../sending-rpc-to-a-single-player/">Sending rpc to a single player</a>
         
     </li>
 
@@ -261,13 +261,6 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
         <a class="" href="../network-instantiation/">Network instantiation</a>
         
     </li>
@@ -276,6 +269,20 @@
             
     <li class="toctree-l1 ">
         <a class="" href="../threading-in-unity/">Threading in unity</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../running-unity-specific-code-on-the-main-thread/">Running unity specific code on the main thread</a>
         
     </li>
 
@@ -377,6 +384,21 @@
     </li>
 <li>
           
+            <li>
+    <ul class="subnav">
+    <li><span>Contributing</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../adding-and-updating-docs/">Adding and updating docs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
         </ul>
       </div>
       &nbsp;
@@ -447,7 +469,7 @@
 <li>Click the <strong>Interpolate</strong> button</li>
 <li>Set the interpolate time (the text field that pops up after clicking the <strong>Interpolate</strong> button) as <strong>0.15</strong> 12.  Click the <strong>Save &amp; Compile</strong> button</li>
 </ol>
-<p><img alt="player-cube" src="../images/plqyer-cube.jpg" title="Player Cube" /></p>
+<p><img alt="player-cube" src="../images/player-cube.jpg" title="Player Cube" /></p>
 <h2 id="extending-generated-classes">Extending Generated Classes</h2>
 <p>When we use the <strong>Network Contract Wizard (NCW)</strong> we are actually generating a lot of network code based on what has been input into the editor fields, this actually cuts out a lot of work that you would have to do by hand. There is one class in particular that we want to extend from, this class name will be " <strong>PlayerCubeBehavior</strong>". The naming convention for this generated class is _____Behavior where "_____" is the name we typed into the NCW. Lets now create a C# file in Unity and write our basic game logic, we will name this file " <strong>PlayerCube</strong>".</p>
 <ol>

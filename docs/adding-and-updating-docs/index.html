@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>NAT Hole Punching - Forge Networking Remastered</title>
+  <title>Adding and updating docs - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "NAT Hole Punching";
-    var mkdocs_page_input_path = "nat-hole-punching.md";
-    var mkdocs_page_url = "/nat-hole-punching/";
+    var mkdocs_page_name = "Adding and updating docs";
+    var mkdocs_page_input_path = "adding-and-updating-docs.md";
+    var mkdocs_page_url = "/adding-and-updating-docs/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -329,15 +329,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">NAT Hole Punching</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#nat-hole-punching">NAT Hole Punching</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../nat-hole-punching/">NAT Hole Punching</a>
         
     </li>
 <li>
@@ -376,8 +369,19 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../adding-and-updating-docs/">Adding and updating docs</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Adding and updating docs</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#adding-and-updating-docs">Adding and Updating Docs</a></li>
+                
+                    <li><a class="toctree-l4" href="#creating-a-new-page-in-the-docs">Creating a New Page in the Docs</a></li>
+                
+                    <li><a class="toctree-l4" href="#updating-an-existing-page-in-the-docs">Updating an Existing Page in the Docs</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -406,8 +410,12 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Contributing &raquo;</li>
+        
+      
     
-    <li>NAT Hole Punching</li>
+    <li>Adding and updating docs</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -417,10 +425,35 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="nat-hole-punching">NAT Hole Punching</h1>
-<p>Nat hole punching is a way for users behind a firewall to be able to connect to each other without requireing them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.</p>
-<p>When you look at the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> classes you will notice that there are 2 optional parameters related to nat traversal. One is the NAT host address and the other is the NAT server port. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ServerUDP</strong> object, you will be telling the server where it needs to register itself and you will be opening communication with the NAT server for it to forward client connection requests. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ClientUDP</strong> object, you will be telling the client to communicate with that specific NAT host to open communications with the desired server.</p>
-<p>Setting the correct NAT host in the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> is all you will need to do in order to enable NAT hole punching in your application.</p>
+                <h1 id="adding-and-updating-docs">Adding and Updating Docs</h1>
+<p>So you've discovered some new stuff in Forge Networking and you think that it would be important to add documentation around your discovery to share with the community. Great!! We love that and people like you is where real progress comes from :). So lets begin with the requirements to get started:</p>
+<ol>
+<li>Access to GitHub (You can get this by requesting it in Discord and providing your GitHub username)</li>
+<li>An updated checkout of your own fork of the <a href="https://github.com/BeardedManStudios/ForgeNetworkingRemastered">Forge Networking Remastered</a> repository</li>
+<li>A text editor to edit Markdown (.md) files in, we recommend <a href="https://code.visualstudio.com/">Visual Studio Code</a></li>
+</ol>
+<p>And that is it! You are officially ready to start adding and updating the documentation via pull requests.</p>
+<h2 id="creating-a-new-page-in-the-docs">Creating a New Page in the Docs</h2>
+<p>We use MkDocs to generate our searchable documentation so it is extremely easy for you to create your page using Markdown. Below are the steps taken to create your own page:</p>
+<ol>
+<li>Open the <code>ForgeNetworkingRemastered/docs/mkdocs/docs</code> folder in the repo</li>
+<li>Create your file, if your page is called <strong>Azure Setup</strong> then you will create a file <strong>azure-setup.md</strong> in this folder</li>
+<li>Open and edit your .md file</li>
+<li>Save your file</li>
+<li>Open the <code>ForgeNetworkingRemastered/docs/mkdocs/mkdocs.yml</code> file</li>
+<li>Add your file to the appropriate section under <strong>pages:</strong> or create a new section if needed</li>
+<li>Commit your changes and create a pull request</li>
+</ol>
+<p>Once your pull request is accepted, we will run the MkDocs build and your documentation will be up on the website!</p>
+<h2 id="updating-an-existing-page-in-the-docs">Updating an Existing Page in the Docs</h2>
+<p>If you find an error or feel that something is missing from the documentation you can do make a fix and submit it for review! Below are the steps in updating a page in the documentation:</p>
+<ol>
+<li>Open the <code>ForgeNetworkingRemastered/docs/mkdocs/docs</code> folder in the repo</li>
+<li>Find the page you want to update, if the page is called <strong>Azure Setup</strong> then you will find a file named <strong>azure-setup.md</strong> in this folder</li>
+<li>Open and edit your .md file</li>
+<li>Save your file</li>
+<li>Commit your changes and create a pull request</li>
+</ol>
               
             </div>
           </div>
@@ -428,10 +461,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../working-with-multiple-sockets/" class="btn btn-neutral float-right" title="Working With Multiple Sockets">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../thread-safe-player-iteration/" class="btn btn-neutral" title="Thread safe player iteration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../offline-mode/" class="btn btn-neutral" title="Offline Mode"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -457,10 +488,8 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../thread-safe-player-iteration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../offline-mode/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../working-with-multiple-sockets/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

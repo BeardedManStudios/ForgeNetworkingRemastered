@@ -200,7 +200,7 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../sending-rpc-to-single-player/">Sending rpc to single player</a>
+        <a class="" href="../sending-rpc-to-a-single-player/">Sending rpc to a single player</a>
         
     </li>
 
@@ -253,13 +253,6 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
         <a class="" href="../network-instantiation/">Network instantiation</a>
         
     </li>
@@ -268,6 +261,20 @@
             
     <li class="toctree-l1 ">
         <a class="" href="../threading-in-unity/">Threading in unity</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../running-unity-specific-code-on-the-main-thread/">Running unity specific code on the main thread</a>
         
     </li>
 
@@ -367,6 +374,21 @@
         <a class="" href="../offline-mode/">Offline Mode</a>
         
     </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Contributing</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../adding-and-updating-docs/">Adding and updating docs</a>
+        
+    </li>
+
+        
+    </ul>
 <li>
           
         </ul>
@@ -509,7 +531,7 @@ public class MoveCube : MoveCubeBehavior
 }
 </code></pre>
 
-<p>As you can see from the code snippet above an RPC is called using the <strong>networkObject.SendRPC</strong> method. The first argument is the name of the method and the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). <strong>Note</strong> <em>: In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved.</em> <strong>Note 2</strong> <em>: Notice that we use</em> <strong>MainThreadManager</strong> <em>to run the move logic in this example, if you have not used the</em> <strong>MainThreadManager</strong> <em>before or would like more information about threading in Unity, please view</em> <em>this page__.</em></p>
+<p>As you can see from the code snippet above an RPC is called using the <strong>networkObject.SendRPC</strong> method. The first argument is the name of the method and the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). <strong>Note</strong>: <em>In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved. <strong>Note 2</strong>: _Notice that we use <strong>MainThreadManager</strong> to run the move logic in this example, if you have not used the <strong>MainThreadManager</strong> before or would like more information about threading in Unity, please view <a href="../threading-in-unity">this page</a>.</em></p>
 <h3 id="code-if-option-2-was-selected">Code if option 2 was selected</h3>
 <h4 id="movecube_1">MoveCube</h4>
 <pre><code class="csharp">using UnityEngine;
@@ -547,7 +569,7 @@ public class MoveCube : MoveCubeBehavior {
 }
 </code></pre>
 
-<p>As you can see from the code snippet above an RPC is called using the <strong>networkObject.SendRPC</strong> method. The first argument is the name of the method, the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc, and the last argument(s) are the arguments for the method. The arguments are mapped to the <strong>object[] args</strong> of the method in the order that they were sent in. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). <strong>Note</strong> <em>: In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved.</em> <strong>Note 2</strong> <em>: Notice that we use</em> <strong>MainThreadManager</strong> <em>to run the move logic in this example, if you have not used the</em> <strong>MainThreadManager</strong> <em>before or would like more information about threading in Unity, please view</em> <em>this page__.</em></p>
+<p>As you can see from the code snippet above an RPC is called using the <strong>networkObject.SendRPC</strong> method. The first argument is the name of the method, the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc, and the last argument(s) are the arguments for the method. The arguments are mapped to the <strong>object[] args</strong> of the method in the order that they were sent in. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). <strong>Note</strong>: <em>In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved.</em> <strong>Note 2</strong>: <em>Notice that we use <strong>MainThreadManager</strong> to run the move logic in this example, if you have not used the <strong>MainThreadManager</strong> before or would like more information about threading in Unity, please view <a href="../threading-in-unity">this page</a>.</em></p>
 <h4 id="scene-setup">Scene Setup</h4>
 <p>Now that we have done all of the network programming required for our end goal, it is time to setup our scene.</p>
 <ol>
