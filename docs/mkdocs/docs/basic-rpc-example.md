@@ -79,11 +79,11 @@ public class MoveCube : MoveCubeBehavior
 	{
 		// Move the cube up in world space if the up arrow was pressed
 		if (Input.GetKeyDown(KeyCode.UpArrow))
-			networkObject.SendRpc("MoveUp", Receivers.All);
+			networkObject.SendRpc(RPC_MOVE_UP, Receivers.All);
 		
 		// Move the cube down in world space if the down arrow was pressed
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
-			networkObject.SendRpc("MoveDown", Receivers.All);
+			networkObject.SendRpc(RPC_MOVE_DOWN, Receivers.All);
 	}
     
 	/// <summary>
@@ -132,11 +132,11 @@ public class MoveCube : MoveCubeBehavior {
 	{
 		// Move the cube up in world space if the up arrow was pressed
 		if (Input.GetKeyDown(KeyCode.UpArrow))
-			networkObject.SendRpc("Move", Receivers.All, Vector3.up);
+			networkObject.SendRpc(RPC_MOVE, Receivers.All, Vector3.up);
 	
 		// Move the cube down in world space if the down arrow was pressed
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
-			networkObject.SendRpc("Move", Receivers.All, Vector3.down);
+			networkObject.SendRpc(RPC_MOVE, Receivers.All, Vector3.down);
 	}
 	
 	/// <summary>

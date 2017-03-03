@@ -6,5 +6,5 @@ What happens with buffered RPCs is that the RPC is stored on the server. The mom
 So to buffer an RPC all you have to do is select a `Receivers` which has a **Buffered** prefix as seen below:
 ```csharp
 float explosionVelocity = 99.98f;
-networkObject.SendRpc("BlowupBarrel", Receivers.AllBuffered, explosionVelocity);
+networkObject.SendRpc(RPC_BLOWUP_BARREL, Receivers.AllBuffered, explosionVelocity);
 ```

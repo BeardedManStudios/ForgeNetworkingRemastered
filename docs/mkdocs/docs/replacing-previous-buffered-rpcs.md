@@ -3,5 +3,5 @@ There are times where the buffered data that you want to send to new players tha
 
 ```csharp
 bool replacePrevious = true;
-networkObject.SendRpc("MyRpcName", replacePrevious, Receivers.AllBuffered, new object[] { "args go here" });
+networkObject.SendRpc(RPC_MY_RPC_NAME, replacePrevious, Receivers.AllBuffered, new object[] { "args go here" });
 ```

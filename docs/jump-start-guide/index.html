@@ -716,7 +716,7 @@ public class Player : PlayerBehavior
         // latest name for this object
         // We pass in &quot;Name&quot; for the args because we have 1 argument that is to
         // be a string as it is set in the NCW
-        networkObject.SendRpc(&quot;UpdateName&quot;, Receivers.AllBuffered, Name);
+        networkObject.SendRpc(RPC_UPDATE_NAME, Receivers.AllBuffered, Name);
     }
 
     // Default Unity update method
@@ -908,7 +908,7 @@ public class GameBall : GameBallBehavior
 
         // Call an RPC on the Game Logic to print the player's name as the last
         // player to touch the ball
-        gameLogic.networkObject.SendRpc(&quot;PlayerScored&quot;, Receivers.All,
+        gameLogic.networkObject.SendRpc(RPC_PLAYER_SCORED, Receivers.All,
 
         c.transform.GetComponent&lt;Player&gt;().Name);
 

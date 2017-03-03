@@ -31,4 +31,5 @@ So, what are the difference highlights?
 * The Network Object
 
 **Notes from Community**  
-Do not put NetworkManager into your scene, it will be spawned on its own.
+Do not put NetworkManager into your scene, it will be spawned on its own
+**DO NOT** wrap your RPC calls in MainThreadManger.Run if you have the "Use Main Thread Manager For RPCs" enabled

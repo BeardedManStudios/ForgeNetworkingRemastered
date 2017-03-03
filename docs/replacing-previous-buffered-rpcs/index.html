@@ -457,7 +457,7 @@
                 <h1 id="replacing-previous-buffered-rpcs">Replacing Previous Buffered RPCs</h1>
 <p>There are times where the buffered data that you want to send to new players that connect needs to be updated. Let's say that you were sending the current color of the winning team to a connecting player. Though you could run this on <a href="../connection-cycle-events#playerAccepted">playerAccepted</a> you might choose to do this with a buffered RPC. Unfortunately the currently winning team may change and so the color would need to be buffered yet again. If you were to keep buffering the team color you may end up with a buffer of 50 RPCs, so all 50 would get sent in order to the connecting player. Instead you can choose to replace the last call to a buffered RPC which will remove the last RPC called on <strong>this specific</strong> game object with the given RPC string name with the one you are currently executing. This is done easily by passing <strong>true</strong> to the <code>SendRpc</code> method overload that has the <strong>replacePrevious</strong> argument:</p>
 <pre><code class="csharp">bool replacePrevious = true;
-networkObject.SendRpc(&quot;MyRpcName&quot;, replacePrevious, Receivers.AllBuffered, new object[] { &quot;args go here&quot; });
+networkObject.SendRpc(RPC_MY_RPC_NAME, replacePrevious, Receivers.AllBuffered, new object[] { &quot;args go here&quot; });
 </code></pre>
               
             </div>
