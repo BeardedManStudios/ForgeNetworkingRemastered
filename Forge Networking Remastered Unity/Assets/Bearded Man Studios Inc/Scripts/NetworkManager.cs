@@ -47,7 +47,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SceneManager.sceneLoaded -= OnLevelFinishedLoading;
 		}
 
-		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, bool useElo = false, int eloRequired = 0)
+		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			Networker = networker;
 
@@ -57,7 +57,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker is IServer)
 			{
 				if (!string.IsNullOrEmpty(masterServerHost))
-					RegisterOnMasterServer(15937, 32, masterServerHost, masterServerPort);
+					RegisterOnMasterServer(networker.Port, networker.MaxConnections, masterServerHost, masterServerPort, masterServerRegisterData);
 			}
 		}
 
@@ -171,7 +171,28 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		private void RegisterOnMasterServer(ushort port, int maxPlayers, string masterServerHost, ushort masterServerPort, bool useElo = false, int eloRequired = 0)
+		public JSONNode MasterServerRegisterData(NetWorker server, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
+		{
+			// Create the get request with the desired filters
+			JSONNode sendData = JSONNode.Parse("{}");
+			JSONClass registerData = new JSONClass();
+			registerData.Add("id", id);
+			registerData.Add("name", serverName);
+			registerData.Add("port", new JSONData(server.Port));
+			registerData.Add("playerCount", new JSONData(0));
+			registerData.Add("maxPlayers", new JSONData(server.MaxConnections));
+			registerData.Add("comment", comment);
+			registerData.Add("type", type);
+			registerData.Add("mode", mode);
+			registerData.Add("protocol", server is UDPServer ? "udp" : "tcp");
+			registerData.Add("elo", new JSONData(eloRequired));
+			registerData.Add("useElo", new JSONData(useElo));
+			sendData.Add("register", registerData);
+
+			return sendData;
+		}
+
+		private void RegisterOnMasterServer(ushort port, int maxPlayers, string masterServerHost, ushort masterServerPort, JSONNode masterServerData)
 		{
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
@@ -181,24 +202,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				try
 				{
-					// Create the get request with the desired filters
-					JSONNode sendData = JSONNode.Parse("{}");
-					JSONClass registerData = new JSONClass();
-					registerData.Add("id", "myGame");
-					registerData.Add("name", "Forge Game");
-					registerData.Add("port", new JSONData(port));
-					registerData.Add("playerCount", new JSONData(0));
-					registerData.Add("maxPlayers", new JSONData(maxPlayers));
-					registerData.Add("comment", "Demo comment...");
-					registerData.Add("type", "Deathmatch");
-					registerData.Add("mode", "Teams");
-					registerData.Add("protocol", "udp");
-					registerData.Add("elo", new JSONData(eloRequired));
-					registerData.Add("useElo", new JSONData(useElo));
-
-					sendData.Add("register", registerData);
-
-					Frame.Text temp = Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
+					Frame.Text temp = Frame.Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
 
 					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server

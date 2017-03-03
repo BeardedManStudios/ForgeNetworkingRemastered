@@ -1,5 +1,6 @@
 ﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using SimpleJSON;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -188,7 +189,20 @@ public class MultiplayerMenu : MonoBehaviour
 		else if (mgr == null)
 			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
-		mgr.Initialize(networker, masterServerHost, masterServerPort, useElo, eloRequired);
+		// If we are using the master server we need to get the registration data
+		JSONNode masterServerData = null;
+		if (!string.IsNullOrEmpty(masterServerHost))
+		{
+			string serverId = "myGame";
+			string serverName = "Forge Game";
+			string type = "Deathmatch";
+			string mode = "Teams";
+			string comment = "Demo comment...";
+
+			masterServerData = mgr.MasterServerRegisterData(networker, serverId, serverName, type, mode, comment, useElo, eloRequired);
+		}
+
+		mgr.Initialize(networker, masterServerHost, masterServerPort, masterServerData);
 
 		if (useInlineChat && networker.IsServer)
 			SceneManager.sceneLoaded += CreateInlineChat;
