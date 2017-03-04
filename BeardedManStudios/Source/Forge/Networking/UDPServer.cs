@@ -147,7 +147,7 @@ namespace BeardedManStudios.Forge.Networking
 				Me.Connected = true;
 
 				//Set the port
-				SetPort(port);
+				SetPort((ushort)((IPEndPoint)Client.Client.LocalEndPoint).Port);
 
 				if (!string.IsNullOrEmpty(natHost))
 				{

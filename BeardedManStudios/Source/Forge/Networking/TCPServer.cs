@@ -314,7 +314,7 @@ namespace BeardedManStudios.Forge.Networking
 				Me.Connected = true;
 
 				//Set the port
-				SetPort(port);
+				SetPort((ushort)((IPEndPoint)listener.LocalEndpoint).Port);
 			}
 			catch (Exception e)
 			{
