@@ -947,7 +947,12 @@ namespace BeardedManStudios.Forge.Networking
 		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(string methodName, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodName, false, receivers, Networker.Me, args);
+			byte methodId;
+
+			if (!rpcLookup.TryGetValue(methodName, out methodId))
+				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
+
+			SendRpc(null, methodId, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -973,7 +978,12 @@ namespace BeardedManStudios.Forge.Networking
 		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodName, replacePrevious, receivers, Networker.Me, args);
+			byte methodId;
+
+			if (!rpcLookup.TryGetValue(methodName, out methodId))
+				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
+
+			SendRpc(null, methodId, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1000,7 +1010,12 @@ namespace BeardedManStudios.Forge.Networking
 		[Obsolete("Use the target player SendRpc that doesn't require the receivers parameter")]
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, Receivers receivers, params object[] args)
 		{
-			SendRpc(targetPlayer, methodName, false, receivers, Networker.Me, args);
+			byte methodId;
+
+			if (!rpcLookup.TryGetValue(methodName, out methodId))
+				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
+
+			SendRpc(targetPlayer, methodId, false, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1013,7 +1028,12 @@ namespace BeardedManStudios.Forge.Networking
 		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, params object[] args)
 		{
-			SendRpc(targetPlayer, methodName, false, Receivers.Target, Networker.Me, args);
+			byte methodId;
+
+			if (!rpcLookup.TryGetValue(methodName, out methodId))
+				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
+
+			SendRpc(targetPlayer, methodId, false, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1040,7 +1060,12 @@ namespace BeardedManStudios.Forge.Networking
 		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-			SendRpc(targetPlayer, methodName, replacePrevious, receivers, Networker.Me, args);
+			byte methodId;
+
+			if (!rpcLookup.TryGetValue(methodName, out methodId))
+				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
+
+			SendRpc(targetPlayer, methodId, replacePrevious, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
