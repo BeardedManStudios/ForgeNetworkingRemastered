@@ -124,6 +124,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			obj.pendingInitialized -= InitializedObject;
 		}
 
+		[Obsolete("Use InstantiateChatManager instead, its shorter and easier to type out ;)")]
 		public ChatManagerBehavior InstantiateChatManagerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ChatManagerNetworkObject[index]);
@@ -136,6 +137,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 
+		[Obsolete("Use InstantiateCubeForgeGame instead, its shorter and easier to type out ;)")]
 		public CubeForgeGameBehavior InstantiateCubeForgeGameNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(CubeForgeGameNetworkObject[index]);
@@ -148,6 +150,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 
+		[Obsolete("Use InstantiateExampleProximityPlayer instead, its shorter and easier to type out ;)")]
 		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ExampleProximityPlayerNetworkObject[index]);
@@ -160,6 +163,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 
+		[Obsolete("Use InstantiateNetworkCamera instead, its shorter and easier to type out ;)")]
 		public NetworkCameraBehavior InstantiateNetworkCameraNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(NetworkCameraNetworkObject[index]);

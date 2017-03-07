@@ -57,6 +57,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		>:FOREACH networkObjects:<
+		[Obsolete("Use Instantiate>:[i]:< instead, its shorter and easier to type out ;)")]
 		public >:[i]:<Behavior Instantiate>:[i]:<NetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(>:[i]:<NetworkObject[index]);
