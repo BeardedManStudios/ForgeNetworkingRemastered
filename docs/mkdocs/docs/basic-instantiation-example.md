@@ -83,13 +83,13 @@ public class PlayerCube : PlayerCubeBehavior
 		Vector3 translation = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
 
 		// Scale the speed to normalize for processors
-		translation \*= speed \* Time.deltaTime;
+		translation *= speed * Time.deltaTime;
 
 		// Move the object by the given translation
 		transform.position += translation;
 
 		// Just a random rotation on all axis
-		transform.Rotate(new Vector3(speed, speed, speed) \* 0.25f);
+		transform.Rotate(new Vector3(speed, speed, speed) * 0.25f);
 
 		// Since we are the owner, tell the network the updated position
 		networkObject.position = transform.position;

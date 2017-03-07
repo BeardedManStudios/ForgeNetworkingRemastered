@@ -388,7 +388,7 @@ public class GameBall : GameBallBehavior
 	public void Reset()
 	{
 		// Move the ball to 0, 10, 0
-		transform.position = Vector3.up \* 10;
+		transform.position = Vector3.up * 10;
 
 		// Reset the velocity for this object to zero
 		rigidbodyRef.velocity = Vector3.zero;
@@ -400,10 +400,10 @@ public class GameBall : GameBallBehavior
 
 		// Randomly invert along the number line by 50%
 		if (Random.value < 0.5f)
-			force.x \*= -1;
+			force.x *= -1;
 		
 		if (Random.value < 0.5f)
-			force.z \*= -1;
+			force.z *= -1;
 
 		// Add the random force to the ball
 		rigidbodyRef.AddForce(force);
