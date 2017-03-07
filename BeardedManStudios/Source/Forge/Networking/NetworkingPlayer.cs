@@ -31,6 +31,9 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class NetworkingPlayer
 	{
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 90000;
+		private const int DEFAULT_PING_INTERVAL = 5000;
+
 		/// <summary>
 		/// An event that is called whenever this player has disconnected
 		/// </summary>
@@ -146,9 +149,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public uint TimeoutMilliseconds { get; set; }
 
-		private const uint PLAYER_TIMEOUT_DISCONNECT = 90000;
-
 		private bool composerReady = false;
+
+		private int currentPingWait = 0;
+		public int PingInterval { get; set; }
 
 		public NetWorker Networker { get; private set; }
 
@@ -174,6 +178,7 @@ namespace BeardedManStudios.Forge.Networking
 			SocketEndpoint = socketEndpoint;
 			LastPing = networker.Time.Timestep;
 			TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
+			PingInterval = DEFAULT_PING_INTERVAL;
 
 			if (SocketEndpoint != null)
 			{
@@ -299,11 +304,20 @@ namespace BeardedManStudios.Forge.Networking
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
 				{
+					int waitTime = 10;
 					while (Networker.IsBound && !Disconnected)
 					{
 						if (nextComposerReady)
 						{
-							Task.Sleep(10);
+							Task.Sleep(waitTime);
+							currentPingWait += waitTime;
+
+							if (!(Networker is IServer) && currentPingWait >= PingInterval)
+							{
+								currentPingWait = 0;
+								Networker.Ping();
+							}
+
 							continue;
 						}
 
@@ -323,6 +337,7 @@ namespace BeardedManStudios.Forge.Networking
 							// TODO:  Wait the latency for this
 							Task.Sleep(10);
 						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.EndingSession);
+						currentPingWait = 0;
 					}
 				});
 

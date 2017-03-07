@@ -516,13 +516,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// Pong back to the client
 		/// </summary>
 		/// <param name="playerRequesting"></param>
-		protected override void Pong(NetworkingPlayer playerRequesting, System.DateTime time)
+		protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
 		{
-			BMSByte payload = new BMSByte();
-			long ticks = time.Ticks;
-			payload.BlockCopy<long>(ticks, sizeof(long));
-			Frame.Pong pongFrame = new Frame.Pong(Time.Timestep, false, payload, Receivers.Target, MessageGroupIds.PONG, false);
-			Send(playerRequesting, pongFrame);
+			Send(playerRequesting, GeneratePong(time));
 		}
 
 		public void StopAcceptingConnections()

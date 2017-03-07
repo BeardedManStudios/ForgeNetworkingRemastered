@@ -68,19 +68,5 @@ namespace BeardedManStudios.Forge.Networking
 				Disconnect(true);
 			}
 		}
-
-		/// <summary>
-		/// Request the ping from the server (pingReceived will be triggered if it receives it)
-		/// 
-		/// This is not a reliable call
-		/// </summary>
-		public override void Ping()
-		{
-			BMSByte payload = new BMSByte();
-			long ticks = DateTime.UtcNow.Ticks;
-			payload.BlockCopy<long>(ticks, sizeof(long));
-			Frame.Ping pingFrame = new Frame.Ping(Time.Timestep, false, payload, Receivers.Server, MessageGroupIds.PING, true);
-			Send(pingFrame);
-		}
 	}
 }

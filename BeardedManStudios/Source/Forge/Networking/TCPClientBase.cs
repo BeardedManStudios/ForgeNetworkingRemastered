@@ -30,7 +30,7 @@ using System.Net.Sockets;
 
 namespace BeardedManStudios.Forge.Networking
 {
-	public class TCPClientBase : BaseTCP, IClient
+	public abstract class TCPClientBase : BaseTCP, IClient
 	{
 		/// <summary>
 		/// The reference to the raw client that is connected to the server
@@ -305,6 +305,16 @@ namespace BeardedManStudios.Forge.Networking
 				for (int i = 0; i < Players.Count; ++i)
 					OnPlayerDisconnected(Players[i]);
 			}
+		}
+
+
+
+		/// <summary>
+		/// Request the ping from the server (pingReceived will be triggered if it receives it)
+		/// </summary>
+		public override void Ping()
+		{
+			Send(GeneratePing());
 		}
 	}
 }

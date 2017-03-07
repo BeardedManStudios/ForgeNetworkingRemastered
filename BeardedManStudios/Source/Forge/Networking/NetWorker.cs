@@ -833,16 +833,30 @@ namespace BeardedManStudios.Forge.Networking
 			EndingSession = true;
 			CloseLocalListingsClient();
 		}
-
-		public virtual void Ping()
+		
+		protected Ping GeneratePing()
 		{
-
+			BMSByte payload = new BMSByte();
+			long ticks = DateTime.UtcNow.Ticks;
+			payload.BlockCopy<long>(ticks, sizeof(long));
+			return new Ping(Time.Timestep, this is TCPClient, payload, Receivers.Server, MessageGroupIds.PING, this is BaseTCP);
 		}
 
-		protected virtual void Pong(NetworkingPlayer playerRequesting, DateTime time)
+		protected Pong GeneratePong(DateTime time)
 		{
-
+			BMSByte payload = new BMSByte();
+			long ticks = time.Ticks;
+			payload.BlockCopy<long>(ticks, sizeof(long));
+			return new Pong(Time.Timestep, this is TCPClient, payload, Receivers.Target, MessageGroupIds.PONG, this is BaseTCP);
 		}
+
+		/// <summary>
+		/// Request the ping from the server (pingReceived will be triggered if it receives it)
+		/// This is not a reliable call in UDP
+		/// </summary>
+		public abstract void Ping();
+
+		protected virtual void Pong(NetworkingPlayer playerRequesting, DateTime time) { }
 
 		private static void CloseLocalListingsClient()
 		{

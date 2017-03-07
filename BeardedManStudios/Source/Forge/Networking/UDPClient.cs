@@ -339,16 +339,11 @@ namespace BeardedManStudios.Forge.Networking
 
 		/// <summary>
 		/// Request the ping from the server (pingReceived will be triggered if it receives it)
-		/// 
 		/// This is not a reliable call
 		/// </summary>
 		public override void Ping()
 		{
-			BMSByte payload = new BMSByte();
-			long ticks = DateTime.UtcNow.Ticks;
-			payload.BlockCopy<long>(ticks, sizeof(long));
-			Ping pingFrame = new Ping(Time.Timestep, false, payload, Receivers.Server, MessageGroupIds.PING, false);
-			Send(pingFrame);
+			Send(GeneratePing());
 		}
 	}
 }
