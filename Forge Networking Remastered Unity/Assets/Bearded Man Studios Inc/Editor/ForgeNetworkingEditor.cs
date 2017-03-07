@@ -807,6 +807,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 					constRpc += btn.RPCVariables[i].FieldName[j].ToString().ToUpper();
 				}
+				constRpc = constRpc.Replace("R_P_C_", "");
 
 				object[] constRpcData = new object[]
 				{
