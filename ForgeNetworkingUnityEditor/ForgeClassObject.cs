@@ -85,7 +85,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			if (currentType == null)
 				throw new NullReferenceException("CANNOT PUT SOURCE CODE IN GENERATED FOLDER! PLEASE REMOVE NON GENERATED CODE!");
 
-			MethodInfo[] methods = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType.FullName == "BeardedManStudios.Forge.Networking").ToArray();
+			MethodInfo[] methods = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType.FullName == "BeardedManStudios.Forge.Networking.RpcArgs").ToArray();
 			PropertyInfo[] properties = currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 			FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
@@ -100,6 +100,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				Type factoryInterface = currentType.GetInterface("INetworkObjectFactory");
 				bool isMonobehavior = currentType.IsSubclassOf(typeof(MonoBehaviour));
 
+				Debug.Log(baseType.FullName);
 				if (baseType.FullName == "BeardedManStudios.Forge.Networking.NetworkObject")
 				{
 					ObjectClassType = ForgeBaseClassType.NetworkObject;

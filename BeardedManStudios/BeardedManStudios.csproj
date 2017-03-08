@@ -112,6 +112,12 @@
     <Compile Include="Source\Threading\Task.cs" />
     <Compile Include="Source\Vector.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj">
+      <Project>{9c3af9d0-b19f-44a6-9068-84b636892bde}</Project>
+      <Name>ForgeNetworkingCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Plugins\$(TargetFileName)"
