@@ -57,10 +57,12 @@
     <Compile Include="ForgeNRPCTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleJSONEditor.cs" />
-    <Compile Include="Templating\GeneratedInterpolAttribute.cs" />
-    <Compile Include="Templating\GeneratedRPCAttribute.cs" />
-    <Compile Include="Templating\GeneratedRPCVariableNamesAttribute.cs" />
-    <Compile Include="Templating\TemplateSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj">
+      <Project>{9c3af9d0-b19f-44a6-9068-84b636892bde}</Project>
+      <Name>ForgeNetworkingCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,3 @@
-C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.pdb
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.dll
@@ -15,3 +14,6 @@ C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEdito
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.xml
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.pdb
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingCommon.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingCommon.pdb
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache

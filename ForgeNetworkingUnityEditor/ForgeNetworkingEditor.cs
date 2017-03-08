@@ -59,11 +59,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// <summary>
 		/// This is the generated folder path
 		/// </summary>
-		private const string GENERATED_FOLDER_PATH = "Plugins/Bearded Man Studios Inc/Generated";
+		private const string GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated";
 		/// <summary>
 		/// This is the user generated folder path
 		/// </summary>
-		private const string USER_GENERATED_FOLDER_PATH = "Plugins/Bearded Man Studios Inc/Generated/UserGenerated";
+		private const string USER_GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated/UserGenerated";
 
 		/// <summary>
 		/// This is our scrolling bar we will use for looking through the classes
