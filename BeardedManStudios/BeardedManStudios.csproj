@@ -108,12 +108,8 @@
     <Compile Include="Source\Forge\Networking\Websockets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\SimpleJSON.cs" />
-    <Compile Include="Source\Templating\GeneratedInterpolAttribute.cs" />
-    <Compile Include="Source\Templating\GeneratedRPCVariableNamesAttribute.cs" />
-    <Compile Include="Source\Templating\GeneratedRPCAttribute.cs" />
-    <Compile Include="Source\Threading\Task.cs" />
-    <Compile Include="Source\Templating\TemplateSystem.cs" />
     <Compile Include="Source\Threading\IThreadRunner.cs" />
+    <Compile Include="Source\Threading\Task.cs" />
     <Compile Include="Source\Vector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
