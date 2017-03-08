@@ -1,0 +1,17 @@
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.pdb
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Mono.Cecil.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Unity.SerializationLogic.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Unity.DataContract.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\ICSharpCode.NRefactory.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Unity.UNetWeaver.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Unity.CecilTools.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Mono.Cecil.Pdb.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Mono.Cecil.Mdb.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.xml
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.xml
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.dll
+C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.pdb
