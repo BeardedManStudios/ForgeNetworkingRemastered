@@ -36,6 +36,9 @@ pages:
         - running-unity-specific-code-on-the-main-thread.md
     - Events:
         - connection-cycle-events.md
+    - Scene Navigation:
+        - loading-scenes.md
+        - scene-events.md
     - Rewinding: rewinding.md
     - Master Server:
         - master-server-quick-start.md

@@ -1,8 +1,10 @@
-﻿using BeardedManStudios.Forge.Networking.Generated;
+﻿using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Generated;
 using SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -10,6 +12,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	public partial class NetworkManager : MonoBehaviour
 	{
 		public static NetworkManager Instance { get; private set; }
+
+		public UnityAction<int, LoadSceneMode> networkSceneChanging;
+		public UnityAction<Scene, LoadSceneMode> networkSceneLoaded;
+		public event NetWorker.PlayerEvent playerLoadedScene;
 
 		public NetWorker Networker { get; private set; }
 		public NetWorker MasterServerNetworker { get; private set; }
@@ -37,19 +43,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void OnEnable()
 		{
-			//Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
 			SceneManager.sceneLoaded += OnLevelFinishedLoading;
 		}
 
 		private void OnDisable()
 		{
-			//Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
 			SceneManager.sceneLoaded -= OnLevelFinishedLoading;
 		}
 
 		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			Networker = networker;
+			Networker.binaryMessageReceived += ReadBinary;
 
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
@@ -317,8 +322,91 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		public void SceneReady(Scene scene, LoadSceneMode mode)
+		private void ReadBinary(NetworkingPlayer player, Binary frame)
 		{
+			if (frame.GroupId != MessageGroupIds.VIEW_CHANGE)
+				return;
+
+			if (Networker.IsServer)
+			{
+				// The client has loaded the scene
+				if (playerLoadedScene != null)
+					playerLoadedScene(player);
+
+				return;
+			}
+
+			// We need to halt the creation of network objects until we load the scene
+			Networker.PendCreates = true;
+
+			// Get the scene index that the server loaded
+			int sceneIndex = frame.StreamData.GetBasicType<int>();
+
+			// Get the mode in which the server loaded the scene
+			int modeIndex = frame.StreamData.GetBasicType<int>();
+
+			// Convert the int mode to the enum mode
+			LoadSceneMode mode = (LoadSceneMode)modeIndex;
+
+			if (networkSceneChanging != null)
+				networkSceneChanging(sceneIndex, mode);
+
+			MainThreadManager.Run(() =>
+			{
+				// Load the scene that the server loaded in the same LoadSceneMode
+				if (mode == LoadSceneMode.Additive)
+					SceneManager.LoadSceneAsync(sceneIndex);
+				else if (mode == LoadSceneMode.Single)
+					SceneManager.LoadScene(sceneIndex);
+			});
+		}
+
+		/// <summary>
+		/// A wrapper around the various raw send methods for the client and server types
+		/// </summary>
+		/// <param name="networker">The networker that is going to be sending the data</param>
+		/// <param name="frame">The frame that is to be sent across the network</param>
+		public static void SendFrame(NetWorker networker, FrameStream frame)
+		{
+			// If there are any clients currently connected to this server, inform them that it is time to change scenes
+			if (networker is IServer)
+			{
+				if (networker is TCPServer)
+					((TCPServer)networker).SendAll(frame);
+				else
+					((UDPServer)networker).Send(frame, true);
+			}
+			else
+			{
+				if (networker is TCPClientBase)
+					((TCPClientBase)networker).Send(frame);
+				else
+					((UDPClient)networker).Send(frame, true);
+			}
+		}
+
+		private void SceneReady(Scene scene, LoadSceneMode mode)
+		{
+			// If we are loading a completely new scene then we will need
+			// to clear out all the old objects that were stored as they
+			// are no longer needed
+			if (mode != LoadSceneMode.Additive)
+			{
+				pendingObjects.Clear();
+				pendingNetworkObjects.Clear();
+			}
+
+			if (networkSceneLoaded != null)
+				networkSceneLoaded(scene, mode);
+
+			BMSByte data = new BMSByte();
+			ObjectMapper.Instance.MapBytes(data, scene.buildIndex, (int)mode);
+
+			Binary frame = new Binary(Networker.Time.Timestep, false, data, Networker is IServer ? Receivers.All : Receivers.Server, MessageGroupIds.VIEW_CHANGE, Networker is BaseTCP);
+
+			// Send the binary frame to either the server or the clients
+			SendFrame(Networker, frame);
+
 			// Go through all of the current NetworkBehaviors in the order that Unity finds them in
 			// and associate them with the id that the network will be giving them as a lookup
 			int currentAttachCode = 1;

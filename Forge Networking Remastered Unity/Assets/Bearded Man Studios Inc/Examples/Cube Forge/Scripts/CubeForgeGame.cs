@@ -79,7 +79,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		// Since this object is a singleton we can create the player from here as
 		// it is in the scene at start time and we want to create a player camera
 		// for this newly created server or newly connected client
-		NetworkManager.Instance.InstantiateNetworkCameraNetworkObject();
+		NetworkManager.Instance.InstantiateNetworkCamera();
 
 		NetworkManager.Instance.Networker.pingReceived += PingReceived;
 
@@ -103,8 +103,12 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	private void DisconnectedFromServer()
 	{
 		NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
-		NetworkManager.Instance.Disconnect();
-		SceneManager.LoadScene(0);
+
+		MainThreadManager.Run(() =>
+		{
+			NetworkManager.Instance.Disconnect();
+			SceneManager.LoadScene(0);
+		});
 	}
 
 	private void PingReceived(double ping)
@@ -119,8 +123,12 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		if (Input.GetKeyDown(KeyCode.Alpha0))
 			primitiveIndex = 0;
 
+		if (!NetworkManager.Instance.Networker.IsServer)
+			return;
+
 		if (Input.GetKeyDown(KeyCode.Space))
-			networkObject.Networker.Ping();
+			SceneManager.LoadScene(1);
+
 		// TODO:  Add a sphere to this if chain
 	}
 

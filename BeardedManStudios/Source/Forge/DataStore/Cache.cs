@@ -102,6 +102,9 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 		/// <param name="frame">The data that was received</param>
 		private void BinaryMessageReceived(NetworkingPlayer player, Binary frame)
 		{
+			if (frame.GroupId != MessageGroupIds.CACHE)
+				return;
+
 			if (Socket is IServer)
 			{
 				byte type = ObjectMapper.Instance.Map<byte>(frame.StreamData);
