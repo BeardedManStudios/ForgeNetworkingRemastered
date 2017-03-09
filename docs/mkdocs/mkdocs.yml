@@ -54,7 +54,9 @@ pages:
     - NAT Hole Punching: nat-hole-punching.md
     - Working With Multiple Sockets: working-with-multiple-sockets.md
     - LAN Discovery: lan-discovery.md
-    - Troubleshooting: troubleshooting.md
+    - Troubleshooting:
+        - troubleshooting.md
+        - throttling-network-internal.md
     - Offline Mode: offline-mode.md
     - Contributing:
         - adding-and-updating-docs.md
