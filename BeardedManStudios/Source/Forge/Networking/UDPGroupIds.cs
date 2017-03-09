@@ -50,7 +50,8 @@ namespace BeardedManStudios.Forge.Networking
 		public const int PONG = 13;
 		public const int VOIP = 14;
 		public const int CACHE = 15;
-		public const int VIEW_CHANGE = 16;
+		public const int VIEW_INITIALIZE = 16;
+		public const int VIEW_CHANGE = 17;
 
 		public const int START_OF_GENERIC_IDS = 10000;
 	}

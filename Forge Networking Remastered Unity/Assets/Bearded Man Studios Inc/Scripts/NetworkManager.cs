@@ -22,6 +22,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
 
+		private List<int> loadedScenes = new List<int>();
+
 		public bool IsServer { get { return Networker.IsServer; } }
 
 		private void Awake()
@@ -63,6 +65,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				if (!string.IsNullOrEmpty(masterServerHost))
 					RegisterOnMasterServer(networker.Port, networker.MaxConnections, masterServerHost, masterServerPort, masterServerRegisterData);
+
+				Networker.playerAccepted += PlayerAcceptedSceneSetup;
 			}
 		}
 
@@ -322,8 +326,51 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
+		/// <summary>
+		/// Called automatically when a new player is accepted and sends the player
+		/// the currently loaded scene indexes for the client to load
+		/// </summary>
+		/// <param name="player">The player that was just accepted</param>
+		private void PlayerAcceptedSceneSetup(NetworkingPlayer player)
+		{
+			BMSByte data = new BMSByte();
+			data.SetSize(loadedScenes.Count * sizeof(int) + sizeof(int));
+
+			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
+
+			// Go through all the loaded scene indexes and send them to the connecting player
+			for (int i = 0; i < loadedScenes.Count; i++)
+				ObjectMapper.Instance.MapBytes(data, loadedScenes[i]);
+
+			Binary frame = new Binary(Networker.Time.Timestep, false, data, Receivers.Target, MessageGroupIds.VIEW_INITIALIZE, Networker is BaseTCP);
+
+			SendFrame(Networker, frame, player);
+		}
+
 		private void ReadBinary(NetworkingPlayer player, Binary frame)
 		{
+			if (frame.GroupId == MessageGroupIds.VIEW_INITIALIZE)
+			{
+				if (Networker is IServer)
+					return;
+
+				int count = frame.StreamData.GetBasicType<int>();
+
+				loadedScenes.Clear();
+				for (int i = 0; i < count; i++)
+					loadedScenes.Add(frame.StreamData.GetBasicType<int>());
+
+				MainThreadManager.Run(() =>
+				{
+					SceneManager.LoadScene(loadedScenes[0]);
+
+					for (int i = 1; i < loadedScenes.Count; i++)
+						SceneManager.LoadSceneAsync(loadedScenes[i]);
+				});
+
+				return;
+			}
+
 			if (frame.GroupId != MessageGroupIds.VIEW_CHANGE)
 				return;
 
@@ -366,15 +413,25 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		/// <param name="networker">The networker that is going to be sending the data</param>
 		/// <param name="frame">The frame that is to be sent across the network</param>
-		public static void SendFrame(NetWorker networker, FrameStream frame)
+		/// <param name="targetPlayer">The player to send the frame to, if null then will send to all</param>
+		public static void SendFrame(NetWorker networker, FrameStream frame, NetworkingPlayer targetPlayer = null)
 		{
-			// If there are any clients currently connected to this server, inform them that it is time to change scenes
 			if (networker is IServer)
 			{
-				if (networker is TCPServer)
-					((TCPServer)networker).SendAll(frame);
+				if (targetPlayer != null)
+				{
+					if (networker is TCPServer)
+						((TCPServer)networker).SendToPlayer(frame, targetPlayer);
+					else
+						((UDPServer)networker).Send(targetPlayer, frame, true);
+				}
 				else
-					((UDPServer)networker).Send(frame, true);
+				{
+					if (networker is TCPServer)
+						((TCPServer)networker).SendAll(frame);
+					else
+						((UDPServer)networker).Send(frame, true);
+				}
 			}
 			else
 			{
@@ -394,7 +451,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				pendingObjects.Clear();
 				pendingNetworkObjects.Clear();
+				loadedScenes.Clear();
 			}
+
+			loadedScenes.Add(scene.buildIndex);
 
 			if (networkSceneLoaded != null)
 				networkSceneLoaded(scene, mode);
