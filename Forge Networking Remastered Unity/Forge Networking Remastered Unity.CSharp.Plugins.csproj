@@ -5,21 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}</ProjectGuid>
+    <ProjectGuid>{DD755A31-0EDF-71DF-955F-155A5C89AEBE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
-    <UnityProjectType>Editor:5</UnityProjectType>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>GamePlugins:3</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -54,58 +52,60 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\UnityAssemblies\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.EditorTestsRunner">
-      <HintPath>Library\UnityAssemblies\UnityEditor.EditorTestsRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TreeEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.TreeEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Graphs">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Graphs.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
-      <HintPath>Library\UnityAssemblies\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-      <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
-    </Reference>
-    <Reference Include="BeardedManStudios">
-      <HintPath>Assets\Plugins\BeardedManStudios.dll</HintPath>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Forge Networking Remastered Unity.CSharp.csproj">
-      <Project>{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}</Project>
-      <Name>Forge Networking Remastered Unity.CSharp</Name>
-    </ProjectReference>
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\CubeForgeGame.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\NetCam.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\Primitive.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Examples\Proximity\ExampleProximityPlayer.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Examples\Proximity\ExampleProximitySpawn.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\NetworkManager.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\NetworkObjectFactory.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\ChatManagerBehavior.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\ChatManagerNetworkObject.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\CubeForgeGameBehavior.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\CubeForgeGameNetworkObject.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\ExampleProximityPlayerBehavior.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\ExampleProximityPlayerNetworkObject.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraBehavior.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraNetworkObject.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Modules\Chat\ChatMaker.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Modules\Chat\ChatManager.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Modules\Stand Alone Chat\StandAloneChat.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Modules\VOIP\VOIP.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Modules\VOIP\VoipStarter.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\BMSUnityExtensions.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\InterpolateQuaternion.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\InterpolateVector2.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\InterpolateVector3.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\InterpolateVector4.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\Logging\BMSLogger.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\MainThreadManager.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\Multiplayer Menu\MultiplayerMenu.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\NetworkBehavior.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\NetworkManager.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\NetworkObjectFactory.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\Server Browser\ServerBrowser.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\Scripts\UnityObjectMapper.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyManager.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayer.cs" />
+    <Compile Include="Assets\Plugins\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayerItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkObjectFactoryTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkObjectFactoryTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

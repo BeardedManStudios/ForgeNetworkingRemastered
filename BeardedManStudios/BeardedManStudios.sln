@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity.CSharp.Editor", "..\Forge Networking Remastered Unity\Forge Networking Remastered Unity.CSharp.Editor.csproj", "{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingCommon", "..\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj", "{9C3AF9D0-B19F-44A6-9068-84B636892BDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingUnityEditor", "..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj", "{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Client|Any CPU = Debug Client|Any CPU
@@ -34,6 +38,18 @@ Global
 		{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3AF9D0-B19F-44A6-9068-84B636892BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

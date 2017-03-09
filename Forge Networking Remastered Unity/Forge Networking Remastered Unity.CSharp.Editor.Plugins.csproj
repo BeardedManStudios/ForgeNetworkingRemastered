@@ -5,21 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F4EC00CC-0A22-F35F-B8A2-EC4AB396F1B6}</ProjectGuid>
+    <ProjectGuid>{AAA88574-A58C-0116-E550-ECD63C77B68E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
-    <UnityProjectType>Editor:5</UnityProjectType>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>EditorPlugins:7</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -90,22 +88,36 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="BeardedManStudios">
-      <HintPath>Assets\Plugins\BeardedManStudios.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Forge Networking Remastered Unity.CSharp.csproj">
-      <Project>{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}</Project>
-      <Name>Forge Networking Remastered Unity.CSharp</Name>
+    <ProjectReference Include="Forge Networking Remastered Unity.CSharp.Plugins.csproj">
+      <Project>{DD755A31-0EDF-71DF-955F-155A5C89AEBE}</Project>
+      <Name>Forge Networking Remastered Unity.CSharp.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkObjectFactoryTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
-    <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeAcceptableFieldTypes.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeAcceptableRPCTypes.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeBaseClassType.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassFieldRPCValue.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassFieldValue.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassIdentity.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassObject.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassRPCValue.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeClassRewindValue.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeEditorButton.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeEditorField.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeEditorRPCField.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeNRPCTypes.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeNetworkingAboutEditor.cs" />
+    <Compile Include="Assets\Plugins\Editor\Bearded Man Studios Inc\ForgeNetworkingEditor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkObjectFactoryTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
+    <None Include="Assets\Plugins\Editor\Bearded Man Studios Inc\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

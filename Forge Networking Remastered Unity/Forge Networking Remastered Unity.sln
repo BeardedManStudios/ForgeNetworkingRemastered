@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity", "Forge Networking Remastered Unity.csproj", "{7101BF79-1CBC-B118-A920-3B09B7453F1D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity.Editor", "Forge Networking Remastered Unity.Editor.csproj", "{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity.CSharp", "Forge Networking Remastered Unity.CSharp.csproj", "{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0EBD724-63F3-69D8-13AF-39C3EA8EC258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{008166C2-D7F4-F9F8-1D2F-8A7DADD3E498}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
