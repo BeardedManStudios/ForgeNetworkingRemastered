@@ -334,8 +334,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		private void PlayerAcceptedSceneSetup(NetworkingPlayer player)
 		{
 			BMSByte data = new BMSByte();
-			data.SetSize(loadedScenes.Count * sizeof(int) + sizeof(int));
-
 			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
 
 			// Go through all the loaded scene indexes and send them to the connecting player

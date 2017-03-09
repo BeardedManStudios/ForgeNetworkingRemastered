@@ -207,16 +207,19 @@ public class MultiplayerMenu : MonoBehaviour
 		if (useInlineChat && networker.IsServer)
 			SceneManager.sceneLoaded += CreateInlineChat;
 
-		if (!DontChangeSceneOnConnect)
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-		else
-			NetworkObject.Flush(networker); //Called because we are already in the correct scene!
+		if (networker is IServer)
+		{
+			if (!DontChangeSceneOnConnect)
+				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+			else
+				NetworkObject.Flush(networker); //Called because we are already in the correct scene!
+		}
 	}
 
 	private void CreateInlineChat(Scene arg0, LoadSceneMode arg1)
 	{
 		SceneManager.sceneLoaded -= CreateInlineChat;
-		var chat = NetworkManager.Instance.InstantiateChatManagerNetworkObject();
+		var chat = NetworkManager.Instance.InstantiateChatManager();
 		DontDestroyOnLoad(chat.gameObject);
 	}
 
