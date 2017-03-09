@@ -360,10 +360,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				MainThreadManager.Run(() =>
 				{
-					SceneManager.LoadScene(loadedScenes[0]);
+					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
 
 					for (int i = 1; i < loadedScenes.Count; i++)
-						SceneManager.LoadSceneAsync(loadedScenes[i]);
+						SceneManager.LoadSceneAsync(loadedScenes[i], LoadSceneMode.Additive);
 				});
 
 				return;
@@ -400,9 +400,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				// Load the scene that the server loaded in the same LoadSceneMode
 				if (mode == LoadSceneMode.Additive)
-					SceneManager.LoadSceneAsync(sceneIndex);
+					SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
 				else if (mode == LoadSceneMode.Single)
-					SceneManager.LoadScene(sceneIndex);
+					SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
 			});
 		}
 
