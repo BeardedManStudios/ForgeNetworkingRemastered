@@ -100,7 +100,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				Type factoryInterface = currentType.GetInterface("INetworkObjectFactory");
 				bool isMonobehavior = currentType.IsSubclassOf(typeof(MonoBehaviour));
 
-				Debug.Log(baseType.FullName);
 				if (baseType.FullName == "BeardedManStudios.Forge.Networking.NetworkObject")
 				{
 					ObjectClassType = ForgeBaseClassType.NetworkObject;

@@ -64,17 +64,24 @@
     <Reference Include="BeardedManStudios">
       <HintPath>Assets\Plugins\BeardedManStudios.dll</HintPath>
     </Reference>
+    <Reference Include="ForgeNetworkingCommon">
+      <HintPath>Assets\Plugins\ForgeNetworkingCommon.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\CubeForgeGame.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\NetCam.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Examples\Cube Forge\Scripts\Primitive.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Examples\Proximity\ExampleProximityPlayer.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Examples\Proximity\ExampleProximitySpawn.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\NetworkManager.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\NetworkObjectFactory.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\ChatManagerBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\ChatManagerNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\CubeForgeGameBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\CubeForgeGameNetworkObject.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\ExampleProximityPlayerBehavior.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\ExampleProximityPlayerNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatMaker.cs" />
@@ -95,9 +102,9 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkObjectFactory.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\Server Browser\ServerBrowser.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\UnityObjectMapper.cs" />
-    <Compile Include="Assets\WIP\Modules\LobbySystem\LobbyManager.cs" />
-    <Compile Include="Assets\WIP\Modules\LobbySystem\LobbyPlayer.cs" />
-    <Compile Include="Assets\WIP\Modules\LobbySystem\LobbyPlayerItem.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyManager.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayer.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayerItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
