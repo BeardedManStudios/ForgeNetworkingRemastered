@@ -730,7 +730,9 @@ namespace BeardedManStudios.Forge.Networking
 					ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
 				}
 				else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
+				{
 					NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
+				}
 				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
 					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
 				else if (binaryMessageReceived != null)

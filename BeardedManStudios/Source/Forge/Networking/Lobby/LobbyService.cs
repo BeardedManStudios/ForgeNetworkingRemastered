@@ -446,11 +446,11 @@ namespace BeardedManStudios.Forge.Networking.Lobby
             networkObject.AttachedBehavior = this;
 
             networkObject.RegisterRpc("AssignName", AssignName, typeof(string), typeof(uint));
-            networkObject.RegisterRpc("PlayerJoined", PlayerJoined, typeof(uint));
+			networkObject.RegisterRpc("AssignAvatar", AssignAvatar, typeof(uint), typeof(int));
+			networkObject.RegisterRpc("AssignTeam", AssignTeam, typeof(uint), typeof(int));
+			networkObject.RegisterRpc("MessageReceived", MessageReceived, typeof(uint), typeof(string));
+			networkObject.RegisterRpc("PlayerJoined", PlayerJoined, typeof(uint));
             networkObject.RegisterRpc("PlayerLeft", PlayerLeft, typeof(uint));
-            networkObject.RegisterRpc("AssignAvatar", AssignAvatar, typeof(uint), typeof(int));
-            networkObject.RegisterRpc("AssignTeam", AssignTeam, typeof(uint), typeof(int));
-            networkObject.RegisterRpc("MessageReceived", MessageReceived, typeof(uint), typeof(string));
             networkObject.RegistrationComplete();
             _initialized = true;
 
