@@ -61,6 +61,7 @@ pages:
         - troubleshooting.md
         - throttling-network-internal.md
     - Offline Mode: offline-mode.md
+    - Lobby System: lobby.md
     - Contributing:
         - adding-and-updating-docs.md
 theme: readthedocs
