@@ -1,5 +1,6 @@
 ﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking.Lobby;
 using SimpleJSON;
 using System.Collections.Generic;
 using UnityEngine;
@@ -158,8 +159,7 @@ public class MultiplayerMenu : MonoBehaviour
 		{
 			Debug.Log("Player " + player.NetworkId + " timed out");
 		};
-		//TODO: Implement Lobby Service
-		//LobbyService.Instance.Initialize(server);
+		LobbyService.Instance.Initialize(server);
 
 		Connected(server);
 	}
