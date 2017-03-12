@@ -114,6 +114,11 @@ namespace BeardedManStudios.Forge.Networking
 		public static event CreateRequestEvent objectCreateRequested;
 
 		/// <summary>
+		/// Called whenever this NetworkObject has its owning player changed
+		/// </summary>
+		public event NetWorker.BaseNetworkEvent ownershipChanged;
+
+		/// <summary>
 		/// Occurs when a binary message was received on the network for this object and is needed to be read
 		/// </summary>
 		public event BinaryDataEvent readBinary;
@@ -520,7 +525,11 @@ namespace BeardedManStudios.Forge.Networking
 				OwnershipChanged();
 		}
 
-		protected virtual void OwnershipChanged() { }
+		protected virtual void OwnershipChanged()
+		{
+			if (ownershipChanged != null)
+				ownershipChanged();
+		}
 
 		/// <summary>
 		/// Clear all of the buffered rpcs for this network object
