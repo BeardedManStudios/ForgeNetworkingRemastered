@@ -92,7 +92,9 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
                     if (_myself == null)
                     {
-
+						DummyPlayer dummyPlayer = new DummyPlayer(networkObject.MyPlayerId, string.Empty);
+						MasterLobby.LobbyPlayers.Add(dummyPlayer);
+						_myself = dummyPlayer;
                     }
                 }
 
@@ -276,7 +278,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
                 {
                     LobbyTeams.Add(kv.Key, kv.Value);
                 }
-            }
+			}
 
             public void OnFNLobbyPlayerMessageReceived(IClientMockPlayer player, string message)
             {
@@ -495,12 +497,13 @@ namespace BeardedManStudios.Forge.Networking.Lobby
             MasterLobby.OnFNPlayerNameChanged(player);
         }
 
-        public void PlayerConnected(IClientMockPlayer player)
-        {
-            //Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
-            player.Name = "Player " + player.NetworkId;
-            networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.AllBuffered, player.NetworkId);
-        }
+		//public void PlayerConnected(IClientMockPlayer player)
+		//{
+		//	//Logging.BMSLog.Log("SEVERRRR: " + player.NetworkId);
+		//	player.Name = "Player " + player.NetworkId;
+		//	networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.AllBuffered, player.NetworkId);
+		//}
+
         /// <summary>
         /// Arguments:
         /// uint playerid
@@ -509,7 +512,6 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         {
             uint playerId = args.GetNext<uint>();
             var player = CreateClientMockPlayer(playerId, "Player " + playerId);
-            //Logging.BMSLog.Log("PLAYER JOINED!! :" + playerId);
 
             MasterLobby.OnFNPlayerConnected(player);
         }
@@ -584,7 +586,18 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
         private IClientMockPlayer GetClientMockPlayer(uint playerId)
         {
-            var targetPlayer = MasterLobby.LobbyPlayers.First(c => c.NetworkId == playerId);
+			IClientMockPlayer targetPlayer = null;
+			if (MasterLobby != null)
+			{
+				for (int i = 0; i < MasterLobby.LobbyPlayers.Count; ++i)
+				{
+					if (MasterLobby.LobbyPlayers[i].NetworkId == playerId)
+					{
+						targetPlayer = MasterLobby.LobbyPlayers[i];
+						break;
+					}
+				}
+			}
             return targetPlayer;
         }
 

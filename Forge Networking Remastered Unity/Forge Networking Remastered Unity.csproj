@@ -100,6 +100,7 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkManager.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkObjectFactory.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkObjectFactoryBase.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\Server Browser\ServerBrowser.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\UnityObjectMapper.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyManager.cs" />

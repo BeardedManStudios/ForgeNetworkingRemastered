@@ -114,6 +114,11 @@ namespace BeardedManStudios.Forge.Networking
 		public static event CreateRequestEvent objectCreateRequested;
 
 		/// <summary>
+		/// TODO: COMMENT
+		/// </summary>
+		public static event NetworkObjectEvent factoryObjectCreated;
+
+		/// <summary>
 		/// Occurs when a binary message was received on the network for this object and is needed to be read
 		/// </summary>
 		public event BinaryDataEvent readBinary;
@@ -1407,6 +1412,8 @@ namespace BeardedManStudios.Forge.Networking
 					Factory.NetworkCreateObject(networker, identity, id, frame, (obj) =>
 					{
 						networkObjects.Add(obj);
+						if (factoryObjectCreated != null)
+							factoryObjectCreated(obj);
 					});
 				}
 			}
