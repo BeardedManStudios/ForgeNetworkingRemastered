@@ -6,7 +6,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 {
 	public partial class NetworkObjectFactory : NetworkObjectFactoryBase
 	{
-		public ovveride void NetworkCreateObject(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
+		public override void NetworkCreateObject(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
 		{
 			if (networker.IsServer)
 			{
