@@ -6,7 +6,7 @@ During your development process you may find that you have to send an RPC to a s
 // targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else
 // args is an object array
 
-networkObject.SendRpc(targetPlayer, RPC_RPC_NAME, Receivers.Target, args);
+networkObject.SendRpc(targetPlayer, RPC_RPC_NAME, args);
 ```
 
 ### Player Accept (join) Example
@@ -20,7 +20,7 @@ if (networker.IsServer)
 
 private void PlayerAcceptedSetup(NetworkingPlayer newPlayer)
 {
-    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, Receivers.Target, args);
+    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, args);
 }
 ```
 

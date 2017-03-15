@@ -352,7 +352,7 @@
         }, 
         {
             "location": "/sending-rpc-to-a-single-player/", 
-            "text": "Sending RPC to a Single Player\n\n\nDuring your development process you may find that you have to send an RPC to a single player and nobody else. This is especially useful to target players that are just connecting to the server to send them needed data that is not buffered already.\n\n\nGeneral Example\n\n\n// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else\n// args is an object array\n\nnetworkObject.SendRpc(targetPlayer, RPC_RPC_NAME, Receivers.Target, args);\n\n\n\n\nPlayer Accept (join) Example\n\n\n// Somewhere in your code\n\nif (networker.IsServer)\n    networker.playerAccepted += PlayerAcceptedSetup;\n\n// ...\n\nprivate void PlayerAcceptedSetup(NetworkingPlayer newPlayer)\n{\n    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, Receivers.Target, args);\n}\n\n\n\n\nNotes\n\n\nThis player targeting with RPCs are done on the server. Clients do not have direct access to each other since all network traffic goes through the server (which makes it \nauthoritative\n). You can use Receivers.Owner to target the owning player of the network object from any client though.", 
+            "text": "Sending RPC to a Single Player\n\n\nDuring your development process you may find that you have to send an RPC to a single player and nobody else. This is especially useful to target players that are just connecting to the server to send them needed data that is not buffered already.\n\n\nGeneral Example\n\n\n// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else\n// args is an object array\n\nnetworkObject.SendRpc(targetPlayer, RPC_RPC_NAME, args);\n\n\n\n\nPlayer Accept (join) Example\n\n\n// Somewhere in your code\n\nif (networker.IsServer)\n    networker.playerAccepted += PlayerAcceptedSetup;\n\n// ...\n\nprivate void PlayerAcceptedSetup(NetworkingPlayer newPlayer)\n{\n    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, args);\n}\n\n\n\n\nNotes\n\n\nThis player targeting with RPCs are done on the server. Clients do not have direct access to each other since all network traffic goes through the server (which makes it \nauthoritative\n). You can use Receivers.Owner to target the owning player of the network object from any client though.", 
             "title": "Sending rpc to a single player"
         }, 
         {
@@ -362,12 +362,12 @@
         }, 
         {
             "location": "/sending-rpc-to-a-single-player/#general-example", 
-            "text": "// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else\n// args is an object array\n\nnetworkObject.SendRpc(targetPlayer, RPC_RPC_NAME, Receivers.Target, args);", 
+            "text": "// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else\n// args is an object array\n\nnetworkObject.SendRpc(targetPlayer, RPC_RPC_NAME, args);", 
             "title": "General Example"
         }, 
         {
             "location": "/sending-rpc-to-a-single-player/#player-accept-join-example", 
-            "text": "// Somewhere in your code\n\nif (networker.IsServer)\n    networker.playerAccepted += PlayerAcceptedSetup;\n\n// ...\n\nprivate void PlayerAcceptedSetup(NetworkingPlayer newPlayer)\n{\n    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, Receivers.Target, args);\n}", 
+            "text": "// Somewhere in your code\n\nif (networker.IsServer)\n    networker.playerAccepted += PlayerAcceptedSetup;\n\n// ...\n\nprivate void PlayerAcceptedSetup(NetworkingPlayer newPlayer)\n{\n    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, args);\n}", 
             "title": "Player Accept (join) Example"
         }, 
         {

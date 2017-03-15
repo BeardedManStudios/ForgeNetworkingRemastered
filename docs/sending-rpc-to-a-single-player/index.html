@@ -532,7 +532,7 @@
 <pre><code class="csharp">// targetPlayer is a NetworkingPlayer refence we got from the NetWorker::Players list or anywhere else
 // args is an object array
 
-networkObject.SendRpc(targetPlayer, RPC_RPC_NAME, Receivers.Target, args);
+networkObject.SendRpc(targetPlayer, RPC_RPC_NAME, args);
 </code></pre>
 
 <h3 id="player-accept-join-example">Player Accept (join) Example</h3>
@@ -545,7 +545,7 @@ if (networker.IsServer)
 
 private void PlayerAcceptedSetup(NetworkingPlayer newPlayer)
 {
-    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, Receivers.Target, args);
+    networkObject.SendRpc(newPlayer, RPC_RPC_NAME, args);
 }
 </code></pre>
 
