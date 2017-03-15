@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Main threading rpcs - Forge Networking Remastered</title>
+  <title>Throttling network internal - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Main threading rpcs";
-    var mkdocs_page_input_path = "main-threading-rpcs.md";
-    var mkdocs_page_url = "/main-threading-rpcs/";
+    var mkdocs_page_name = "Throttling network internal";
+    var mkdocs_page_input_path = "throttling-network-internal.md";
+    var mkdocs_page_url = "/throttling-network-internal/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -253,15 +253,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Main threading rpcs</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#main-threading-rpcs">Main Threading RPCs</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
         
     </li>
 
@@ -442,8 +435,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../throttling-network-internal/">Throttling network internal</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Throttling network internal</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#throttling-network-internal">Throttling Network Internal</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#network-latency-simulation">Network Latency Simulation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#packet-loss-simulation">Packet Loss Simulation</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -502,11 +508,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Troubleshooting &raquo;</li>
         
       
     
-    <li>Main threading rpcs</li>
+    <li>Throttling network internal</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -516,10 +522,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="main-threading-rpcs">Main Threading RPCs</h1>
-<p>The RPC behaviors in Forge Networking work on the network reading thread for purposes of performance when it comes to reading network data. This means that accessing any Unity specific objects in this thread will cause an error (please see Threading in Unity). Many of our newer users will be unconformable working with function pointers, lambda expressions or threading so we have created an easy way for you to make all RPC calls perform on the main thread. At any point in your application you can assign the Rpc's <strong>MainThreadRunner</strong> object. By doing this you will essentially make all incoming RPC calls run on Unity's main thread. To do this you would do the following in your code.</p>
-<p>For an example of this, please see the <strong>MultiplayerMenu.cs</strong> file and follow the <strong>useMainThreadManagerForRPCs</strong> variable.</p>
-<p>If you wish to manually say when to run an RPC on the main thread. You can always use the <strong>MainThreadManage.Run</strong> method to queue actions to perform on the main thread. To understand this further, please review Threading in Unity.</p>
+                <h1 id="throttling-network-internal">Throttling Network Internal</h1>
+<p>So there are many tools out there to download and use to test applications and the general stability of networks, however we wanted to go over some quick and easy ways that you can test the network using just Forge Networking.</p>
+<h1 id="network-latency-simulation">Network Latency Simulation</h1>
+<p>The network latency simulation lets you test how your code would behave if there were to be network latency. This is a very simple tool that makes it so that the core of Forge will delay the reading/sending of messages by the given milliseconds. This is useful to test and see how clients with slow networks will experience your game. The latency simulation is <strong>per NetWorker</strong> so to test this out quickly you can use <code>NetworkManager.Instance.Networker</code>. Below is a sample of how to set the latency to 900 milliseconds (0.9 seconds):</p>
+<pre><code class="csharp">// Somewhere in code, even during runtime
+NetworkManager.Instance.Networker.LatencySimulation = 900;  // 900 is the time in milliseconds
+</code></pre>
+
+<h1 id="packet-loss-simulation">Packet Loss Simulation</h1>
+<p>The packet loss simulation lets you test how your code would behave if there were to be packet loss of a specific chance. This tool allows you to set a percentage of packet loss. What this does internally is generate a random number, if it is within the specified percantage then it will delete the packet and ignore reading it. This will allow you to test your code to see what would happen if you were to lose packets during gameplay. The packet loss simulation is <strong>per NetWorker</strong> so to test this out quickly you can use <code>NetworkManager.Instance.Networker</code>. Below is a sample of how to set the percentage to 0.1f (10% packet loss chance):</p>
+<pre><code class="csharp">// Somewhere in code, even during runtime
+NetworkManager.Instance.Networker.PacketLossSimulation = 0.1f;  // 0.1f is the percentage chance of packet loss (10% in this case)
+</code></pre>
               
             </div>
           </div>
@@ -527,10 +542,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../running-unity-specific-code-on-the-main-thread/" class="btn btn-neutral float-right" title="Running unity specific code on the main thread">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../offline-mode/" class="btn btn-neutral float-right" title="Offline Mode">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../threading-in-unity/" class="btn btn-neutral" title="Threading in unity"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../troubleshooting/" class="btn btn-neutral" title="Troubleshooting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -556,10 +571,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../threading-in-unity/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../troubleshooting/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../running-unity-specific-code-on-the-main-thread/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../offline-mode/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

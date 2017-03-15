@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Main threading rpcs - Forge Networking Remastered</title>
+  <title>Client connecting code - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Main threading rpcs";
-    var mkdocs_page_input_path = "main-threading-rpcs.md";
-    var mkdocs_page_url = "/main-threading-rpcs/";
+    var mkdocs_page_name = "Client connecting code";
+    var mkdocs_page_input_path = "client-connecting-code.md";
+    var mkdocs_page_url = "/client-connecting-code/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -253,15 +253,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Main threading rpcs</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#main-threading-rpcs">Main Threading RPCs</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
         
     </li>
 
@@ -289,8 +282,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../client-connecting-code/">Client connecting code</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Client connecting code</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#client-connecting-code">Client Connecting Code</a></li>
+                
+                    <li><a class="toctree-l4" href="#udp-client">UDP Client</a></li>
+                
+                    <li><a class="toctree-l4" href="#tcp-client">TCP Client</a></li>
+                
+                    <li><a class="toctree-l4" href="#assigning-to-network-manager">Assigning to Network Manager</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -502,11 +508,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Basic Network Setup Samples &raquo;</li>
         
       
     
-    <li>Main threading rpcs</li>
+    <li>Client connecting code</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -516,10 +522,27 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="main-threading-rpcs">Main Threading RPCs</h1>
-<p>The RPC behaviors in Forge Networking work on the network reading thread for purposes of performance when it comes to reading network data. This means that accessing any Unity specific objects in this thread will cause an error (please see Threading in Unity). Many of our newer users will be unconformable working with function pointers, lambda expressions or threading so we have created an easy way for you to make all RPC calls perform on the main thread. At any point in your application you can assign the Rpc's <strong>MainThreadRunner</strong> object. By doing this you will essentially make all incoming RPC calls run on Unity's main thread. To do this you would do the following in your code.</p>
-<p>For an example of this, please see the <strong>MultiplayerMenu.cs</strong> file and follow the <strong>useMainThreadManagerForRPCs</strong> variable.</p>
-<p>If you wish to manually say when to run an RPC on the main thread. You can always use the <strong>MainThreadManage.Run</strong> method to queue actions to perform on the main thread. To understand this further, please review Threading in Unity.</p>
+                <h1 id="client-connecting-code">Client Connecting Code</h1>
+<p>Before you can take full advantage of setting up a client, you will probably want to setup <a href="../server-hosting-code">server hosting code</a> so that the client has something to actually connect to. Below is a sample of how to start a UDP Client and a TCP Client.</p>
+<h4 id="udp-client">UDP Client</h4>
+<pre><code class="csharp">string hostAddress = &quot;127.0.0.1&quot;;
+ushort port = 15937;
+UDPClient client = new UDPClient();
+client.Connect(hostAddress, port);
+</code></pre>
+
+<h4 id="tcp-client">TCP Client</h4>
+<pre><code class="csharp">TCPClient client = new TCPClient();
+client.Connect(hostAddress, port);
+</code></pre>
+
+<h2 id="assigning-to-network-manager">Assigning to Network Manager</h2>
+<p><strong>Hard to believe?</strong> Yes that is all the code you need to start up a client, now there is one more important piece of business we must complete. Since this client is most likely going to be the main communication <code>NetWorker</code> with the server and the game, you are probably going to want to set it up as the default <code>NetWorker</code> for the <code>NetworkManager</code> to use. You can do this with the following:</p>
+<pre><code class="csharp">// The client object is the same object from the above code samples
+NetworkManager.Instance.Initialize(client);
+</code></pre>
+
+<p>By doing this, the passed in client will be the <code>NetWorker</code> that is used for all communication managed by the <code>NetworkManager</code>. This includes spawning objects, RPC calls on those objects, scene transitions and so forth.</p>
               
             </div>
           </div>
@@ -527,10 +550,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../running-unity-specific-code-on-the-main-thread/" class="btn btn-neutral float-right" title="Running unity specific code on the main thread">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../connection-cycle-events/" class="btn btn-neutral float-right" title="Connection cycle events">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../threading-in-unity/" class="btn btn-neutral" title="Threading in unity"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../server-hosting-code/" class="btn btn-neutral" title="Server hosting code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -556,10 +579,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../threading-in-unity/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../server-hosting-code/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../running-unity-specific-code-on-the-main-thread/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../connection-cycle-events/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Main threading rpcs - Forge Networking Remastered</title>
+  <title>Scene events - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Main threading rpcs";
-    var mkdocs_page_input_path = "main-threading-rpcs.md";
-    var mkdocs_page_url = "/main-threading-rpcs/";
+    var mkdocs_page_name = "Scene events";
+    var mkdocs_page_input_path = "scene-events.md";
+    var mkdocs_page_url = "/scene-events/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -253,15 +253,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Main threading rpcs</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#main-threading-rpcs">Main Threading RPCs</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../main-threading-rpcs/">Main threading rpcs</a>
         
     </li>
 
@@ -326,8 +319,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../scene-events/">Scene events</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Scene events</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#scene-events">Scene Events</a></li>
+                
+                    <li><a class="toctree-l4" href="#playerloadedscene">playerLoadedScene</a></li>
+                
+                    <li><a class="toctree-l4" href="#networkscenechanging">networkSceneChanging</a></li>
+                
+                    <li><a class="toctree-l4" href="#networksceneloaded">networkSceneLoaded</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -502,11 +508,11 @@
     
       
         
-          <li>Unity Integration &raquo;</li>
+          <li>Scene Navigation &raquo;</li>
         
       
     
-    <li>Main threading rpcs</li>
+    <li>Scene events</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -516,10 +522,14 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="main-threading-rpcs">Main Threading RPCs</h1>
-<p>The RPC behaviors in Forge Networking work on the network reading thread for purposes of performance when it comes to reading network data. This means that accessing any Unity specific objects in this thread will cause an error (please see Threading in Unity). Many of our newer users will be unconformable working with function pointers, lambda expressions or threading so we have created an easy way for you to make all RPC calls perform on the main thread. At any point in your application you can assign the Rpc's <strong>MainThreadRunner</strong> object. By doing this you will essentially make all incoming RPC calls run on Unity's main thread. To do this you would do the following in your code.</p>
-<p>For an example of this, please see the <strong>MultiplayerMenu.cs</strong> file and follow the <strong>useMainThreadManagerForRPCs</strong> variable.</p>
-<p>If you wish to manually say when to run an RPC on the main thread. You can always use the <strong>MainThreadManage.Run</strong> method to queue actions to perform on the main thread. To understand this further, please review Threading in Unity.</p>
+                <h1 id="scene-events">Scene Events</h1>
+<p>There are some events that you can register to in order to know the flow of the scene loading events. Below are a list of the available events to hook into for scene loading and short descriptions of what they are for. <strong>Note</strong> All of these events are available through the <code>NetworkManager.Instance</code> so for example <code>playerLoadedScene</code> would be <code>NetworkManager.Instance.playerLoadedScene</code>.</p>
+<h2 id="playerloadedscene">playerLoadedScene</h2>
+<p>This is used on the server to know when a specific player has finished loading into a level.</p>
+<h2 id="networkscenechanging">networkSceneChanging</h2>
+<p>This is used on the client to know if it has been told by the server to change the scene. This happens just before the scene change is invoked.</p>
+<h2 id="networksceneloaded">networkSceneLoaded</h2>
+<p>This is used on the client and the server to know when the scene has been successfully loaded and is ready to begin with networking code (starting with spawning Network Objects).</p>
               
             </div>
           </div>
@@ -527,10 +537,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../running-unity-specific-code-on-the-main-thread/" class="btn btn-neutral float-right" title="Running unity specific code on the main thread">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../rewinding/" class="btn btn-neutral float-right" title="Rewinding">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../threading-in-unity/" class="btn btn-neutral" title="Threading in unity"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../loading-scenes/" class="btn btn-neutral" title="Loading scenes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -556,10 +566,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../threading-in-unity/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../loading-scenes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../running-unity-specific-code-on-the-main-thread/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../rewinding/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

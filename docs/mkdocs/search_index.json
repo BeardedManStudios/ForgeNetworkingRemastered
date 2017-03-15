@@ -541,6 +541,56 @@
             "title": "MainThreadManager.Run Lambda Expression"
         }, 
         {
+            "location": "/server-hosting-code/", 
+            "text": "Server Hosting Code\n\n\nSo you may have looked at the \nMultiplayerMenu.cs\n file and noticed there is a lot of amazing useful code samples there, but sometimes all that code can be a bit overwhelming and you just want to know \nHow do I start a server?\n. Below is a sample of how to start a UDP Server and a TCP Server.\n\n\nUDP Server\n\n\nint maxAllowedClients = 32;\nUDPServer server = new UDPServer(maxAllowedClients);\nserver.Connect();\n\n\n\n\nTCP Server\n\n\nint maxAllowedClients = 32;\nTCPServer server = new TCPServer(maxAllowedClients);\nserver.Connect();\n\n\n\n\nIt is worth noting that both \nUDPServer\n and \nTCPServer\n implement the \nIServer\n interface and derive from the \nNetWorker\n. So there are many casting and generic options to choose from. There are arguments that go into the \nConnect\n methods of these types, but they are for the \nMaster Server\n and \nNat Server\n.\n\n\nAssigning to Network Manager\n\n\nHard to believe?\n, Yes that is all the code you need to start up a server, now there is one more important piece of business we must complete. Since this server is most likely going to be the main communication \nNetWorker\n with the clients and the game, you are probably going to want to set it up as the default \nNetWorker\n for the \nNetworkManager\n to use. You can do this with the following:\n\n\n// The server object is the same object from the above code samples\nNetworkManager.Instance.Initialize(server);\n\n\n\n\nBy doing this, the passed in server will be the \nNetWorker\n that is used for all communication managed by the \nNetworkManager\n. This includes spawning objects, RPC calls on those objects, scene transitions and so forth.", 
+            "title": "Server hosting code"
+        }, 
+        {
+            "location": "/server-hosting-code/#server-hosting-code", 
+            "text": "So you may have looked at the  MultiplayerMenu.cs  file and noticed there is a lot of amazing useful code samples there, but sometimes all that code can be a bit overwhelming and you just want to know  How do I start a server? . Below is a sample of how to start a UDP Server and a TCP Server.", 
+            "title": "Server Hosting Code"
+        }, 
+        {
+            "location": "/server-hosting-code/#udp-server", 
+            "text": "int maxAllowedClients = 32;\nUDPServer server = new UDPServer(maxAllowedClients);\nserver.Connect();", 
+            "title": "UDP Server"
+        }, 
+        {
+            "location": "/server-hosting-code/#tcp-server", 
+            "text": "int maxAllowedClients = 32;\nTCPServer server = new TCPServer(maxAllowedClients);\nserver.Connect();  It is worth noting that both  UDPServer  and  TCPServer  implement the  IServer  interface and derive from the  NetWorker . So there are many casting and generic options to choose from. There are arguments that go into the  Connect  methods of these types, but they are for the  Master Server  and  Nat Server .", 
+            "title": "TCP Server"
+        }, 
+        {
+            "location": "/server-hosting-code/#assigning-to-network-manager", 
+            "text": "Hard to believe? , Yes that is all the code you need to start up a server, now there is one more important piece of business we must complete. Since this server is most likely going to be the main communication  NetWorker  with the clients and the game, you are probably going to want to set it up as the default  NetWorker  for the  NetworkManager  to use. You can do this with the following:  // The server object is the same object from the above code samples\nNetworkManager.Instance.Initialize(server);  By doing this, the passed in server will be the  NetWorker  that is used for all communication managed by the  NetworkManager . This includes spawning objects, RPC calls on those objects, scene transitions and so forth.", 
+            "title": "Assigning to Network Manager"
+        }, 
+        {
+            "location": "/client-connecting-code/", 
+            "text": "Client Connecting Code\n\n\nBefore you can take full advantage of setting up a client, you will probably want to setup \nserver hosting code\n so that the client has something to actually connect to. Below is a sample of how to start a UDP Client and a TCP Client.\n\n\nUDP Client\n\n\nstring hostAddress = \n127.0.0.1\n;\nushort port = 15937;\nUDPClient client = new UDPClient();\nclient.Connect(hostAddress, port);\n\n\n\n\nTCP Client\n\n\nTCPClient client = new TCPClient();\nclient.Connect(hostAddress, port);\n\n\n\n\nAssigning to Network Manager\n\n\nHard to believe?\n Yes that is all the code you need to start up a client, now there is one more important piece of business we must complete. Since this client is most likely going to be the main communication \nNetWorker\n with the server and the game, you are probably going to want to set it up as the default \nNetWorker\n for the \nNetworkManager\n to use. You can do this with the following:\n\n\n// The client object is the same object from the above code samples\nNetworkManager.Instance.Initialize(client);\n\n\n\n\nBy doing this, the passed in client will be the \nNetWorker\n that is used for all communication managed by the \nNetworkManager\n. This includes spawning objects, RPC calls on those objects, scene transitions and so forth.", 
+            "title": "Client connecting code"
+        }, 
+        {
+            "location": "/client-connecting-code/#client-connecting-code", 
+            "text": "Before you can take full advantage of setting up a client, you will probably want to setup  server hosting code  so that the client has something to actually connect to. Below is a sample of how to start a UDP Client and a TCP Client.", 
+            "title": "Client Connecting Code"
+        }, 
+        {
+            "location": "/client-connecting-code/#udp-client", 
+            "text": "string hostAddress =  127.0.0.1 ;\nushort port = 15937;\nUDPClient client = new UDPClient();\nclient.Connect(hostAddress, port);", 
+            "title": "UDP Client"
+        }, 
+        {
+            "location": "/client-connecting-code/#tcp-client", 
+            "text": "TCPClient client = new TCPClient();\nclient.Connect(hostAddress, port);", 
+            "title": "TCP Client"
+        }, 
+        {
+            "location": "/client-connecting-code/#assigning-to-network-manager", 
+            "text": "Hard to believe?  Yes that is all the code you need to start up a client, now there is one more important piece of business we must complete. Since this client is most likely going to be the main communication  NetWorker  with the server and the game, you are probably going to want to set it up as the default  NetWorker  for the  NetworkManager  to use. You can do this with the following:  // The client object is the same object from the above code samples\nNetworkManager.Instance.Initialize(client);  By doing this, the passed in client will be the  NetWorker  that is used for all communication managed by the  NetworkManager . This includes spawning objects, RPC calls on those objects, scene transitions and so forth.", 
+            "title": "Assigning to Network Manager"
+        }, 
+        {
             "location": "/connection-cycle-events/", 
             "text": "Connection Cycle Events\n\n\nBelow are a quick explaination of the various events that happen during the connection and acceptance cycles on both the server and the client.\n\n\nServer \n Client Events\n\n\nThe below are events that are local-aware, that is to say that they are called without any need for an active connection.\n\n\nbindSuccessful\n\n\nCalled when the local machine allowed the binding of the port requested.\n\n\nbindFailure\n\n\nCalled when the local machine rejected the binding of the port requested.\n\n\ndisconnected\n\n\nCalled when the local machine has completely disconnected from any communications in the Forge life cycle\n\n\nServer Events\n\n\nThe following events are called on the \nserver only\n based on the behavior of clients connecting or disconnecting.\n\n\nplayerConnected\n\n\nCalled when a player has successfully connected with the server. This player \nCAN\n be rejected by the server, so this event is mainly useful for evaluation of the player or preparing anything you need for the player. You should not be communicating with the player at all until they have been accepted.\n\n\nplayerGuidAssigned\n\n\nThis event is called once the server has gotten the unique guid for a player. This triggers just before the accepted message and is useful to prepare any network player lookups.\n\n\nplayerAccepted\n\n\nFired when the player has been officially accepted by the server and now is the time you are able to start sending your messages to this player.\n\n\nplayerRejected\n\n\nFired when a player has been rejected for any reason by the server. This event will be expanded later but currenlty is used for when a client has sent invalid connection headers.\n\n\nplayerTimeout\n\n\nCalled when a player has timed out on the server. This happens after they have been accepted and if the server hasn't receieved any message (ping or otherwise) from the specified client. The timeout time (in milliseconds) for a player can be found/set in the \nNetworkingPlayer::TimeoutMilliseconds\n property.\n\n\nplayerDisconnected\n\n\nCalled at any time that a player has disconnected on its own or by the server.\n\n\nClient Events\n\n\nThe following events are called on the client only and deal with the various connection events that relate to this client and the server.\n\n\nserverAccepted\n\n\nCalled whenever the server has accepted this client. At this point it is safe to start sending messages to the server and to know it is a live connection.", 
             "title": "Connection cycle events"
@@ -614,6 +664,61 @@
             "location": "/connection-cycle-events/#serveraccepted", 
             "text": "Called whenever the server has accepted this client. At this point it is safe to start sending messages to the server and to know it is a live connection.", 
             "title": "serverAccepted"
+        }, 
+        {
+            "location": "/loading-scenes/", 
+            "text": "Loading Scenes\n\n\nOne of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:\n\n\n\n\nHow do clients know when to change scenes?\n\n\nHow do I clean up all the network objects?\n\n\nHow do clients know what scene to go to?\n\n\nHow do newly connected clients know what scene is currently active?\n\n\nHow do I handle additive scenes?\n\n\n\n\nThese are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's \nSceneManager.sceneLoaded\n event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.\n\n\nThere are a few important notes about scenes with Forge Networking:\n\n\n\n\nThe server must load the scene to trigger all of the clients to load scenes\n\n\nClients can still load scenes without the server having to dictate the change, however when the server changes the scene it will get pushed to the client and overwrite the changes\n\n\nYou load scenes as you normally would do in Unity on the server, no extra calls are needed\n\n\n\n\nBelow is a sample of how to load a scene on the server only if both the server and client are sharing code. The \nNetworker\n in this case will be a reference to the NetWorker in \nNetworkManager.Instance.Networker\n.\n\n\nLoading a single scene on the server\n\n\n// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadScene(1, LoadSceneMode.Single);\n\n\n\n\nAsync loading a single scene on the server\n\n\n// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);\n\n\n\n\nLoading an addative scene on the server\n\n\n// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadScene(1, LoadSceneMode.Additive);\n\n\n\n\nAsync loading an additive scene on the server\n\n\n// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);", 
+            "title": "Loading scenes"
+        }, 
+        {
+            "location": "/loading-scenes/#loading-scenes", 
+            "text": "One of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:   How do clients know when to change scenes?  How do I clean up all the network objects?  How do clients know what scene to go to?  How do newly connected clients know what scene is currently active?  How do I handle additive scenes?   These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's  SceneManager.sceneLoaded  event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.  There are a few important notes about scenes with Forge Networking:   The server must load the scene to trigger all of the clients to load scenes  Clients can still load scenes without the server having to dictate the change, however when the server changes the scene it will get pushed to the client and overwrite the changes  You load scenes as you normally would do in Unity on the server, no extra calls are needed   Below is a sample of how to load a scene on the server only if both the server and client are sharing code. The  Networker  in this case will be a reference to the NetWorker in  NetworkManager.Instance.Networker .", 
+            "title": "Loading Scenes"
+        }, 
+        {
+            "location": "/loading-scenes/#loading-a-single-scene-on-the-server", 
+            "text": "// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadScene(1, LoadSceneMode.Single);", 
+            "title": "Loading a single scene on the server"
+        }, 
+        {
+            "location": "/loading-scenes/#async-loading-a-single-scene-on-the-server", 
+            "text": "// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);", 
+            "title": "Async loading a single scene on the server"
+        }, 
+        {
+            "location": "/loading-scenes/#loading-an-addative-scene-on-the-server", 
+            "text": "// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadScene(1, LoadSceneMode.Additive);", 
+            "title": "Loading an addative scene on the server"
+        }, 
+        {
+            "location": "/loading-scenes/#async-loading-an-additive-scene-on-the-server", 
+            "text": "// This will load scene at build index 1 only if this is the server's code\nif (Networker.IsServer)\n    SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);", 
+            "title": "Async loading an additive scene on the server"
+        }, 
+        {
+            "location": "/scene-events/", 
+            "text": "Scene Events\n\n\nThere are some events that you can register to in order to know the flow of the scene loading events. Below are a list of the available events to hook into for scene loading and short descriptions of what they are for. \nNote\n All of these events are available through the \nNetworkManager.Instance\n so for example \nplayerLoadedScene\n would be \nNetworkManager.Instance.playerLoadedScene\n.\n\n\nplayerLoadedScene\n\n\nThis is used on the server to know when a specific player has finished loading into a level.\n\n\nnetworkSceneChanging\n\n\nThis is used on the client to know if it has been told by the server to change the scene. This happens just before the scene change is invoked.\n\n\nnetworkSceneLoaded\n\n\nThis is used on the client and the server to know when the scene has been successfully loaded and is ready to begin with networking code (starting with spawning Network Objects).", 
+            "title": "Scene events"
+        }, 
+        {
+            "location": "/scene-events/#scene-events", 
+            "text": "There are some events that you can register to in order to know the flow of the scene loading events. Below are a list of the available events to hook into for scene loading and short descriptions of what they are for.  Note  All of these events are available through the  NetworkManager.Instance  so for example  playerLoadedScene  would be  NetworkManager.Instance.playerLoadedScene .", 
+            "title": "Scene Events"
+        }, 
+        {
+            "location": "/scene-events/#playerloadedscene", 
+            "text": "This is used on the server to know when a specific player has finished loading into a level.", 
+            "title": "playerLoadedScene"
+        }, 
+        {
+            "location": "/scene-events/#networkscenechanging", 
+            "text": "This is used on the client to know if it has been told by the server to change the scene. This happens just before the scene change is invoked.", 
+            "title": "networkSceneChanging"
+        }, 
+        {
+            "location": "/scene-events/#networksceneloaded", 
+            "text": "This is used on the client and the server to know when the scene has been successfully loaded and is ready to begin with networking code (starting with spawning Network Objects).", 
+            "title": "networkSceneLoaded"
         }, 
         {
             "location": "/rewinding/", 
@@ -841,6 +946,26 @@
             "title": "The Internet &amp; Cloud Servers"
         }, 
         {
+            "location": "/throttling-network-internal/", 
+            "text": "Throttling Network Internal\n\n\nSo there are many tools out there to download and use to test applications and the general stability of networks, however we wanted to go over some quick and easy ways that you can test the network using just Forge Networking.\n\n\nNetwork Latency Simulation\n\n\nThe network latency simulation lets you test how your code would behave if there were to be network latency. This is a very simple tool that makes it so that the core of Forge will delay the reading/sending of messages by the given milliseconds. This is useful to test and see how clients with slow networks will experience your game. The latency simulation is \nper NetWorker\n so to test this out quickly you can use \nNetworkManager.Instance.Networker\n. Below is a sample of how to set the latency to 900 milliseconds (0.9 seconds):\n\n\n// Somewhere in code, even during runtime\nNetworkManager.Instance.Networker.LatencySimulation = 900;  // 900 is the time in milliseconds\n\n\n\n\nPacket Loss Simulation\n\n\nThe packet loss simulation lets you test how your code would behave if there were to be packet loss of a specific chance. This tool allows you to set a percentage of packet loss. What this does internally is generate a random number, if it is within the specified percantage then it will delete the packet and ignore reading it. This will allow you to test your code to see what would happen if you were to lose packets during gameplay. The packet loss simulation is \nper NetWorker\n so to test this out quickly you can use \nNetworkManager.Instance.Networker\n. Below is a sample of how to set the percentage to 0.1f (10% packet loss chance):\n\n\n// Somewhere in code, even during runtime\nNetworkManager.Instance.Networker.PacketLossSimulation = 0.1f;  // 0.1f is the percentage chance of packet loss (10% in this case)", 
+            "title": "Throttling network internal"
+        }, 
+        {
+            "location": "/throttling-network-internal/#throttling-network-internal", 
+            "text": "So there are many tools out there to download and use to test applications and the general stability of networks, however we wanted to go over some quick and easy ways that you can test the network using just Forge Networking.", 
+            "title": "Throttling Network Internal"
+        }, 
+        {
+            "location": "/throttling-network-internal/#network-latency-simulation", 
+            "text": "The network latency simulation lets you test how your code would behave if there were to be network latency. This is a very simple tool that makes it so that the core of Forge will delay the reading/sending of messages by the given milliseconds. This is useful to test and see how clients with slow networks will experience your game. The latency simulation is  per NetWorker  so to test this out quickly you can use  NetworkManager.Instance.Networker . Below is a sample of how to set the latency to 900 milliseconds (0.9 seconds):  // Somewhere in code, even during runtime\nNetworkManager.Instance.Networker.LatencySimulation = 900;  // 900 is the time in milliseconds", 
+            "title": "Network Latency Simulation"
+        }, 
+        {
+            "location": "/throttling-network-internal/#packet-loss-simulation", 
+            "text": "The packet loss simulation lets you test how your code would behave if there were to be packet loss of a specific chance. This tool allows you to set a percentage of packet loss. What this does internally is generate a random number, if it is within the specified percantage then it will delete the packet and ignore reading it. This will allow you to test your code to see what would happen if you were to lose packets during gameplay. The packet loss simulation is  per NetWorker  so to test this out quickly you can use  NetworkManager.Instance.Networker . Below is a sample of how to set the percentage to 0.1f (10% packet loss chance):  // Somewhere in code, even during runtime\nNetworkManager.Instance.Networker.PacketLossSimulation = 0.1f;  // 0.1f is the percentage chance of packet loss (10% in this case)", 
+            "title": "Packet Loss Simulation"
+        }, 
+        {
             "location": "/offline-mode/", 
             "text": "How to Make \"Offline\" Mode\n\n\nSomething you may be curious about is how you can make your game both single player and multi-player. Your main problem is probably going to be trying to figure out how you can separate all your RPC calls and your offline direct calls. The thing that may suprise you is if we were to say that there is no need for the distinction between \"Online\" and \"Offline\" code.\n\n\nThe Solo Server\n\n\nSo if you think about it, single player could very well be a server that has the following attributes:\n1. Does not register with a master server\n2. Does not register with a nat traversal server\n3. Does not accept any connections (max players is 0)\n4. Blocks any other connection attempts\n\n\nWell this makes sense so far, if a server doesn't accept any clients then technically it is nothing more than an offline game. However, what about the RPC calls and the vairious other networked things like the networkObject? Well, the answer is simple, Forge Networking was built to where the server isolation is offline play. If there are no connections to the server, it will call all RPCs directly without any network layer involved for sending (it doesn't send to itself, just runs the method locally). Below is an example of a server put into an \noffline\n like state:\n\n\n// Zero connections allowed to this server\nNetWorker server = new UdpServer(0);\nserver.Connect();\n\n// Block all connections to skip the validation phase\n((IServer)server).StopAcceptingConnections();\n\n\n\n\nNotes\n\n\nWhen you specify receivers that do not include the server, such as \nReceivers.Others\n then the server will not call the method, even with no other connections.", 
             "title": "Offline Mode"
@@ -859,6 +984,16 @@
             "location": "/offline-mode/#notes", 
             "text": "When you specify receivers that do not include the server, such as  Receivers.Others  then the server will not call the method, even with no other connections.", 
             "title": "Notes"
+        }, 
+        {
+            "location": "/lobby/", 
+            "text": "Lobby System\n\n\nThe lobby system is a way for you to be able to manage your existing players on your particular server on a global level.\n\n\nWith this system, you are able to do the following:\n\n\n\n\nSet Player Name (string)\n\n\nSet Avatar ID (int)\n\n\nSet Team ID (int)\n\n\nSend a message to everyone like the chat system (string)\n\n\nKick player\n\n\n\n\nThis system allows us to be able to control the list of players and functionality of those players at runtime. There is a basic dummy lobby master class that will be the default system chosen until overridden with either our custom Lobby Master (unity implementation) or your own Custom Lobby Master. Because of the way it is written for forge, this system does not need to be ran from Unity and can work perfectly fine on your linux builds (more on this later).", 
+            "title": "Lobby System"
+        }, 
+        {
+            "location": "/lobby/#lobby-system", 
+            "text": "The lobby system is a way for you to be able to manage your existing players on your particular server on a global level.  With this system, you are able to do the following:   Set Player Name (string)  Set Avatar ID (int)  Set Team ID (int)  Send a message to everyone like the chat system (string)  Kick player   This system allows us to be able to control the list of players and functionality of those players at runtime. There is a basic dummy lobby master class that will be the default system chosen until overridden with either our custom Lobby Master (unity implementation) or your own Custom Lobby Master. Because of the way it is written for forge, this system does not need to be ran from Unity and can work perfectly fine on your linux builds (more on this later).", 
+            "title": "Lobby System"
         }, 
         {
             "location": "/adding-and-updating-docs/", 
