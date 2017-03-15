@@ -5,6 +5,6 @@ public class ExampleProximitySpawn : MonoBehaviour
 {
 	private void Start()
 	{
-		NetworkManager.Instance.InstantiateExampleProximityPlayerNetworkObject();
+		NetworkManager.Instance.InstantiateExampleProximityPlayer();
 	}
 }

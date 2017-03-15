@@ -1,7 +1,5 @@
 using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
@@ -12,13 +10,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		private byte[] _dirtyFields = new byte[0];
 
-		public event FieldChangedEvent fieldAltered;
-
 		protected override void OwnershipChanged()
 		{
 			SnapInterpolations();
 		}
-		
+
 		public void SnapInterpolations()
 		{
 		}
