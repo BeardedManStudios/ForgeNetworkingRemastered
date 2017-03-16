@@ -1128,18 +1128,9 @@ namespace BeardedManStudios.Forge.Networking
 			// The server should execute the RPC before it is sent out to the clients
 			if (Networker is IServer)
 			{
-				// Don't execute the RPC if the server is sending it to receivers
-				// that don't include itself
-				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
-					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
-					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
-				{
-					Rpcs[methodId].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
-
-					// We don't need to do any extra work if the target player is the server
-					if (targetPlayer == Networker.Me)
-						return;
-				}
+				// We don't need to do any extra work if the target player is the server
+				if (targetPlayer == Networker.Me)
+					return;
 			}
 
 			BMSByte data = new BMSByte();
@@ -1203,6 +1194,18 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			FinalizeSendRpc(data, receivers, methodId, timestep, targetPlayer, sender);
+
+			if (Networker is IServer)
+			{
+				// Don't execute the RPC if the server is sending it to receivers
+				// that don't include itself
+				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
+					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
+					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
+				{
+					Rpcs[methodId].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
+				}
+			}
 		}
 
 		private void FinalizeSendRpc(BMSByte data, Receivers receivers, byte methodId, ulong timestep, NetworkingPlayer targetPlayer = null, NetworkingPlayer sender = null)
