@@ -46,6 +46,8 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	/// </summary>
 	private Vector3 max = Vector3.zero;
 
+	private NetworkCameraNetworkObject netCam;
+
 	private void Awake()
 	{
 		if (Instance != null)
@@ -74,6 +76,8 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 			if (NetworkManager.Instance.Networker is IServer)
 				obj.Owner.disconnected += () => { obj.Destroy(); };
+
+			netCam = obj as NetworkCameraNetworkObject;
 		};
 
 		// Since this object is a singleton we can create the player from here as
@@ -127,9 +131,21 @@ public class CubeForgeGame : CubeForgeGameBehavior
 			return;
 
 		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			// We need to clean up the network objects before we change the scene
+			// since we are loading this same scene. When that scene loads it will
+			// re-create the objects, so we don't want lingering ones
+			Cleanup();
 			SceneManager.LoadScene(1);
+		}
 
 		// TODO:  Add a sphere to this if chain
+	}
+
+	private void Cleanup()
+	{
+		networkObject.Destroy();
+		netCam.Destroy();
 	}
 
 	private void WriteLabel(Rect rect, string message)
