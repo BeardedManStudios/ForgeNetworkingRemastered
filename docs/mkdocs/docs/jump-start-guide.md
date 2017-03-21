@@ -509,3 +509,10 @@ You have completed the steps for this tutorial. All that is left is to build, ru
 3. Select **Host** in one instance
 4. Click **Connect** in the second instance
 5. You may be prompted to allow access to the application on the firewall, which you will need to accept
+
+## Troubleshooting
+**Getting a null reference exception?**
+The most common user errors with this part of the documentation are:
+- Forgot to turn on Run in Background*
+- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
+- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1

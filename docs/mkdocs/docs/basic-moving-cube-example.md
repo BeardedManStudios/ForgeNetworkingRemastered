@@ -128,3 +128,11 @@ Now that we have setup our scene and everything else, it is time to test the gam
 13. Select the server game instance (Unity Editor)
 
 Now if you move around the cube in the editor, you will see the movements replicated to the clients.
+
+## Troubleshooting
+**Getting a null reference exception?**
+The most common user errors with this part of the documentation are:
+- Forgot to turn on Run in Background*
+- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
+- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
+![Common Error Getting Started](images/common-error-getting-started.png)
