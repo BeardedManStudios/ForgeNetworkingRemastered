@@ -118,16 +118,26 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void Update()
 	{
+
 		// Pretty useless at the moment as the only primitive supported is a cube
 		// will add a sphere or something later
 		if (Input.GetKeyDown(KeyCode.Alpha0))
 			primitiveIndex = 0;
+
+		if (NetworkManager.Instance == null)
+			return;
 
 		if (!NetworkManager.Instance.Networker.IsServer)
 			return;
 
 		if (Input.GetKeyDown(KeyCode.Space))
 			SceneManager.LoadScene(1);
+
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			NetworkManager.Instance.Disconnect();
+			SceneManager.LoadScene(0);
+		}
 
 		// TODO:  Add a sphere to this if chain
 	}
@@ -145,6 +155,9 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void OnGUI()
 	{
+		if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
+			return;
+
 		// If there are no players, then the scene is currently being loaded, otherwise
 		// show the current count of players in the game
 		if (playerCount == 0)

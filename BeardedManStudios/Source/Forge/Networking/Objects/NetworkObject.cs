@@ -22,6 +22,7 @@ using BeardedManStudios.Source.Forge.Networking;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -315,6 +316,18 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				return string.Format("P [{0}], M [{1}], R [{2}], A [{3}]", TargetPlayer, MethodId, Receivers, Args.Length);
 			}
+		}
+
+		public static void ClearNetworkObjects(NetWorker networker)
+		{
+			NetworkObject[] targets = networkObjects.Where(n => n.Networker == networker).ToArray();
+			NetworkObject[] pendingTargets = pendingCreates.Where(n => n.Networker == networker).ToArray();
+
+			for (int i = 0; i < targets.Length; i++)
+				networkObjects.Remove(targets[i]);
+
+			for (int i = 0; i < pendingTargets.Length; i++)
+				pendingCreates.Remove(pendingTargets[i]);
 		}
 
 		/// <summary>

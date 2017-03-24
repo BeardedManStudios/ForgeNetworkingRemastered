@@ -243,12 +243,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			NetWorker.EndSession();
 
+			NetworkObject.ClearNetworkObjects(Networker);
 			pendingObjects.Clear();
 			pendingNetworkObjects.Clear();
 			MasterServerNetworker = null;
 			Networker = null;
 			Instance = null;
 			Destroy(gameObject);
+			NetworkObject.objectCreated -= CreatePendingObjects;
 		}
 
 		private void OnApplicationQuit()
