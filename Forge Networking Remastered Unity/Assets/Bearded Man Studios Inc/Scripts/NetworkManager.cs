@@ -26,6 +26,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public bool IsServer { get { return Networker.IsServer; } }
 
+		/// <summary>
+		/// Used to enable or disable the automatic switching for clients
+		/// </summary>
+		public bool automaticScenes = true;
+
 		private void Awake()
 		{
 			if (Instance != null)
@@ -45,12 +50,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void OnEnable()
 		{
-			SceneManager.sceneLoaded += OnLevelFinishedLoading;
+			if (automaticScenes)
+				SceneManager.sceneLoaded += OnLevelFinishedLoading;
 		}
 
 		private void OnDisable()
 		{
-			SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+			if (automaticScenes)
+				SceneManager.sceneLoaded -= OnLevelFinishedLoading;
 		}
 
 		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)

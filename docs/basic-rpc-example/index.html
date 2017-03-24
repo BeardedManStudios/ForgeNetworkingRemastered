@@ -101,6 +101,8 @@
                 
                     <li><a class="toctree-l4" href="#extending-generated-classes">Extending Generated Classes</a></li>
                 
+                    <li><a class="toctree-l4" href="#troubleshooting">Troubleshooting</a></li>
+                
             
             </ul>
         
@@ -701,6 +703,12 @@ public class MoveCube : MoveCubeBehavior {
 <li>Select the client instance then press the up and down arrow keys</li>
 </ol>
 <p>You will see the server movements replicated to the client and the client movements replicated to the server</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>Getting a null reference exception?</strong>
+The most common user errors with this part of the documentation are:
+- Forgot to turn on Run in Background*
+- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
+- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1</p>
               
             </div>
           </div>

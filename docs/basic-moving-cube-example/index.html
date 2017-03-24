@@ -98,6 +98,8 @@
                 
                     <li><a class="toctree-l4" href="#test">Test</a></li>
                 
+                    <li><a class="toctree-l4" href="#troubleshooting">Troubleshooting</a></li>
+                
             
             </ul>
         
@@ -646,6 +648,13 @@ public class BasicCube : BasicCubeBehavior
 <li>Select the server game instance (Unity Editor)</li>
 </ol>
 <p>Now if you move around the cube in the editor, you will see the movements replicated to the clients.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>Getting a null reference exception?</strong>
+The most common user errors with this part of the documentation are:
+- Forgot to turn on Run in Background*
+- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
+- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
+<img alt="Common Error Getting Started" src="../images/common-error-getting-started.png" /></p>
               
             </div>
           </div>

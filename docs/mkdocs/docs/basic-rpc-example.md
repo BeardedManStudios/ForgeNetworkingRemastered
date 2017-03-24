@@ -195,3 +195,10 @@ Now that we have setup our scene and everything else, it is time to test the gam
 14. Select the client instance then press the up and down arrow keys
 
 You will see the server movements replicated to the client and the client movements replicated to the server
+
+## Troubleshooting
+**Getting a null reference exception?**
+The most common user errors with this part of the documentation are:
+- Forgot to turn on Run in Background*
+- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
+- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1

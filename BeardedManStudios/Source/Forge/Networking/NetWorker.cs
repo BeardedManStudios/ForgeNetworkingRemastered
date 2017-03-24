@@ -713,6 +713,10 @@ namespace BeardedManStudios.Forge.Networking
 
 					if (targetObject == null)
 					{
+						// The server will never be missing objects
+						if (IsServer)
+							return;
+
 						lock (missingObjectBuffer)
 						{
 							if (!missingObjectBuffer.ContainsKey(id))
@@ -835,7 +839,7 @@ namespace BeardedManStudios.Forge.Networking
 			EndingSession = true;
 			CloseLocalListingsClient();
 		}
-		
+
 		protected Ping GeneratePing()
 		{
 			BMSByte payload = new BMSByte();
