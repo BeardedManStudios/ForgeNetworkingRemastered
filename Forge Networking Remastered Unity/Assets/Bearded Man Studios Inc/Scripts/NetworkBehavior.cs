@@ -9,6 +9,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public const byte RPC_SETUP_TRANSFORM = 4;
 
+		public delegate void NetworkBehaviorEvent(NetworkBehavior behavior);
+
 		public static Dictionary<uint, NetworkBehavior> skipAttachIds = new Dictionary<uint, NetworkBehavior>();
 
 		public int TempAttachCode { get; set; }
@@ -17,7 +19,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		private NetworkObject waitingForNetworkObject;
 		private uint waitingForNetworkObjectOffset;
 
-		protected virtual void NetworkStart() { }
+		public event NetworkBehaviorEvent networkStarted;
+
+		protected virtual void NetworkStart()
+		{
+			if (networkStarted != null)
+				networkStarted(this);
+		}
+
 		public abstract void Initialize(NetworkObject obj);
 		public abstract void Initialize(NetWorker networker);
 
