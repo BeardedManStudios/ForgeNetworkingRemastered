@@ -235,7 +235,10 @@ namespace BeardedManStudios.Forge.Networking
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
 			Thread.Sleep(500);
+		}
 
+		private void FinalizeRemovePlayer(NetworkingPlayer player)
+		{
 			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
 		}
@@ -331,7 +334,7 @@ namespace BeardedManStudios.Forge.Networking
 				else
 				{
 					currentReadingPlayer = udpPlayers[incomingEndpoint];
-
+					
 					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccpeted)
 					{
 						// It is possible that the response validation was dropped so
@@ -352,6 +355,14 @@ namespace BeardedManStudios.Forge.Networking
 					}
 					else
 					{
+						// Due to the Forge Networking protocol, the only time that packet 1
+						// will be 71 and the second packet be 69 is a forced disconnect reconnect
+						if (packet[0] == 71 && packet[1] == 69)
+						{
+							FinalizeRemovePlayer(currentReadingPlayer);
+							continue;
+						}
+
 						currentReadingPlayer.Ping();
 						ReadPacket(packet);
 					}
