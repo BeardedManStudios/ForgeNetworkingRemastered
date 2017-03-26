@@ -232,6 +232,10 @@ namespace BeardedManStudios.Forge.Networking
 						Disconnect(true);
 					}
 
+					// Check to make sure a message was received
+					if (packet == null || packet.Size <= 0)
+						continue;
+
 					// This message was not from the server
 					if (groupEP.Address != Server.IPEndPointHandle.Address &&
 						groupEP.Port != Server.IPEndPointHandle.Port)
@@ -248,10 +252,6 @@ namespace BeardedManStudios.Forge.Networking
 
 						continue;
 					}
-
-					// Check to make sure a message was received
-					if (packet == null || packet.Size <= 0)
-						continue;
 
 					// Check to see if the headers have been exchanged
 					if (!headerExchanged)
