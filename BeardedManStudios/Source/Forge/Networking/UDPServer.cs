@@ -364,6 +364,10 @@ namespace BeardedManStudios.Forge.Networking
 			// Check for a local listing request
 			if (packet.Size.Between(2, 4) && packet[0] == BROADCAST_LISTING_REQUEST_1 && packet[1] == BROADCAST_LISTING_REQUEST_2 && packet[2] == BROADCAST_LISTING_REQUEST_3)
 			{
+				// Don't reply if the server is not currently accepting connections
+				if (!AcceptingConnections)
+					return;
+
 				// This may be a local listing request so respond with the server flag byte
 				Client.Send(new byte[] { SERVER_BROADCAST_CODE }, 1, groupEP);
 				return;
