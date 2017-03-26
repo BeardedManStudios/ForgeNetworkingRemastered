@@ -1206,7 +1206,8 @@ namespace BeardedManStudios.Forge.Networking
 				}
 			}
 
-			FinalizeSendRpc(data, receivers, methodId, timestep, targetPlayer, sender);
+			if (!Networker.IsServer || receivers != Receivers.Server)
+				FinalizeSendRpc(data, receivers, methodId, timestep, targetPlayer, sender);
 
 			if (Networker is IServer)
 			{
