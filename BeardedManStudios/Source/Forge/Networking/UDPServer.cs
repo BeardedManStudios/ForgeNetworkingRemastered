@@ -235,6 +235,8 @@ namespace BeardedManStudios.Forge.Networking
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
 			Thread.Sleep(500);
+
+			FinalizeRemovePlayer(player);
 		}
 
 		private void FinalizeRemovePlayer(NetworkingPlayer player)

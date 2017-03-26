@@ -391,6 +391,7 @@ namespace BeardedManStudios.Forge.Networking
 			ServerPlayerCounter = 0;
 
 			ServerCache = new Cache(this);
+			EndingSession = false;
 		}
 
 		/// <summary>
