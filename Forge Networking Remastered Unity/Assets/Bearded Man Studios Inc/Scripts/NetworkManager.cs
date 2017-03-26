@@ -1,6 +1,6 @@
 ﻿using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
-using SimpleJSON;
+using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

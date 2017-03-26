@@ -17,7 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
-using SimpleJSON;
+using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
 
 namespace BeardedManStudios.Forge.Networking

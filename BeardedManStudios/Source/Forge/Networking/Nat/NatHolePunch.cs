@@ -18,7 +18,7 @@
 \------------------------------+------------------------------*/
 
 using BeardedManStudios.Forge.Networking.Frame;
-using SimpleJSON;
+using BeardedManStudios.SimpleJSON;
 
 namespace BeardedManStudios.Forge.Networking.Nat
 {

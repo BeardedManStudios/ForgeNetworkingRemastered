@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+﻿using BeardedManStudios.SimpleJSON;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
