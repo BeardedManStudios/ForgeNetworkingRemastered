@@ -561,6 +561,9 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				IteratePlayers((player) =>
 				{
+					if (player == Me)
+						return;
+
 					if (player.TimedOut())
 					{
 						timedoutPlayers.Add(player);
