@@ -61,8 +61,26 @@ namespace BeardedManStudios.Forge.Networking
 				}
 			}
 
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-			IPAddress ipAddress = ipHostInfo.AddressList[0];
+			IPAddress ipAddress;
+
+			try
+			{
+				IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+				ipAddress = ipHostInfo.AddressList[0];
+			}
+			catch
+			{
+				try
+				{
+					IPAddress[] addresses = Dns.GetHostAddresses(host);
+					ipAddress = addresses[0];
+				}
+				catch
+				{
+					ipAddress = IPAddress.Parse(host);
+				}
+			}
+
 			return new IPEndPoint(ipAddress, port);
 		}
 
