@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
@@ -49,6 +50,16 @@ namespace BeardedManStudios.Forge.Networking
 				return new IPEndPoint(IPAddress.Parse(host), port);
 			else if (host == "localhost")
 				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+
+			IPHostEntry hostCheck = Dns.GetHostEntry(Dns.GetHostName());
+			foreach (IPAddress ip in hostCheck.AddressList)
+			{
+				if (ip.AddressFamily == AddressFamily.InterNetwork)
+				{
+					if (ip.ToString() == host)
+						return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+				}
+			}
 
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
