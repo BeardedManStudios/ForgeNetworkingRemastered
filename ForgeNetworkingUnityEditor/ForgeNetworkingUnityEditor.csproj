@@ -40,6 +40,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FNSerializeMemberAttribute.cs" />
+    <Compile Include="FNSerializer.cs" />
     <Compile Include="ForgeAcceptableFieldTypes.cs" />
     <Compile Include="ForgeAcceptableRPCTypes.cs" />
     <Compile Include="ForgeBaseClassType.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="ForgeNetworkingAboutEditor.cs" />
     <Compile Include="ForgeNetworkingEditor.cs" />
     <Compile Include="ForgeNRPCTypes.cs" />
+    <Compile Include="IFNSerializable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleJSONEditor.cs" />
   </ItemGroup>
