@@ -1120,6 +1120,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns></returns>
 		public void SendRpc(NetworkingPlayer targetPlayer, byte methodId, bool replacePrevious, Receivers receivers, NetworkingPlayer sender, object[] args)
 		{
+			if (receivers == Receivers.Target && !(Networker is IServer))
+				receivers = Receivers.Server;
+
 			if (!ClientRegistered)
 			{
 				pendingLocalRpcs.Add(new PendingLocalRPC()
