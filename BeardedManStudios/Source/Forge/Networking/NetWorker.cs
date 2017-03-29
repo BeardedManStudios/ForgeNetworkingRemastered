@@ -735,10 +735,6 @@ namespace BeardedManStudios.Forge.Networking
 
 					if (targetObject == null)
 					{
-						// The server will never be missing objects
-						if (IsServer)
-							return;
-
 						lock (missingObjectBuffer)
 						{
 							if (!missingObjectBuffer.ContainsKey(id))
@@ -749,6 +745,9 @@ namespace BeardedManStudios.Forge.Networking
 								ExecuteRouterAction(routerId, networkObject, (Binary)frame, player);
 							});
 						}
+
+						// TODO:  If the server is missing an object, it should have a timed buffer
+						// that way useless messages are not setting around in memory
 
 						return;
 					}
