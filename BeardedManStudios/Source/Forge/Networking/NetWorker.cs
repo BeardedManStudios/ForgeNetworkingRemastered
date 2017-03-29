@@ -70,15 +70,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			catch
 			{
-				try
-				{
-					IPAddress[] addresses = Dns.GetHostAddresses(host);
-					ipAddress = addresses[0];
-				}
-				catch
-				{
-					ipAddress = IPAddress.Parse(host);
-				}
+				ipAddress = IPAddress.Parse(host);
 			}
 
 			return new IPEndPoint(ipAddress, port);
