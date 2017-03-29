@@ -30,7 +30,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public delegate void UpdateEvent();
 		public static UpdateEvent unityUpdate = null;
 		public static UpdateEvent unityFixedUpdate = null;
-		public static bool InMainThread { get; private set; }
 
 		/// <summary>
 		/// The singleton instance of the Main Thread Manager
@@ -97,12 +96,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// <param name="action">The method that is to be run on the main thread</param>
 		public static void Run(Action action)
 		{
-			if (InMainThread)
-			{
-				action();
-				return;
-			}
-
 			// Only create this object on the main thread
 #if UNITY_WEBGL
 			if (ReferenceEquals(Instance, null))
@@ -123,8 +116,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void HandleActions()
 		{
-			InMainThread = true;
-
 			lock (mainThreadActions)
 			{
 				// Flush the list to unlock the thread as fast as possible
@@ -142,8 +133,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				while (mainThreadActionsRunner.Count > 0)
 					mainThreadActionsRunner.Dequeue()();
 			}
-
-			InMainThread = false;
 		}
 
 		private void FixedUpdate()
