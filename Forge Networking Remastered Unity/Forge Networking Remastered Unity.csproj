@@ -61,11 +61,11 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="BeardedManStudios">
-      <HintPath>Assets\Plugins\BeardedManStudios.dll</HintPath>
-    </Reference>
     <Reference Include="ForgeNetworkingCommon">
-      <HintPath>Assets\Plugins\ForgeNetworkingCommon.dll</HintPath>
+      <HintPath>Assets\Bearded Man Studios Inc\Plugins\ForgeNetworkingCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="BeardedManStudios">
+      <HintPath>Assets\Bearded Man Studios Inc\Plugins\BeardedManStudios.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

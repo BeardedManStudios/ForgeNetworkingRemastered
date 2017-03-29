@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using BeardedManStudios.Forge.Networking.UnityEditor.Serializer;
+using SimpleJSONEditor;
+using System.Reflection;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
