@@ -17,6 +17,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	/// <summary>
 	/// This is a class object that contains the field value
 	/// </summary>
+	[Serializable]
 	public class ForgeClassFieldValue
 	{
 		public string FieldName;
