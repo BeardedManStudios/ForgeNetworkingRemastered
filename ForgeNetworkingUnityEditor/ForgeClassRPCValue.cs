@@ -17,6 +17,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	/// <summary>
 	/// This is the rpc value of this class object
 	/// </summary>
+	[Serializable]
 	public class ForgeClassRPCValue
 	{
 		public string RPCName;

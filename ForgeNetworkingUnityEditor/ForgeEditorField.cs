@@ -1,11 +1,13 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
 	/// <summary>
 	/// This is a editor field for the network object
 	/// </summary>
+	[Serializable]
 	public class ForgeEditorField
 	{
 		public string FieldName;

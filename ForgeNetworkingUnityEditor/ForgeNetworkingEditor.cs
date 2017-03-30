@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
-using BeardedManStudios.Forge.Networking.UnityEditor.Serializer;
 using SimpleJSONEditor;
 using System.Reflection;
 
@@ -67,6 +68,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// This is the user generated folder path
 		/// </summary>
 		private const string USER_GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated/UserGenerated";
+		/// <summary>
+		/// This is the wizard data stored by the user previously
+		/// </summary>
+		private const string FN_WIZARD_DATA = "FNWizardData.bin";
 
 		/// <summary>
 		/// This is our scrolling bar we will use for looking through the classes
@@ -76,8 +81,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// This is the active forge networking class we are working with
 		/// </summary>
 		public ForgeEditorButton ActiveButton;
+
 		/// <summary>
-		/// These are all the classes we have for this user
+		/// Reference to all the editor buttons to serialize
 		/// </summary>
 		public List<ForgeEditorButton> _editorButtons;
 
@@ -217,29 +223,46 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			string[] files = Directory.GetFiles(_storingPath, "*", SearchOption.TopDirectoryOnly);
 			string[] userFiles = Directory.GetFiles(_userStoringPath, "*", SearchOption.TopDirectoryOnly);
-			List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
 
-			for (int i = 0; i < files.Length; ++i)
+			if (File.Exists(Path.Combine(_storingPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
 			{
-				if (!files[i].EndsWith(".meta")) //Ignore all meta files
-					correctFiles.Add(new ForgeClassObject(files[i]));
+				IFormatter bFormatter = new BinaryFormatter();
+				using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
+					_editorButtons = (List<ForgeEditorButton>)bFormatter.Deserialize(s);
+
+				for (int i = 0; i < _editorButtons.Count; ++i)
+				{
+					_editorButtons[i].UpdateButtonColor();
+					if (_editorButtons[i].IsNetworkObject)
+						ForgeClassObject.IDENTITIES++;
+				}
 			}
-
-			for (int i = 0; i < userFiles.Length; ++i)
+			else
 			{
-				if (!userFiles[i].EndsWith(".meta")) //Ignore all meta files
-					correctFiles.Add(new ForgeClassObject(userFiles[i]));
-			}
+				List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
 
-			if (!ForgeClassObject.HasExactFilename(correctFiles, "NetworkObjectFactory"))
-				MakeForgeFactory(); //We do not have the Forge Factory, we need to make this!
+				for (int i = 0; i < files.Length; ++i)
+				{
+					if (!files[i].EndsWith(".meta")) //Ignore all meta files
+						correctFiles.Add(new ForgeClassObject(files[i]));
+				}
 
-			for (int i = 0; i < correctFiles.Count; ++i)
-			{
-				var btn = new ForgeEditorButton(correctFiles[i]);
+				for (int i = 0; i < userFiles.Length; ++i)
+				{
+					if (!userFiles[i].EndsWith(".meta")) //Ignore all meta files
+						correctFiles.Add(new ForgeClassObject(userFiles[i]));
+				}
 
-				if (btn.IsNetworkObject || btn.IsNetworkBehavior)
-					_editorButtons.Add(btn);
+				if (!ForgeClassObject.HasExactFilename(correctFiles, "NetworkObjectFactory"))
+					MakeForgeFactory(); //We do not have the Forge Factory, we need to make this!
+
+				for (int i = 0; i < correctFiles.Count; ++i)
+				{
+					var btn = new ForgeEditorButton(correctFiles[i]);
+
+					if (btn.IsNetworkObject || btn.IsNetworkBehavior)
+						_editorButtons.Add(btn);
+				}
 			}
 
 			#region Texture Loading
@@ -972,6 +995,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs")))
 			{
 				sw.Write(networkManagerData);
+			}
+
+			IFormatter previousSavedState = new BinaryFormatter();
+			using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+			{
+				previousSavedState.Serialize(s, _editorButtons);
 			}
 
 			EditorApplication.UnlockReloadAssemblies();

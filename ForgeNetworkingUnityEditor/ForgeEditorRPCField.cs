@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
 	/// <summary>
 	/// This is the rpc field for the network object
 	/// </summary>
+	[Serializable]
 	public class ForgeEditorRPCField
 	{
 		public string FieldName;

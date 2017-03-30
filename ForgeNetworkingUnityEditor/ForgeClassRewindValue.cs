@@ -17,6 +17,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	/// <summary>
 	/// This is the rewind value for this class object
 	/// </summary>
+	[Serializable]
 	public class ForgeClassRewindValue
 	{
 		public string RewindName;

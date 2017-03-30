@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection;
 using SimpleJSONEditor;
+using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor.Serializer
 {
+	[Obsolete("Don't use this because Brent doesn't like Brett coding")]
 	public static class FNSerializer
 	{
 		/// <summary>
@@ -29,18 +31,18 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor.Serializer
 				{
 					if (fn.FieldType.IsArray)
 					{
-						throw new NotImplementedException("Cannot deserialize arrays just yet!");
-						//JSONArray arrayData = data[fn.Name].AsArray;
-						//Array r = (Array)fn.GetValue(returnValue);
+						//throw new NotImplementedException("Cannot deserialize arrays just yet!");
+						JSONArray arrayData = data[fn.Name].AsArray;
+						Array r = (Array)fn.GetValue(returnValue);
 
-						////Get array type here, and figure out the proper casting for it
+						//Get array type here, and figure out the proper casting for it
 
-						////TODO: Cast properly for the correct array values
-						////Will need to be able to cast int[], object[], enum[], etc.
-						////This is the most difficult thing out of this serializer that I need to figure out
-						//for (int j = 0; j < arrayData.Count; ++j)
-						//{
-						//}
+						//TODO: Cast properly for the correct array values
+						//Will need to be able to cast List<string>.
+						//This is the most difficult thing out of this serializer that I need to figure out
+						for (int j = 0; j < arrayData.Count; ++j)
+						{
+						}
 					}
 					else
 						SetFieldValues<T>(ref returnValue, data, fn);
@@ -76,32 +78,31 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor.Serializer
 				{
 					if (fn.FieldType.IsArray)
 					{
-						throw new NotImplementedException("Cannot serialize arrays just yet!");
-						//JSONArray arrayNode = new JSONArray();
-						//Array r = (Array)fn.GetValue(serializedObject);
-						//for (int j = 0; j < r.Length; ++j)
-						//{
-						//	object arrayValue = r.GetValue(j);
-						//	Type arrayType = arrayValue.GetType();
+						//throw new NotImplementedException("Cannot serialize arrays just yet!");
+						JSONArray arrayNode = new JSONArray();
+						Array r = (Array)fn.GetValue(serializedObject);
+						for (int j = 0; j < r.Length; ++j)
+						{
+							object arrayValue = r.GetValue(j);
+							Type arrayType = arrayValue.GetType();
 
-						//	if (arrayType.IsClass)
-						//	{
-						//		if (arrayType.GetInterface("IFNSerializable") != null)
-						//		{
-						//			IFNSerializable serializableClass = arrayValue as IFNSerializable;
-						//			JSONClass nestSerialization = ToJSON(serializableClass);
-						//			arrayNode.Add(nestSerialization);
-						//		}
-						//		else
-						//			throw new MulticastNotSupportedException(string.Format("Cannot cast anything other than IFNSerializable to JSON, please mark your object [{0}] as IFNSerializable found in {1}.", fn.Name, t.Name));
-						//	}
-						//	else
-						//	{
-						//		//TODO: Generic array conversion
-						//		//Generic base type array
-						//	}
-						//}
-						//returnValue.Add(fn.Name, arrayNode);
+							if (arrayType.IsClass)
+							{
+								if (arrayType.GetInterface("IFNSerializable") != null)
+								{
+									IFNSerializable serializableClass = arrayValue as IFNSerializable;
+									JSONClass nestSerialization = ToJSON(serializableClass);
+									arrayNode.Add(nestSerialization);
+								}
+								else
+									throw new MulticastNotSupportedException(string.Format("Cannot cast anything other than IFNSerializable to JSON, please mark your object [{0}] as IFNSerializable found in {1}.", fn.Name, t.Name));
+							}
+							else
+							{
+								//list<string>
+							}
+						}
+						returnValue.Add(fn.Name, arrayNode);
 					}
 					else
 						AddFieldValues(ref returnValue, fn, serializedObject);
