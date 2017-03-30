@@ -7,13 +7,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using UnityEngine;
+using BeardedManStudios.Forge.Networking.UnityEditor.Serializer;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
 	/// <summary>
 	/// This is the forge class object we generate from a file
 	/// </summary>
+	[Serializable]
 	public class ForgeClassObject
 	{
 		public string FileLocation;
@@ -21,6 +24,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public string ExactFilename;
 
 		public int IdentityValue = -1;
+
+		[NonSerialized]
 		public static int IDENTITIES = 0;
 
 		public bool IsNetworkBehavior { get { return ExactFilename.EndsWith("Behavior"); } }

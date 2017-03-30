@@ -8,6 +8,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	/// <summary>
 	/// This is the forge editor button that contains key information to the behavior or network object
 	/// </summary>
+	[Serializable]
 	public class ForgeEditorButton
 	{
 		public string ButtonName;
@@ -49,6 +50,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public bool CanRenderFields = true;
 		public bool CanRenderRPCS = true;
+		[NonSerialized]
 		public Color ButtonColor;
 		public Action InvokedAction;
 		public List<ForgeEditorField> ClassVariables = new List<ForgeEditorField>();
@@ -107,6 +109,16 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					}
 				}
 			}
+		}
+
+		public void UpdateButtonColor()
+		{
+			if (TiedObject.IsNetworkBehavior)
+				ButtonColor = ForgeNetworkingEditor.DarkBlue;
+			else if (TiedObject.IsNetworkObject)
+				ButtonColor = ForgeNetworkingEditor.LightBlue;
+			else
+				ButtonColor = ForgeNetworkingEditor.CoolBlue;
 		}
 
 		public bool PossiblyMatches(string searchName)
