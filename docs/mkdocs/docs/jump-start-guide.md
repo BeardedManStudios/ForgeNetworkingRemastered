@@ -422,7 +422,7 @@ public class GameBall : GameBallBehavior
 
 		// Call an RPC on the Game Logic to print the player's name as the last
 		// player to touch the ball
-		gameLogic.networkObject.SendRpc(RPC_PLAYER_SCORED, Receivers.All,
+		gameLogic.networkObject.SendRpc(GameLogicBehavior.RPC_PLAYER_SCORED, Receivers.All,
 
 		c.transform.GetComponent<Player>().Name);
 
