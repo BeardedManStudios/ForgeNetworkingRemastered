@@ -12,7 +12,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		private byte[] _dirtyFields = new byte[1];
 
+		#pragma warning disable 0067
 		public event FieldChangedEvent fieldAltered;
+		#pragma warning restore 0067
 		private Vector3 _position;
 		public event FieldEvent<Vector3> positionChanged;
 		public InterpolateVector3 positionInterpolation = new InterpolateVector3() { LerpT = 0.15f, Enabled = true };
