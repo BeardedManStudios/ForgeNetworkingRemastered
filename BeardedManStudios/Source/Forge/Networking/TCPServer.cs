@@ -132,6 +132,9 @@ namespace BeardedManStudios.Forge.Networking
 		public bool Send(TcpClient client, FrameStream frame)
 #endif
 		{
+			if (client == null)
+				return false;
+
 			// Make sure that we don't have any race conditions with writing to the same client
 			lock (client)
 			{
