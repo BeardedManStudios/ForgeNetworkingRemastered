@@ -207,7 +207,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Occurs when a binary message is received and its router byte is the byte for Rpc
 		/// </summary>
-		public event BinaryFrameEvent rpcMessageReceived;
+		//public event BinaryFrameEvent rpcMessageReceived;
 
 		/// <summary>
 		/// Occurs when a text message is received over the network from a remote machine
