@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Connection cycle events - Forge Networking Remastered</title>
+  <title>Windows server firewall setup - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Connection cycle events";
-    var mkdocs_page_input_path = "connection-cycle-events.md";
-    var mkdocs_page_url = "/connection-cycle-events/";
+    var mkdocs_page_name = "Windows server firewall setup";
+    var mkdocs_page_input_path = "windows-server-firewall-setup.md";
+    var mkdocs_page_url = "/windows-server-firewall-setup/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -207,25 +207,9 @@
 		
     <span class="caption-text">Events</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Connection cycle events</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#connection-cycle-events">Connection Cycle Events</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#server-client-events">Server &amp; Client Events</a></li>
-        
-            <li><a class="toctree-l4" href="#server-events">Server Events</a></li>
-        
-            <li><a class="toctree-l4" href="#client-events">Client Events</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../connection-cycle-events/">Connection cycle events</a>
                 </li>
     </ul>
 	    </li>
@@ -266,9 +250,21 @@
                     
     <a class="" href="../getting-host-list-from-master-server/">Getting host list from master server</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../windows-server-firewall-setup/">Windows server firewall setup</a>
+    <a class="current" href="./">Windows server firewall setup</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#windows-server-firewall-setup">Windows Server Firewall Setup</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#done">Done</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -372,11 +368,11 @@
     
       
         
-          <li>Events &raquo;</li>
+          <li>Master Server &raquo;</li>
         
       
     
-    <li>Connection cycle events</li>
+    <li>Windows server firewall setup</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -386,34 +382,24 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="connection-cycle-events">Connection Cycle Events</h1>
-<p>Below are a quick explaination of the various events that happen during the connection and acceptance cycles on both the server and the client.</p>
-<h2 id="server-client-events">Server &amp; Client Events</h2>
-<p>The below are events that are local-aware, that is to say that they are called without any need for an active connection.</p>
-<h3 id="bindsuccessful">bindSuccessful</h3>
-<p>Called when the local machine allowed the binding of the port requested.</p>
-<h3 id="bindfailure">bindFailure</h3>
-<p>Called when the local machine rejected the binding of the port requested.</p>
-<h3 id="disconnected">disconnected</h3>
-<p>Called when the local machine has completely disconnected from any communications in the Forge life cycle</p>
-<h2 id="server-events">Server Events</h2>
-<p>The following events are called on the <strong>server only</strong> based on the behavior of clients connecting or disconnecting.</p>
-<h3 id="playerconnected">playerConnected</h3>
-<p>Called when a player has successfully connected with the server. This player <strong>CAN</strong> be rejected by the server, so this event is mainly useful for evaluation of the player or preparing anything you need for the player. You should not be communicating with the player at all until they have been accepted.</p>
-<h3 id="playerguidassigned">playerGuidAssigned</h3>
-<p>This event is called once the server has gotten the unique guid for a player. This triggers just before the accepted message and is useful to prepare any network player lookups.</p>
-<h3 id="playeraccepted">playerAccepted</h3>
-<p>Fired when the player has been officially accepted by the server and now is the time you are able to start sending your messages to this player.</p>
-<h3 id="playerrejected">playerRejected</h3>
-<p>Fired when a player has been rejected for any reason by the server. This event will be expanded later but currenlty is used for when a client has sent invalid connection headers.</p>
-<h3 id="playertimeout">playerTimeout</h3>
-<p>Called when a player has timed out on the server. This happens after they have been accepted and if the server hasn't receieved any message (ping or otherwise) from the specified client. The timeout time (in milliseconds) for a player can be found/set in the <code>NetworkingPlayer::TimeoutMilliseconds</code> property.</p>
-<h3 id="playerdisconnected">playerDisconnected</h3>
-<p>Called at any time that a player has disconnected on its own or by the server.</p>
-<h2 id="client-events">Client Events</h2>
-<p>The following events are called on the client only and deal with the various connection events that relate to this client and the server.</p>
-<h3 id="serveraccepted">serverAccepted</h3>
-<p>Called whenever the server has accepted this client. At this point it is safe to start sending messages to the server and to know it is a live connection.</p>
+                <h1 id="windows-server-firewall-setup">Windows Server Firewall Setup</h1>
+<p>Sometimes images speak louder than words, so we've compiled a list of images to show you exactly what you need to do in order to allow the Master Server to work on your Windows Server either in your home or in the cloud!</p>
+<p>First you need to open your **Advanced Firewall Settings"</p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-1.png" title="Windows Server Master Server 1" /></p>
+<p>Next you need to select <strong>Inbound Rules</strong> then select <strong>New Rule...</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-2.png" title="Windows Server Master Server 2" /></p>
+<p>Next you will need to selec <strong>Port</strong> and then click <strong>Next</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-3.png" title="Windows Server Master Server 3" /></p>
+<p>Next, make sure that <strong>TCP</strong> is selected and that you enter the correct port number for your Master Server. The default port is <strong>15940</strong>. Then click <strong>Next</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-4.png" title="Windows Server Master Server 4" /></p>
+<p>Next you need to select <strong>Allow the connection</strong>. Click <strong>Next</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-5.png" title="Windows Server Master Server 5" /></p>
+<p>After that, just keep all the checkboxes at default (cheched). Click <strong>Next</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-6.png" title="Windows Server Master Server 6" /></p>
+<p>Lastly give it a good name that is easy to find and click <strong>Finish</strong></p>
+<p><img alt="windows-server-master-server-1" src="../images/windows-server-master-server-7.png" title="Windows Server Master Server 7" /></p>
+<h2 id="done">Done</h2>
+<p>That is it, you should be ready to go. If you experience any other issues, make sure that your network firewall is allowing the connection to this machine and allowing the specified port number.</p>
               
             </div>
           </div>
@@ -421,10 +407,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../loading-scenes/" class="btn btn-neutral float-right" title="Loading scenes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../network-logging/" class="btn btn-neutral float-right" title="Network logging">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../client-connecting-code/" class="btn btn-neutral" title="Client connecting code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../getting-host-list-from-master-server/" class="btn btn-neutral" title="Getting host list from master server"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -450,10 +436,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../client-connecting-code/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../getting-host-list-from-master-server/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../loading-scenes/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../network-logging/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -205,6 +205,12 @@
      <changefreq>daily</changefreq>
     </url>
         
+    <url>
+     <loc>/windows-server-firewall-setup/</loc>
+     <lastmod>2017-03-30</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
     

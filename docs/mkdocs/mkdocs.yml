@@ -47,6 +47,7 @@ pages:
         - master-server-quick-start.md
         - connecting-to-master-server.md
         - getting-host-list-from-master-server.md
+        - windows-server-firewall-setup.md
 #        - Matchmaking
     - Debugging:
         - network-logging.md
