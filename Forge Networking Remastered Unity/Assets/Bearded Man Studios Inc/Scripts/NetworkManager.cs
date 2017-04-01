@@ -369,6 +369,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				MainThreadManager.Run(() =>
 				{
+					if (loadedScenes.Count == 0)
+						return;
+
 					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
 
 					for (int i = 1; i < loadedScenes.Count; i++)
