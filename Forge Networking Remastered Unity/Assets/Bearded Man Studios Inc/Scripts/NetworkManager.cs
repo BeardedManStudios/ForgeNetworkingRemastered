@@ -325,7 +325,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			if (sendTransform)
-				obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.OthersBuffered, go.transform.position, go.transform.rotation);
+				obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
 
 			if (!skipOthers)
 			{
@@ -369,6 +369,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				MainThreadManager.Run(() =>
 				{
+					if (loadedScenes.Count == 0)
+						return;
+
 					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
 
 					for (int i = 1; i < loadedScenes.Count; i++)

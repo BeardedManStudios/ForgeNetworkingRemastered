@@ -109,13 +109,9 @@ public class MultiplayerMenu : MonoBehaviour
 		_matchmaking = true;
 
 		if (mgr == null && networkManager == null)
-		{
-			Debug.LogWarning("A network manager was not provided, generating a new one instead");
-			networkManager = new GameObject("Network Manager");
-			mgr = networkManager.AddComponent<NetworkManager>();
-		}
-		else if (mgr == null)
-			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+			throw new System.Exception("A network manager was not provided, this is required for the tons of fancy stuff");
+		
+		mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
 		mgr.MatchmakingServersFromMasterServer(masterServerHost, masterServerPort, myElo, (response) =>
 		{
