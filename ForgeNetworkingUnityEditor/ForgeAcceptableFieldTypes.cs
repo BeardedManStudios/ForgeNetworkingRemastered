@@ -24,6 +24,6 @@
 		QUATERNION = 15,
 		COLOR = 16,
 		//OBJECT_ARRAY = 17, //Unsupported
-		BYTE_ARRAY = 18
+		//BYTE_ARRAY = 18
 	}
 }
