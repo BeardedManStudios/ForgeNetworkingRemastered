@@ -50,7 +50,7 @@ namespace BeardedManStudios.Forge.Networking
 				return new IPEndPoint(IPAddress.Parse(host), port);
 			else if (host == "localhost")
 				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-			
+
 			IPAddress ipAddress;
 
 			if (!IPAddress.TryParse(host, out ipAddress))

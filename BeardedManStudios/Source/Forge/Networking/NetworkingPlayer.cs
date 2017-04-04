@@ -304,7 +304,7 @@ namespace BeardedManStudios.Forge.Networking
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
 				{
-					int waitTime = 10;
+					int waitTime = 10, pendingCount = 0;
 					while (Networker.IsBound && !Disconnected)
 					{
 						if (nextComposerReady)
@@ -325,13 +325,15 @@ namespace BeardedManStudios.Forge.Networking
 						{
 							lock (currentComposer.PendingPackets)
 							{
-								if (currentComposer.PendingPackets.Count > 0)
-								{
-									if (Networker.LatencySimulation > 0)
-										Task.Sleep(Networker.LatencySimulation);
+								pendingCount = currentComposer.PendingPackets.Count;
+							}
 
-									currentComposer.ResendPackets();
-								}
+							if (pendingCount > 0)
+							{
+								if (Networker.LatencySimulation > 0)
+									Task.Sleep(Networker.LatencySimulation);
+
+								currentComposer.ResendPackets();
 							}
 
 							// TODO:  Wait the latency for this
