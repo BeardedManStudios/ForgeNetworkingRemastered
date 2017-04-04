@@ -4,6 +4,8 @@ Welcome to Forge Networking Remastered, we would like to personally thank you fo
 
 ### Here for the [Code API](http://forgepowered.com/ForgeNetworkingRemasteredAPI/html/index.html)?
 
+### Here for the [Video Tutorials](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)?
+
 ## Forge Networking to Remastered Migration Guide
 
 First, we would like to **thank you** so much for supporting Forge Networking over the past two years and we are proud to bring you **Forge Networking Remastered**!
