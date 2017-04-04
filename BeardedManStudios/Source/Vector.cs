@@ -93,6 +93,11 @@ namespace BeardedManStudios
 			return x == other.x && y == other.y && z == other.z;
 		}
 
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
 		// TODO:  Override the sum and difference opperators
 	}
 }

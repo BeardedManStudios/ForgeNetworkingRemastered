@@ -325,7 +325,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			if (sendTransform)
-				obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.OthersBuffered, go.transform.position, go.transform.rotation);
+				obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
 
 			if (!skipOthers)
 			{
