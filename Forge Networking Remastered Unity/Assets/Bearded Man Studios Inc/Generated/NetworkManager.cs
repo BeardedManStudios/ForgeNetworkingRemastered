@@ -8,6 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public delegate void InstantiateEvent(INetworkBehavior unityGameObject, NetworkObject obj);
 		public event InstantiateEvent objectInitialized;
+		private BMSByte metadata = new BMSByte();
 
 		public GameObject[] ChatManagerNetworkObject = null;
 		public GameObject[] CubeForgeGameNetworkObject = null;
@@ -143,7 +144,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
-
 		[Obsolete("Use InstantiateCubeForgeGame instead, its shorter and easier to type out ;)")]
 		public CubeForgeGameBehavior InstantiateCubeForgeGameNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
@@ -156,7 +156,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
-
 		[Obsolete("Use InstantiateExampleProximityPlayer instead, its shorter and easier to type out ;)")]
 		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
@@ -169,7 +168,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
-
 		[Obsolete("Use InstantiateNetworkCamera instead, its shorter and easier to type out ;)")]
 		public NetworkCameraBehavior InstantiateNetworkCameraNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
@@ -183,54 +181,173 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 
-
 		public ChatManagerBehavior InstantiateChatManager(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ChatManagerNetworkObject[index]);
 			var netBehavior = go.GetComponent<ChatManagerBehavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					metadata.Clear();
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, position.Value, rotation.Value);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
-
 		public CubeForgeGameBehavior InstantiateCubeForgeGame(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(CubeForgeGameNetworkObject[index]);
 			var netBehavior = go.GetComponent<CubeForgeGameBehavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					metadata.Clear();
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, position.Value, rotation.Value);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
-
 		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayer(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ExampleProximityPlayerNetworkObject[index]);
 			var netBehavior = go.GetComponent<ExampleProximityPlayerBehavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					metadata.Clear();
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, position.Value, rotation.Value);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
 			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
-
 		public NetworkCameraBehavior InstantiateNetworkCamera(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(NetworkCameraNetworkObject[index]);
 			var netBehavior = go.GetComponent<NetworkCameraBehavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					metadata.Clear();
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, position.Value, rotation.Value);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
-
 	}
 }

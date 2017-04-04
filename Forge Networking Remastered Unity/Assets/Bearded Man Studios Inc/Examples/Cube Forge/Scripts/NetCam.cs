@@ -31,10 +31,11 @@ public class NetCam : NetworkCameraBehavior
 		else
 			playerCamera = this;
 
+		networkObject.position = transform.position;
+		networkObject.SnapInterpolations();
+
 		if (!networkObject.IsOwner)
 			return;
-
-		networkObject.position = transform.position;
 	}
 
 	private void Update()

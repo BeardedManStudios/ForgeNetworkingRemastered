@@ -36,11 +36,33 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				else
 					skipAttachIds.Remove(obj.NetworkId);
 			}
+
+			if (obj.Metadata == null)
+				return;
+
+			byte transformFlags = obj.Metadata[0];
+
+			if (transformFlags == 0)
+				return;
+
+			BMSByte metadataTransform = new BMSByte();
+			metadataTransform.Clone(obj.Metadata);
+			metadataTransform.MoveStartIndex(1);
+
+			if ((transformFlags & 0x01) != 0)
+			{
+				transform.position = ObjectMapper.Instance.Map<Vector3>(metadataTransform);
+			}
+
+			if ((transformFlags & 0x02) != 0)
+			{
+				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
+			}
 		}
 
-		public override void Initialize(NetWorker networker)
+		public override void Initialize(NetWorker networker, byte[] metadata = null)
 		{
-			Initialize(new ChatManagerNetworkObject(networker, createCode: TempAttachCode));
+			Initialize(new ChatManagerNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
 		private void DestroyGameObject()
@@ -49,9 +71,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.onDestroy -= DestroyGameObject;
 		}
 
-		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode)
+		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null)
 		{
-			return new ChatManagerNetworkObject(networker, this, createCode);
+			return new ChatManagerNetworkObject(networker, this, createCode, metadata);
 		}
 
 		protected override void InitializedTransform()

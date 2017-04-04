@@ -28,7 +28,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		public abstract void Initialize(NetworkObject obj);
-		public abstract void Initialize(NetWorker networker);
+		public abstract void Initialize(NetWorker networker, byte[] metadata = null);
 
 		public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
 		{
@@ -66,7 +66,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Initialized = true;
 		}
 
-		public abstract NetworkObject CreateNetworkObject(NetWorker networker, int createCode);
+		public abstract NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null);
 
 		private void SetupTransform(RpcArgs args)
 		{

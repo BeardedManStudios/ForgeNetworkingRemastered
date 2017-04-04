@@ -248,6 +248,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		private static List<NetworkObject> pendingCreates = new List<NetworkObject>();
 
+		public byte[] Metadata { get; private set; }
+
 		/// <summary>
 		/// The structure to store the buffered rpc data in to be sent on accepted client
 		/// </summary>
@@ -352,7 +354,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		/// <param name="networker">The networker that this object is going to be attached to</param>
 		/// <param name="forceId">If 0 then the first open id will be used from the networker</param>
-		public NetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0)
+		public NetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null)
 		{
 			pendingBehavior = networkBehavior;
 			UpdateInterval = DEFAULT_UPDATE_INTERVAL;
@@ -367,7 +369,10 @@ namespace BeardedManStudios.Forge.Networking
 			IsOwner = true;
 
 			if (networker is IServer)
+			{
+				Metadata = metadata;
 				CreateObjectOnServer(null);
+			}
 			else
 			{
 				// This is a client so it needs to request the creation by the server
@@ -387,6 +392,11 @@ namespace BeardedManStudios.Forge.Networking
 
 				ObjectMapper.Instance.MapBytes(data, UniqueIdentity, hash, CreateCode);
 				WritePayload(data);
+
+				// Write if the object has metadata
+				ObjectMapper.Instance.MapBytes(data, metadata != null);
+				if (metadata != null)
+					ObjectMapper.Instance.MapBytes(data, metadata);
 
 				bool useMask = networker is TCPClient;
 				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
@@ -446,6 +456,9 @@ namespace BeardedManStudios.Forge.Networking
 					((UDPServer)networker).Send(frame.Sender, createObject, true);
 				else
 					((TCPServer)networker).Send(frame.Sender.TcpClientHandle, createObject);
+
+				if (frame.StreamData.GetBasicType<bool>())
+					Metadata = ObjectMapper.Instance.Map<byte[]>(frame.StreamData);
 			}
 			else
 			{
@@ -453,6 +466,9 @@ namespace BeardedManStudios.Forge.Networking
 
 				Initialize(serverId, frame.TimeStep);
 				ReadPayload(frame.StreamData, frame.TimeStep);
+
+				if (frame.StreamData.GetBasicType<bool>())
+					Metadata = ObjectMapper.Instance.Map<byte[]>(frame.StreamData);
 
 				BMSByte createdByteData = new BMSByte();
 				ObjectMapper.Instance.MapBytes(createdByteData, serverId);
@@ -623,6 +639,11 @@ namespace BeardedManStudios.Forge.Networking
 			// Write all of the most up to date data for this object
 			WritePayload(data);
 
+			// Write if the object has metadata
+			ObjectMapper.Instance.MapBytes(data, Metadata != null);
+			if (Metadata != null)
+				ObjectMapper.Instance.MapBytes(data, Metadata);
+
 			Binary createObject = new Binary(CreateTimestep, false, data, Receivers.All, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, Networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
 
 			if (targetHash != 0)
@@ -662,6 +683,11 @@ namespace BeardedManStudios.Forge.Networking
 
 						// Write all of the most up to date data for this object
 						obj.WritePayload(targetData);
+
+						// Write if the object has metadata
+						ObjectMapper.Instance.MapBytes(targetData, obj.Metadata != null);
+						if (obj.Metadata != null)
+							targetData.Append(obj.Metadata);
 
 						timestep = obj.CreateTimestep;
 						networker = obj.Networker;
