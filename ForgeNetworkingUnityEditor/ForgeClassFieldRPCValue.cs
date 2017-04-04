@@ -87,8 +87,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableRPCTypes.VECTOR4;
 			else if (fieldType == typeof(string))
 				type = ForgeAcceptableRPCTypes.STRING;
-			else if (fieldType == typeof(object[]))
-				type = ForgeAcceptableRPCTypes.OBJECT_ARRAY;
+			//else if (fieldType == typeof(object[]))
+			//	type = ForgeAcceptableRPCTypes.OBJECT_ARRAY;
 			else if (fieldType == typeof(byte[]))
 				type = ForgeAcceptableRPCTypes.BYTE_ARRAY;
 			else
@@ -135,8 +135,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return typeof(Vector4);
 				case ForgeAcceptableRPCTypes.STRING:
 					return typeof(string);
-				case ForgeAcceptableRPCTypes.OBJECT_ARRAY:
-					return typeof(object[]);
+				//case ForgeAcceptableRPCTypes.OBJECT_ARRAY:
+				//	return typeof(object[]);
 				case ForgeAcceptableRPCTypes.BYTE_ARRAY:
 					return typeof(byte[]);
 				default:
@@ -182,8 +182,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return ForgeAcceptableRPCTypes.VECTOR4;
 				case "string":
 					return ForgeAcceptableRPCTypes.STRING;
-				case "object[]":
-					return ForgeAcceptableRPCTypes.OBJECT_ARRAY;
+				//case "object[]":
+				//	return ForgeAcceptableRPCTypes.OBJECT_ARRAY;
 				case "byte[]":
 					return ForgeAcceptableRPCTypes.BYTE_ARRAY;
 				default:

@@ -69,8 +69,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableRPCTypes.VECTOR4;
 			else if (fieldType == typeof(string))
 				type = ForgeAcceptableRPCTypes.STRING;
-			else if (fieldType == typeof(object[]))
-				type = ForgeAcceptableRPCTypes.OBJECT_ARRAY;
+			//else if (fieldType == typeof(object[]))
+			//	type = ForgeAcceptableRPCTypes.OBJECT_ARRAY;
 			else if (fieldType == typeof(byte[]))
 				type = ForgeAcceptableRPCTypes.BYTE_ARRAY;
 			else
