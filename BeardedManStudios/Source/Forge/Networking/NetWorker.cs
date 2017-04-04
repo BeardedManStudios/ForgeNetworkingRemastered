@@ -50,27 +50,30 @@ namespace BeardedManStudios.Forge.Networking
 				return new IPEndPoint(IPAddress.Parse(host), port);
 			else if (host == "localhost")
 				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-
-			IPHostEntry hostCheck = Dns.GetHostEntry(Dns.GetHostName());
-			foreach (IPAddress ip in hostCheck.AddressList)
-			{
-				if (ip.AddressFamily == AddressFamily.InterNetwork)
-				{
-					if (ip.ToString() == host)
-						return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-				}
-			}
-
+			
 			IPAddress ipAddress;
 
-			try
+			if (!IPAddress.TryParse(host, out ipAddress))
 			{
-				IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-				ipAddress = ipHostInfo.AddressList[0];
-			}
-			catch
-			{
-				ipAddress = IPAddress.Parse(host);
+				IPHostEntry hostCheck = Dns.GetHostEntry(Dns.GetHostName());
+				foreach (IPAddress ip in hostCheck.AddressList)
+				{
+					if (ip.AddressFamily == AddressFamily.InterNetwork)
+					{
+						if (ip.ToString() == host)
+							return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+					}
+				}
+
+				try
+				{
+					IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+					ipAddress = ipHostInfo.AddressList[0];
+				}
+				catch
+				{
+					Logging.BMSLog.Log("Failed to find host");
+				}
 			}
 
 			return new IPEndPoint(ipAddress, port);
