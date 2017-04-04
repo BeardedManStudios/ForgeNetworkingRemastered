@@ -1146,7 +1146,10 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				// We don't need to do any extra work if the target player is the server
 				if (targetPlayer == Networker.Me)
+				{
+					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 					return;
+				}
 			}
 
 			BMSByte data = new BMSByte();
@@ -1220,9 +1223,14 @@ namespace BeardedManStudios.Forge.Networking
 					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
 					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
 				{
-					Rpcs[methodId].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
+					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}
 			}
+		}
+
+		private void InvokeRpcOnSelfServer(byte methodId, NetworkingPlayer sender, ulong timestep, object[] args)
+		{
+			Rpcs[methodId].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
 		}
 
 		private void FinalizeSendRpc(BMSByte data, Receivers receivers, byte methodId, ulong timestep, NetworkingPlayer targetPlayer = null, NetworkingPlayer sender = null)
