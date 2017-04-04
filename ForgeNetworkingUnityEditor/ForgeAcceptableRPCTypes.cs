@@ -23,7 +23,7 @@
 		VECTOR4 = 14,
 		QUATERNION = 15,
 		COLOR = 16,
-		OBJECT_ARRAY = 17,
+		//OBJECT_ARRAY = 17,
 		BYTE_ARRAY = 18
 	}
 }

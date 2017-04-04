@@ -90,8 +90,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			//	type = ForgeAcceptableFieldTypes.STRING; //Unsupported
 			//else if (fieldType == typeof(object[]))
 			//	type = ForgeAcceptableFieldTypes.OBJECT_ARRAY; //Unsupported
-			else if (fieldType == typeof(byte[]))
-				type = ForgeAcceptableFieldTypes.BYTE_ARRAY;
+			//else if (fieldType == typeof(byte[]))
+			//	type = ForgeAcceptableFieldTypes.BYTE_ARRAY;
 			//else
 			//	type = ForgeAcceptableFieldTypes.Unknown; //Unsupported
 
@@ -138,8 +138,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				//	return typeof(string);
 				//case ForgeAcceptableFieldTypes.OBJECT_ARRAY: //Unsupported
 				//	return typeof(object[]);
-				case ForgeAcceptableFieldTypes.BYTE_ARRAY:
-					return typeof(byte[]);
+				//case ForgeAcceptableFieldTypes.BYTE_ARRAY:
+				//	return typeof(byte[]);
 				default:
 					return null;
 			}
@@ -229,8 +229,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				//	return ForgeAcceptableFieldTypes.STRING; //Unsupported
 				//case "object[]":
 				//	return ForgeAcceptableFieldTypes.OBJECT_ARRAY; //Unsupported
-				case "byte[]":
-					return ForgeAcceptableFieldTypes.BYTE_ARRAY;
+				//case "byte[]":
+				//	return ForgeAcceptableFieldTypes.BYTE_ARRAY;
 				default:
 					return ForgeAcceptableFieldTypes.BYTE;
 				//return ForgeAcceptableFieldTypes.Unknown; //Unsupported
