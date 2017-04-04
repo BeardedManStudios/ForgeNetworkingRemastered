@@ -677,7 +677,7 @@ namespace BeardedManStudios
 				int rank = type.GetArrayRank();
 				Type targetType = type.GetElementType();
 
-				int startingIndex = StartIndex();
+				//int startingIndex = StartIndex();
 				MoveStartIndex(sizeof(int));
 
 				if (rank > 4)
