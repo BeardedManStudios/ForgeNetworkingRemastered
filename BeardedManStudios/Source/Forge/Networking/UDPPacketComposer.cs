@@ -218,11 +218,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void ResendPackets()
 		{
-			foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+			lock (PendingPackets)
 			{
-				kv.Value.DoingRetry();
-				Send(kv.Value.rawBytes);
-				ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				{
+					kv.Value.DoingRetry();
+					Send(kv.Value.rawBytes);
+					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+				}
 			}
 		}
 
