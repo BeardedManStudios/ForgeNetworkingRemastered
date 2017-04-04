@@ -221,49 +221,60 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			if (!Directory.Exists(_userStoringPath))
 				Directory.CreateDirectory(_userStoringPath);
 
-			string[] files = Directory.GetFiles(_storingPath, "*", SearchOption.TopDirectoryOnly);
-			string[] userFiles = Directory.GetFiles(_userStoringPath, "*", SearchOption.TopDirectoryOnly);
+			string[] files = Directory.GetFiles(_storingPath, "*.cs", SearchOption.TopDirectoryOnly);
+			string[] userFiles = Directory.GetFiles(_userStoringPath, "*.cs", SearchOption.TopDirectoryOnly);
 
 			if (File.Exists(Path.Combine(_storingPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
 			{
 				IFormatter bFormatter = new BinaryFormatter();
+				bool updateColors = false;
 				using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
-					_editorButtons = (List<ForgeEditorButton>)bFormatter.Deserialize(s);
-
-				for (int i = 0; i < _editorButtons.Count; ++i)
 				{
-					_editorButtons[i].UpdateButtonColor();
-					if (_editorButtons[i].IsNetworkObject)
-						ForgeClassObject.IDENTITIES++;
+					try
+					{
+						object deserializedObject = bFormatter.Deserialize(s);
+						if (deserializedObject != null)
+						{
+							_editorButtons = (List<ForgeEditorButton>)deserializedObject;
+							bool cleared = true;
+							for (int i = 0; i < _editorButtons.Count; ++i)
+							{
+								if (_editorButtons[i].TiedObject == null)
+								{
+									cleared = false;
+									break;
+								}
+							}
+
+							if (cleared)
+								updateColors = true;
+							else
+							{
+								_editorButtons = new List<ForgeEditorButton>();
+								ReloadScripts(files, userFiles);
+							}
+						}
+						else
+							ReloadScripts(files, userFiles);
+					}
+					catch (Exception ex)
+					{
+						ReloadScripts(files, userFiles);
+					}
+				}
+
+				if (updateColors)
+				{
+					for (int i = 0; i < _editorButtons.Count; ++i)
+					{
+						_editorButtons[i].UpdateButtonColor();
+						if (_editorButtons[i].IsNetworkObject)
+							ForgeClassObject.IDENTITIES++;
+					}
 				}
 			}
 			else
-			{
-				List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
-
-				for (int i = 0; i < files.Length; ++i)
-				{
-					if (!files[i].EndsWith(".meta")) //Ignore all meta files
-						correctFiles.Add(new ForgeClassObject(files[i]));
-				}
-
-				for (int i = 0; i < userFiles.Length; ++i)
-				{
-					if (!userFiles[i].EndsWith(".meta")) //Ignore all meta files
-						correctFiles.Add(new ForgeClassObject(userFiles[i]));
-				}
-
-				if (!ForgeClassObject.HasExactFilename(correctFiles, "NetworkObjectFactory"))
-					MakeForgeFactory(); //We do not have the Forge Factory, we need to make this!
-
-				for (int i = 0; i < correctFiles.Count; ++i)
-				{
-					var btn = new ForgeEditorButton(correctFiles[i]);
-
-					if (btn.IsNetworkObject || btn.IsNetworkBehavior)
-						_editorButtons.Add(btn);
-				}
-			}
+				ReloadScripts(files, userFiles);
 
 			#region Texture Loading
 			Arrow = Resources.Load<Texture2D>("Arrow");
@@ -343,8 +354,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public void CloseFinal()
 		{
-			//Close();
-			//_instance = null;
+			Close();
+			_instance = null;
 		}
 		#endregion
 
@@ -915,6 +926,37 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 
 		#region Compiling
+		/// <summary>
+		/// Reloads the scripts into the editor
+		/// </summary>
+		private void ReloadScripts(string[] files, string[] userFiles)
+		{
+			List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
+
+			for (int i = 0; i < files.Length; ++i)
+			{
+				if (!files[i].EndsWith(".meta")) //Ignore all meta files
+					correctFiles.Add(new ForgeClassObject(files[i]));
+			}
+
+			for (int i = 0; i < userFiles.Length; ++i)
+			{
+				if (!userFiles[i].EndsWith(".meta")) //Ignore all meta files
+					correctFiles.Add(new ForgeClassObject(userFiles[i]));
+			}
+
+			if (!ForgeClassObject.HasExactFilename(correctFiles, "NetworkObjectFactory"))
+				MakeForgeFactory(); //We do not have the Forge Factory, we need to make this!
+
+			for (int i = 0; i < correctFiles.Count; ++i)
+			{
+				var btn = new ForgeEditorButton(correctFiles[i]);
+
+				if (btn.IsNetworkObject || btn.IsNetworkBehavior)
+					_editorButtons.Add(btn);
+			}
+		}
+
 		/// <summary>
 		/// Compiles our generated code for the user
 		/// </summary>
