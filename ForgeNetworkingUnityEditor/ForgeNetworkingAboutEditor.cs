@@ -123,7 +123,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				IgnoreEditorStartup = currentSetup;
 				EditorPrefs.SetBool(EDITOR_PREF_IGNORE, IgnoreEditorStartup);
 			}
-			EditorGUILayout.LabelField("Version 23.0.0");
+			EditorGUILayout.LabelField("Version 22.51");
 			GUILayout.EndHorizontal();
 		}
 	}
