@@ -56,8 +56,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
 			}
-
-			((NetworkCameraNetworkObject)obj).SnapInterpolations();
 		}
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
