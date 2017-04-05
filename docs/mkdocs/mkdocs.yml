@@ -66,3 +66,6 @@ pages:
     - Contributing:
         - adding-and-updating-docs.md
 theme: readthedocs
+
+markdown_extensions:
+    - pyembed.markdown

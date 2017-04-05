@@ -6,3 +6,6 @@ The following is collection of examples/tutorials to get you up and running with
 * [Basic Instantiation Example](basic-instantiation-example)
 * [Jump Start Guide](jump-start-guide)
 * Game Lobby Example
+
+## Want to watch some Jumpstart videos?
+[!embed?max_width=640300&max_height=360](https://www.youtube.com/watch?v=-KyIVsAnDR8&list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
