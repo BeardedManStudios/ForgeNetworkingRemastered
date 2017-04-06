@@ -367,12 +367,10 @@ namespace BeardedManStudios.Forge.Networking
 			// Whatever called this method is the owner
 			Owner = networker.Me;
 			IsOwner = true;
+			Metadata = metadata;
 
 			if (networker is IServer)
-			{
-				Metadata = metadata;
 				CreateObjectOnServer(null);
-			}
 			else
 			{
 				// This is a client so it needs to request the creation by the server
@@ -394,9 +392,9 @@ namespace BeardedManStudios.Forge.Networking
 				WritePayload(data);
 
 				// Write if the object has metadata
-				ObjectMapper.Instance.MapBytes(data, metadata != null);
-				if (metadata != null)
-					ObjectMapper.Instance.MapBytes(data, metadata);
+				ObjectMapper.Instance.MapBytes(data, Metadata != null);
+				if (Metadata != null)
+					ObjectMapper.Instance.MapBytes(data, Metadata);
 
 				bool useMask = networker is TCPClient;
 				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
@@ -447,6 +445,9 @@ namespace BeardedManStudios.Forge.Networking
 
 				ReadPayload(frame.StreamData, frame.TimeStep);
 
+				if (frame.StreamData.GetBasicType<bool>())
+					Metadata = ObjectMapper.Instance.Map<byte[]>(frame.StreamData);
+
 				// Let all the clients know that a new object is being created
 				CreateObjectOnServer(frame.Sender);
 				Binary createObject = CreateObjectOnServer(frame.Sender, hash);
@@ -456,9 +457,6 @@ namespace BeardedManStudios.Forge.Networking
 					((UDPServer)networker).Send(frame.Sender, createObject, true);
 				else
 					((TCPServer)networker).Send(frame.Sender.TcpClientHandle, createObject);
-
-				if (frame.StreamData.GetBasicType<bool>())
-					Metadata = ObjectMapper.Instance.Map<byte[]>(frame.StreamData);
 			}
 			else
 			{
@@ -687,7 +685,7 @@ namespace BeardedManStudios.Forge.Networking
 						// Write if the object has metadata
 						ObjectMapper.Instance.MapBytes(targetData, obj.Metadata != null);
 						if (obj.Metadata != null)
-							targetData.Append(obj.Metadata);
+							ObjectMapper.Instance.MapBytes(targetData, obj.Metadata);
 
 						timestep = obj.CreateTimestep;
 						networker = obj.Networker;
