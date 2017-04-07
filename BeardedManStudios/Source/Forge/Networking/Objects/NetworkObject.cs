@@ -862,7 +862,10 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			Networker.CompleteInitialization(this);
+		}
 
+		public void ReleaseCreateBuffer()
+		{
 			lock (pendingClientRegisterRpc)
 			{
 				ClearClientPendingRPC();

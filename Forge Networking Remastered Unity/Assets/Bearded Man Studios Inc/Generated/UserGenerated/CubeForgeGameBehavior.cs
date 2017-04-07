@@ -68,7 +68,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		protected override void CompleteRegistration()
 		{
 			base.CompleteRegistration();
-			networkObject.RegistrationComplete();
+			networkObject.ReleaseCreateBuffer();
 		}
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
