@@ -83,7 +83,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		// Since this object is a singleton we can create the player from here as
 		// it is in the scene at start time and we want to create a player camera
 		// for this newly created server or newly connected client
-		NetworkManager.Instance.InstantiateNetworkCamera(position: new Vector3(0, 0, -10));
+		NetworkManager.Instance.InstantiateNetworkCamera();
 
 		NetworkManager.Instance.Networker.pingReceived += PingReceived;
 

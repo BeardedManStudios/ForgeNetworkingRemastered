@@ -25,7 +25,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (networkStarted != null)
 				networkStarted(this);
+
+			CompleteRegistration();
 		}
+
+		protected virtual void CompleteRegistration() { }
 
 		public abstract void Initialize(NetworkObject obj);
 		public abstract void Initialize(NetWorker networker, byte[] metadata = null);
