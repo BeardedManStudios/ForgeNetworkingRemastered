@@ -29,7 +29,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("CreatePrimitive", CreatePrimitive, typeof(byte), typeof(Vector3));
 			networkObject.RegisterRpc("DestroyPrimitive", DestroyPrimitive, typeof(Vector3));
 			networkObject.RegisterRpc("TestMe", TestMe, typeof(string));
-			networkObject.RegistrationComplete();
 
 			MainThreadManager.Run(NetworkStart);
 
@@ -64,6 +63,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
 			}
+		}
+
+		protected override void CompleteRegistration()
+		{
+			base.CompleteRegistration();
+			networkObject.RegistrationComplete();
 		}
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
