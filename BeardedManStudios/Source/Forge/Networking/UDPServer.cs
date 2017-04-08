@@ -22,6 +22,7 @@ using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 
@@ -35,11 +36,13 @@ namespace BeardedManStudios.Forge.Networking
 
 		private List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
 
-		public UDPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; }
+		public UDPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; BannedAddresses = new List<string>(); }
 
 		public NatHolePunch nat = new NatHolePunch();
 
 		protected List<FrameStream> bufferedMessages = new List<FrameStream>();
+
+		public List<string> BannedAddresses { get; set; }
 
 		/// <summary>
 		/// Used to determine if this server is currently accepting connections
@@ -336,7 +339,7 @@ namespace BeardedManStudios.Forge.Networking
 				else
 				{
 					currentReadingPlayer = udpPlayers[incomingEndpoint];
-					
+
 					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccpeted)
 					{
 						// It is possible that the response validation was dropped so
@@ -546,6 +549,16 @@ namespace BeardedManStudios.Forge.Networking
 		public void StartAcceptingConnections()
 		{
 			AcceptingConnections = true;
+		}
+
+		public void BanPlayer(ulong networkId, int minutes)
+		{
+			NetworkingPlayer player = Players.FirstOrDefault(p => p.NetworkId == networkId);
+
+			if (player == null)
+				return;
+
+			BannedAddresses.Add(player.Ip);
 		}
 	}
 }

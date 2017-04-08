@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using System.Linq;
 
 #if WINDOWS_UWP
 using Windows.Networking.Sockets;
@@ -102,7 +103,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public bool AcceptingConnections { get; private set; }
 
-		public TCPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; }
+		public List<string> BannedAddresses { get; set; }
+
+
+		public TCPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; BannedAddresses = new List<string>(); }
 
 #if WINDOWS_UWP
 		private void RawWrite(StreamSocket client, byte[] data)
@@ -701,6 +705,16 @@ namespace BeardedManStudios.Forge.Networking
 		public void StartAcceptingConnections()
 		{
 			AcceptingConnections = true;
+		}
+
+		public void BanPlayer(ulong networkId, int minutes)
+		{
+			NetworkingPlayer player = Players.FirstOrDefault(p => p.NetworkId == networkId);
+
+			if (player == null)
+				return;
+
+			BannedAddresses.Add(player.Ip);
 		}
 	}
 }

@@ -31,6 +31,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		public bool automaticScenes = true;
 
+#if FN_WEBSERVER
+		MVCWebServer.ForgeWebServer webserver = null;
+#endif
+
 		private void Awake()
 		{
 			if (Instance != null)
@@ -74,6 +78,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					RegisterOnMasterServer(networker.Port, networker.MaxConnections, masterServerHost, masterServerPort, masterServerRegisterData);
 
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
+
+#if FN_WEBSERVER
+				string pathToFiles = "fnwww/html";
+				Dictionary<string, string> pages = new Dictionary<string, string>();
+				TextAsset[] assets = Resources.LoadAll<TextAsset>(pathToFiles);
+				foreach (TextAsset a in assets)
+					pages.Add(a.name, a.text);
+
+				webserver = new MVCWebServer.ForgeWebServer(networker, pages);
+				webserver.Start();
+#endif
 			}
 		}
 
@@ -93,7 +108,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			pendingObjects.Remove(obj.CreateCode);
 
 			//if (pendingObjects.Count == 0)
-			//	NetworkObject.objectCreated -= CreatePendingObjects;
+			// NetworkObject.objectCreated -= CreatePendingObjects;
 		}
 
 		public void MatchmakingServersFromMasterServer(string masterServerHost,
@@ -245,6 +260,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public void Disconnect()
 		{
+#if FN_WEBSERVER
+			webserver.Stop();
+#endif
+
 			if (Networker != null)
 				Networker.Disconnect(false);
 
@@ -325,7 +344,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			//if (sendTransform)
-			//	obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
+			// obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
 
 			if (!skipOthers)
 			{

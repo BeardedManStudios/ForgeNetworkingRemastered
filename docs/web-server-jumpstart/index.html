@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Loading scenes - Forge Networking Remastered</title>
+  <title>Web server jumpstart - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Loading scenes";
-    var mkdocs_page_input_path = "loading-scenes.md";
-    var mkdocs_page_url = "/loading-scenes/";
+    var mkdocs_page_name = "Web server jumpstart";
+    var mkdocs_page_input_path = "web-server-jumpstart.md";
+    var mkdocs_page_url = "/web-server-jumpstart/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -312,23 +312,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Loading scenes</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#loading-scenes">Loading Scenes</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-a-single-scene-on-the-server">Loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-an-addative-scene-on-the-server">Loading an addative scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../loading-scenes/">Loading scenes</a>
         
     </li>
 
@@ -436,8 +421,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../web-server-jumpstart/">Web server jumpstart</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Web server jumpstart</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#web-server-jumpstart">Web Server Jumpstart</a></li>
+                
+                    <li><a class="toctree-l4" href="#starting-a-web-server">Starting a Web Server</a></li>
+                
+                    <li><a class="toctree-l4" href="#stopping-a-web-server">Stopping a Web Server</a></li>
+                
+                    <li><a class="toctree-l4" href="#notices-warnings">Notices &amp; Warnings!</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -546,11 +544,11 @@
     
       
         
-          <li>Scene Navigation &raquo;</li>
+          <li>Web Server &raquo;</li>
         
       
     
-    <li>Loading scenes</li>
+    <li>Web server jumpstart</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -560,46 +558,45 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="loading-scenes">Loading Scenes</h1>
-<p>One of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:</p>
-<ul>
-<li>How do clients know when to change scenes?</li>
-<li>How do I clean up all the network objects?</li>
-<li>How do clients know what scene to go to?</li>
-<li>How do newly connected clients know what scene is currently active?</li>
-<li>How do I handle additive scenes?</li>
-</ul>
-<p>These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's <code>SceneManager.sceneLoaded</code> event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.</p>
-<p>There are a few important notes about scenes with Forge Networking:</p>
-<ol>
-<li>The server must load the scene to trigger all of the clients to load scenes</li>
-<li>Clients can still load scenes without the server having to dictate the change, however when the server changes the scene it will get pushed to the client and overwrite the changes</li>
-<li>You load scenes as you normally would do in Unity on the server, no extra calls are needed</li>
-</ol>
-<p>Below is a sample of how to load a scene on the server only if both the server and client are sharing code. The <code>Networker</code> in this case will be a reference to the NetWorker in <code>NetworkManager.Instance.Networker</code>.</p>
-<h4 id="loading-a-single-scene-on-the-server">Loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Single);
+                <h1 id="web-server-jumpstart">Web Server Jumpstart</h1>
+<p>Getting up and running with the web server is easier than ever. Just include the plugin into your project, new up the object and start/stop the server at will. The namespace for the web server is <code>BeardedManStudios.Forge.MVCWebServer</code>, so if you need to include using statements or view things in the object browser, take a look in this namespace.</p>
+<h2 id="starting-a-web-server">Starting a Web Server</h2>
+<p>Starting a web server is as simple as calling 2 lines of code as seen below.</p>
+<pre><code class="csharp">ForgeWebServer ws = new ForgeWebServer(server, pages, ForgeWebServer.DEFAULT_PORT);
+ws.Start();
 </code></pre>
 
-<h4 id="async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+<p>I know what you are saying, "what is server... and what are pages?". Good questions; see below:
+- <strong>server</strong>: This is the <code>NetWorker</code> for the server
+- <strong>pages</strong>: This is a <code>Dictionary&lt;string, string&gt;()</code> of web pages (html). The key string is the name of the page, like <strong>"index"</strong> and the value is the html of the page. The pages you add here will be viewable from the web interface. So let's say you add a page <strong>cat</strong> and the html <code>&lt;h1&gt;Hello World&lt;/h1&gt;</code>. Then if you went to <code>locahost:15942/cat</code> in any web browser, you would see a big bold <strong>Hello World</strong> heading on the page.</p>
+<p>We have added a few default pages as part of the package in the <strong>Resources</strong> folder. If you want a magical function that automatically maps all the pages you put into this folder, well... here you go:</p>
+<pre><code class="csharp">string pathToFiles = &quot;fnwww/html&quot;;
+Dictionary&lt;string, string&gt; pages = new Dictionary&lt;string, string&gt;();
+TextAsset[] assets = Resources.LoadAll&lt;TextAsset&gt;(pathToFiles);
+foreach (TextAsset a in assets)
+    pages.Add(a.name, a.text);
+
+ForgeWebServer ws = new ForgeWebServer(server, pages, ForgeWebServer.DEFAULT_PORT);
+ws.Start();
+
+// ...
 </code></pre>
 
-<h4 id="loading-an-addative-scene-on-the-server">Loading an addative scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Additive);
+<h2 id="stopping-a-web-server">Stopping a Web Server</h2>
+<p>When you are closing your connection/application that has a running web server, you will want to close the connection for the web server as well. You can see how to close the connection to the web server below:</p>
+<pre><code class="csharp">ForgeWebServer ws = new ForgeWebServer(server, pages, ForgeWebServer.DEFAULT_PORT);
+ws.Start();
+
+// ...
+
+ws.Stop();
 </code></pre>
 
-<h4 id="async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-</code></pre>
+<h2 id="notices-warnings">Notices &amp; Warnings!</h2>
+<p><strong>STOP, BEFORE YOU LEAVE THIS PAGE!</strong> There are a few things to keep in mind when using the web server.
+1. If you disconnect your server, you <strong>MUST</strong> disconnect your web server as well. Since this is a plugin system, you need to remember to do this.
+2. You <strong>MUST</strong> remember to close the web server on application quit.
+3. The commands are run on a separate thread so you need to use <a href="../running-unity-specific-code-on-the-main-thread/">MainThreadManager</a> for any code that requires to be on the main thread</p>
               
             </div>
           </div>
@@ -607,10 +604,10 @@ if (Networker.IsServer)
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../scene-events/" class="btn btn-neutral float-right" title="Scene events">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../web-server-extending-with-mvc/" class="btn btn-neutral float-right" title="Web server extending with mvc">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../connection-cycle-events/" class="btn btn-neutral" title="Connection cycle events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../nat-hole-punching/" class="btn btn-neutral" title="NAT Hole Punching"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -636,10 +633,10 @@ if (Networker.IsServer)
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../connection-cycle-events/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../nat-hole-punching/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../scene-events/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../web-server-extending-with-mvc/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Loading scenes - Forge Networking Remastered</title>
+  <title>Web server command plugins - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Loading scenes";
-    var mkdocs_page_input_path = "loading-scenes.md";
-    var mkdocs_page_url = "/loading-scenes/";
+    var mkdocs_page_name = "Web server command plugins";
+    var mkdocs_page_input_path = "web-server-command-plugins.md";
+    var mkdocs_page_url = "/web-server-command-plugins/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -312,23 +312,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Loading scenes</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#loading-scenes">Loading Scenes</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-a-single-scene-on-the-server">Loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-an-addative-scene-on-the-server">Loading an addative scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../loading-scenes/">Loading scenes</a>
         
     </li>
 
@@ -450,8 +435,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../web-server-command-plugins/">Web server command plugins</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Web server command plugins</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#web-server-command-plugins">Web Server Command Plugins</a></li>
+                
+                    <li><a class="toctree-l4" href="#create-the-plugin-class">Create the plugin class</a></li>
+                
+                    <li><a class="toctree-l4" href="#add-our-plugin">Add our plugin</a></li>
+                
+                    <li><a class="toctree-l4" href="#done">Done</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -546,11 +544,11 @@
     
       
         
-          <li>Scene Navigation &raquo;</li>
+          <li>Web Server &raquo;</li>
         
       
     
-    <li>Loading scenes</li>
+    <li>Web server command plugins</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -560,46 +558,43 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="loading-scenes">Loading Scenes</h1>
-<p>One of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:</p>
-<ul>
-<li>How do clients know when to change scenes?</li>
-<li>How do I clean up all the network objects?</li>
-<li>How do clients know what scene to go to?</li>
-<li>How do newly connected clients know what scene is currently active?</li>
-<li>How do I handle additive scenes?</li>
-</ul>
-<p>These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's <code>SceneManager.sceneLoaded</code> event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.</p>
-<p>There are a few important notes about scenes with Forge Networking:</p>
-<ol>
-<li>The server must load the scene to trigger all of the clients to load scenes</li>
-<li>Clients can still load scenes without the server having to dictate the change, however when the server changes the scene it will get pushed to the client and overwrite the changes</li>
-<li>You load scenes as you normally would do in Unity on the server, no extra calls are needed</li>
-</ol>
-<p>Below is a sample of how to load a scene on the server only if both the server and client are sharing code. The <code>Networker</code> in this case will be a reference to the NetWorker in <code>NetworkManager.Instance.Networker</code>.</p>
-<h4 id="loading-a-single-scene-on-the-server">Loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Single);
+                <h1 id="web-server-command-plugins">Web Server Command Plugins</h1>
+<p>As you know by now, the webserver comes with a fancy console which allows you to type in commands and execute some logic on your server. One thing that we thought would be needed is for you to have the ability to create your own commands.</p>
+<h2 id="create-the-plugin-class">Create the plugin class</h2>
+<p>When creating a plugin for the webserver, you will need to derive from the <code>ICommandPlugin</code> interface which is in the <code>BeardedManStudios.Forge.MVCWebServer.Plugins</code> namespace, so be sure to add it to your using statements. Below you will see a code example of a plugin. This plugin must have the <code>Execute</code> method and it must return a <code>string</code> as well as take in a <code>string[]</code> of commands. If you typed into the command box <strong>testing brent farris</strong> the output would be <strong>Hello Brent!</strong>. However if you typed in <strong>testing "Brent Farris"</strong> the output would be <strong>Hello Brent Farris!</strong>. As you can see, the quotes will group parts of the command together. Lastly, parameters are not required (because of how we wrote our class) so <strong>testing</strong> by itself will respond with <strong>HELLO!</strong>.</p>
+<pre><code class="csharp">public class TestingPlugin : ICommandPlugin
+{
+    public string Execute(string[] commands)
+    {
+        if (commands == null || commands.Length == 0)
+            return &quot;HELLO!&quot;;
+
+        return &quot;Hello &quot; + commands[0] + &quot;!&quot;;
+    }
+}
 </code></pre>
 
-<h4 id="async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+<h2 id="add-our-plugin">Add our plugin</h2>
+<p>Adding a plugin is very easy, let's say you have a web server running, all you need to do is call the <code>TryAddPlugin</code> method. Below is a couple examples of this in action.</p>
+<h4 id="without-help-strings">Without help strings</h4>
+<pre><code class="csharp">ForgeWebServer ws = new ForgeWebServer(server, 15942, dict);
+ws.Start();
+
+ws.TryAddPlugin(&quot;testing&quot;, new TestingPlugin());
 </code></pre>
 
-<h4 id="loading-an-addative-scene-on-the-server">Loading an addative scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Additive);
+<h4 id="with-help-strings">With help strings</h4>
+<pre><code class="csharp">ForgeWebServer ws = new ForgeWebServer(server, 15942, dict);
+ws.Start();
+
+ws.TryAddPlugin(&quot;testing&quot;, new TestingPlugin(), &quot;Do a test log&quot;, &quot;testing brent&quot;, &quot;arg1&quot;, &quot;arg2&quot;, &quot;arg3&quot;, &quot;...&quot;);
 </code></pre>
 
-<h4 id="async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-</code></pre>
+<p>When you supply help strings, then when you type <strong>help</strong> into the command box, it will print out the help messages to let the user know what the command does and what arguments it expects.</p>
+<h2 id="done">Done</h2>
+<p>Well that is it, once you create the command class and implement the <code>ICommandPlugin</code> interface, then do a call to <code>TryAddPlugin</code> with your plugin class, then you are ready to start using the command in the web browser.</p>
+<h3 id="notes">Notes</h3>
+<p>You can create and add plugins to your web server at any time in your code. So you can potentially create commands to spawn objects, kill player characters, render a cube for no reason, pretty much anything you can imagine.</p>
               
             </div>
           </div>
@@ -607,10 +602,10 @@ if (Networker.IsServer)
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../scene-events/" class="btn btn-neutral float-right" title="Scene events">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../working-with-multiple-sockets/" class="btn btn-neutral float-right" title="Working With Multiple Sockets">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../connection-cycle-events/" class="btn btn-neutral" title="Connection cycle events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../web-server-extending-with-mvc/" class="btn btn-neutral" title="Web server extending with mvc"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -636,10 +631,10 @@ if (Networker.IsServer)
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../connection-cycle-events/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../web-server-extending-with-mvc/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../scene-events/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../working-with-multiple-sockets/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

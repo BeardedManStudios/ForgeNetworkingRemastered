@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Loading scenes - Forge Networking Remastered</title>
+  <title>Web server extending with mvc - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Loading scenes";
-    var mkdocs_page_input_path = "loading-scenes.md";
-    var mkdocs_page_url = "/loading-scenes/";
+    var mkdocs_page_name = "Web server extending with mvc";
+    var mkdocs_page_input_path = "web-server-extending-with-mvc.md";
+    var mkdocs_page_url = "/web-server-extending-with-mvc/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -312,23 +312,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Loading scenes</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#loading-scenes">Loading Scenes</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-a-single-scene-on-the-server">Loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#loading-an-addative-scene-on-the-server">Loading an addative scene on the server</a></li>
-                
-                    <li><a class="toctree-l4" href="#async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../loading-scenes/">Loading scenes</a>
         
     </li>
 
@@ -443,8 +428,23 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../web-server-extending-with-mvc/">Web server extending with mvc</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Web server extending with mvc</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#web-server-extending-with-mvc">Web Server Extending With MVC</a></li>
+                
+                    <li><a class="toctree-l4" href="#our-custom-test-controller">Our custom "Test" controller</a></li>
+                
+                    <li><a class="toctree-l4" href="#adding-your-new-controller">Adding your new controller</a></li>
+                
+                    <li><a class="toctree-l4" href="#our-testhtml-view">Our "test.html" view</a></li>
+                
+                    <li><a class="toctree-l4" href="#done">Done</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -546,11 +546,11 @@
     
       
         
-          <li>Scene Navigation &raquo;</li>
+          <li>Web Server &raquo;</li>
         
       
     
-    <li>Loading scenes</li>
+    <li>Web server extending with mvc</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -560,46 +560,60 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="loading-scenes">Loading Scenes</h1>
-<p>One of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:</p>
-<ul>
-<li>How do clients know when to change scenes?</li>
-<li>How do I clean up all the network objects?</li>
-<li>How do clients know what scene to go to?</li>
-<li>How do newly connected clients know what scene is currently active?</li>
-<li>How do I handle additive scenes?</li>
-</ul>
-<p>These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's <code>SceneManager.sceneLoaded</code> event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.</p>
-<p>There are a few important notes about scenes with Forge Networking:</p>
-<ol>
-<li>The server must load the scene to trigger all of the clients to load scenes</li>
-<li>Clients can still load scenes without the server having to dictate the change, however when the server changes the scene it will get pushed to the client and overwrite the changes</li>
-<li>You load scenes as you normally would do in Unity on the server, no extra calls are needed</li>
-</ol>
-<p>Below is a sample of how to load a scene on the server only if both the server and client are sharing code. The <code>Networker</code> in this case will be a reference to the NetWorker in <code>NetworkManager.Instance.Networker</code>.</p>
-<h4 id="loading-a-single-scene-on-the-server">Loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Single);
+                <h1 id="web-server-extending-with-mvc">Web Server Extending With MVC</h1>
+<p>Yes, the web server is a full blown website in it's own right. Being this, you may want to add new controllers and views to the site. We'll start by making a controller named "Test". This will make it so that you can go to <strong>localhost:15942/test</strong> and have your own custom view processed and shown.</p>
+<h4 id="our-custom-test-controller">Our custom "Test" controller</h4>
+<pre><code class="csharp">public class Test : PageController
+{
+    public Test(NetWorker socket, ForgeWebServer webserver)
+        : base(socket, webserver)
+    {
+        // Key string used in html like this: &lt;% print %&gt;
+        variables.Add(&quot;print&quot;, Print);
+    }
+
+    public string Print()
+    {
+        return &quot;HELLO TEST STRING ACTION!&quot;;
+    }
+
+    public override string Render()
+    {
+        return PresentHTML(&quot;test&quot;);
+    }
+}
 </code></pre>
 
-<h4 id="async-loading-a-single-scene-on-the-server">Async loading a single scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+<p>As you can see from above, there are a lot of things going on, so we'll break them down one by one.
+1. You <strong>must</strong> derive your new controller from the <code>PageController</code> class
+2. You <strong>must</strong> create the constructor for your controller with the supplied input arguments
+3. You should add any model pulling functions inside the constructor to the variables
+4. You should create methods that are going to return the data needed for the variables
+5. You <strong>must</strong> override the render method as it is abstract. This is where you return the HTML for your page. You can use the built in <code>PresentHTML</code> method you get from the parent class and pass in the name of your HTML page that will be presented.</p>
+<p>When you add callbacks assigned to a string to <code>variables</code> as seen above with <strong>print</strong>, you are making it so that you can use the <code>string</code> response from those callbacks within your HTML page. See the <strong>test.html</strong> example below to see how it is used in the <code>&lt;% %&gt;</code> tags.</p>
+<p>Now that you have your new controller, you are probably curious on how you can get it to be used while the web server is running. Below you will notice the line that has <code>TryAddController</code> which will try to add your new controller to the web server. Notice that all we have to do is new up the controller and pass it into this method.</p>
+<h4 id="adding-your-new-controller">Adding your new controller</h4>
+<pre><code class="csharp">ForgeWebServer ws = new ForgeWebServer(server, 15942, dict);
+ws.Start();
+
+ws.TryAddController(new Test(server, ws));
 </code></pre>
 
-<h4 id="loading-an-addative-scene-on-the-server">Loading an addative scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadScene(1, LoadSceneMode.Additive);
+<p>Finally, we are ready to create our view. A view is something that the controller will present to the user when they request your controllers web page. We will name this file <strong>test.html</strong> because we are passing <strong>test</strong> into the <code>PresentHTML</code> of our controller. If we were to name this html file <strong>cats</strong> then we would need to update the controller to pass <strong>"cats"</strong> into the <code>PresentHTML</code> method of the <code>Render</code> function.</p>
+<h4 id="our-testhtml-view">Our "test.html" view</h4>
+<pre><code class="html">&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Test Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello &lt;% print %&gt;&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 
-<h4 id="async-loading-an-additive-scene-on-the-server">Async loading an additive scene on the server</h4>
-<pre><code class="csharp">// This will load scene at build index 1 only if this is the server's code
-if (Networker.IsServer)
-    SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-</code></pre>
+<p><strong>Note if you are not sure what the HTML page is, be sure to check out the <a href="../web-server-jumpstart/">Jumpstart Guide</a></strong></p>
+<h2 id="done">Done</h2>
+<p>That's it, you have your fancy new controller and view and you can start using it immediately inside of your web server.</p>
               
             </div>
           </div>
@@ -607,10 +621,10 @@ if (Networker.IsServer)
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../scene-events/" class="btn btn-neutral float-right" title="Scene events">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../web-server-command-plugins/" class="btn btn-neutral float-right" title="Web server command plugins">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../connection-cycle-events/" class="btn btn-neutral" title="Connection cycle events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../web-server-jumpstart/" class="btn btn-neutral" title="Web server jumpstart"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -636,10 +650,10 @@ if (Networker.IsServer)
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../connection-cycle-events/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../web-server-jumpstart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../scene-events/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../web-server-command-plugins/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
