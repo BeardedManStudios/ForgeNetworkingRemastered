@@ -43,19 +43,24 @@ pages:
         - loading-scenes.md
         - scene-events.md
     - Rewinding: rewinding.md
-    - Master Server:
-        - master-server-quick-start.md
-        - connecting-to-master-server.md
-        - getting-host-list-from-master-server.md
-        - windows-server-firewall-setup.md
-#        - Matchmaking
     - Debugging:
         - network-logging.md
     - NetWorker:
 #        - NetworkingPlayer
         - temporarily-blocking-connections.md
         - thread-safe-player-iteration.md
+    
+    - Master Server:
+        - master-server-quick-start.md
+        - connecting-to-master-server.md
+        - getting-host-list-from-master-server.md
+        - windows-server-firewall-setup.md
+#        - Matchmaking
     - NAT Hole Punching: nat-hole-punching.md
+    - Web Server:
+        - web-server-jumpstart.md
+        - web-server-extending-with-mvc.md
+        - web-server-command-plugins.md
     - Working With Multiple Sockets: working-with-multiple-sockets.md
     - LAN Discovery: lan-discovery.md
     - Troubleshooting:
@@ -65,6 +70,7 @@ pages:
     - Lobby System: lobby.md
     - Contributing:
         - adding-and-updating-docs.md
+
 theme: readthedocs
 
 markdown_extensions:

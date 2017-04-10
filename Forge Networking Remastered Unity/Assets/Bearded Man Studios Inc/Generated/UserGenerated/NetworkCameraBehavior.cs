@@ -21,7 +21,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegistrationComplete();
 
 			MainThreadManager.Run(NetworkStart);
 
@@ -56,6 +55,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
 			}
+		}
+
+		protected override void CompleteRegistration()
+		{
+			base.CompleteRegistration();
+			networkObject.ReleaseCreateBuffer();
 		}
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)

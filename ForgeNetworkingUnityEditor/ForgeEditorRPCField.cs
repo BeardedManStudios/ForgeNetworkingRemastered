@@ -15,7 +15,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public bool CanRender = true;
 		public List<ForgeNRPCTypes> FieldTypes;
 		public int ArgumentCount { get { return FieldTypes.Count; } }
-		public bool DELETED;
 		public bool Dropdown;
 
 		public ForgeEditorRPCField()
@@ -30,7 +29,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			returnValue.FieldName = this.FieldName;
 			returnValue.FieldTypes.AddRange(this.FieldTypes);
-			returnValue.DELETED = this.DELETED;
 			returnValue.Dropdown = this.Dropdown;
 			returnValue.CanRender = this.CanRender;
 
@@ -39,9 +37,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public void Render()
 		{
-			if (DELETED)
-				return;
-
 			if (!CanRender)
 				return;
 
@@ -49,25 +44,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			FieldName = GUILayout.TextField(FieldName);
 
 			Dropdown = EditorGUILayout.Foldout(Dropdown, "Arguments");
-
-			Rect verticleButton = EditorGUILayout.BeginVertical("Button", GUILayout.Width(50), GUILayout.Height(10));
-			GUI.color = Color.red;
-			if (GUI.Button(verticleButton, GUIContent.none))
-			{
-				DELETED = true;
-				return;
-			}
-			GUI.color = Color.white;
-
-			GUILayout.BeginHorizontal();//Center the icon
-			EditorGUILayout.Space();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label(ForgeNetworkingEditor.TrashIcon, GUILayout.Height(15));
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			GUILayout.EndVertical();
-
-			GUILayout.EndHorizontal();
 
 			if (Dropdown)
 			{
@@ -125,6 +101,120 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUILayout.FlexibleSpace();
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.EndVertical();
+				GUI.color = Color.white;
+			}
+		}
+
+		public void Render(Rect rect, bool isActive, bool isFocused)
+		{
+			if (!CanRender)
+				return;
+
+			rect.y += 2;
+
+			Rect changingRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+			FieldName = EditorGUI.TextField(changingRect, FieldName);
+			changingRect.x = rect.x + rect.width * 0.3f + 10;
+			changingRect.width = rect.width * 0.2f - 10;
+			Dropdown = EditorGUI.Foldout(changingRect, Dropdown, "Arguments", true);
+
+			if (Dropdown)
+			{
+				for (int i = 0; i < FieldTypes.Count; ++i)
+				{
+					rect.height += EditorGUIUtility.singleLineHeight + 2;
+					changingRect.y += EditorGUIUtility.singleLineHeight + 2;
+
+
+					if (i > 0)
+					{
+						changingRect.x = rect.width * 0.035f;
+						changingRect.width = rect.width * 0.025f;
+						if (GUI.Button(changingRect, "^"))
+						{
+							if (i - 1 >= 0)
+							{
+								ForgeNRPCTypes t1 = FieldTypes[i - 1];
+								ForgeNRPCTypes t2 = FieldTypes[i];
+								FieldTypes[i - 1] = t2;
+								FieldTypes[i] = t1;
+							}
+							else
+							{
+								ForgeNRPCTypes t1 = FieldTypes[FieldTypes.Count - 1];
+								ForgeNRPCTypes t2 = FieldTypes[i];
+								FieldTypes[FieldTypes.Count - 1] = t2;
+								FieldTypes[i] = t1;
+							}
+						}
+					}
+
+					if (i < FieldTypes.Count - 1)
+					{
+						changingRect.x = rect.width * 0.06f;
+						changingRect.width = rect.width * 0.025f;
+						if (GUI.Button(changingRect, "v"))
+						{
+							if (i + 1 < FieldTypes.Count)
+							{
+								ForgeNRPCTypes t1 = FieldTypes[i + 1];
+								ForgeNRPCTypes t2 = FieldTypes[i];
+								FieldTypes[i + 1] = t2;
+								FieldTypes[i] = t1;
+							}
+							else
+							{
+								ForgeNRPCTypes t1 = FieldTypes[0];
+								ForgeNRPCTypes t2 = FieldTypes[i];
+								FieldTypes[0] = t2;
+								FieldTypes[i] = t1;
+							}
+						}
+					}
+
+					changingRect.x = rect.width * 0.1f;
+					changingRect.width = rect.width * 0.3f;
+					FieldTypes[i].HelperName = EditorGUI.TextField(changingRect, FieldTypes[i].HelperName);
+
+					changingRect.x += rect.width * 0.3f + 10;
+					FieldTypes[i].Type = (ForgeAcceptableRPCTypes)EditorGUI.EnumPopup(changingRect, FieldTypes[i].Type);
+
+					changingRect.x += rect.width * 0.4f + 10;
+					changingRect.width = rect.width * 0.2f;
+
+					GUI.color = Color.red;
+					if (GUI.Button(changingRect, GUIContent.none))
+					{
+						FieldTypes.RemoveAt(i);
+						i--;
+					}
+
+					if (ForgeNetworkingEditor.ProVersion)
+						GUI.color = Color.white;
+					else
+						GUI.color = Color.black;
+
+					GUI.DrawTexture(changingRect, ForgeNetworkingEditor.SubtractIcon, ScaleMode.ScaleToFit);
+					GUI.color = Color.white;
+				}
+
+				rect.height += EditorGUIUtility.singleLineHeight;
+				changingRect.y += EditorGUIUtility.singleLineHeight;
+
+				changingRect.x = rect.width * 0.1f;
+				changingRect.width = rect.width * 0.3f;
+
+				GUI.color = Color.green;
+				if (GUI.Button(changingRect, GUIContent.none))
+				{
+					FieldTypes.Add(new ForgeNRPCTypes() { Type = ForgeAcceptableRPCTypes.BYTE });
+				}
+				if (ForgeNetworkingEditor.ProVersion)
+					GUI.color = Color.white;
+				else
+					GUI.color = Color.black;
+
+				GUI.DrawTexture(changingRect, ForgeNetworkingEditor.AddIcon, ScaleMode.ScaleToFit);
 				GUI.color = Color.white;
 			}
 		}

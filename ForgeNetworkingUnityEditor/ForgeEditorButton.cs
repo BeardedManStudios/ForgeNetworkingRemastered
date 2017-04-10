@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -53,8 +54,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		[NonSerialized]
 		public Color ButtonColor;
 		public Action InvokedAction;
+		[NonSerialized]
+		private ReorderableList _classOrderList;
 		public List<ForgeEditorField> ClassVariables = new List<ForgeEditorField>();
 		private int _defaultClassVariablesCount;
+		[NonSerialized]
+		private ReorderableList _rpcOrderList;
 		public List<ForgeEditorRPCField> RPCVariables = new List<ForgeEditorRPCField>();
 		private int _defaultRPCVariablesCount;
 
@@ -82,6 +87,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			ButtonName = name;
 			InvokedAction = callback;
 			ButtonColor = ForgeNetworkingEditor.CoolBlue;
+			SetupLists();
 		}
 
 		public ForgeEditorButton(ForgeClassObject fcObj)
@@ -237,23 +243,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUILayout.Label("Fields", EditorStyles.boldLabel);
 				EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
 
-				for (int i = 0; i < ClassVariables.Count; ++i)
-				{
-					if (ClassVariables[i].DELETED)
-					{
-						ClassVariables.RemoveAt(i);
-						i--;
-						continue;
-					}
-					ClassVariables[i].Render();
-				}
+				_classOrderList.DoLayoutList();
 
+				//Do we still need this?
 				Rect addFieldBtn = EditorGUILayout.BeginVertical("Button", GUILayout.Width(75), GUILayout.Height(25));
 				GUI.color = Color.green;
 				if (GUI.Button(addFieldBtn, GUIContent.none))
-				{
 					ClassVariables.Add(new ForgeEditorField());
-				}
 
 				EditorGUILayout.BeginHorizontal();
 				GUI.color = Color.white;
@@ -264,6 +260,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUILayout.FlexibleSpace();
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.EndVertical();
+				//
 			}
 
 			if (CanRenderRPCS)
@@ -273,16 +270,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUILayout.Label("Remote Procedure Calls", EditorStyles.boldLabel);
 				EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
 
-				for (int i = 0; i < RPCVariables.Count; ++i)
-				{
-					if (RPCVariables[i].DELETED)
-					{
-						RPCVariables.RemoveAt(i);
-						i--;
-						continue;
-					}
-					RPCVariables[i].Render();
-				}
+				if (TiedObject != null)
+					EditorGUILayout.HelpBox("Re-arranging the RPC Arguments will require you to manually update your derriving code to use the new logic, please be aware of this.", MessageType.Warning);
+
+				_rpcOrderList.DoLayoutList();
 
 				Rect addRpcBtn = EditorGUILayout.BeginVertical("Button", GUILayout.Width(75), GUILayout.Height(25));
 				GUI.color = Color.green;
@@ -291,6 +282,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					RPCVariables.Add(new ForgeEditorRPCField());
 				}
 
+				//Do we still need this?
 				EditorGUILayout.BeginHorizontal();
 				GUI.color = Color.white;
 				GUILayout.FlexibleSpace();
@@ -300,6 +292,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUILayout.FlexibleSpace();
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.EndVertical();
+				//
 			}
 			else
 			{
@@ -431,22 +424,81 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 				ClassVariables.Add(new ForgeEditorField(TiedObject.Fields[i].FieldName, true, TiedObject.Fields[i].FieldType, canInterpolate, interpolateValue));
 			}
+
+			if (TiedObject != null)
+			{
+				for (int i = 0; i < TiedObject.RPCS.Count; ++i)
+				{
+					ForgeEditorRPCField rpc = new ForgeEditorRPCField();
+
+					rpc.FieldName = TiedObject.RPCS[i].RPCName;
+					rpc.AddRange(TiedObject.RPCS[i].Arguments.ToArray(), TiedObject.RPCS[i].HelperTypes.ToArray());
+					if (TiedObject.RPCS[i].RPCName.ToLower().Equals("initialize"))
+						rpc.CanRender = false;
+
+					RPCVariables.Add(rpc);
+				}
+			}
+
+			SetupLists();
+		}
+
+		public void SetupLists()
+		{
+			if (ClassVariables == null)
+				ClassVariables = new List<ForgeEditorField>();
 			_defaultClassVariablesCount = ClassVariables.Count;
+			if (_classOrderList == null)
+			{
+				_classOrderList = new ReorderableList(ClassVariables, typeof(ForgeEditorField), true, true, true, true);
+				_classOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+				{
+					ClassVariables[index].Render(rect, isActive, isFocused);
+				};
+				_classOrderList.headerHeight = 0;
+				//_classOrderList.drawHeaderCallback = (rect) =>
+				//{
+				//	GUI.Label(rect, "Fields");
+				//};
+				_classOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
+				{
+					ClassVariables.Add(new ForgeEditorField());
+				};
+			}
 
 			//TODO: RewindVariables here
+			if (RPCVariables == null)
+				RPCVariables = new List<ForgeEditorRPCField>();
 
-			for (int i = 0; i < TiedObject.RPCS.Count; ++i)
-			{
-				ForgeEditorRPCField rpc = new ForgeEditorRPCField();
-
-				rpc.FieldName = TiedObject.RPCS[i].RPCName;
-				rpc.AddRange(TiedObject.RPCS[i].Arguments.ToArray(), TiedObject.RPCS[i].HelperTypes.ToArray());
-				if (TiedObject.RPCS[i].RPCName.ToLower().Equals("initialize"))
-					rpc.CanRender = false;
-
-				RPCVariables.Add(rpc);
-			}
 			_defaultRPCVariablesCount = RPCVariables.Count;
+
+			if (_rpcOrderList == null)
+			{
+				_rpcOrderList = new ReorderableList(RPCVariables, typeof(ForgeEditorRPCField), true, true, true, true);
+				_rpcOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+				{
+					RPCVariables[index].Render(rect, isActive, isFocused);
+				};
+				_rpcOrderList.elementHeightCallback = (int index) =>
+				{
+					float height = EditorGUIUtility.singleLineHeight + 4;
+					if (RPCVariables[index].Dropdown)
+					{
+						height += RPCVariables[index].FieldTypes.Count * EditorGUIUtility.singleLineHeight * 1.2f;
+						height += EditorGUIUtility.singleLineHeight + 4;
+					}
+					return height;
+				};
+				_rpcOrderList.headerHeight = 0;
+				//_rpcOrderList.drawHeaderCallback = (rect) =>
+				//{
+				//	GUI.Label(rect, "RPCs");
+				//};
+				_rpcOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
+				{
+					RPCVariables.Add(new ForgeEditorRPCField());
+				};
+			}
 		}
 	}
 }

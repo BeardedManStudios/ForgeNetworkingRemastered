@@ -23,7 +23,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("SendColor", SendColor, typeof(Color));
-			networkObject.RegistrationComplete();
 
 			MainThreadManager.Run(NetworkStart);
 
@@ -58,6 +57,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
 			}
+		}
+
+		protected override void CompleteRegistration()
+		{
+			base.CompleteRegistration();
+			networkObject.ReleaseCreateBuffer();
 		}
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)

@@ -239,6 +239,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							bool cleared = true;
 							for (int i = 0; i < _editorButtons.Count; ++i)
 							{
+								_editorButtons[i].SetupLists();
 								if (_editorButtons[i].TiedObject == null)
 								{
 									cleared = false;
@@ -497,6 +498,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs")))
 							{
 								sw.Write(networkManagerData);
+							}
+
+							IFormatter previousSavedState = new BinaryFormatter();
+							using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+							{
+								previousSavedState.Serialize(s, _editorButtons);
 							}
 						}
 						else
