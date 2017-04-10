@@ -24,12 +24,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			NetworkObject.objectCreated -= CaptureObjects;
 		}
-		
+
 		private void CaptureObjects(NetworkObject obj)
 		{
 			if (obj.CreateCode < 0)
 				return;
-				
+
 			if (obj is ChatManagerNetworkObject)
 			{
 				MainThreadManager.Run(() =>
@@ -46,7 +46,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 					if (newObj == null)
 						return;
-						
+
 					newObj.Initialize(obj);
 
 					if (objectInitialized != null)
@@ -69,7 +69,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 					if (newObj == null)
 						return;
-						
+
 					newObj.Initialize(obj);
 
 					if (objectInitialized != null)
@@ -92,7 +92,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 					if (newObj == null)
 						return;
-						
+
 					newObj.Initialize(obj);
 
 					if (objectInitialized != null)
@@ -115,7 +115,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 					if (newObj == null)
 						return;
-						
+
 					newObj.Initialize(obj);
 
 					if (objectInitialized != null)
@@ -141,7 +141,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		[Obsolete("Use InstantiateCubeForgeGame instead, its shorter and easier to type out ;)")]
@@ -153,7 +153,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		[Obsolete("Use InstantiateExampleProximityPlayer instead, its shorter and easier to type out ;)")]
@@ -165,7 +165,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		[Obsolete("Use InstantiateNetworkCamera instead, its shorter and easier to type out ;)")]
@@ -177,7 +177,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 
@@ -220,7 +220,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		public CubeForgeGameBehavior InstantiateCubeForgeGame(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
@@ -262,7 +262,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayer(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
@@ -304,7 +304,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		public NetworkCameraBehavior InstantiateNetworkCamera(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
@@ -346,7 +346,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
 			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 	}

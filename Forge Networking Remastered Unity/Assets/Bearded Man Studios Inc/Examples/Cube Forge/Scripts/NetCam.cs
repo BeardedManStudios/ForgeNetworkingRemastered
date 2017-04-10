@@ -20,7 +20,7 @@ public class NetCam : NetworkCameraBehavior
 
 	protected override void NetworkStart()
 	{
-		//BeardedManStudios.Forge.Logging.BMSLog.Log("ID is " + networkObject.NetworkId);
+		base.NetworkStart();
 
 		cameraRef = GetComponent<Camera>();
 		networkObject.UpdateInterval = 100;

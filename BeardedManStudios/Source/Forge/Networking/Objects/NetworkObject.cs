@@ -731,7 +731,6 @@ namespace BeardedManStudios.Forge.Networking
 			// Register this object with the networker and obtain it's unique id
 			Networker.RegisterNetworkObject(this, id);
 
-
 			if (Networker.PendCreates)
 			{
 				lock (pendingCreates)
@@ -866,6 +865,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void ReleaseCreateBuffer()
 		{
+			RegistrationComplete();
+
 			lock (pendingClientRegisterRpc)
 			{
 				ClearClientPendingRPC();
