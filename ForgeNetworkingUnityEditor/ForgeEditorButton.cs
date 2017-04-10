@@ -425,31 +425,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				ClassVariables.Add(new ForgeEditorField(TiedObject.Fields[i].FieldName, true, TiedObject.Fields[i].FieldType, canInterpolate, interpolateValue));
 			}
 
-			SetupLists();
-		}
-
-		private void SetupLists()
-		{
-			if (ClassVariables == null)
-				ClassVariables = new List<ForgeEditorField>();
-			_defaultClassVariablesCount = ClassVariables.Count;
-			_classOrderList = new ReorderableList(ClassVariables, typeof(ForgeEditorField), true, true, true, true);
-			_classOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
-			{
-				ClassVariables[index].Render(rect, isActive, isFocused);
-			};
-			_classOrderList.headerHeight = 0;
-			//_classOrderList.drawHeaderCallback = (rect) =>
-			//{
-			//	GUI.Label(rect, "Fields");
-			//};
-			_classOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
-			{
-				ClassVariables.Add(new ForgeEditorField());
-			};
-
-			//TODO: RewindVariables here
-
 			if (TiedObject != null)
 			{
 				for (int i = 0; i < TiedObject.RPCS.Count; ++i)
@@ -465,35 +440,65 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				}
 			}
 
+			SetupLists();
+		}
+
+		public void SetupLists()
+		{
+			if (ClassVariables == null)
+				ClassVariables = new List<ForgeEditorField>();
+			_defaultClassVariablesCount = ClassVariables.Count;
+			if (_classOrderList == null)
+			{
+				_classOrderList = new ReorderableList(ClassVariables, typeof(ForgeEditorField), true, true, true, true);
+				_classOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+				{
+					ClassVariables[index].Render(rect, isActive, isFocused);
+				};
+				_classOrderList.headerHeight = 0;
+				//_classOrderList.drawHeaderCallback = (rect) =>
+				//{
+				//	GUI.Label(rect, "Fields");
+				//};
+				_classOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
+				{
+					ClassVariables.Add(new ForgeEditorField());
+				};
+			}
+
+			//TODO: RewindVariables here
 			if (RPCVariables == null)
 				RPCVariables = new List<ForgeEditorRPCField>();
 
 			_defaultRPCVariablesCount = RPCVariables.Count;
 
-			_rpcOrderList = new ReorderableList(RPCVariables, typeof(ForgeEditorRPCField), true, true, true, true);
-			_rpcOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+			if (_rpcOrderList == null)
 			{
-				RPCVariables[index].Render(rect, isActive, isFocused);
-			};
-			_rpcOrderList.elementHeightCallback = (int index) =>
-			{
-				float height = EditorGUIUtility.singleLineHeight + 4;
-				if (RPCVariables[index].Dropdown)
+				_rpcOrderList = new ReorderableList(RPCVariables, typeof(ForgeEditorRPCField), true, true, true, true);
+				_rpcOrderList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
 				{
-					height += RPCVariables[index].FieldTypes.Count * EditorGUIUtility.singleLineHeight * 1.2f;
-					height += EditorGUIUtility.singleLineHeight + 4;
-				}
-				return height;
-			};
-			_rpcOrderList.headerHeight = 0;
-			//_rpcOrderList.drawHeaderCallback = (rect) =>
-			//{
-			//	GUI.Label(rect, "RPCs");
-			//};
-			_rpcOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
-			{
-				RPCVariables.Add(new ForgeEditorRPCField());
-			};
+					RPCVariables[index].Render(rect, isActive, isFocused);
+				};
+				_rpcOrderList.elementHeightCallback = (int index) =>
+				{
+					float height = EditorGUIUtility.singleLineHeight + 4;
+					if (RPCVariables[index].Dropdown)
+					{
+						height += RPCVariables[index].FieldTypes.Count * EditorGUIUtility.singleLineHeight * 1.2f;
+						height += EditorGUIUtility.singleLineHeight + 4;
+					}
+					return height;
+				};
+				_rpcOrderList.headerHeight = 0;
+				//_rpcOrderList.drawHeaderCallback = (rect) =>
+				//{
+				//	GUI.Label(rect, "RPCs");
+				//};
+				_rpcOrderList.onAddDropdownCallback = (Rect buttonRect, ReorderableList l) =>
+				{
+					RPCVariables.Add(new ForgeEditorRPCField());
+				};
+			}
 		}
 	}
 }

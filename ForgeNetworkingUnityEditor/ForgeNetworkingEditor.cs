@@ -239,6 +239,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							bool cleared = true;
 							for (int i = 0; i < _editorButtons.Count; ++i)
 							{
+								_editorButtons[i].SetupLists();
 								if (_editorButtons[i].TiedObject == null)
 								{
 									cleared = false;
