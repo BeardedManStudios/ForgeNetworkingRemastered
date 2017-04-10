@@ -54,9 +54,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		[NonSerialized]
 		public Color ButtonColor;
 		public Action InvokedAction;
+		[NonSerialized]
 		private ReorderableList _classOrderList;
 		public List<ForgeEditorField> ClassVariables = new List<ForgeEditorField>();
 		private int _defaultClassVariablesCount;
+		[NonSerialized]
 		private ReorderableList _rpcOrderList;
 		public List<ForgeEditorRPCField> RPCVariables = new List<ForgeEditorRPCField>();
 		private int _defaultRPCVariablesCount;
