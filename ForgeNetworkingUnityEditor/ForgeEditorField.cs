@@ -15,7 +15,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public bool Interpolate;
 		public float InterpolateValue;
 		public ForgeAcceptableFieldTypes FieldType;
-		public bool DELETED;
 
 		public ForgeEditorField(string name = "", bool canRender = true, ForgeAcceptableFieldTypes type = ForgeAcceptableFieldTypes.BYTE, bool interpolate = false, float interpolateValue = 0f)
 		{
@@ -28,9 +27,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		public void Render()
 		{
-			if (DELETED)
-				return;
-
 			if (!CanRender)
 				return;
 
@@ -62,25 +58,39 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					//InterpolateValue = ForgeNetworkingEditor.DEFAULT_INTERPOLATE_TIME;
 				}
 			}
+		}
 
-			GUI.color = Color.white;
-			Rect verticleButton = EditorGUILayout.BeginVertical("Button", GUILayout.Width(50), GUILayout.Height(10));
-			GUI.color = Color.red;
-			if (GUI.Button(verticleButton, GUIContent.none))
+		public void Render(Rect rect, bool isActive, bool isFocused)
+		{
+			if (!CanRender)
+				return;
+
+			rect.y += 2;
+
+			Rect changingRect = new Rect(rect.x, rect.y, rect.width * 0.3f, EditorGUIUtility.singleLineHeight);
+			FieldName = EditorGUI.TextField(changingRect, FieldName);
+			changingRect.x += rect.width * 0.3f + 5;
+			FieldType = (ForgeAcceptableFieldTypes)EditorGUI.EnumPopup(changingRect, FieldType);
+			if (ForgeClassFieldValue.IsInterpolatable(FieldType))
 			{
-				DELETED = true;
+				changingRect.x += rect.width * 0.3f + 10;
+				changingRect.width = rect.width * 0.2f;
+				Interpolate = EditorGUI.ToggleLeft(changingRect, "  Interpolate", Interpolate);
+
+				if (Interpolate)
+				{
+					if (InterpolateValue == 0)
+						InterpolateValue = ForgeNetworkingEditor.DEFAULT_INTERPOLATE_TIME;
+					else
+					{
+						changingRect.x += rect.width * 0.2f + 5;
+						changingRect.width = rect.width * 0.3f;
+						InterpolateValue = EditorGUI.FloatField(changingRect, InterpolateValue);
+					}
+				}
+				else
+					InterpolateValue = 0;
 			}
-			GUI.color = Color.white;
-
-			GUILayout.BeginHorizontal();//Center the icon
-			EditorGUILayout.Space();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label(ForgeNetworkingEditor.TrashIcon, GUILayout.Height(15));
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			GUILayout.EndVertical();
-
-			GUILayout.EndHorizontal();
 		}
 	}
 }

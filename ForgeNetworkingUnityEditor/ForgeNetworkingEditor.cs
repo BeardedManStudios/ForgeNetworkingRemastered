@@ -498,6 +498,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							{
 								sw.Write(networkManagerData);
 							}
+
+							IFormatter previousSavedState = new BinaryFormatter();
+							using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+							{
+								previousSavedState.Serialize(s, _editorButtons);
+							}
 						}
 						else
 						{
