@@ -54,14 +54,21 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			metadataTransform.Clone(obj.Metadata);
 			metadataTransform.MoveStartIndex(1);
 
-			if ((transformFlags & 0x01) != 0)
+			if ((transformFlags & 0x01) != 0 && (transformFlags & 0x02) != 0)
 			{
-				transform.position = ObjectMapper.Instance.Map<Vector3>(metadataTransform);
+				MainThreadManager.Run(() =>
+				{
+					transform.position = ObjectMapper.Instance.Map<Vector3>(metadataTransform);
+					transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
+				});
 			}
-
-			if ((transformFlags & 0x02) != 0)
+			else if ((transformFlags & 0x01) != 0)
 			{
-				transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform);
+				MainThreadManager.Run(() => { transform.position = ObjectMapper.Instance.Map<Vector3>(metadataTransform); });
+			}
+			else if ((transformFlags & 0x02) != 0)
+			{
+				MainThreadManager.Run(() => { transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform); });
 			}
 		}
 

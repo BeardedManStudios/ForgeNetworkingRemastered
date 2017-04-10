@@ -1,6 +1,9 @@
 # Web Server Jumpstart
 Getting up and running with the web server is easier than ever. Just include the plugin into your project, new up the object and start/stop the server at will. The namespace for the web server is `BeardedManStudios.Forge.MVCWebServer`, so if you need to include using statements or view things in the object browser, take a look in this namespace.
 
+## Including plugin into project
+You will notice a **MVCWebServer.dll** file in the unzipped folder for the web server. You just need to copy this file into your **Bearded Man Studios Inc/Plugins** folder. That is it, you've installed the web server plugin to your project.
+
 ## Starting a Web Server
 Starting a web server is as simple as calling 2 lines of code as seen below.
 
