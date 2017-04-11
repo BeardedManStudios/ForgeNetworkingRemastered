@@ -305,7 +305,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			int i;
 
-			var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
+			// Get the order of the components as they are in the inspector
+			var components = obj.GetComponents<NetworkBehavior>();
 
 			// Create each network object that is available
 			for (i = 0; i < components.Length; i++)
