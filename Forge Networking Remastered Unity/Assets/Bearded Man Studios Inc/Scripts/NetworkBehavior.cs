@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -93,7 +92,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			int i;
 
-			var components = obj.GetComponents<NetworkBehavior>().OrderBy(n => n.GetType().ToString()).ToArray();
+			var components = obj.GetComponents<NetworkBehavior>();
 
 			// Create each network object that is available
 			for (i = 0; i < components.Length; i++)
@@ -104,8 +103,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				skipAttachIds.Add(idOffset++, components[i]);
 			}
 
-			for (i = 0; i < obj.transform.childCount; i++)
-				ProcessOthers(obj.transform.GetChild(i), idOffset);
+			for (i = 0; i < obj.childCount; i++)
+				ProcessOthers(obj.GetChild(i), idOffset);
 		}
 	}
 }

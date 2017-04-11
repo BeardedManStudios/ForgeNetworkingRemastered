@@ -439,6 +439,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				return; //Editor is getting refreshed
 			}
 
+			EditorGUILayout.HelpBox("Please note when using source control to please ignore the FNWizardData.bin that is generated because of the NCW. This is because the serialization is based on the computer that has done it. The serialization is a process to help make upgrading easier, so this file is not necessary unless upgrading.", MessageType.Info);
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Search", GUILayout.Width(50));
 			_searchField = GUILayout.TextField(_searchField);

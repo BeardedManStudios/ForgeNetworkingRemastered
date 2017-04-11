@@ -194,7 +194,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					else
 						GUI.color = Color.black;
 
-					GUI.DrawTexture(changingRect, ForgeNetworkingEditor.SubtractIcon, ScaleMode.ScaleToFit);
+					GUI.Label(changingRect, "Remove", EditorStyles.boldLabel);
+					//GUI.DrawTexture(changingRect, ForgeNetworkingEditor.SubtractIcon, ScaleMode.ScaleToFit);
 					GUI.color = Color.white;
 				}
 
@@ -214,7 +215,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				else
 					GUI.color = Color.black;
 
-				GUI.DrawTexture(changingRect, ForgeNetworkingEditor.AddIcon, ScaleMode.ScaleToFit);
+				GUI.Label(changingRect, "Add", EditorStyles.boldLabel);
+				//GUI.DrawTexture(changingRect, ForgeNetworkingEditor.AddIcon, ScaleMode.ScaleToFit);
 				GUI.color = Color.white;
 			}
 		}
