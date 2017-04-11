@@ -25,6 +25,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private const string EDITOR_TRELLO_LINK = "https://trello.com/b/o7DgZBdd/remastered";
 		private const string EDITOR_FORUM_LINK = "https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/";
 		private const string EDITOR_EMAIL_LINK = "support@beardedmangames.com";
+		private const string VERSION = "23.0";
 		//private static bool ProVersion = false;
 		private static bool IgnoreEditorStartup = false;
 		#endregion
@@ -123,7 +124,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				IgnoreEditorStartup = currentSetup;
 				EditorPrefs.SetBool(EDITOR_PREF_IGNORE, IgnoreEditorStartup);
 			}
-			EditorGUILayout.LabelField("Version 22.51");
+			EditorGUILayout.LabelField("Version " + VERSION, EditorStyles.boldLabel);
 			GUILayout.EndHorizontal();
 		}
 	}
