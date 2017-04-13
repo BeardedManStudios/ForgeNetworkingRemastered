@@ -154,7 +154,7 @@ namespace BeardedManStudios.Forge.Networking
 			PendingPackets = new Dictionary<int, UDPPacket>();
 
 			// Get all of the data that is available for this frame
-			byte[] data = Frame.GetData();
+			byte[] data = Frame.GetData(Reliable);
 
 			int byteIndex = 0, orderId = 0;
 

@@ -17,7 +17,9 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
+using System;
 using System.Collections.Generic;
 using System.Net;
 
@@ -134,11 +136,6 @@ namespace BeardedManStudios.Forge.Networking
 		private List<UDPPacketComposer> reliableComposers = new List<UDPPacketComposer>();
 
 		/// <summary>
-		/// Used to determine if there this player is ready to receive more reliable messages
-		/// </summary>
-		private bool nextComposerReady = true;
-
-		/// <summary>
 		/// Should be used for matching this networking player with another networking player reference
 		/// on a different networker.
 		/// </summary>
@@ -161,6 +158,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// the player location to properly be used with the NetWorker::ProximityDistance
 		/// </summary>
 		public Vector ProximityLocation { get; set; }
+
+		private ulong currentReliableId = 0;
+		private Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
 
 		/// <summary>
 		/// Constructor for the NetworkingPlayer
@@ -287,27 +287,20 @@ namespace BeardedManStudios.Forge.Networking
 			if (reliableComposers.Count == 0)
 				return;
 
-			// If there are no more composers in queue, end
-			if (!nextComposerReady)
-				return;
-
-			// Prevent any queued composers from starting until this one finishes
-			nextComposerReady = false;
-
-			lock (reliableComposers)
-			{
-				currentComposer = reliableComposers[0];
-			}
-
 			if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
 			{
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
 				{
-					int waitTime = 10, pendingCount = 0;
+					int waitTime = 10, composerCount = 0;
 					while (Networker.IsBound && !Disconnected)
 					{
-						if (nextComposerReady)
+						lock (reliableComposers)
+						{
+							composerCount = reliableComposers.Count;
+						}
+
+						if (composerCount == 0)
 						{
 							Task.Sleep(waitTime);
 							currentPingWait += waitTime;
@@ -323,22 +316,23 @@ namespace BeardedManStudios.Forge.Networking
 
 						do
 						{
-							lock (currentComposer.PendingPackets)
+							// Send all the packets that are pending
+							lock (reliableComposers)
 							{
-								pendingCount = currentComposer.PendingPackets.Count;
-							}
-
-							if (pendingCount > 0)
-							{
-								if (Networker.LatencySimulation > 0)
-									Task.Sleep(Networker.LatencySimulation);
-
-								currentComposer.ResendPackets();
+								for (int i = 0; i < reliableComposers.Count; i++)
+								{
+									reliableComposers[i].ResendPackets();
+								}
 							}
 
 							// TODO:  Wait the latency for this
 							Task.Sleep(10);
-						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.EndingSession);
+
+							lock (reliableComposers)
+							{
+								composerCount = reliableComposers.Count;
+							}
+						} while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
 						currentPingWait = 0;
 					}
 				});
@@ -357,8 +351,6 @@ namespace BeardedManStudios.Forge.Networking
 				// Reliable packets are sent in order so remove the first one
 				reliableComposers.RemoveAt(0);
 
-				nextComposerReady = true;
-
 				// Check to see if there are any more reliable packets queued up
 				NextComposerInQueue();
 			}
@@ -374,6 +366,31 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				reliableComposers.Clear();
 			}
+		}
+
+		public void WaitReliable(FrameStream frame)
+		{
+			if (!frame.IsReliable)
+				return;
+
+			if (frame.UniqueReliableId == currentReliableId)
+			{
+				Networker.FireRead(frame, this);
+				currentReliableId++;
+
+				FrameStream next = null;
+				while (true)
+				{
+					if (!reliablePending.TryGetValue(currentReliableId, out next))
+						break;
+
+					Networker.FireRead(next, this);
+					currentReliableId++;
+					reliablePending.Remove(currentReliableId);
+				}
+			}
+			else
+				reliablePending.Add(frame.UniqueReliableId, frame);
 		}
 	}
 }

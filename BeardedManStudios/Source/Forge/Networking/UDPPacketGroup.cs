@@ -94,7 +94,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="packetCompleteHandle">The method to call and pass this sequence into</param>
 		private void CompleteSequence(ulong id, UDPPacketSequence sequence, BaseUDP.PacketComplete packetCompleteHandle)
 		{
-			packetCompleteHandle(sequence.GetData(), GroupId, (byte)sequence.Receivers);
+			packetCompleteHandle(sequence.GetData(), GroupId, (byte)sequence.Receivers, sequence.Reliable);
 
 			lock (packets)
 			{
