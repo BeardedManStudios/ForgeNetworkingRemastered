@@ -106,21 +106,20 @@ First we will create the basic world for our players to run around in.
     2. Rename it to **Last Scored**
     3. Change the **Text** field to be empty
     4. Set the **Anchor Preset** to **Top Left** _(this is the one with the top left being highlighted in the anchor image)_ e.  Set the **Pivot X** to 0
-10.
-    1. Set the **Pivot Y** to 1
-    2. Set **Pos X** to 0
-    3. Set **Pos Y** to 0
-    4. Set **Pos Z** to 0
-    5. Set **Width** to 500
+    5. Set the **Pivot Y** to 1
+    6. Set **Pos X** to 0
+    7. Set **Pos Y** to 0
+    8. Set **Pos Z** to 0
+    9. Set **Width** to 500
 11. Save the scene
 
 Now we have completed the setup for our game, let's setup our **Build Settings**
 
 1. Open Build Settings from **File>Build Settings** (Ctrl + Shift + B on windows)
 2. Add **MultiplayerMenu** scene as the 0th scene index
-3. Add your newly saved scene as the 1st index 4.  Click **Player Settings...**
-
-a.  Turn on **Run In Background**
+3. Add your newly saved scene as the 1st index
+4. Click **Player Settings...**
+5. Turn on **Run In Background**
 
 Now all that is left to do is setup our **Player** prefab and then we will be ready to jump into setting up our network.
 
