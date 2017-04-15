@@ -256,6 +256,8 @@ namespace BeardedManStudios.Forge.Networking
 		public void OnDisconnect()
 		{
 			Disconnected = true;
+			Connected = false;
+
 			StopComposers();
 
 			if (disconnected != null)
