@@ -1,5 +1,4 @@
 # ForgeNetworkingRemastered
-Twin's Fork
 
 Built with VS Community 2015
 
