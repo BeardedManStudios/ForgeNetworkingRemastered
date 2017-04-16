@@ -1172,6 +1172,10 @@ namespace BeardedManStudios.Forge.Networking
 			// The server should execute the RPC before it is sent out to the clients
 			if (Networker is IServer)
 			{
+				// If we are only sending the message to the owner, we need to specify that
+				if (receivers == Receivers.Owner)
+					targetPlayer = Owner;
+
 				// We don't need to do any extra work if the target player is the server
 				if (targetPlayer == Networker.Me)
 				{
@@ -1245,11 +1249,14 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (Networker is IServer)
 			{
+				// Invoke if the the target player is the server itself or is an explicit receiver
+				if (targetPlayer == Networker.Me || receivers == Receivers.Server || receivers == Receivers.ServerAndOwner)
+					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				// Don't execute the RPC if the server is sending it to receivers
 				// that don't include itself
-				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
-					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
-					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
+				else if (receivers != Receivers.Owner && ((sender != Networker.Me && sender != null) ||
+					(receivers != Receivers.Others && receivers != Receivers.OthersBuffered &&
+					receivers != Receivers.OthersProximity && receivers != Receivers.Target)))
 				{
 					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}
