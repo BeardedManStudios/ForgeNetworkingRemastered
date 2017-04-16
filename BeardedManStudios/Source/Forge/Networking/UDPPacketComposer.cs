@@ -139,11 +139,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (completed != null)
 				completed(this);
-
-			if (!Reliable)
-				return;
-
-			Player.CleanupComposer();
 		}
 
 		/// <summary>
@@ -154,7 +149,7 @@ namespace BeardedManStudios.Forge.Networking
 			PendingPackets = new Dictionary<int, UDPPacket>();
 
 			// Get all of the data that is available for this frame
-			byte[] data = Frame.GetData(Reliable);
+			byte[] data = Frame.GetData(Reliable, Player);
 
 			int byteIndex = 0, orderId = 0;
 
@@ -259,7 +254,9 @@ namespace BeardedManStudios.Forge.Networking
 				if (PendingPackets.Count == 0)
 				{
 					ClientWorker.messageConfirmed -= MessageConfirmed;
+
 					Cleanup();
+					Player.CleanupComposer(packet.uniqueId);
 				}
 			}
 		}

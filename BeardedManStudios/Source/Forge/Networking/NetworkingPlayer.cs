@@ -21,6 +21,7 @@ using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 #if WINDOWS_UWP
@@ -162,6 +163,8 @@ namespace BeardedManStudios.Forge.Networking
 		private ulong currentReliableId = 0;
 		private Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
 
+		public ulong UniqueReliableMessageIdCounter { get; private set; }
+
 		/// <summary>
 		/// Constructor for the NetworkingPlayer
 		/// </summary>
@@ -276,8 +279,6 @@ namespace BeardedManStudios.Forge.Networking
 			NextComposerInQueue();
 		}
 
-		private UDPPacketComposer currentComposer;
-
 		/// <summary>
 		/// Star the next composer available composer
 		/// </summary>
@@ -289,6 +290,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
 			{
+				composerReady = true;
+
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
 				{
@@ -320,9 +323,7 @@ namespace BeardedManStudios.Forge.Networking
 							lock (reliableComposers)
 							{
 								for (int i = 0; i < reliableComposers.Count; i++)
-								{
 									reliableComposers[i].ResendPackets();
-								}
 							}
 
 							// TODO:  Wait the latency for this
@@ -336,23 +337,17 @@ namespace BeardedManStudios.Forge.Networking
 						currentPingWait = 0;
 					}
 				});
-
-				composerReady = true;
 			}
 		}
 
 		/// <summary>
 		/// Cleans up the current composer and prepares to start up the next in the queue
 		/// </summary>
-		public void CleanupComposer()
+		public void CleanupComposer(ulong uniqueId)
 		{
 			lock (reliableComposers)
 			{
-				// Reliable packets are sent in order so remove the first one
-				reliableComposers.RemoveAt(0);
-
-				// Check to see if there are any more reliable packets queued up
-				NextComposerInQueue();
+				reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == uniqueId));
 			}
 		}
 
@@ -391,6 +386,11 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			else
 				reliablePending.Add(frame.UniqueReliableId, frame);
+		}
+
+		public ulong GetNextReliableId()
+		{
+			return UniqueReliableMessageIdCounter++;
 		}
 	}
 }

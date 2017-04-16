@@ -84,9 +84,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// This is the unique message id for this message
 		/// </summary>
 		public static ulong UniqueMessageIdCounter { get; private set; }
-
-		public static ulong UniqueReliableMessageIdCounter { get; private set; }
-
+		
 		/// <summary>
 		/// A method to assign the sender (only should be done on server)
 		/// </summary>
@@ -301,9 +299,9 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			}
 		}
 
-		private void MakeReliable()
+		private void MakeReliable(NetworkingPlayer player = null)
 		{
-			UniqueReliableId = UniqueReliableMessageIdCounter++;
+			UniqueReliableId = player.GetNextReliableId();
 			IsReliable = true;
 		}
 
@@ -311,11 +309,11 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// Gets the raw data for this frame
 		/// </summary>
 		/// <returns>The raw byte data prepared by this frame</returns>
-		public byte[] GetData(bool makeReliable = false)
+		public byte[] GetData(bool makeReliable = false, NetworkingPlayer player = null)
 		{
 			if (makeReliable && !IsReliable)
 			{
-				MakeReliable();
+				MakeReliable(player);
 				StreamData.InsertRange(StreamData.Size - (sizeof(ulong) * 2), BitConverter.GetBytes(UniqueReliableId));
 			}
 
