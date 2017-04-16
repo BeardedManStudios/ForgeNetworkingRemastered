@@ -562,6 +562,12 @@ namespace BeardedManStudios.Forge.Networking
 		public abstract void Disconnect(bool forced);
 
 		/// <summary>
+		/// Reads the frame stream as if it were read on the network
+		/// </summary>
+		/// <param name="frame">The target frame stream to be read</param>
+		public abstract void FireRead(FrameStream frame, NetworkingPlayer currentPlayer);
+
+		/// <summary>
 		/// Goes through all of the pending disconnect players and disconnects them
 		/// Pending disconnects are always forced
 		/// </summary>

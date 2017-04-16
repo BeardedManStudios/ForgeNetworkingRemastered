@@ -530,9 +530,7 @@ namespace BeardedManStudios.Forge.Networking
 											continue;
 										}
 
-										// A message has been successfully read from the network so relay that
-										// to all methods registered to the event
-										OnMessageReceived(Players[i], frame);
+										FireRead(frame, Players[i]);
 									}
 								}
 								catch
@@ -715,6 +713,13 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			BannedAddresses.Add(player.Ip);
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			// A message has been successfully read from the network so relay that
+			// to all methods registered to the event
+			OnMessageReceived(currentPlayer, frame);
 		}
 	}
 }

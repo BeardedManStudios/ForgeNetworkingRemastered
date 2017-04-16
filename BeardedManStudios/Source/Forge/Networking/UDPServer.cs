@@ -467,27 +467,42 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers)
+		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
 			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, currentReadingPlayer, receivers);
 
+			if (isReliable)
+			{
+				frame.ExtractReliableId();
+
+				// TODO:  If the current reliable index for this player is not at
+				// the specified index, then it needs to wait for the correct ordering
+				currentReadingPlayer.WaitReliable(frame);
+			}
+			else
+				FireRead(frame, currentReadingPlayer);
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
 			// Check for default messages
 			if (frame is Text)
 			{
 				// This packet is sent if the player did not receive it's network id
 				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
 				{
-					currentReadingPlayer.InstanceGuid = frame.ToString();
+					currentPlayer.InstanceGuid = frame.ToString();
+					currentPlayer.InstanceGuid = currentPlayer.InstanceGuid.Remove(currentPlayer.InstanceGuid.Length - sizeof(ulong));
 
-					OnPlayerGuidAssigned(currentReadingPlayer);
+					OnPlayerGuidAssigned(currentPlayer);
 
 					// If so, just resend the player id
 					writeBuffer.Clear();
-					writeBuffer.Append(BitConverter.GetBytes(currentReadingPlayer.NetworkId));
-					Send(currentReadingPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+					writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
+					Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
 
-					SendBuffer(currentReadingPlayer);
+					SendBuffer(currentPlayer);
 					return;
 				}
 			}
