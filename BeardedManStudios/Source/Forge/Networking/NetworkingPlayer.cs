@@ -19,7 +19,6 @@
 
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -382,8 +381,7 @@ namespace BeardedManStudios.Forge.Networking
 						break;
 
 					Networker.FireRead(next, this);
-					currentReliableId++;
-					reliablePending.Remove(currentReliableId);
+					reliablePending.Remove(currentReliableId++);
 				}
 			}
 			else

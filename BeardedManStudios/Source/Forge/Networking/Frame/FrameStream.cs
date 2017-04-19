@@ -55,6 +55,8 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 		public bool IsReliable { get; private set; }
 
+		private BMSByte reliableCloneData = new BMSByte();
+
 		/// <summary>
 		/// The unique reliable id for this frame
 		/// </summary>
@@ -84,7 +86,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// This is the unique message id for this message
 		/// </summary>
 		public static ulong UniqueMessageIdCounter { get; private set; }
-		
+
 		/// <summary>
 		/// A method to assign the sender (only should be done on server)
 		/// </summary>
@@ -311,10 +313,13 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// <returns>The raw byte data prepared by this frame</returns>
 		public byte[] GetData(bool makeReliable = false, NetworkingPlayer player = null)
 		{
-			if (makeReliable && !IsReliable)
+			if (makeReliable)
 			{
 				MakeReliable(player);
-				StreamData.InsertRange(StreamData.Size - (sizeof(ulong) * 2), BitConverter.GetBytes(UniqueReliableId));
+				reliableCloneData.Clone(StreamData);
+
+				reliableCloneData.InsertRange(StreamData.Size - (sizeof(ulong) * 2), BitConverter.GetBytes(UniqueReliableId));
+				return reliableCloneData.CompressBytes();
 			}
 
 			return StreamData.CompressBytes();

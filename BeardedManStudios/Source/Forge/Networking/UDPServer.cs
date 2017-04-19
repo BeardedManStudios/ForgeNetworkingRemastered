@@ -237,7 +237,7 @@ namespace BeardedManStudios.Forge.Networking
 			// Tell the player that they are getting disconnected
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
-			Thread.Sleep(500);
+			//Thread.Sleep(500);
 
 			FinalizeRemovePlayer(player);
 		}
@@ -509,7 +509,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (frame is ConnectionClose)
 			{
-				Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
+				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 
 				Disconnect(currentReadingPlayer, false);
 				CleanupDisconnections();
