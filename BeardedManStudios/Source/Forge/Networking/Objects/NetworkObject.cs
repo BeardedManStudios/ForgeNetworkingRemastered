@@ -1173,7 +1173,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (Networker is IServer)
 			{
 				// If we are only sending the message to the owner, we need to specify that
-				if (receivers == Receivers.Owner)
+				if (receivers == Receivers.Owner || receivers == Receivers.ServerAndOwner)
 					targetPlayer = Owner;
 
 				// We don't need to do any extra work if the target player is the server
@@ -1306,6 +1306,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (Owner == Networker.Me || !AuthorityUpdateMode)
 					skipPlayer = Owner;
 			}
+
 
 			lock (sendBinaryData)
 			{
@@ -1536,8 +1537,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="remoteCall">Used to know if this call was made over the network</param>
 		private void Destroy(bool remoteCall)
 		{
-			if (IsOwner || (Networker is IServer && !remoteCall))
-				SendBinaryData(null, Receivers.All, DESTROY_SUB_ROUTER_ID);
+			if ((IsOwner && !remoteCall) || Networker is IServer)
+				SendBinaryData(null, Receivers.Others, DESTROY_SUB_ROUTER_ID, skipOwner: Networker is IServer && remoteCall);
 
 			if (onDestroy != null)
 				onDestroy();
