@@ -27,7 +27,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using static BeardedManStudios.Forge.Networking.NetworkObject;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -232,22 +231,22 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
 		/// </summary>
-		public event CreateEvent objectCreateAttach;
+		public event NetworkObject.CreateEvent objectCreateAttach;
 
 		/// <summary>
 		/// Occurs when a network object has been created on the network
 		/// </summary>
-		public event NetworkObjectEvent objectCreated;
+		public event NetworkObject.NetworkObjectEvent objectCreated;
 
 		/// <summary>
 		/// TODO: COMMENT
 		/// </summary>
-		public event CreateRequestEvent objectCreateRequested;
+		public event NetworkObject.CreateRequestEvent objectCreateRequested;
 
 		/// <summary>
 		/// TODO: COMMENT
 		/// </summary>
-		public event NetworkObjectEvent factoryObjectCreated;
+		public event NetworkObject.NetworkObjectEvent factoryObjectCreated;
 		#endregion
 
 		#region Properties
