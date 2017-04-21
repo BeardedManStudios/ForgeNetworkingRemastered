@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Name collision issues - Forge Networking Remastered</title>
+  <title>Send binary frame - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Name collision issues";
-    var mkdocs_page_input_path = "name-collision-issues.md";
-    var mkdocs_page_url = "/name-collision-issues/";
+    var mkdocs_page_name = "Send binary frame";
+    var mkdocs_page_input_path = "send-binary-frame.md";
+    var mkdocs_page_url = "/send-binary-frame/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -101,15 +101,9 @@
                     
     <a class="" href="../extending-generated-classes/">Extending generated classes</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Name collision issues</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#name-collision-issues">Name Collision Issues</a></li>
-    
-
-    </ul>
+    <a class="" href="../name-collision-issues/">Name collision issues</a>
                 </li>
     </ul>
 	    </li>
@@ -218,9 +212,15 @@
                     
     <a class="" href="../ban-client-code/">Ban client code</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../send-binary-frame/">Send binary frame</a>
+    <a class="current" href="./">Send binary frame</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#send-binary-frame">Send Binary Frame</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -397,11 +397,11 @@
     
       
         
-          <li>Network Contract Wizard (NCW) &raquo;</li>
+          <li>Basic Network Samples &raquo;</li>
         
       
     
-    <li>Name collision issues</li>
+    <li>Send binary frame</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -411,8 +411,44 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="name-collision-issues">Name Collision Issues</h1>
-<p>As you may have read in Network Object, the network object has an owner. This owner is responsible for updating the Fields. Since there is one owner of an object, you may want to update who owns an object at runtime. For example, if there is a car on the street, it may be currently owned by the server (because the server spawned the object), however a player gets into the car to drive it, now we would want the player to own the car and update it's variables. To do this we have two methods that are a part of the Network Object and one extra method to override to validate ownership changes on the server.</p>
+                <h1 id="send-binary-frame">Send Binary Frame</h1>
+<p>The <strong>Binary</strong> frame (BeardedManStudios.Forge.Networking.Frame.Binary) is a child of the <strong>FrameStream</strong> object which is how all messages are sent in Forge (even our internal code). To use this you need to serialize your data to a byte[] or pack it into a BMSByte object (wrapper around byte[] for caching).</p>
+<p>First you need to create your data</p>
+<pre><code class="csharp">byte[] data = { /* Your data */ };
+</code></pre>
+
+<p>Next you need to create the frame, since you want to send it to a specific player you will need to make the receivers be Target</p>
+<pre><code class="csharp">const MY_GROUP_ID = MessageGroupIds .START_OF_GENERIC_IDS + 1; // Just a random message group id that is not being used anywhere else
+// …
+ulong timestep = NetworkManager.Instance.Time.Timestep;
+bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
+bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
+Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, MY_GROUP_ID, isTcp);
+</code></pre>
+
+<p>Now that you have your binary frame named "bin", you can send it across the network. This is assuming that you are sending this frame from the server</p>
+<pre><code class="csharp">if (networker is UDPServer)
+{
+    bool isReliable = true;
+    ((UDPServer)networker).Send(targetNetworkingPlayer, bin, isReliable);
+}
+else
+    ((TCPServer)networker).Send(targetNetworkingPlayer, bin);
+</code></pre>
+
+<p>To read this message you need to listen to the NetWorker::binaryMessageReceived event on the client. You can filter by the group id you've specified</p>
+<pre><code class="csharp">NetworkManager.Instance.Networker.binaryMessageReceived += ReadBinary;
+
+// ...
+
+private void ReadBinary(NetworkingPlayer player, Binary frame)
+{
+    if (frame.GroupId != MY_GROUP_ID)
+        return;
+
+    // TODO:  Your code here
+}
+</code></pre>
               
             </div>
           </div>
@@ -420,10 +456,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../changing-ownership/" class="btn btn-neutral float-right" title="Changing ownership">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../connection-cycle-events/" class="btn btn-neutral float-right" title="Connection cycle events">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../extending-generated-classes/" class="btn btn-neutral" title="Extending generated classes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ban-client-code/" class="btn btn-neutral" title="Ban client code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -449,10 +485,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../extending-generated-classes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../ban-client-code/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../changing-ownership/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../connection-cycle-events/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

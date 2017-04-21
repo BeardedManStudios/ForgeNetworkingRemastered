@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Name collision issues - Forge Networking Remastered</title>
+  <title>Ban client code - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Name collision issues";
-    var mkdocs_page_input_path = "name-collision-issues.md";
-    var mkdocs_page_url = "/name-collision-issues/";
+    var mkdocs_page_name = "Ban client code";
+    var mkdocs_page_input_path = "ban-client-code.md";
+    var mkdocs_page_url = "/ban-client-code/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -101,15 +101,9 @@
                     
     <a class="" href="../extending-generated-classes/">Extending generated classes</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Name collision issues</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#name-collision-issues">Name Collision Issues</a></li>
-    
-
-    </ul>
+    <a class="" href="../name-collision-issues/">Name collision issues</a>
                 </li>
     </ul>
 	    </li>
@@ -214,9 +208,15 @@
                     
     <a class="" href="../server-disconnect-client-code/">Server disconnect client code</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../ban-client-code/">Ban client code</a>
+    <a class="current" href="./">Ban client code</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#ban-client-code">Ban Client Code</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -397,11 +397,11 @@
     
       
         
-          <li>Network Contract Wizard (NCW) &raquo;</li>
+          <li>Basic Network Samples &raquo;</li>
         
       
     
-    <li>Name collision issues</li>
+    <li>Ban client code</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -411,8 +411,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="name-collision-issues">Name Collision Issues</h1>
-<p>As you may have read in Network Object, the network object has an owner. This owner is responsible for updating the Fields. Since there is one owner of an object, you may want to update who owns an object at runtime. For example, if there is a car on the street, it may be currently owned by the server (because the server spawned the object), however a player gets into the car to drive it, now we would want the player to own the car and update it's variables. To do this we have two methods that are a part of the Network Object and one extra method to override to validate ownership changes on the server.</p>
+                <h1 id="ban-client-code">Ban Client Code</h1>
+<p>Sometimes clients are just annoying and you want your hosts to be able to ban players from joining the server for a given amount of time (or what could be forever). To do this you need to use the reference to your server's <code>NetWorker</code>.</p>
+<pre><code class="csharp">// The amount of time in minutes that we want to ban the player
+int minutesToBan = 60;  // 1 hour
+
+// Consider the player you want to disconnect is the targetPlayer object
+// We will want to get the players network id as we are going to do a generic ban
+// Note:  If you have the network id from the RPC or any other messaging you can ban from there
+ulong playerId = targetPlayer.NetworkId;
+
+// Consider that serverNetworker is the server's networker (this can be NetworkManager.Instance.Networker)
+((IServer)serverNetworker).BanPlayer(playerId, minutesToBan)
+</code></pre>
               
             </div>
           </div>
@@ -420,10 +431,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../changing-ownership/" class="btn btn-neutral float-right" title="Changing ownership">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../send-binary-frame/" class="btn btn-neutral float-right" title="Send binary frame">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../extending-generated-classes/" class="btn btn-neutral" title="Extending generated classes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../server-disconnect-client-code/" class="btn btn-neutral" title="Server disconnect client code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -449,10 +460,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../extending-generated-classes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../server-disconnect-client-code/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../changing-ownership/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../send-binary-frame/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

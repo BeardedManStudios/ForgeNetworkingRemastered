@@ -34,9 +34,13 @@ pages:
         - threading-in-unity.md
         - main-threading-rpcs.md
         - running-unity-specific-code-on-the-main-thread.md
-    - Basic Network Setup Samples:
+        - unity-integration-network-start.md
+    - Basic Network Samples:
         - server-hosting-code.md
         - client-connecting-code.md
+        - server-disconnect-client-code.md
+        - ban-client-code.md
+        - send-binary-frame.md
     - Events:
         - connection-cycle-events.md
     - Scene Navigation:
@@ -49,7 +53,6 @@ pages:
 #        - NetworkingPlayer
         - temporarily-blocking-connections.md
         - thread-safe-player-iteration.md
-    
     - Master Server:
         - master-server-quick-start.md
         - connecting-to-master-server.md

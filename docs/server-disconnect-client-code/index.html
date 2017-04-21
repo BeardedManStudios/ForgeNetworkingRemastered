@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Name collision issues - Forge Networking Remastered</title>
+  <title>Server disconnect client code - Forge Networking Remastered</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Name collision issues";
-    var mkdocs_page_input_path = "name-collision-issues.md";
-    var mkdocs_page_url = "/name-collision-issues/";
+    var mkdocs_page_name = "Server disconnect client code";
+    var mkdocs_page_input_path = "server-disconnect-client-code.md";
+    var mkdocs_page_url = "/server-disconnect-client-code/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -101,15 +101,9 @@
                     
     <a class="" href="../extending-generated-classes/">Extending generated classes</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Name collision issues</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#name-collision-issues">Name Collision Issues</a></li>
-    
-
-    </ul>
+    <a class="" href="../name-collision-issues/">Name collision issues</a>
                 </li>
     </ul>
 	    </li>
@@ -210,9 +204,15 @@
                     
     <a class="" href="../client-connecting-code/">Client connecting code</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../server-disconnect-client-code/">Server disconnect client code</a>
+    <a class="current" href="./">Server disconnect client code</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#server-disconnect-client-code">Server Disconnect Client Code</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -397,11 +397,11 @@
     
       
         
-          <li>Network Contract Wizard (NCW) &raquo;</li>
+          <li>Basic Network Samples &raquo;</li>
         
       
     
-    <li>Name collision issues</li>
+    <li>Server disconnect client code</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -411,8 +411,17 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="name-collision-issues">Name Collision Issues</h1>
-<p>As you may have read in Network Object, the network object has an owner. This owner is responsible for updating the Fields. Since there is one owner of an object, you may want to update who owns an object at runtime. For example, if there is a car on the street, it may be currently owned by the server (because the server spawned the object), however a player gets into the car to drive it, now we would want the player to own the car and update it's variables. To do this we have two methods that are a part of the Network Object and one extra method to override to validate ownership changes on the server.</p>
+                <h1 id="server-disconnect-client-code">Server Disconnect Client Code</h1>
+<p>Sometimes it is necessary to manually disconnect a player from the server (on the server). First you will need to find out which NetworkingPlayer you are wishing to kick on the server. Once you have a reference to that player, you are going to want to call the disconnect on them. To do this you need to use the reference to your server's <code>NetWorker</code>.</p>
+<pre><code class="csharp">// We are going to force the disconnect of the client
+bool forcefully = true;
+
+// Consider the player you want to disconnect is the targetPlayer object
+// Also consider that serverNetworker is the server's networker (this can be NetworkManager.Instance.Networker)
+((IServer)serverNetworker).Disconnect(targetPlayer, forcefully);
+</code></pre>
+
+<p>That is it, you are ready to start kicking all of the players! :D</p>
               
             </div>
           </div>
@@ -420,10 +429,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../changing-ownership/" class="btn btn-neutral float-right" title="Changing ownership">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ban-client-code/" class="btn btn-neutral float-right" title="Ban client code">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../extending-generated-classes/" class="btn btn-neutral" title="Extending generated classes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../client-connecting-code/" class="btn btn-neutral" title="Client connecting code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -449,10 +458,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../extending-generated-classes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../client-connecting-code/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../changing-ownership/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../ban-client-code/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
