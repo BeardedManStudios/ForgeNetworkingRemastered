@@ -149,6 +149,12 @@ namespace BeardedManStudios.Forge.Networking
 		public bool AuthorityUpdateMode { get; set; }
 
 		/// <summary>
+		/// If this is set to true then the fields for this network object will only be sent
+		/// via proximity all; this value can be changed at runtime
+		/// </summary>
+		public bool ProximityBasedFields { get; set; }
+
+		/// <summary>
 		/// A lookup table for all of the RPC's that are available to this network object
 		/// </summary>
 		public Dictionary<byte, Rpc> Rpcs { get; private set; }
@@ -1380,7 +1386,7 @@ namespace BeardedManStudios.Forge.Networking
 				BMSByte data = SerializeDirtyFields();
 
 				if (data != null)
-					SendBinaryData(data, Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+					SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximity : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
 
 				hasDirtyFields = false;
 				lastUpdateTimestep = timeStep;
