@@ -38,7 +38,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			waitingForNetworkObject = createTarget;
 			waitingForNetworkObjectOffset = idOffset;
 
-			NetworkObject.objectCreated += NetworkBind;
+			networker.objectCreated += NetworkBind;
 
 			if (createTarget.NetworkId == 0)
 				return;
@@ -60,7 +60,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Initialize(obj);
 			skipAttachIds.Remove(obj.NetworkId);
 
-			NetworkObject.objectCreated -= NetworkBind;
+			obj.Networker.objectCreated -= NetworkBind;
 		}
 
 		protected void SetupHelperRpcs(NetworkObject networkObject)

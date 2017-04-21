@@ -100,26 +100,6 @@ namespace BeardedManStudios.Forge.Networking
 		public delegate void CreateRequestEvent(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback);
 
 		/// <summary>
-		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
-		/// </summary>
-		public static event CreateEvent objectCreateAttach;
-
-		/// <summary>
-		/// Occurs when a network object has been created on the network
-		/// </summary>
-		public static event NetworkObjectEvent objectCreated;
-
-		/// <summary>
-		/// TODO: COMMENT
-		/// </summary>
-		public static event CreateRequestEvent objectCreateRequested;
-
-		/// <summary>
-		/// TODO: COMMENT
-		/// </summary>
-		public static event NetworkObjectEvent factoryObjectCreated;
-
-		/// <summary>
 		/// Called whenever this NetworkObject has its owning player changed
 		/// </summary>
 		public event NetWorker.BaseNetworkEvent ownershipChanged;
@@ -385,7 +365,7 @@ namespace BeardedManStudios.Forge.Networking
 				CreateCode = createCode;
 
 				// Tell this object to listen for the create network object message from the server
-				objectCreateAttach += CreatedOnNetwork;
+				Networker.objectCreateAttach += CreatedOnNetwork;
 				//TODO: MOVED HERE (#1)
 
 				ObjectMapper.Instance.MapBytes(data, UniqueIdentity, hash, CreateCode);
@@ -751,8 +731,8 @@ namespace BeardedManStudios.Forge.Networking
 				if (pendingInitialized != null)
 					pendingInitialized(pendingBehavior, this);
 			}
-			else if (objectCreated != null)
-				objectCreated(this);
+			else
+				Networker.OnObjectCreated(this);
 		}
 
 		public static void Flush(NetWorker target)
@@ -761,13 +741,13 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
-					if (objectCreated == null)
+					if (!target.ObjectCreatedRegistered)
 						continue;
 
 					if (pendingCreates[i].onReady != null)
 						pendingCreates[i].onReady();
 
-					objectCreated(pendingCreates[i]);
+					target.OnObjectCreated(pendingCreates[i]);
 					pendingCreates.RemoveAt(i--);
 				}
 			}
@@ -795,7 +775,7 @@ namespace BeardedManStudios.Forge.Networking
 			Owner = Networker.Me;
 
 			// This object has been found, remove it from listening to any more create messages
-			objectCreateAttach -= CreatedOnNetwork;
+			Networker.objectCreateAttach -= CreatedOnNetwork;
 
 			// Move the start index passed the identity bytes and the hash bytes
 			frame.StreamData.MoveStartIndex(sizeof(int) * 2);
@@ -1466,18 +1446,15 @@ namespace BeardedManStudios.Forge.Networking
 				if (hash != 0)
 				{
 					// The server is responding to the create request
-					objectCreateAttach(identity, hash, id, frame);
+					networker.OnObjectCreateAttach(identity, hash, id, frame);
 					return;
 				}
 
-				if (objectCreateRequested != null)
+				networker.OnObjectCreateRequested(identity, id, frame, (obj) =>
 				{
-					objectCreateRequested(networker, identity, id, frame, (obj) =>
-					{
-						if (obj != null)
-							networkObjects.Add(obj);
-					});
-				}
+					if (obj != null)
+						networkObjects.Add(obj);
+				});
 
 				// The server is dictating to create a new networked object
 				if (Factory != null)
@@ -1485,8 +1462,7 @@ namespace BeardedManStudios.Forge.Networking
 					Factory.NetworkCreateObject(networker, identity, id, frame, (obj) =>
 					{
 						networkObjects.Add(obj);
-						if (factoryObjectCreated != null)
-							factoryObjectCreated(obj);
+						networker.OnFactoryObjectCreated(obj);
 					});
 				}
 			}

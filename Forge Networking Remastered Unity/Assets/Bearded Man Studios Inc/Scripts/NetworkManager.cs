@@ -49,7 +49,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
 
-			NetworkObject.objectCreated += CreatePendingObjects;
+			//NetworkObject.objectCreated += CreatePendingObjects;
 		}
 
 		private void OnEnable()
@@ -68,6 +68,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			Networker = networker;
 			Networker.binaryMessageReceived += ReadBinary;
+			SetupObjectCreatedEvent();
 
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
@@ -276,7 +277,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Networker = null;
 			Instance = null;
 			Destroy(gameObject);
-			NetworkObject.objectCreated -= CreatePendingObjects;
+			//NetworkObject.objectCreated -= CreatePendingObjects;
 		}
 
 		private void OnApplicationQuit()
