@@ -21,6 +21,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public NetWorker MasterServerNetworker { get; private set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
+		private string _masterServerHost;
+		private ushort _masterServerPort;
 
 		private List<int> loadedScenes = new List<int>();
 
@@ -76,7 +78,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker is IServer)
 			{
 				if (!string.IsNullOrEmpty(masterServerHost))
-					RegisterOnMasterServer(networker.Port, networker.MaxConnections, masterServerHost, masterServerPort, masterServerRegisterData);
+				{
+					_masterServerHost = masterServerHost;
+					_masterServerPort = masterServerPort;
+
+					RegisterOnMasterServer(masterServerRegisterData);
+				}
 
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
 
@@ -139,7 +146,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					sendData.Add("get", getData);
 
 					// Send the request to the server
-					client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+					client.Send(Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
 				}
 				catch
 				{
@@ -224,7 +231,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return sendData;
 		}
 
-		private void RegisterOnMasterServer(ushort port, int maxPlayers, string masterServerHost, ushort masterServerPort, JSONNode masterServerData)
+		private void RegisterOnMasterServer(JSONNode masterServerData)
 		{
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
@@ -234,7 +241,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				try
 				{
-					Frame.Text temp = Frame.Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
+					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
 
 					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server
@@ -248,7 +255,61 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				}
 			};
 
-			client.Connect(masterServerHost, masterServerPort);
+			client.Connect(_masterServerHost, _masterServerPort);
+
+			Networker.disconnected += () =>
+			{
+				client.Disconnect(false);
+				MasterServerNetworker = null;
+			};
+
+			MasterServerNetworker = client;
+		}
+
+		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
+		{
+			JSONNode sendData = JSONNode.Parse("{}");
+			JSONClass registerData = new JSONClass();
+			registerData.Add("playerCount", new JSONData(server.MaxConnections));
+			registerData.Add("comment", comment);
+			registerData.Add("type", gameType);
+			registerData.Add("mode", mode);
+			registerData.Add("port", new JSONData(server.Port));
+			sendData.Add("update", registerData);
+
+			UpdateMasterServerListing(sendData);
+		}
+
+		private void UpdateMasterServerListing(JSONNode masterServerData)
+		{
+			if (string.IsNullOrEmpty(_masterServerHost))
+			{
+				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
+			}
+
+			// The Master Server communicates over TCP
+			TCPMasterClient client = new TCPMasterClient();
+
+			// Once this client has been accepted by the master server it should send it's update request
+			client.serverAccepted += () =>
+			{
+				try
+				{
+					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
+
+					//Debug.Log(temp.GetData().Length);
+					// Send the request to the server
+					client.Send(temp);
+				}
+				catch
+				{
+					// If anything fails, then this client needs to be disconnected
+					client.Disconnect(true);
+					client = null;
+				}
+			};
+
+			client.Connect(_masterServerHost, _masterServerPort);
 
 			Networker.disconnected += () =>
 			{

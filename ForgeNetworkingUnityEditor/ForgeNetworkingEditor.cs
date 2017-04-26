@@ -5,13 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-using SimpleJSONEditor;
-using System.Reflection;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -258,7 +256,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						else
 							ReloadScripts(files, userFiles);
 					}
-					catch (Exception ex)
+					catch
 					{
 						ReloadScripts(files, userFiles);
 					}
