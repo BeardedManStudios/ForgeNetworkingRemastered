@@ -301,7 +301,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			}
 		}
 
-		private void MakeReliable(NetworkingPlayer player = null)
+		private void MakeReliable(NetworkingPlayer player)
 		{
 			UniqueReliableId = player.GetNextReliableId();
 			IsReliable = true;

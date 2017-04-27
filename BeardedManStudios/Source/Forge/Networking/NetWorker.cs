@@ -706,7 +706,13 @@ namespace BeardedManStudios.Forge.Networking
 			player.Accepted = true;
 			player.PendingAccpeted = false;
 
-			NetworkObject.PlayerAccepted(player, NetworkObjects.Values.ToArray());
+			NetworkObject[] currentObjects;
+			lock (NetworkObjects)
+			{
+				currentObjects = NetworkObjects.Values.ToArray();
+			}
+
+			NetworkObject.PlayerAccepted(player, currentObjects);
 
 			if (playerAccepted != null)
 				playerAccepted(player);

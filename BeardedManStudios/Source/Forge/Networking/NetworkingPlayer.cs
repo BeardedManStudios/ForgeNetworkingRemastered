@@ -380,8 +380,8 @@ namespace BeardedManStudios.Forge.Networking
 					if (!reliablePending.TryGetValue(currentReliableId, out next))
 						break;
 
-					Networker.FireRead(next, this);
 					reliablePending.Remove(currentReliableId++);
+					Networker.FireRead(next, this);
 				}
 			}
 			else
