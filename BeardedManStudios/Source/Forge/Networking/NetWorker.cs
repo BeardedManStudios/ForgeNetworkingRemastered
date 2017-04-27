@@ -446,6 +446,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void CompleteInitialization(NetworkObject networkObject)
 		{
+            Logging.BMSLog.Log("CompleteInitialization netObj id:" + networkObject.NetworkId);
+
 			lock (NetworkObjects)
 			{
 				NetworkObjects.Add(networkObject.NetworkId, networkObject);
@@ -562,6 +564,12 @@ namespace BeardedManStudios.Forge.Networking
 		public abstract void Disconnect(bool forced);
 
 		/// <summary>
+		/// Reads the frame stream as if it were read on the network
+		/// </summary>
+		/// <param name="frame">The target frame stream to be read</param>
+		public abstract void FireRead(FrameStream frame, NetworkingPlayer currentPlayer);
+
+		/// <summary>
 		/// Goes through all of the pending disconnect players and disconnects them
 		/// Pending disconnects are always forced
 		/// </summary>
@@ -654,7 +662,17 @@ namespace BeardedManStudios.Forge.Networking
 			player.Accepted = true;
 			player.PendingAccpeted = false;
 
-			NetworkObject.PlayerAccepted(player, NetworkObjects.Values.ToArray());
+            NetworkObject[] currentObjects;
+
+            lock(NetworkObjects)
+            {
+                currentObjects = NetworkObjects.Values.ToArray();
+            }
+
+
+            NetworkObject.PlayerAccepted(player, currentObjects);
+
+            //NetworkObject.PlayerAccepted(player, NetworkObjects.Values.ToArray());
 
 			if (playerAccepted != null)
 				playerAccepted(player);
@@ -726,45 +744,48 @@ namespace BeardedManStudios.Forge.Networking
 			if (frame is Binary)
 			{
 				byte routerId = ((Binary)frame).RouterId;
-				if (routerId == RouterIds.RPC_ROUTER_ID || routerId == RouterIds.BINARY_DATA_ROUTER_ID || routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
-				{
-					uint id = frame.StreamData.GetBasicType<uint>();
-					NetworkObject targetObject = null;
+                if (routerId == RouterIds.RPC_ROUTER_ID || routerId == RouterIds.BINARY_DATA_ROUTER_ID || routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
+                {
+                    uint id = frame.StreamData.GetBasicType<uint>();
+                    NetworkObject targetObject = null;
 
-					lock (NetworkObjects)
-					{
-						NetworkObjects.TryGetValue(id, out targetObject);
-					}
+                    lock (NetworkObjects)
+                    {
+                        NetworkObjects.TryGetValue(id, out targetObject);
+                    }
 
-					if (targetObject == null)
-					{
-						lock (missingObjectBuffer)
-						{
-							if (!missingObjectBuffer.ContainsKey(id))
-								missingObjectBuffer.Add(id, new List<Action<NetworkObject>>());
+                    if (targetObject == null)
+                    {
+                        lock (missingObjectBuffer)
+                        {
+                            if (!missingObjectBuffer.ContainsKey(id))
+                                missingObjectBuffer.Add(id, new List<Action<NetworkObject>>());
 
-							missingObjectBuffer[id].Add((networkObject) =>
-							{
-								ExecuteRouterAction(routerId, networkObject, (Binary)frame, player);
-							});
-						}
+                            missingObjectBuffer[id].Add((networkObject) =>
+                            {
+                                ExecuteRouterAction(routerId, networkObject, (Binary)frame, player);
+                            });
+                        }
 
-						// TODO:  If the server is missing an object, it should have a timed buffer
-						// that way useless messages are not setting around in memory
+                        // TODO:  If the server is missing an object, it should have a timed buffer
+                        // that way useless messages are not setting around in memory
 
-						return;
-					}
+                        return;
+                    }
 
-					ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
-				}
-				else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
-				{
-					NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
-				}
-				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
-					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
-				else if (binaryMessageReceived != null)
-					binaryMessageReceived(player, (Binary)frame);
+                    ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
+                }
+                else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
+                {
+                    NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
+                }
+                else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
+                {
+                    Logging.BMSLog.Log("RUnning to receive a NetworkObject");
+                    NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
+                }
+                else if (binaryMessageReceived != null)
+                    binaryMessageReceived(player, (Binary)frame);
 			}
 			else if (frame is Text && textMessageReceived != null)
 				textMessageReceived(player, (Text)frame);

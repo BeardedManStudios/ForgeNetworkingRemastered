@@ -647,6 +647,8 @@ namespace BeardedManStudios.Forge.Networking
 			if (targetHash != 0)
 				return createObject;
 
+            Logging.BMSLog.Log("CREATE NEW OBJECT WITH NETWORK ID: " + NetworkId +" SKIP PLAYER ID: " + skipPlayer?.NetworkId);
+
 			// If there is a target hash, we are just generating the create object frame
 			if (Networker is UDPServer)
 				((UDPServer)Networker).Send(createObject, true, skipPlayer);
@@ -670,9 +672,12 @@ namespace BeardedManStudios.Forge.Networking
 					NetWorker networker = null;
 					List<int> indexes = new List<int>();
 
+                    Logging.BMSLog.Log("SENDING OUT Length: " + networkObjects.Length);
+
 					foreach (NetworkObject obj in networkObjects)
 					{
-						if (obj.Owner == player)
+                        Logging.BMSLog.Log("IF CONDITION = " + (obj.Owner == player));
+                        if (obj.Owner == player)
 							continue;
 
 						indexes.Add(targetData.Size);
@@ -689,7 +694,9 @@ namespace BeardedManStudios.Forge.Networking
 
 						timestep = obj.CreateTimestep;
 						networker = obj.Networker;
-					}
+
+                        Logging.BMSLog.Log(obj.NetworkId.ToString());
+                    }
 
 					BMSByte indexBytes = new BMSByte();
 					ObjectMapper.Instance.MapBytes(indexBytes, indexes.Count);
@@ -702,7 +709,7 @@ namespace BeardedManStudios.Forge.Networking
 					{
 						Binary targetCreateObject = new Binary(timestep, false, targetData, Receivers.Target, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.ACCEPT_MULTI_ROUTER_ID);
 
-						if (networker is UDPServer)
+                        if (networker is UDPServer)
 							((UDPServer)networker).Send(player, targetCreateObject, true);
 						else
 							((TCPServer)networker).Send(player.TcpClientHandle, targetCreateObject);
@@ -1172,6 +1179,10 @@ namespace BeardedManStudios.Forge.Networking
 			// The server should execute the RPC before it is sent out to the clients
 			if (Networker is IServer)
 			{
+				// If we are only sending the message to the owner, we need to specify that
+				if (receivers == Receivers.Owner)
+					targetPlayer = Owner;
+
 				// We don't need to do any extra work if the target player is the server
 				if (targetPlayer == Networker.Me)
 				{
@@ -1245,11 +1256,14 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (Networker is IServer)
 			{
+				// Invoke if the the target player is the server itself or is an explicit receiver
+				if (targetPlayer == Networker.Me || receivers == Receivers.Server || receivers == Receivers.ServerAndOwner)
+					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				// Don't execute the RPC if the server is sending it to receivers
 				// that don't include itself
-				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
-					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
-					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
+				else if (receivers != Receivers.Owner && ((sender != Networker.Me && sender != null) ||
+					(receivers != Receivers.Others && receivers != Receivers.OthersBuffered &&
+					receivers != Receivers.OthersProximity && receivers != Receivers.Target)))
 				{
 					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}
@@ -1437,7 +1451,10 @@ namespace BeardedManStudios.Forge.Networking
 			// Get the identity so that the proper type / subtype can be selected
 			int identity = frame.StreamData.GetBasicType<int>();
 
-			if (networker is IServer)
+            Logging.BMSLog.Log("CreateNetworkObject: identity:" + identity.ToString());
+
+
+            if (networker is IServer)
 			{
 				// The client is requesting to create a new networked object
 				if (Factory != null)
@@ -1455,7 +1472,9 @@ namespace BeardedManStudios.Forge.Networking
 				// Get the server assigned id for this network object
 				uint id = frame.StreamData.GetBasicType<uint>();
 
-				if (hash != 0)
+                Logging.BMSLog.Log("CreateNetworkObject: id:" + id.ToString());
+
+                if (hash != 0)
 				{
 					// The server is responding to the create request
 					objectCreateAttach(identity, hash, id, frame);
@@ -1489,6 +1508,8 @@ namespace BeardedManStudios.Forge.Networking
 			int index, count = frame.StreamData.GetBasicType<int>();
 			int head = frame.StreamData.StartIndex();
 
+            Logging.BMSLog.Log(count.ToString());
+
 			for (int i = 0; i < count; i++)
 			{
 				// Return to the head and then move forward to the next index
@@ -1503,6 +1524,9 @@ namespace BeardedManStudios.Forge.Networking
 
 				// Create an isolated frame for this object
 				Binary subFrame = (Binary)frame.Clone();
+
+                Logging.BMSLog.Log(subFrame.StreamData.byteArr.Count().ToString());
+
 				CreateNetworkObject(networker, player, subFrame);
 			}
 		}
@@ -1534,6 +1558,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (onDestroy != null)
 				onDestroy();
+
+            Logging.BMSLog.Log(NetworkId.ToString());
 		}
 
 		public virtual void InterpolateUpdate() { }

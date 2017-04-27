@@ -24,7 +24,7 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public abstract class BaseUDP : NetWorker
 	{
-		public delegate void PacketComplete(BMSByte data, int groupId, byte receivers);
+		public delegate void PacketComplete(BMSByte data, int groupId, byte receivers, bool isReliable);
 		public delegate void MessageConfirmedEvent(NetworkingPlayer player, UDPPacket packet);
 
 		public event MessageConfirmedEvent messageConfirmed;

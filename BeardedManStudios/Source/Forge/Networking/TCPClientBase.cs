@@ -265,19 +265,17 @@ namespace BeardedManStudios.Forge.Networking
 				// does not send masked data, only the client so send false for mask
 				FrameStream frame = Factory.DecodeMessage(messageBytes, false, MessageGroupIds.TCP_FIND_GROUP_ID, Server);
 
-				if (frame is ConnectionClose)
-				{
-					// Close our CachedUDPClient so that it can no longer be used
-					client.Close();
-					return ReadState.Disconnect;
-				}
-
-				// A message has been successfully read from the network so relay that
-				// to all methods registered to the event
-				OnMessageReceived(Server, frame);
+				FireRead(frame, Server);
 			}
 
 			return ReadState.Void;
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			// A message has been successfully read from the network so relay that
+			// to all methods registered to the event
+			OnMessageReceived(currentPlayer, frame);
 		}
 
 		/// <summary>
