@@ -50,8 +50,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
-
-			//NetworkObject.objectCreated += CreatePendingObjects;
 		}
 
 		private void OnEnable()
@@ -69,6 +67,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			Networker = networker;
+			networker.objectCreated += CreatePendingObjects;
 			Networker.binaryMessageReceived += ReadBinary;
 			SetupObjectCreatedEvent();
 
@@ -115,8 +114,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			behavior.Initialize(obj);
 			pendingObjects.Remove(obj.CreateCode);
 
-			//if (pendingObjects.Count == 0)
-			// NetworkObject.objectCreated -= CreatePendingObjects;
+			if (pendingObjects.Count == 0)
+				Networker.objectCreated -= CreatePendingObjects;
 		}
 
 		public void MatchmakingServersFromMasterServer(string masterServerHost,
@@ -326,6 +325,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			webserver.Stop();
 #endif
 
+			Networker.objectCreated -= CreatePendingObjects;
+
 			if (Networker != null)
 				Networker.Disconnect(false);
 
@@ -338,7 +339,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Networker = null;
 			Instance = null;
 			Destroy(gameObject);
-			//NetworkObject.objectCreated -= CreatePendingObjects;
 		}
 
 		private void OnApplicationQuit()
@@ -585,6 +585,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IClient)
 			{
+				NetworkObject.Flush(Networker);
+
 				NetworkObject foundNetworkObject;
 				for (int i = 0; i < behaviors.Count; i++)
 				{
@@ -592,14 +594,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					{
 						behaviors[i].Initialize(foundNetworkObject);
 						behaviors.RemoveAt(i--);
+						pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
 					}
 				}
 
 				if (behaviors.Count == 0)
-				{
-					NetworkObject.Flush(Networker);
 					return;
-				}
 			}
 
 			if (Networker is IServer)
@@ -614,8 +614,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			foreach (NetworkBehavior behavior in behaviors)
 				pendingObjects.Add(behavior.TempAttachCode, behavior);
 
-			//NetworkObject.objectCreated += CreatePendingObjects;
-			NetworkObject.Flush(Networker);
+			if (pendingNetworkObjects.Count == 0)
+				Networker.objectCreated -= CreatePendingObjects;
 		}
 	}
 }

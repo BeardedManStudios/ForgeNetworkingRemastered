@@ -59,8 +59,10 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		Instance = this;
 	}
 
-	private void Start()
+	protected override void NetworkStart()
 	{
+		base.NetworkStart();
+
 		NetworkManager.Instance.objectInitialized += (INetworkBehavior behavior, NetworkObject obj) =>
 		{
 			if (!(obj is NetworkCameraNetworkObject))
