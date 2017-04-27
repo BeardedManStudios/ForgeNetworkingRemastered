@@ -14,14 +14,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public GameObject[] >:[i]:<NetworkObject = null;
 		>:ENDFOREACH:<
 
-		private void Start()
+		private void SetupObjectCreatedEvent()
 		{
-			NetworkObject.objectCreated += CaptureObjects;
+			Networker.objectCreated += CaptureObjects;
 		}
 
 		private void OnDestroy()
 		{
-			NetworkObject.objectCreated -= CaptureObjects;
+			Networker.objectCreated -= CaptureObjects;
 		}
 		
 		private void CaptureObjects(NetworkObject obj)
