@@ -6,3 +6,4 @@ G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingCommon\bin\De
 G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingCommon\bin\Debug\ForgeNetworkingCommon.pdb
 G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingCommon\obj\Debug\ForgeNetworkingCommon.dll
 G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingCommon\obj\Debug\ForgeNetworkingCommon.pdb
+G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingCommon\obj\Debug\ForgeNetworkingCommon.csprojResolveAssemblyReference.cache

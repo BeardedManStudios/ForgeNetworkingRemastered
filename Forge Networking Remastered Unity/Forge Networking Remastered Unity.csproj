@@ -18,7 +18,7 @@
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.4f1</UnityVersion>
     <RootNamespace></RootNamespace>
-    <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -84,6 +84,8 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\ExampleProximityPlayerNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraBehavior.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\NetworkCameraNetworkObject.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\TestBehavior.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\TestNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatMaker.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatManager.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Stand Alone Chat\StandAloneChat.cs" />

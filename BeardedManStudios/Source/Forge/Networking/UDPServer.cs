@@ -227,6 +227,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
+        /// <summary>
+        /// Commit the disconnects
+        /// </summary>
+        public void CommitDisconnects() { CleanupDisconnections(); }
+
 		/// <summary>
 		/// Fully remove the player from the network
 		/// </summary>

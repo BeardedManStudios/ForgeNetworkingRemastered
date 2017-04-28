@@ -273,6 +273,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
+        /// <summary>
+        /// Commits the disconnects
+        /// </summary>
+        public void CommitDisconnects() { CleanupDisconnections(); }
+
 		/// <summary>
 		/// This will begin the connection for TCP, this is a thread blocking operation until the connection
 		/// is either established or has failed

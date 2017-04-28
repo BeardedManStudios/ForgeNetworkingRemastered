@@ -59,10 +59,8 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		Instance = this;
 	}
 
-	protected override void NetworkStart()
+	private void Start()
 	{
-		base.NetworkStart();
-
 		NetworkManager.Instance.objectInitialized += (INetworkBehavior behavior, NetworkObject obj) =>
 		{
 			if (!(obj is NetworkCameraNetworkObject))
@@ -136,14 +134,14 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		if (!NetworkManager.Instance.Networker.IsServer)
 			return;
 
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			// We need to clean up the network objects before we change the scene
-			// since we are loading this same scene. When that scene loads it will
-			// re-create the objects, so we don't want lingering ones
-			Cleanup();
-			SceneManager.LoadScene(1);
-		}
+		//if (Input.GetKeyDown(KeyCode.Space))
+		//{
+		//	// We need to clean up the network objects before we change the scene
+		//	// since we are loading this same scene. When that scene loads it will
+		//	// re-create the objects, so we don't want lingering ones
+		//	Cleanup();
+		//	SceneManager.LoadScene(1);
+		//}
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{

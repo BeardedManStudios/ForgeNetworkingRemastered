@@ -383,8 +383,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		public void SetName(string newName)
 		{
 			networkObject.SendRpc(RPC_ASSIGN_NAME,
-				true,   // Replace previous
-				Receivers.AllBuffered,
+				true,
+				Receivers.All,
 				newName,
 				networkObject.MyPlayerId);
 		}
@@ -420,11 +420,18 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
 		public void KickPlayer(uint id)
 		{
-			if (networkObject.IsOwner && networkObject.IsServer)
+			if (networkObject.Networker.IsServer)
 			{
-				//TODO: I am the server, so disconnect the id passed in here!
-			}
-		}
+                //TODO: I am the server, so disconnect the id passed in here!
+                NetworkingPlayer player = networkObject.Networker.Players.FirstOrDefault(p => p.NetworkId == id);
+                if (player != null)
+                {
+                    IServer serverSocket = (IServer)networkObject.Networker;
+                    serverSocket.Disconnect(player, true);
+                    serverSocket.CommitDisconnects();
+                }
+            }
+        }
 
 		/// <summary>
 		/// Whether the id matches my player id
@@ -605,7 +612,16 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		{
 			//Logging.BMSLog.Log("GG: " + player.Ip);
 			player.Name = "Player " + player.NetworkId;
-			networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.AllBuffered, player.NetworkId);
+			networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.All, player.NetworkId);
+
+            networkObject.Networker.IteratePlayers((p) =>
+            {
+                if (p == player)
+                    return;
+
+                networkObject.SendRpc(player, RPC_PLAYER_JOINED, p.NetworkId);
+                networkObject.SendRpc(player, RPC_ASSIGN_NAME, MasterLobby.LobbyPlayers.First(l => l.NetworkId == p.NetworkId).Name, p.NetworkId);
+            });
 		}
 
 		private void PlayerDisconnected(NetworkingPlayer player)
@@ -613,8 +629,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			// TODO:  This should be called
 			//Logging.BMSLog.Log("OH NO: " + player.Ip);
 			//BeardedManStudios.Forge.Logging.BMSLog.Log("Player disconnected");
-			networkObject.SendRpc(RPC_PLAYER_LEFT, Receivers.AllBuffered, player.NetworkId);
-		}
+			networkObject.SendRpc(RPC_PLAYER_LEFT, Receivers.All, player.NetworkId);
+        }
 		#endregion
 	}
 }

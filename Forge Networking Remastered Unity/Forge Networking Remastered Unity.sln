@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity", "Forge Networking Remastered Unity.csproj", "{7101BF79-1CBC-B118-A920-3B09B7453F1D}"
 EndProject
 Global

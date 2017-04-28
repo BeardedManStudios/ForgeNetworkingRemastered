@@ -34,6 +34,9 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 		{
 			ToggleInteractables(interactableValue);
 			AssociatedPlayer = associatedPlayer;
+            ChangeAvatarID(associatedPlayer.AvatarID);
+            ChangeName(associatedPlayer.Name);
+            ChangeTeam(associatedPlayer.TeamID);
 		}
 
 		public void SetParent(Transform parent)

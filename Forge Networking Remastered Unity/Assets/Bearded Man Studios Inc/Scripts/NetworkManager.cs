@@ -593,8 +593,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
 					{
 						behaviors[i].Initialize(foundNetworkObject);
-						behaviors.RemoveAt(i--);
 						pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
+						behaviors.RemoveAt(i--);
 					}
 				}
 

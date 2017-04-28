@@ -69,9 +69,8 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 				}
 			}
 
-			throw new NotImplementedException("Brett I've removed static events so this needs to be updated, the events are in the NetWorker now");
-			//NetworkObject.objectCreateRequested += CheckForService;
-			//NetworkObject.factoryObjectCreated += FactoryObjectCreated;
+            NetworkManager.Instance.Networker.objectCreateRequested += CheckForService;
+            NetworkManager.Instance.Networker.factoryObjectCreated += FactoryObjectCreated;
 		}
 
 		private void CheckForService(NetWorker networker, int identity, uint id, Frame.FrameStream frame, Action<NetworkObject> callback)
@@ -92,10 +91,9 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 			if (obj.UniqueIdentity != LobbyService.LobbyServiceNetworkObject.IDENTITY)
 				return;
 
-			throw new NotImplementedException("Brett I've removed static events so this needs to be updated, the events are in the NetWorker now");
-			//NetworkObject.factoryObjectCreated -= FactoryObjectCreated;
-			//SetupService(obj);
-		}
+            NetworkManager.Instance.Networker.factoryObjectCreated -= FactoryObjectCreated;
+            SetupService(obj);
+        }
 
 		private void SetupService(NetworkObject obj)
 		{
