@@ -273,10 +273,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
-        /// <summary>
-        /// Commits the disconnects
-        /// </summary>
-        public void CommitDisconnects() { CleanupDisconnections(); }
+		/// <summary>
+		/// Commits the disconnects
+		/// </summary>
+		public void CommitDisconnects() { CleanupDisconnections(); }
 
 		/// <summary>
 		/// This will begin the connection for TCP, this is a thread blocking operation until the connection
@@ -718,6 +718,8 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			BannedAddresses.Add(player.Ip);
+			Disconnect(player, true);
+			CommitDisconnects();
 		}
 
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)

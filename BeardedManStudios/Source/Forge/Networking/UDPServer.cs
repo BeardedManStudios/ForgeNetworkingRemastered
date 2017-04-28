@@ -227,10 +227,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
-        /// <summary>
-        /// Commit the disconnects
-        /// </summary>
-        public void CommitDisconnects() { CleanupDisconnections(); }
+		/// <summary>
+		/// Commit the disconnects
+		/// </summary>
+		public void CommitDisconnects() { CleanupDisconnections(); }
 
 		/// <summary>
 		/// Fully remove the player from the network
@@ -579,6 +579,8 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			BannedAddresses.Add(player.Ip);
+			Disconnect(player, true);
+			CommitDisconnects();
 		}
 	}
 }
