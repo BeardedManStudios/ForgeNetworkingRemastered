@@ -17,9 +17,10 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		public const byte RPC_MESSAGE_RECEIVED = 7;
 		public const byte RPC_PLAYER_JOINED = 8;
 		public const byte RPC_PLAYER_LEFT = 9;
+		public const byte RPC_PLAYER_SYNC = 10;
 
-		#region Private Data
-		private LobbyServiceNetworkObject networkObject = null;
+        #region Private Data
+        private LobbyServiceNetworkObject networkObject = null;
 		private bool _initialized;
 		#endregion
 
@@ -92,7 +93,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
 					if (_myself == null)
 					{
-						DummyPlayer dummyPlayer = new DummyPlayer(networkObject.MyPlayerId, string.Empty);
+						DummyPlayer dummyPlayer = new DummyPlayer(networkObject.MyPlayerId, string.Format("Player {0}", networkObject.MyPlayerId), 0, 0);
 						MasterLobby.LobbyPlayers.Add(dummyPlayer);
 						_myself = dummyPlayer;
 					}
@@ -123,33 +124,37 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			private uint _networkID;
 			public uint NetworkId
 			{
-				get
-				{
-					return _networkID;
-				}
-				set
-				{
-					_networkID = value;
-				}
+				get { return _networkID; }
+				set { _networkID = value; }
 			}
 
 			private string _name;
 			public string Name
 			{
-				get
-				{
-					return _name;
-				}
-				set
-				{
-					_name = value;
-				}
+				get { return _name; }
+				set { _name = value; }
 			}
 
-			public DummyPlayer(uint id, string name)
+            private int _teamID;
+            public int TeamID
+            {
+                get { return _teamID; }
+                set { _teamID = value; }
+            }
+
+            private int _avatarID;
+            public int AvatarID
+            {
+                get { return _avatarID; }
+                set { _avatarID = value; }
+            }
+
+			public DummyPlayer(uint id, string name, int teamID, int avatarID)
 			{
 				NetworkId = id;
 				Name = name;
+                TeamID = teamID;
+                AvatarID = avatarID;
 			}
 		}
 
@@ -188,7 +193,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
 			public DummyLobbyMaster()
 			{
-				DummyPlayer player = new DummyPlayer(0, "Server");
+				DummyPlayer player = new DummyPlayer(0, "Server", 0, 0);
 				LobbyPlayers.Add(player);
 				LobbyPlayersMap.Add(0, player);
 				LobbyTeams.Add(0, new List<IClientMockPlayer>() { player });
@@ -217,9 +222,11 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 				//We don't care about the name change since we are a dummy class
 			}
 
-			public void OnFNTeamChanged(IClientMockPlayer player, int newId)
+			public void OnFNTeamChanged(IClientMockPlayer player)
 			{
-				if (!LobbyTeams.ContainsKey(newId))
+                int newId = player.TeamID;
+
+                if (!LobbyTeams.ContainsKey(newId))
 					LobbyTeams.Add(newId, new List<IClientMockPlayer>());
 
 				//We do this to not make Foreach loops
@@ -245,10 +252,15 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 					LobbyTeams[newId].Add(player);
 			}
 
-			public void OnFNAvatarIDChanged(IClientMockPlayer player, int newId)
+			public void OnFNAvatarIDChanged(IClientMockPlayer player)
 			{
 				//We don't care about the avatar id change because we are a dummy class
 			}
+
+            public void OnFNPlayerSync(IClientMockPlayer player)
+            {
+                //We dont care about this because we are a dummy class
+            }
 
 			public void OnFNLobbyMasterKnowledgeTransfer(ILobbyMaster previousLobbyMaster)
 			{
@@ -382,6 +394,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		/// <param name="newName">The next name you will be referred as</param>
 		public void SetName(string newName)
 		{
+            IClientMockPlayer player = GetClientMockPlayer(networkObject.MyPlayerId);
+            player.Name = newName;
 			networkObject.SendRpc(RPC_ASSIGN_NAME,
 				true,
 				Receivers.All,
@@ -395,7 +409,9 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		/// <param name="avatarID">Next avatar id</param>
 		public void SetAvatar(int avatarID)
 		{
-			networkObject.SendRpc(RPC_ASSIGN_AVATAR, Receivers.All, networkObject.MyPlayerId, avatarID);
+            IClientMockPlayer player = GetClientMockPlayer(networkObject.MyPlayerId);
+            player.AvatarID = avatarID;
+            networkObject.SendRpc(RPC_ASSIGN_AVATAR, Receivers.All, networkObject.MyPlayerId, avatarID);
 		}
 
 		/// <summary>
@@ -404,8 +420,10 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		/// <param name="teamId">The new team id</param>
 		public void SetTeamId(int teamId)
 		{
-			// TODO:  When someone joins they need to get the current players selections
-			networkObject.SendRpc(RPC_ASSIGN_TEAM, Receivers.All, networkObject.MyPlayerId, teamId);
+            IClientMockPlayer player = GetClientMockPlayer(networkObject.MyPlayerId);
+            player.TeamID = teamId;
+            // TODO:  When someone joins they need to get the current players selections
+            networkObject.SendRpc(RPC_ASSIGN_TEAM, Receivers.All, networkObject.MyPlayerId, teamId);
 		}
 
 		/// <summary>
@@ -460,7 +478,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			networkObject.RegisterRpc("MessageReceived", MessageReceived, typeof(uint), typeof(string));
 			networkObject.RegisterRpc("PlayerJoined", PlayerJoined, typeof(uint));
 			networkObject.RegisterRpc("PlayerLeft", PlayerLeft, typeof(uint));
-			networkObject.RegistrationComplete();
+			networkObject.RegisterRpc("SyncPlayer", SyncPlayer, typeof(uint), typeof(string), typeof(int), typeof(int));
+            networkObject.RegistrationComplete();
 			_initialized = true;
 
 			//Logging.BMSLog.Log("SERVICE ID: " + networkObject.NetworkId);
@@ -550,7 +569,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			if (player == null)
 				return;
 
-			MasterLobby.OnFNAvatarIDChanged(player, avatarId);
+            player.AvatarID = avatarId;
+			MasterLobby.OnFNAvatarIDChanged(player);
 		}
 		/// <summary>
 		/// Arguments:
@@ -566,7 +586,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			if (player == null)
 				return;
 
-			MasterLobby.OnFNTeamChanged(player, teamId);
+            player.TeamID = teamId;
+			MasterLobby.OnFNTeamChanged(player);
 		}
 		/// <summary>
 		/// Arguments:
@@ -584,10 +605,36 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
 			MasterLobby.OnFNLobbyPlayerMessageReceived(player, message);
 		}
+        /// <summary>
+		/// Arguments:
+		/// uint playerid
+        /// strng playername
+		/// int teamid
+		/// int avatarid
+		/// </summary>
+		private void SyncPlayer(RpcArgs args)
+        {
+            uint playerId = args.GetNext<uint>();
+            string playerName = args.GetNext<string>();
+            int teamID = args.GetNext<int>();
+            int avatarID = args.GetNext<int>();
+            var player = GetClientMockPlayer(playerId);
 
-		private IClientMockPlayer CreateClientMockPlayer(uint playerId, string playerName)
+            if (player == null)
+            {
+                player = CreateClientMockPlayer(playerId, "Player " + playerId);
+                MasterLobby.OnFNPlayerConnected(player);
+            }
+
+            player.Name = playerName;
+            player.TeamID = teamID;
+            player.AvatarID = avatarID;
+            MasterLobby.OnFNPlayerSync(player);
+        }
+
+        private IClientMockPlayer CreateClientMockPlayer(uint playerId, string playerName)
 		{
-			var player = new DummyPlayer(playerId, playerName);
+			var player = new DummyPlayer(playerId, playerName, 0, 0);
 			return player;
 		}
 
@@ -620,7 +667,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
                     return;
 
                 networkObject.SendRpc(player, RPC_PLAYER_JOINED, p.NetworkId);
-                networkObject.SendRpc(player, RPC_ASSIGN_NAME, MasterLobby.LobbyPlayers.First(l => l.NetworkId == p.NetworkId).Name, p.NetworkId);
+                IClientMockPlayer cPlayer = MasterLobby.LobbyPlayers.First(l => l.NetworkId == p.NetworkId);
+                networkObject.SendRpc(player, RPC_PLAYER_SYNC, p.NetworkId, cPlayer.Name, cPlayer.TeamID, cPlayer.AvatarID);
             });
 		}
 

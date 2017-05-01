@@ -14,6 +14,8 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 		public InputField PlayerName;
 		public Text PlayerTeamID;
 
+        public Button[] Buttons;
+
 		[HideInInspector]
 		public Transform ThisTransform;
 
@@ -99,7 +101,10 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 
 		public void ToggleInteractables(bool value)
 		{
-			AvatarBG.raycastTarget = value;
+            for (int i = 0; i < Buttons.Length; ++i)
+                Buttons[i].interactable = value;
+
+            AvatarBG.raycastTarget = value;
 			PlayerTeamID.raycastTarget = value;
 			PlayerName.interactable = value;
 		}

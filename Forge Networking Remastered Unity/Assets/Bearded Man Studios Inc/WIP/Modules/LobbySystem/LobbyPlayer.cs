@@ -33,7 +33,25 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 			}
 		}
 
-		public int AvatarID = 0;
-		public int TeamID = 0;
+        private int _avatarID;
+		public int AvatarID
+        {
+            get { return _avatarID; }
+            set { _avatarID = value; }
+        }
+
+        private int _teamID;
+		public int TeamID
+        {
+            get { return _teamID; }
+            set { _teamID = value; }
+        }
+
+        private bool _created;
+        public bool Created
+        {
+            get { return _created; }
+            set { _created = value; }
+        }
 	}
 }
