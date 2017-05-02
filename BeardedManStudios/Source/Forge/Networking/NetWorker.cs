@@ -497,6 +497,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
+		{
+			lock (Players)
+			{
+				return Players.FirstOrDefault(expression);
+			}
+		}
+
 		public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
 		{
 			if (other.Networker == this)
@@ -649,7 +657,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (playerConnected != null)
 				playerConnected(player);
 		}
-		
+
 		internal void OnObjectCreated(NetworkObject target)
 		{
 			if (objectCreated != null)
@@ -742,10 +750,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// A wrapper for the pingReceived event call that children of this can call
 		/// </summary>
 		/// <param name="ping"></param>
-		protected void OnPingRecieved(double ping)
+		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
 			if (pingReceived != null)
 				pingReceived(ping);
+
+			player.RoundTripLatency = (int)ping;
 		}
 
 		/// <summary>
@@ -777,7 +787,7 @@ namespace BeardedManStudios.Forge.Networking
 
 				DateTime received = new DateTime(receivedTimestep);
 				TimeSpan ms = DateTime.UtcNow - received;
-				OnPingRecieved(ms.TotalMilliseconds);
+				OnPingRecieved(ms.TotalMilliseconds, player);
 				return;
 			}
 

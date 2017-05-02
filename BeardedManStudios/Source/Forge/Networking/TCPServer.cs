@@ -687,8 +687,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void Ping()
 		{
-			//I am the server, so 0 ms...
-			OnPingRecieved(0);
+			// I am the server, so 0 ms...
+			OnPingRecieved(0, Me);
 		}
 
 		/// <summary>

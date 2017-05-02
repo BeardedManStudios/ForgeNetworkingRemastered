@@ -26,6 +26,7 @@ namespace BeardedManStudios.Forge.Networking
 		public Receivers receivers;
 		public ulong uniqueId;
 		public byte[] rawBytes;
+		public ulong LastSentTimestep { get; private set; }
 
 		public UDPPacket(bool reliable, bool endPacket, int groupId, int orderId, ulong uniqueId, byte[] rawBytes, bool isConfirmation, Receivers receivers)
 		{
@@ -37,12 +38,14 @@ namespace BeardedManStudios.Forge.Networking
 			this.rawBytes = rawBytes;
 			this.isConfirmation = isConfirmation;
 			this.receivers = receivers;
+			LastSentTimestep = 0;
 			retryCount = 0;
 		}
 
-		public void DoingRetry()
+		public void DoingRetry(ulong timestep)
 		{
 			retryCount++;
+			LastSentTimestep = timestep;
 		}
 	}
 }

@@ -211,13 +211,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Go through all of the pending packets and resend them
 		/// </summary>
-		public void ResendPackets()
+		public void ResendPackets(ulong timestep)
 		{
 			lock (PendingPackets)
 			{
 				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
 				{
-					kv.Value.DoingRetry();
+					if (kv.Value.LastSentTimestep > timestep - (ulong)Player.RoundTripLatency)
+						continue;
+
+					kv.Value.DoingRetry(timestep);
 					Send(kv.Value.rawBytes);
 					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
 				}
@@ -243,9 +246,13 @@ namespace BeardedManStudios.Forge.Networking
 
 			lock (PendingPackets)
 			{
+				UDPPacket foundPacket;
+
 				// Check to see if we already received a confirmation for this packet
-				if (!PendingPackets.ContainsKey(packet.orderId))
+				if (!PendingPackets.TryGetValue(packet.orderId, out foundPacket))
 					return;
+
+				player.RoundTripLatency = (int)(player.Networker.Time.Timestep - foundPacket.LastSentTimestep);
 
 				// Remove the packet from pending so that it isn't sent again
 				PendingPackets.Remove(packet.orderId);

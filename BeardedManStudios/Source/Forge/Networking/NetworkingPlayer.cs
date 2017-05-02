@@ -151,6 +151,11 @@ namespace BeardedManStudios.Forge.Networking
 		private int currentPingWait = 0;
 		public int PingInterval { get; set; }
 
+		/// <summary>
+		/// The amount of time it took for a ping to happen
+		/// </summary>
+		public int RoundTripLatency { get; set; }
+
 		public NetWorker Networker { get; private set; }
 
 		/// <summary>
@@ -160,7 +165,7 @@ namespace BeardedManStudios.Forge.Networking
 		public Vector ProximityLocation { get; set; }
 
 		private ulong currentReliableId = 0;
-		private Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
+		public Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
@@ -324,10 +329,9 @@ namespace BeardedManStudios.Forge.Networking
 							lock (reliableComposers)
 							{
 								for (int i = 0; i < reliableComposers.Count; i++)
-									reliableComposers[i].ResendPackets();
+									reliableComposers[i].ResendPackets(Networker.Time.Timestep);
 							}
 
-							// TODO:  Wait the latency for this
 							Task.Sleep(10);
 
 							lock (reliableComposers)
