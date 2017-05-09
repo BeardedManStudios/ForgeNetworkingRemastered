@@ -264,7 +264,6 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
             MainThreadManager.Run(() =>
             {
                 LobbyPlayerItem item = GetNewPlayerItem();
-                //TODO: Replace isServer with an actual user check
                 item.Setup(convertedPlayer, false);
                 if (LobbyService.Instance.IsServer)
                     item.KickButton.SetActive(true);
@@ -424,9 +423,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 		private void SetupComplete()
 		{
 			LobbyService.Instance.SetLobbyMaster(this);
-
-			//if (LobbyService.Instance.IsServer)
-			//	LobbyService.Instance.PlayerConnected(LobbyService.Instance.MyMockPlayer);
+            
 			//If I am the host, then I should show the kick button for all players here
 			LobbyPlayerItem item = GetNewPlayerItem(); //This will just auto generate the 10 items we need to start with
 			item.SetParent(Grid);

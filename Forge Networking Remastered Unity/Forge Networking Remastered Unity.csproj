@@ -88,6 +88,9 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Generated\UserGenerated\TestNetworkObject.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatMaker.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Chat\ChatManager.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Modules\LobbySystem\LobbyManager.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Modules\LobbySystem\LobbyPlayer.cs" />
+    <Compile Include="Assets\Bearded Man Studios Inc\Modules\LobbySystem\LobbyPlayerItem.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\Stand Alone Chat\StandAloneChat.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\VOIP\VOIP.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Modules\VOIP\VoipStarter.cs" />
@@ -105,9 +108,6 @@
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\NetworkObjectFactoryBase.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\Server Browser\ServerBrowser.cs" />
     <Compile Include="Assets\Bearded Man Studios Inc\Scripts\UnityObjectMapper.cs" />
-    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyManager.cs" />
-    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayer.cs" />
-    <Compile Include="Assets\Bearded Man Studios Inc\WIP\Modules\LobbySystem\LobbyPlayerItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
