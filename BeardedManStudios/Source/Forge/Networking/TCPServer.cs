@@ -311,14 +311,14 @@ namespace BeardedManStudios.Forge.Networking
 				listener.Start();
 				listener.BeginAcceptTcpClient(ListenForConnections, listener);
 
+				// Do any generic initialization in result of the successful bind
+				OnBindSuccessful();
+
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadClients);
 
 				// Create the thread that will check for player timeouts
 				Task.Queue(CheckClientTimeout);
-
-				// Do any generic initialization in result of the successful bind
-				OnBindSuccessful();
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(Me);
