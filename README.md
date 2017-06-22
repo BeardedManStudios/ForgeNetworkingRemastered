@@ -12,6 +12,11 @@ Most Used: [Version 21.5](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61a
 
 Most Recent: [Version 23.02](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V23.02.unitypackage)
 
+## Ways to support the project
+1) Make pull requests :D
+2) Any donations are much appreciated <3
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CXPTUZR3KBLU)
 
 # License (MIT)
 Copyright 2017 Bearded Man Studios, Inc.
