@@ -4,6 +4,9 @@ Built with VS Community 2015
 
 When you pull, you will need to build the BeardedManStudios.sln file. It will create the BeardedManStudios.dll file inside of the Forge Networking Remastered Unity project
 
+# Community
+Join us and the growing community [on Discord](https://discord.gg/yzZwEYm) for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
+
 ## Unity Package Download
 Most Used: [Version 21.5](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V21.5.unitypackage)
 
