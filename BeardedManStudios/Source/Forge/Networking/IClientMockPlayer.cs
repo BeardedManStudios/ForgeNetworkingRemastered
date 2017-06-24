@@ -23,5 +23,7 @@ namespace BeardedManStudios.Forge.Networking
 	{
 		uint NetworkId { get; set; }
 		string Name { get; set; }
+        int AvatarID { get; set; }
+        int TeamID { get; set; }
 	}
 }
