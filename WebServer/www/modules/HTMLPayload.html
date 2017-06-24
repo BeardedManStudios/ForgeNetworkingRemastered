@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Forge Networking Web Server</title>
+    <style>
+        body {
+            background-color: linen;
+            padding: 0px;
+            margin: 0px;
+        }
+        h1 {
+            color: linen;
+            word-spacing: -8px;
+            padding: 2px 11px 0px;
+            margin: 0px;
+        }
+        .ModuleBox {
+            padding: 0px 15px 2px;
+            margin: 0px;
+            float: left;
+            color: linen;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .ModuleBox:hover {
+            color: black;
+        }
+        .ActiveModuleBox {
+            color: rgb(74, 74, 74);
+        }
+        #header {
+            background: #6db3f2; /* Old browsers */
+            background: -moz-linear-gradient(top, #6db3f2 0%, #54a3ee 52%, #3690f0 63%, #1e69de 100%); /* FF3.6-15 */
+            background: -webkit-linear-gradient(top, #6db3f2 0%,#54a3ee 52%,#3690f0 63%,#1e69de 100%); /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to bottom, #6db3f2 0%,#54a3ee 52%,#3690f0 63%,#1e69de 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6db3f2', endColorstr='#1e69de',GradientType=0 ); /* IE6-9 */
+            overflow: auto;
+        }
+        {styles}
+    </style>
+    <script>
+        function GenerateHeaderTarget(header_text, header_link, active_module) {
+            var extra_header_class = "";
+            if (active_module == header_text)
+                extra_header_class = "ActiveModuleBox";
+            var header_target = "<div class='" + extra_header_class + " ModuleBox' href='" + header_link + "' onclick='OpenModule(\"" + header_text + "\")' id='" + header_text + "-module-box'>" + header_text + "</div>";
+            document.getElementById("modules").insertAdjacentHTML('beforeend', header_target);
+        }
+        function GenerateModules() {
+            
+        }
+        function pageInit() {
+
+        }
+        function OpenModule(target_module) {
+            //make old module hidden
+            document.getElementById(active_module + "-module").style.display = "none";
+            document.getElementById(active_module + "-module-box").className = "ModuleBox";
+
+            active_module = target_module;
+
+            //make new module visible
+            document.getElementById(active_module + "-module").style.display = "block";
+            document.getElementById(active_module + "-module-box").className = "ActiveModuleBox ModuleBox";
+        }
+        var active_module = "Home";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                document.getElementById("modules").innerHTML = "";
+                var json = JSON.parse(this.responseText);
+                for (i = 0; i < json.modules.length; i++) {
+                    GenerateHeaderTarget(json.modules[i], "//", active_module);
+                }
+                OpenModule(active_module);
+            }
+        };
+        xhttp.open("GET", "/api/Banner", true);
+        xhttp.send();
+        {scripts}
+    </script>
+</head>
+<body onload='pageInit()'>
+    <div id="header">
+        <div id="Title">
+            <h1>Forge Networking Web Server</h1>
+        </div>
+        <div id="modules">
+            
+        </div>
+    </div>
+    <div id="body">
+        {modules}
+    </div>
+    <div id="footer">
+
+    </div>
+</body>
+</html>

@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeardedManStudios", "BeardedManStudios.csproj", "{1DC34CDD-667A-40BE-9447-45866BF4607D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingCommon", "..\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj", "{9C3AF9D0-B19F-44A6-9068-84B636892BDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingUnityEditor", "..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj", "{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterServer", "..\MasterServer\MasterServer.csproj", "{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatHolePunch", "..\NatHolePunch\NatHolePunch.csproj", "{087F4369-BC06-4617-A8C8-6ACB07C3AD48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "..\WebServer\WebServer.csproj", "{18BEA8A3-3A56-4704-9838-7178099F9401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +40,24 @@ Global
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5431F79F-ACCF-44FF-8C17-A3B8A573BFA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087F4369-BC06-4617-A8C8-6ACB07C3AD48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18BEA8A3-3A56-4704-9838-7178099F9401}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
