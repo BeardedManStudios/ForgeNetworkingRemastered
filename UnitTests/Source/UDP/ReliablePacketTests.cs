@@ -15,6 +15,7 @@ namespace UnitTests.Source.UDP
 
 		private static NetworkingPlayer responsePlayer;
 		private static string response;
+        private static int responseCounter = 0;
 
 		[ClassInitialize]
 		public static void CreateServer(TestContext context)
@@ -29,7 +30,8 @@ namespace UnitTests.Source.UDP
 		{
 			responsePlayer = player;
 			response = ObjectMapper.Instance.Map<string>(frame.StreamData);
-		}
+            responseCounter++;
+        }
 
 		[ClassCleanup]
 		public static void DisposeServer()
@@ -75,5 +77,22 @@ namespace UnitTests.Source.UDP
 
 			response = null;
 		}
-	}
+
+        [TestMethod]
+        public void SendManyBinaryReliablyTest()
+        {
+            int packetCount = 100;
+            responseCounter = 0;
+
+            WaitFor(() => { return client.IsConnected; });
+
+            for (int i = 0; i < packetCount; i++)
+            {
+                server.Send(SendBinary(server), true);
+            }
+
+            WaitFor(() => { return responseCounter == packetCount; });
+            int x = 0;
+        }
+    }
 }
