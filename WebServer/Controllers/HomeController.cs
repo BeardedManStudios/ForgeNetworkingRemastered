@@ -6,7 +6,6 @@ namespace BeardedManStudios.WebServer.Controllers
     {
         protected override string GetResponse()
         {
-
             bool hasNetworker = ForgeWebServer.instance.forge_networker != null;
             string noNetworkerMessage = "The Forge Web Server is not connected to a NetWorker!";
             JSONNode responseObject = new JSONClass();
