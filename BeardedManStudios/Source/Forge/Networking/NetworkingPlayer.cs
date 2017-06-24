@@ -388,7 +388,7 @@ namespace BeardedManStudios.Forge.Networking
 					Networker.FireRead(next, this);
 				}
 			}
-			else
+			else if (frame.UniqueReliableId > currentReliableId)
 				reliablePending.Add(frame.UniqueReliableId, frame);
 		}
 
