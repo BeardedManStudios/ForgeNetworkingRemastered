@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BeardedManStudios.WebServer;
-using BeardedManStudios.WebServer.Controllers;
-using Newtonsoft.Json.Linq;
+﻿using BeardedManStudios.SimpleJSON;
 
 namespace BeardedManStudios.WebServer.Controllers
 {
@@ -16,9 +9,9 @@ namespace BeardedManStudios.WebServer.Controllers
 
             bool hasNetworker = ForgeWebServer.instance.forge_networker != null;
             string noNetworkerMessage = "The Forge Web Server is not connected to a NetWorker!";
-            JObject response_object = new JObject();
-            response_object.Add("playerCount", (hasNetworker) ?ForgeWebServer.instance.forge_networker.Players.Count.ToString():noNetworkerMessage);
-            return response_object.ToString();
+            JSONNode responseObject = new JSONClass();
+            responseObject.Add("playerCount", new JSONData((hasNetworker) ?ForgeWebServer.instance.forge_networker.Players.Count.ToString():noNetworkerMessage));
+            return responseObject.ToString();
         }
     }
 }
