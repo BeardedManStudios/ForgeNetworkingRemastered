@@ -26,7 +26,6 @@ When you pull, you will need to build the BeardedManStudios.sln file. It will cr
 ## Ways to support the project
 1) Make pull requests :D
 2) Any donations are much appreciated <3
-3) Thank you for your support!
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CXPTUZR3KBLU)
 
