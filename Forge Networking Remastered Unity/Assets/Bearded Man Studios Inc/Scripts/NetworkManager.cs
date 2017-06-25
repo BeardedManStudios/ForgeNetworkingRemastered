@@ -448,10 +448,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				loadedScenes.Clear();
 				for (int i = 0; i < count; i++)
 					loadedScenes.Add(frame.StreamData.GetBasicType<int>());
+                
 
 				MainThreadManager.Run(() =>
 				{
-					if (loadedScenes.Count == 0)
+					if (loadedScenes.Count > 0)
 						return;
 
 					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
