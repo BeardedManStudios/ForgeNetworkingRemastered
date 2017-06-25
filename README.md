@@ -12,7 +12,7 @@ Most Used: [Version 21.5](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61a
 Most Recent: [Version 23.02](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V23.02.unitypackage)
 
 ## Building the Source
-Built with VS Community 2015
+Built with VS Community 2017
 
 When you pull, you will need to build the BeardedManStudios.sln file. It will create the BeardedManStudios.dll file inside of the Forge Networking Remastered Unity project
 
