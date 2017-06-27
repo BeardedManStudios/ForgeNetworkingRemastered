@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCWebServer", "..\MVCWebSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestProgram", "..\ConsoleTestProgram\ConsoleTestProgram.csproj", "{FFC514C7-F437-4825-94EC-AE3314BF1D4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge Networking Remastered Unity", "..\Forge Networking Remastered Unity\Forge Networking Remastered Unity.csproj", "{7101BF79-1CBC-B118-A920-3B09B7453F1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Client|Any CPU = Debug Client|Any CPU
@@ -74,6 +76,12 @@ Global
 		{FFC514C7-F437-4825-94EC-AE3314BF1D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFC514C7-F437-4825-94EC-AE3314BF1D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFC514C7-F437-4825-94EC-AE3314BF1D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7101BF79-1CBC-B118-A920-3B09B7453F1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
