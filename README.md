@@ -36,22 +36,23 @@ Git Source Code:
 5) Right click on `Bearded Man Studios Inc` and export a unity package
 6) Follow the steps above listed under `Unity Package:` starting with step #2
 
+## Community
+[Official Documentation](http://docs.forgepowered.com/)
+
+[Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
+
+[Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
+
+[Generated API](https://forgepowered.com/ForgeNetworkingRemasteredAPI/html/index.html)
+
+[YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
+
+[Getting Started Docs](http://docs.forgepowered.com/getting-started/)
+
 ## Unity Package Download
 Most Used: [Version 21.5](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V21.5.unitypackage)
 
 Most Recent: [Version 23.02](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V23.02.unitypackage)
-
-## Building the Source
-Built with VS Community 2017
-
-When you pull, you will need to build the BeardedManStudios.sln file. It will create the BeardedManStudios.dll file inside of the Forge Networking Remastered Unity project
-
-## Community
-[Official Documentation](http://docs.forgepowered.com/)
-
-[Public Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
-
-[Public Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
 
 ## Ways to support the project
 1) Make pull requests :D
