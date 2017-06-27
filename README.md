@@ -19,9 +19,15 @@ When you pull, you will need to build the BeardedManStudios.sln file. It will cr
 ## Community
 [Official Documentation](http://docs.forgepowered.com/)
 
-[Public Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
+[Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
 
-[Public Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
+[Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
+
+[Generated API](https://forgepowered.com/ForgeNetworkingRemasteredAPI/html/index.html)
+
+[YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
+
+[Getting Started Docs](http://docs.forgepowered.com/getting-started/)
 
 ## Ways to support the project
 1) Make pull requests :D
