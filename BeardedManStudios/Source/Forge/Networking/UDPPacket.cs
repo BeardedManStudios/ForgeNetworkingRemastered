@@ -45,6 +45,11 @@ namespace BeardedManStudios.Forge.Networking
 		public void DoingRetry(ulong timestep)
 		{
 			retryCount++;
+			UpdateTimestep(timestep);
+		}
+
+		public void UpdateTimestep(ulong timestep)
+		{
 			LastSentTimestep = timestep;
 		}
 	}

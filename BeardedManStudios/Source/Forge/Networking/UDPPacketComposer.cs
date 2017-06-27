@@ -213,12 +213,24 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void ResendPackets(ulong timestep)
 		{
+			// If there are too many packets to send, be sure to only send
+			// a few to not clog the network.
+			int counter = PACKET_SIZE;
+
 			lock (PendingPackets)
 			{
 				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
 				{
-					if (kv.Value.LastSentTimestep > timestep - (ulong)Player.RoundTripLatency)
+					if (kv.Value.LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
 						continue;
+
+					if (counter <= 0)
+					{
+						kv.Value.UpdateTimestep(timestep);
+						continue;
+					}
+
+					counter -= kv.Value.rawBytes.Length;
 
 					kv.Value.DoingRetry(timestep);
 					Send(kv.Value.rawBytes);
