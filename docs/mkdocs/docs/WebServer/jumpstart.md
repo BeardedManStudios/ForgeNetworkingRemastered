@@ -47,4 +47,4 @@ ws.Stop();
 **STOP, BEFORE YOU LEAVE THIS PAGE!** There are a few things to keep in mind when using the web server.
 1. If you disconnect your server, you **MUST** disconnect your web server as well. Since this is a plugin system, you need to remember to do this.
 2. You **MUST** remember to close the web server on application quit.
-3. The commands are run on a separate thread so you need to use [MainThreadManager](running-unity-specific-code-on-the-main-thread.md) for any code that requires to be on the main thread
+3. The commands are run on a separate thread so you need to use [MainThreadManager](/UnityIntegration/running-unity-specific-code-on-the-main-thread.md) for any code that requires to be on the main thread
