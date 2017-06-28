@@ -4,75 +4,74 @@ pages:
         - index.md
         - authoritative-design.md
     - Getting Started:
-        - getting-started.md
-        - basic-moving-cube-example.md
-        - basic-rpc-example.md
-        - basic-instantiation-example.md
-        - jump-start-guide.md
+        - GettingStarted/getting-started.md
+        - GettingStarted/basic-moving-cube-example.md
+        - GettingStarted/basic-rpc-example.md
+        - GettingStarted/basic-instantiation-example.md
+        - GettingStarted/jump-start-guide.md
 #       - Game Lobby Example
     - Network Contract Wizard (NCW):
-        - network-contract-wizard-ncw.md
-        - extending-generated-classes.md
-        - name-collision-issues.md
+        - NetworkContractWizard/network-contract-wizard-ncw.md
+        - NetworkContractWizard/extending-generated-classes.md
+        - NetworkContractWizard/name-collision-issues.md
     - Network Object:
-        - changing-ownership.md
-        - destroying-the-network-object.md
-        - fields.md
+        - NetworkObject/changing-ownership.md
+        - NetworkObject/destroying-the-network-object.md
+        - NetworkObject/fields.md
         - Remote Procedure Calls (RPCs):
-            - remote-procedure-calls.md
-            - buffered-rpcs.md
-            - sending-rpc-to-a-single-player.md
-            - rpcargs-and-rpcinfo-structs.md
-            - rpc-validation-by-server.md
-            - replacing-previous-buffered-rpcs.md
-            - clearing-buffered-rpcs.md
+            - NetworkObject/RemoteProcedureCalls/remote-procedure-calls.md
+            - NetworkObject/RemoteProcedureCalls/buffered-rpcs.md
+            - NetworkObject/RemoteProcedureCalls/sending-rpc-to-a-single-player.md
+            - NetworkObject/RemoteProcedureCalls/rpcargs-and-rpcinfo-structs.md
+            - NetworkObject/RemoteProcedureCalls/rpc-validation-by-server.md
+            - NetworkObject/RemoteProcedureCalls/replacing-previous-buffered-rpcs.md
+            - NetworkObject/RemoteProcedureCalls/clearing-buffered-rpcs.md
     - Unity Integration:
-        - gameobject-execution-order.md
+        - UnityIntegration/gameobject-execution-order.md
 #        - Network Manager
-        - network-instantiation.md
+        - UnityIntegration/network-instantiation.md
 #        - Network Object Without Prefab
-        - threading-in-unity.md
-        - main-threading-rpcs.md
-        - running-unity-specific-code-on-the-main-thread.md
-        - unity-integration-network-start.md
+        - UnityIntegration/threading-in-unity.md
+        - UnityIntegration/main-threading-rpcs.md
+        - UnityIntegration/running-unity-specific-code-on-the-main-thread.md
+        - UnityIntegration/network-start.md
     - Basic Network Samples:
-        - server-hosting-code.md
-        - client-connecting-code.md
-        - server-disconnect-client-code.md
-        - ban-client-code.md
-        - send-binary-frame.md
-    - Events:
-        - connection-cycle-events.md
+        - BasicNetworkSamples/server-hosting-code.md
+        - BasicNetworkSamples/client-connecting-code.md
+        - BasicNetworkSamples/server-disconnect-client-code.md
+        - BasicNetworkSamples/ban-client-code.md
+        - BasicNetworkSamples/send-binary-frame.md
     - Scene Navigation:
-        - loading-scenes.md
-        - scene-events.md
-    - Rewinding: rewinding.md
-    - Debugging:
-        - network-logging.md
+        - SceneNavigation/loading-scenes.md
+        - SceneNavigation/scene-events.md
     - NetWorker:
 #        - NetworkingPlayer
-        - temporarily-blocking-connections.md
-        - thread-safe-player-iteration.md
+        - NetWorker/temporarily-blocking-connections.md
+        - NetWorker/thread-safe-player-iteration.md
     - Master Server:
-        - master-server-quick-start.md
-        - connecting-to-master-server.md
-        - getting-host-list-from-master-server.md
-        - windows-server-firewall-setup.md
+        - MasterServer/quick-start.md
+        - MasterServer/connecting-to-master-server.md
+        - MasterServer/getting-host-list.md
+        - MasterServer/windows-server-firewall-setup.md
 #        - Matchmaking
-    - NAT Hole Punching: nat-hole-punching.md
     - Web Server:
-        - web-server-jumpstart.md
-        - web-server-extending-with-mvc.md
-        - web-server-command-plugins.md
-    - Working With Multiple Sockets: working-with-multiple-sockets.md
-    - LAN Discovery: lan-discovery.md
+        - WebServer/jumpstart.md
+        - WebServer/extending-with-mvc.md
+        - WebServer/command-plugins.md
     - Troubleshooting:
-        - troubleshooting.md
-        - throttling-network-internal.md
+        - Troubleshooting/troubleshooting.md
+        - Troubleshooting/throttling-network-internal.md
+#    - Master Class:
+#        - 
+    - Events: connection-cycle-events.md
+    - Rewinding: rewinding.md
+    - Debugging: network-logging.md
+    - Working With Multiple Sockets: working-with-multiple-sockets.md
+    - NAT Hole Punching: nat-hole-punching.md
+    - LAN Discovery: lan-discovery.md
     - Offline Mode: offline-mode.md
     - Lobby System: lobby.md
-    - Contributing:
-        - adding-and-updating-docs.md
+    - Contributing:  adding-and-updating-docs.md
 
 theme: readthedocs
 

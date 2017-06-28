@@ -57,7 +57,7 @@ Finally, we are ready to create our view. A view is something that the controlle
 </html>
 ```
 
-**Note if you are not sure what the HTML page is, be sure to check out the [Jumpstart Guide](web-server-jumpstart.md)**
+**Note if you are not sure what the HTML page is, be sure to check out the [Jumpstart Guide](jumpstart.md)**
 
 ## Done
 That's it, you have your fancy new controller and view and you can start using it immediately inside of your web server.
