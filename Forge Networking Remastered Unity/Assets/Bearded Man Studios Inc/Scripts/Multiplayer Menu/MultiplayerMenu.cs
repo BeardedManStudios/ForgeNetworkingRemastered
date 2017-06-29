@@ -74,11 +74,16 @@ public class MultiplayerMenu : MonoBehaviour
 			ConnectToMatchmaking();
 			return;
 		}
-		int port = ushort.Parse(portNumber.text);
-		if (port < 0 || port > ushort.MaxValue)
+		int port = -1;
+		try
 		{
-			Debug.LogError("The supplied port number is not within the allowed range 0-" + ushort.MaxValue);
-			return;
+		    port = ushort.Parse(portNumber.text); ;
+		}
+		catch (System.Exception)
+		{
+		    //You could generate here an event for your game GUI
+		    Debug.LogError("The supplied port number is not within the allowed range 0-" + ushort.MaxValue);
+		    return;
 		}
 
 		NetWorker client;
