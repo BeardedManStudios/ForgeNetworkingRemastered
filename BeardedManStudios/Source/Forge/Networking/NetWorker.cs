@@ -500,6 +500,20 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		public NetworkingPlayer GetPlayerById(uint id)
+		{
+			lock (Players)
+			{
+				for (int i = 0; i < Players.Count; i++)
+				{
+					if (Players[i].NetworkId == id)
+						return Players[i];
+				}
+			}
+
+			return null;
+		}
+
 		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
 		{
 			lock (Players)
