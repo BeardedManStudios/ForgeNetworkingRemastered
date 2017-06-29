@@ -470,9 +470,10 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (NetworkObjects)
 			{
-                if (NetworkObjects.ContainsKey(networkObject.NetworkId))
-                    return;
-                NetworkObjects.Add(networkObject.NetworkId, networkObject);
+				if (NetworkObjects.ContainsKey(networkObject.NetworkId))
+					return;
+
+				NetworkObjects.Add(networkObject.NetworkId, networkObject);
 				NetworkObjectList.Add(networkObject);
 			}
 

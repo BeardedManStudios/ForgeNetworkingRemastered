@@ -72,6 +72,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
+#if DEEP_LOGGING
+			Logging.BMSLog.Log($"---------------------------\n{new System.Diagnostics.StackTrace()}\nUNIQUE ID: {frame.UniqueId}\n---------------------------");
+#endif
+
 			Init(clientWorker, player, frame, reliable);
 		}
 
@@ -211,12 +215,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Go through all of the pending packets and resend them
 		/// </summary>
-		public void ResendPackets(ulong timestep)
+		public void ResendPackets(ulong timestep, ref int counter)
 		{
-			// If there are too many packets to send, be sure to only send
-			// a few to not clog the network.
-			int counter = PACKET_SIZE;
-
 			lock (PendingPackets)
 			{
 				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)

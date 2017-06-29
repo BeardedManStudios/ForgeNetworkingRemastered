@@ -21,7 +21,6 @@ using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -54,8 +53,6 @@ namespace BeardedManStudios.Forge.Networking
 
 		public UDPPacketManager packetManager = new UDPPacketManager();
 
-		private List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
-
 		public NatHolePunch nat = new NatHolePunch();
 
 		public event BaseNetworkEvent connectAttemptFailed;
@@ -75,15 +72,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			//TODO: New constructor for setting up callbacks before regular constructor (as seen above)
 			composer.Init(this, Server, frame, reliable);
-		}
-
-		/// <summary>
-		/// Used to clean up the target composer from memory
-		/// </summary>
-		/// <param name="composer">The composer that has completed</param>
-		private void ComposerCompleted(UDPPacketComposer composer)
-		{
-			pendingComposers.Remove(composer);
 		}
 
 		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool isSpecial = false)

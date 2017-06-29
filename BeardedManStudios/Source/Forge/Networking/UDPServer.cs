@@ -34,8 +34,6 @@ namespace BeardedManStudios.Forge.Networking
 
 		private UDPNetworkingPlayer currentReadingPlayer = null;
 
-		private List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
-
 		public UDPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; BannedAddresses = new List<string>(); }
 
 		public NatHolePunch nat = new NatHolePunch();
@@ -111,18 +109,6 @@ namespace BeardedManStudios.Forge.Networking
 						Disconnect(player, true);
 					}
 				}
-			}
-		}
-
-		/// <summary>
-		/// Used to clean up the target composer from memory
-		/// </summary>
-		/// <param name="composer">The composer that has completed</param>
-		private void ComposerCompleted(UDPPacketComposer composer)
-		{
-			lock (pendingComposers)
-			{
-				pendingComposers.Remove(composer);
 			}
 		}
 

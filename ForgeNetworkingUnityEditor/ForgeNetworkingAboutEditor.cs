@@ -22,7 +22,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private const string EDITOR_PREF_IGNORE = "FNR_IGNORE";
 		private const string EDITOR_ASSET_STORE_LINK = "http://u3d.as/gGT";
 		private const string EDITOR_DEVELOPER_PORTAL_LINK = "http://developers.forgepowered.com";
-		private const string EDITOR_TRELLO_LINK = "https://trello.com/b/o7DgZBdd/remastered";
+		private const string EDITOR_GITHUB_LINK = "https://github.com/BeardedManStudios/ForgeNetworkingRemastered";
+		private const string EDITOR_DISCORD_LINK = "https://discord.gg/yzZwEYm";
 		private const string EDITOR_FORUM_LINK = "https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/";
 		private const string EDITOR_EMAIL_LINK = "support@beardedmangames.com";
 		private const string VERSION = "23.0";
@@ -98,9 +99,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				Application.OpenURL(EDITOR_DEVELOPER_PORTAL_LINK);
 			}
 
-			if (GUILayout.Button("Trello Board", GUILayout.Height(50)))
+			if (GUILayout.Button("GitHub", GUILayout.Height(50)))
 			{
-				Application.OpenURL(EDITOR_TRELLO_LINK);
+				Application.OpenURL(EDITOR_GITHUB_LINK);
+			}
+
+			if (GUILayout.Button("Join Discord", GUILayout.Height(50)))
+			{
+				Application.OpenURL(EDITOR_DISCORD_LINK);
 			}
 
 			if (GUILayout.Button("Forum Link", GUILayout.Height(50)))

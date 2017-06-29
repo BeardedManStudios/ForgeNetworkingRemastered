@@ -325,11 +325,15 @@ namespace BeardedManStudios.Forge.Networking
 
 						do
 						{
+							// If there are too many packets to send, be sure to only send
+							// a few to not clog the network.
+							int counter = UDPPacketComposer.PACKET_SIZE;
+
 							// Send all the packets that are pending
 							lock (reliableComposers)
 							{
 								for (int i = 0; i < reliableComposers.Count; i++)
-									reliableComposers[i].ResendPackets(Networker.Time.Timestep);
+									reliableComposers[i].ResendPackets(Networker.Time.Timestep, ref counter);
 							}
 
 							Task.Sleep(10);
