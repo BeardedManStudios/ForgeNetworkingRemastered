@@ -16,7 +16,7 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
-![opening-the-ncw](images/opening-ncw.jpg "How to open the NCW")
+![opening-the-ncw](/images/opening-ncw.jpg "How to open the NCW")
 
 Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard (NCW) as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fields, the **Fields** field, and the **Remote Procedure Calls** field.
 
@@ -37,7 +37,7 @@ Let's begin by naming our Network Object:
 5. Name the new RPC **MoveDown**
 6. Click the **Save &amp; Compile** button
 
-![move-cube-network-contract-option-1](images/move-cube-1.jpg "Move Cube Network Contract Option 1")
+![move-cube-network-contract-option-1](/images/move-cube-1.jpg "Move Cube Network Contract Option 1")
 
 ### Setting up the contract option 2
 
@@ -53,7 +53,7 @@ Let's begin by naming our Network Object:
 6. Select **Vector3** from the dropdown option list
 7. Click the **Save &amp; Compile** button
 
-![move-cube-network-contract-option-2](images/move-cube-2.jpg "Move Cube Network Contract Option 2")
+![move-cube-network-contract-option-2](/images/move-cube-2.jpg "Move Cube Network Contract Option 2")
 
 In this example, you may be curious what the **Vector3** selection was for. This particular selection was to set the data types that will be sent as arguments to this method. Since we will be sending a direction to move in, this is a **Vector3** , that means that we would need to pick it. The order of these type selections (if we had more than one) are explicit. That is to say that the order you select them in, is the order that you would pass argument types in, just as if you were writing a method in C#.
 

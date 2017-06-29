@@ -164,7 +164,7 @@ Now let's get started on making the network contract for our simple game:
 4. Click the **Add RPC** button
     1. Type **UpdateName** into the text field
     2. Open the **Arguments** cascade
-        1.Click the ![add-button](images/add.png "Add Button") button
+        1.Click the ![add-button](/images/add.png "Add Button") button
         2. Type **newName** into the text field
         3. Click the drop down iv.  Select **STRING** from the drop down
 5. Click **Save &amp; Compile**
@@ -272,7 +272,7 @@ This is all the code we need to allow for all of the connections to see the move
 3. Click the **Add RPC** button
     1. Type **PlayerScored** into the text field
     2. Open the **Arguments** cascade
-        1. Click the ![add-button](images/add.png "Add Button") button
+        1. Click the ![add-button](/images/add.png "Add Button") button
         2. Type **playerName** into the text field
         3. Click the drop down iv.  Select **STRING** from the drop down
 4. Click **Save &amp; Compile**
