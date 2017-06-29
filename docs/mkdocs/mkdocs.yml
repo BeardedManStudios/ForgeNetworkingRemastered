@@ -41,6 +41,7 @@ pages:
         - BasicNetworkSamples/server-disconnect-client-code.md
         - BasicNetworkSamples/ban-client-code.md
         - BasicNetworkSamples/send-binary-frame.md
+        - BasicNetworkSamples/send-file.md
     - Scene Navigation:
         - SceneNavigation/loading-scenes.md
         - SceneNavigation/scene-events.md
