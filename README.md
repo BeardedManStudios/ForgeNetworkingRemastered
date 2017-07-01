@@ -31,10 +31,12 @@ Unity Package:
 Git Source Code:
 1) Clone the source
 2) Open the `BeardedManStudios/BeardedManStudios.sln`
-3) Build it
+3) Build it (See note below if you get errors)
 4) Open `Forge Networking Remastered Unity` in Unity
 5) Right click on `Bearded Man Studios Inc` and export a unity package
 6) Follow the steps above listed under `Unity Package:` starting with step #2
+
+**Note** Sometimes when you try to build from GitHub you will get an error about missing references. To fix this you need to open the Unity project for Forge Networking. Then open any script inside your IDE by double click it. This will force Unity to update the `.csproj` file for the Unity project. After this you can close that instance of the IDE and return to the `BeardedManStudios.sln` and continue back at step 3 above.
 
 ## Community
 [Official Documentation](http://docs.forgepowered.com/)
