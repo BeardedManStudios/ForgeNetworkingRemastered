@@ -18,7 +18,7 @@ So one of the first things we want to think about is our **Network Contract**. T
 
 Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
-![opening-the-ncw](/images/opening-ncw.jpg "How to open the NCW")
+![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
 Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the [Network Contract Wizard](network-contract-wizard-ncw) as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fi elds, the **Fields** field, and the **Remote Procedure Calls** field.
 
@@ -40,7 +40,7 @@ Lets begin by naming our Network Object:
 10. Click the **Interpolate** button
 11. Set the interpolate time (the text field that pops up after clicking the **Interpolate** button) as **0.15** 12.  Click the **Save & Compile** button
 
-![player-cube](/images/player-cube.jpg "Player Cube")
+![player-cube](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/player-cube.jpg "Player Cube")
 
 ## Extending Generated Classes
 

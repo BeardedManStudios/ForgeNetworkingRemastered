@@ -26,7 +26,7 @@ So now that we have the master server up and running on our machine, it is time 
 3. Make sure your build settings have a scene after the Multiplayer Menu scene in it
 4. Locate the **Canvas** game object in the hierarchy and select it
 5. Locate the **Master Server Host** and **Master Server Port** in the Inspector
-![default-master-server-unity](/images/default-master-server-unity.png)
+![default-master-server-unity](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/default-master-server-unity.png)
 6. Input the local or static IP address of the machine your Master Server is running on
 7. Input **15940** as the port number for the Master Server
 8. Click the play button in Unity
