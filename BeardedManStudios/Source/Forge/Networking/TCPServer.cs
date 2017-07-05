@@ -314,9 +314,6 @@ namespace BeardedManStudios.Forge.Networking
 				// Set myself as a connected client
 				Me.Connected = true;
 
-				// Run the player accepted code on the server
-				OnPlayerAccepted(Me);
-
 				//Set the port
 				SetPort((ushort)((IPEndPoint)listener.LocalEndpoint).Port);
 			}
