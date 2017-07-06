@@ -62,7 +62,7 @@ namespace BeardedManStudios.Forge.Networking.Nat
 
 			// Connect to the NAT server
 			Client = new UDPClient();
-			Client.Connect(natServer, natPort, isSpecial: true);
+			Client.Connect(natServer, natPort, pendCreates: true);
 
 			NetWorker.BaseNetworkEvent accepted = () =>
 			{
@@ -96,7 +96,7 @@ namespace BeardedManStudios.Forge.Networking.Nat
 
 			// Connect to the NAT server
 			Client = new UDPClient();
-			Client.Connect(natServer, natPort, isSpecial: true);
+			Client.Connect(natServer, natPort, pendCreates: true);
 
 			// When connected, request for this server to be registered to the NAT lookup for clients
 			NetWorker.BaseNetworkEvent accepted = () =>

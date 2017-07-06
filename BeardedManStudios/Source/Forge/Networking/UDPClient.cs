@@ -74,16 +74,28 @@ namespace BeardedManStudios.Forge.Networking
 			composer.Init(this, Server, frame, reliable);
 		}
 
-		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool isSpecial = false)
+		/// <summary>
+		/// This will connect a UDP client to a given UDP server
+		/// </summary>
+		/// <param name="host">The server's host address on the network</param>
+		/// <param name="port">The port that the server is hosting on</param>
+		/// <param name="natHost">The NAT server host address, if blank NAT will be skipped</param>
+		/// <param name="natPort">The port that the NAT server is hosting on</param>
+		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
+		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false)
 		{
 			// By default pending creates should be true and flushed when ready
-			if (!isSpecial)
+			if (!pendCreates)
 				PendCreates = true;
 
 			try
 			{
-				// TODO:  Remove + 1, it is for linux tests
-				ushort clientPort = port;//(ushort)(port + 1);
+				ushort clientPort = DEFAULT_PORT + 1;
+
+				// Make sure not to listen on the same port as the server for local networks
+				if (clientPort == port)
+					clientPort++;
+
 				for (; ; clientPort++)
 				{
 					try
@@ -121,8 +133,10 @@ namespace BeardedManStudios.Forge.Networking
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(server);
+
 				// Set myself as a connected client
 				server.Connected = true;
+
 				//Set the port
 				SetPort(clientPort);
 
