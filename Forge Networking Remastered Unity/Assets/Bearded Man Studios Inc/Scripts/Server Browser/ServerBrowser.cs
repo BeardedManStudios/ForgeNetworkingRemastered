@@ -10,6 +10,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public string masterServerHost = "127.0.0.1";
 		public int masterServerPort = 15940;
+		public string natServerHost = "";
+		public ushort natServerPort = Nat.NatHolePunch.DEFAULT_NAT_SERVER_PORT;
 
 		public string gameId = "myGame";
 		public string gameType = "any";
@@ -95,6 +97,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 								string address = server.Address;
 								ushort port = server.Port;
 								string name = server.Name;
+
 								// name, address, port, comment, type, mode, players, maxPlayers, protocol
 								CreateServerOption(name, () =>
 								{
@@ -103,9 +106,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 									if (protocol == "udp")
 									{
-										// TODO:  Add NAT hole punching server
 										socket = new UDPClient();
-										((UDPClient)socket).Connect(address, port);
+										((UDPClient)socket).Connect(address, port, natServerHost, natServerPort);
 									}
 									else if (protocol == "tcp")
 									{
