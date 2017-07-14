@@ -169,16 +169,18 @@ namespace BeardedManStudios.Forge.Networking
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
-		/// <summary>
-		/// Constructor for the NetworkingPlayer
-		/// </summary>
-		/// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
-		/// <param name="ip">IP address of the NetworkingPlayer</param>
-		/// <param name="socketEndpoint">The socket to the Networking player</param>
-		/// <param name="name">Name of the NetworkingPlayer</param>
-		public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
-		{
-			Networker = networker;
+        private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
+
+        /// <summary>
+        /// Constructor for the NetworkingPlayer
+        /// </summary>
+        /// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
+        /// <param name="ip">IP address of the NetworkingPlayer</param>
+        /// <param name="socketEndpoint">The socket to the Networking player</param>
+        /// <param name="name">Name of the NetworkingPlayer</param>
+        public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
+        {
+            Networker = networker;
 			NetworkId = networkId;
 			Ip = ip.Split('+')[0];
 			IsHost = isHost;
@@ -187,7 +189,7 @@ namespace BeardedManStudios.Forge.Networking
 			TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
 			PingInterval = DEFAULT_PING_INTERVAL;
 
-			if (SocketEndpoint != null)
+            if (SocketEndpoint != null)
 			{
 #if WINDOWS_UWP
 				// Check to see if the supplied socket endpoint is TCP, if so
@@ -294,65 +296,78 @@ namespace BeardedManStudios.Forge.Networking
 			if (reliableComposers.Count == 0)
 				return;
 
-			if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
-			{
-				composerReady = true;
+            if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
+            {
+                composerReady = true;
 
-				// Run this on a separate thread so that it doesn't interfere with the reading thread
-				Task.Queue(() =>
-				{
-					int waitTime = 10, composerCount = 0;
-					while (Networker.IsBound && !Disconnected)
-					{
-						lock (reliableComposers)
-						{
-							composerCount = reliableComposers.Count;
-						}
+                // Run this on a separate thread so that it doesn't interfere with the reading thread
+                Task.Queue(() =>
+                {
+                    int waitTime = 10, composerCount = 0;
+                    while (Networker.IsBound && !Disconnected)
+                    {
+                        lock (reliableComposers)
+                        {
+                            composerCount = reliableComposers.Count;
+                        }
 
-						if (composerCount == 0)
-						{
-							Task.Sleep(waitTime);
-							currentPingWait += waitTime;
+                        if (composerCount == 0)
+                        {
+                            Task.Sleep(waitTime);
+                            currentPingWait += waitTime;
 
-							if (!(Networker is IServer) && currentPingWait >= PingInterval)
-							{
-								currentPingWait = 0;
-								Networker.Ping();
-							}
+                            if (!(Networker is IServer) && currentPingWait >= PingInterval)
+                            {
+                                currentPingWait = 0;
+                                Networker.Ping();
+                            }
 
-							continue;
-						}
+                            continue;
+                        }
 
-						do
-						{
-							// If there are too many packets to send, be sure to only send
-							// a few to not clog the network.
-							int counter = UDPPacketComposer.PACKET_SIZE;
+                        do
+                        {
+                            // If there are too many packets to send, be sure to only send
+                            // a few to not clog the network.
+                            int counter = UDPPacketComposer.PACKET_SIZE;
 
-							// Send all the packets that are pending
-							lock (reliableComposers)
-							{
-								for (int i = 0; i < reliableComposers.Count; i++)
-									reliableComposers[i].ResendPackets(Networker.Time.Timestep, ref counter);
-							}
+                            // Send all the packets that are pending
+                            lock (reliableComposers)
+                            {
+                                for (int i = 0; i < reliableComposers.Count; i++)
+                                    reliableComposers[i].ResendPackets(Networker.Time.Timestep, ref counter);
+                            }
 
-							Task.Sleep(10);
+                            Task.Sleep(10);
 
-							lock (reliableComposers)
-							{
-								composerCount = reliableComposers.Count;
-							}
-						} while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
-						currentPingWait = 0;
-					}
-				});
-			}
-		}
+                            // Check if we have some composers queued to remove
+                            lock (reliableComposersToRemove)
+                            {
+                                while (reliableComposersToRemove.Count > 0)
+                                {
+                                    // Remove 
+                                    lock (reliableComposers)
+                                    {
+                                        reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == reliableComposersToRemove.Dequeue()));
+                                    }
+                                }
+                            }
 
-		/// <summary>
-		/// Cleans up the current composer and prepares to start up the next in the queue
-		/// </summary>
-		public void CleanupComposer(ulong uniqueId)
+                            lock (reliableComposers)
+                            {
+                                composerCount = reliableComposers.Count;
+                            }
+                        } while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
+                        currentPingWait = 0;
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Cleans up the current composer and prepares to start up the next in the queue
+        /// </summary>
+        public void CleanupComposer(ulong uniqueId)
 		{
 			lock (reliableComposers)
 			{
@@ -360,11 +375,22 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		/// <summary>
-		/// Go through and stop all of the reliable composers for this player to prevent
-		/// them from being sent
-		/// </summary>
-		public void StopComposers()
+        /// <summary>
+        /// Add composer to the queue, so it will be removed by sending thread
+        /// </summary>
+        public void EnqueueComposerToRemove(ulong uniqueId)
+        {
+            lock (reliableComposersToRemove)
+            {
+                reliableComposersToRemove.Enqueue(uniqueId);
+            }
+        }
+
+        /// <summary>
+        /// Go through and stop all of the reliable composers for this player to prevent
+        /// them from being sent
+        /// </summary>
+        public void StopComposers()
 		{
 			lock (reliableComposers)
 			{
