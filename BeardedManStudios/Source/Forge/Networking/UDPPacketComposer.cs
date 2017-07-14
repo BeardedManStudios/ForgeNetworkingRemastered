@@ -100,7 +100,7 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void Initialize()
 		{
-            CreatePackets();
+			CreatePackets();
 
 			// If this is a reliable message then we need to make sure to try and resend the message
 			// at a given interval, later on this could be sent at the players last ping + time buffer
@@ -110,31 +110,31 @@ namespace BeardedManStudios.Forge.Networking
 				// when each of the packets have been confirmed by the recipient
 				ClientWorker.messageConfirmed += MessageConfirmed;
 
-                Player.QueueComposer(this);
-            }
-            else
+				Player.QueueComposer(this);
+			}
+			else
 			{
-                // TODO:  Probably should run this off the main thread
-                // Go through all of the packets that were created and send them out immediately
-                foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				// TODO:  Probably should run this off the main thread
+				// Go through all of the packets that were created and send them out immediately
+				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
 				{
-                    Send(kv.Value.rawBytes);
+					Send(kv.Value.rawBytes);
 
-                    ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
 
 					// Spread the packets apart by 1 ms to prevent any clobbering that may happen
 					// on the socket layer for sending too much data
 					Thread.Sleep(1);
-                }
+				}
 
-                Cleanup();
-            }
-        }
+				Cleanup();
+			}
+		}
 
-        /// <summary>
-        /// Cleans up the thread, pending packets, and fires off any completion events
-        /// </summary>
-        private void Cleanup()
+		/// <summary>
+		/// Cleans up the thread, pending packets, and fires off any completion events
+		/// </summary>
+		private void Cleanup()
 		{
 			lock (PendingPackets)
 			{
@@ -217,67 +217,67 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void ResendPackets(ulong timestep, ref int counter)
 		{
-            lock (PendingPackets)
-            {
-                foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
-                {
-                    if (kv.Value.LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
-                        continue;
+			lock (PendingPackets)
+			{
+				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				{
+					if (kv.Value.LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
+						continue;
 
-                    if (counter <= 0)
-                    {
-                        kv.Value.UpdateTimestep(timestep);
-                        continue;
-                    }
+					if (counter <= 0)
+					{
+						kv.Value.UpdateTimestep(timestep);
+						continue;
+					}
 
-                    counter -= kv.Value.rawBytes.Length;
+					counter -= kv.Value.rawBytes.Length;
 
-                    kv.Value.DoingRetry(timestep);
-                    Send(kv.Value.rawBytes);
-                    ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
-                }
-            }
-        }
+					kv.Value.DoingRetry(timestep);
+					Send(kv.Value.rawBytes);
+					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+				}
+			}
+		}
 
-        /// <summary>
-        /// This method is called when a packet is received and is a confirmation packet
-        /// </summary>
-        /// <param name="packet">The packet that was received</param>
-        private void MessageConfirmed(NetworkingPlayer player, UDPPacket packet)
-        {
-            // Check to make sure that this packet was sent from this group
-            if (packet.groupId != Frame.GroupId)
-                return;
+		/// <summary>
+		/// This method is called when a packet is received and is a confirmation packet
+		/// </summary>
+		/// <param name="packet">The packet that was received</param>
+		private void MessageConfirmed(NetworkingPlayer player, UDPPacket packet)
+		{
+			// Check to make sure that this packet was sent from this group
+			if (packet.groupId != Frame.GroupId)
+				return;
 
-            // Check to make sure that the packet was sent from this composer
-            if (packet.uniqueId != Frame.UniqueId)
-                return;
+			// Check to make sure that the packet was sent from this composer
+			if (packet.uniqueId != Frame.UniqueId)
+				return;
 
-            if (player != Player)
-                return;
+			if (player != Player)
+				return;
 
-            lock (PendingPackets)
-            {
-                UDPPacket foundPacket;
+			lock (PendingPackets)
+			{
+				UDPPacket foundPacket;
 
-                // Check to see if we already received a confirmation for this packet
-                if (!PendingPackets.TryGetValue(packet.orderId, out foundPacket))
-                    return;
+				// Check to see if we already received a confirmation for this packet
+				if (!PendingPackets.TryGetValue(packet.orderId, out foundPacket))
+					return;
 
-                player.RoundTripLatency = (int)(player.Networker.Time.Timestep - foundPacket.LastSentTimestep);
+				player.RoundTripLatency = (int)(player.Networker.Time.Timestep - foundPacket.LastSentTimestep);
 
-                // Remove the packet from pending so that it isn't sent again
-                PendingPackets.Remove(packet.orderId);
+				// Remove the packet from pending so that it isn't sent again
+				PendingPackets.Remove(packet.orderId);
 
-                // All of the messages have been successfully confirmed, so we can remove the event listener
-                if (PendingPackets.Count == 0)
-                {
-                    ClientWorker.messageConfirmed -= MessageConfirmed;
+				// All of the messages have been successfully confirmed, so we can remove the event listener
+				if (PendingPackets.Count == 0)
+				{
+					ClientWorker.messageConfirmed -= MessageConfirmed;
 
-                    Cleanup();
-                    Player.EnqueueComposerToRemove(packet.uniqueId);
-                }
-            }
-        }
-    }
+					Cleanup();
+					Player.EnqueueComposerToRemove(packet.uniqueId);
+				}
+			}
+		}
+	}
 }
