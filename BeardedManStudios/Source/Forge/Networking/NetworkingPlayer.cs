@@ -169,6 +169,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
+		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
+
 		/// <summary>
 		/// Constructor for the NetworkingPlayer
 		/// </summary>
@@ -338,6 +340,19 @@ namespace BeardedManStudios.Forge.Networking
 
 							Task.Sleep(10);
 
+							// Check if we have some composers queued to remove
+							lock (reliableComposersToRemove)
+							{
+								while (reliableComposersToRemove.Count > 0)
+								{
+									// Remove 
+									lock (reliableComposers)
+									{
+										reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == reliableComposersToRemove.Dequeue()));
+									}
+								}
+							}
+
 							lock (reliableComposers)
 							{
 								composerCount = reliableComposers.Count;
@@ -357,6 +372,17 @@ namespace BeardedManStudios.Forge.Networking
 			lock (reliableComposers)
 			{
 				reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == uniqueId));
+			}
+		}
+
+		/// <summary>
+		/// Add composer to the queue, so it will be removed by sending thread
+		/// </summary>
+		public void EnqueueComposerToRemove(ulong uniqueId)
+		{
+			lock (reliableComposersToRemove)
+			{
+				reliableComposersToRemove.Enqueue(uniqueId);
 			}
 		}
 

@@ -73,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking
 		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
 #if DEEP_LOGGING
-			Logging.BMSLog.Log($"---------------------------\n{new System.Diagnostics.StackTrace()}\nUNIQUE ID: {frame.UniqueId}\n---------------------------");
+			Logging.BMSLog.Log("---------------------------\n" + (new System.Diagnostics.StackTrace()).ToString() + "\nUNIQUE ID: " + frame.UniqueId.ToString() + "\n---------------------------");
 #endif
 
 			Init(clientWorker, player, frame, reliable);
@@ -275,7 +275,7 @@ namespace BeardedManStudios.Forge.Networking
 					ClientWorker.messageConfirmed -= MessageConfirmed;
 
 					Cleanup();
-					Player.CleanupComposer(packet.uniqueId);
+					Player.EnqueueComposerToRemove(packet.uniqueId);
 				}
 			}
 		}
