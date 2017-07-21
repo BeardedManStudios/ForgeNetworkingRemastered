@@ -66,6 +66,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Source\UnityEditor\JSONNodeTests.cs" />
     <Compile Include="Source\BaseTest.cs" />
     <Compile Include="Source\FrameTests.cs" />
     <Compile Include="Source\BMSByteTests.cs" />
@@ -94,6 +95,10 @@
     <ProjectReference Include="..\..\ForgeNetworkingRemastered\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj">
       <Project>{9c3af9d0-b19f-44a6-9068-84b636892bde}</Project>
       <Name>ForgeNetworkingCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj">
+      <Project>{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}</Project>
+      <Name>ForgeNetworkingUnityEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

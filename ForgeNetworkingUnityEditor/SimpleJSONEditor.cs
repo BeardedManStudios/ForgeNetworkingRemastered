@@ -44,6 +44,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 
@@ -369,7 +370,7 @@ namespace SimpleJSONEditor
 				return new JSONData(integer);
 			}
 
-			if (double.TryParse(token, out real))
+			if (double.TryParse(token, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out real))
 			{
 				return new JSONData(real);
 			}
