@@ -54,7 +54,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		/// <param name="packet">The packet to be added</param>
 		/// <param name="packetCompleteHandle">The method to call and pass the data to when a sequence is complete</param>
-		public void AddPacket(UDPPacket packet, BaseUDP.PacketComplete packetCompleteHandle)
+		public void AddPacket(UDPPacket packet, BaseUDP.PacketComplete packetCompleteHandle, NetWorker networker)
 		{
 			// Don't process packets that have a timestep within a specified range
 			//if (Time.Milliseconds - packet.timeStep > MAX_ACCEPT_TIME_WINDOW)
@@ -81,7 +81,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (sequence.AddPacket(packet))
 			{
 				// The packet sequence is complete
-				CompleteSequence(packet.uniqueId, sequence, packetCompleteHandle);
+				CompleteSequence(packet.uniqueId, sequence, packetCompleteHandle, networker);
 			}
 		}
 
@@ -92,9 +92,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="id">The timestamp for the packet to be used to lookup in packets dictionary</param>
 		/// <param name="sequence">The actual sequence reference to skip another lookup</param>
 		/// <param name="packetCompleteHandle">The method to call and pass this sequence into</param>
-		private void CompleteSequence(ulong id, UDPPacketSequence sequence, BaseUDP.PacketComplete packetCompleteHandle)
+		private void CompleteSequence(ulong id, UDPPacketSequence sequence, BaseUDP.PacketComplete packetCompleteHandle, NetWorker networker)
 		{
-			packetCompleteHandle(sequence.GetData(), GroupId, (byte)sequence.Receivers, sequence.Reliable);
+			packetCompleteHandle(sequence.GetData(networker), GroupId, (byte)sequence.Receivers, sequence.Reliable);
 
 			lock (packets)
 			{

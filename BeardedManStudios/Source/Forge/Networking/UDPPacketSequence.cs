@@ -24,12 +24,6 @@ namespace BeardedManStudios.Forge.Networking
 	public class UDPPacketSequence
 	{
 		/// <summary>
-		/// A cached BMSByte to prevent large amounts of garbage collection. Since the reading
-		/// of packets happens on one thread, this is safe
-		/// </summary>
-		private static BMSByte data = new BMSByte();
-
-		/// <summary>
 		/// Determines if this sequence of packets are reliable
 		/// </summary>
 		public bool Reliable { get; private set; }
@@ -97,14 +91,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// Collect all of the data from all of the packets in this sequence and return it
 		/// </summary>
 		/// <returns>The complete packet sequence data</returns>
-		public BMSByte GetData()
+		public BMSByte GetData(NetWorker networker)
 		{
-			data.Clear();
+			networker.PacketSequenceData.Clear();
 
 			for (int i = 0; i < End; i++)
-				data.BlockCopy(packets[i].rawBytes, 0, packets[i].rawBytes.Length);
+				networker.PacketSequenceData.BlockCopy(packets[i].rawBytes, 0, packets[i].rawBytes.Length);
 
-			return data;
+			return networker.PacketSequenceData;
 		}
 	}
 }

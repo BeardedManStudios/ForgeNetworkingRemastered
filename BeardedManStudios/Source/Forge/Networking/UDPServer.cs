@@ -406,7 +406,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete);
+				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 			}
 			catch (Exception ex)
 			{

@@ -299,7 +299,7 @@ namespace BeardedManStudios.Forge.Networking
 						}
 
 						// Add the packet to the manager so that it can be tracked and executed on complete
-						packetManager.AddPacket(formattedPacket, PacketSequenceComplete);
+						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 					}
 				}
 			}

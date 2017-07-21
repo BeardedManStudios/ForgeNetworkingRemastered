@@ -317,6 +317,11 @@ namespace BeardedManStudios.Forge.Networking
 		public int LatencySimulation { get; set; }
 
 		internal bool ObjectCreatedRegistered { get { return objectCreated != null; } }
+
+		/// <summary>
+		/// A cached BMSByte to prevent large amounts of garbage collection on packet sequences
+		/// </summary>
+		public BMSByte PacketSequenceData { get; private set; }
 		#endregion
 
 		/// <summary>
@@ -419,6 +424,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void Initialize()
 		{
+			PacketSequenceData = new BMSByte();
+
 			if (!setupInstanceGuid)
 			{
 				InstanceGuid = Guid.NewGuid();
