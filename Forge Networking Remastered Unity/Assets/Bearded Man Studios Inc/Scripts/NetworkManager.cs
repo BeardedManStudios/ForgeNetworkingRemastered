@@ -379,7 +379,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				var no = components[i].CreateNetworkObject(Networker, 0);
 
 				if (Networker.IsServer)
-					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation, false, true);
+					FinalizeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation, false, true);
 				else
 					components[i].AwaitNetworkBind(Networker, createTarget, idOffset++);
 			}
@@ -388,7 +388,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				ProcessOthers(obj.transform.GetChild(i), createTarget, idOffset);
 		}
 
-		private void FinializeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
+		private void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
 		{
 			if (Networker is IServer)
 				InitializedObject(netBehavior, obj);

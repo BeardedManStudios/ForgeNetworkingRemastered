@@ -73,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -118,7 +118,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}

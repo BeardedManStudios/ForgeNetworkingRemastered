@@ -165,7 +165,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -177,7 +177,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -189,7 +189,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -201,7 +201,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -213,7 +213,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<TestBehavior>().networkObject = (TestNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -256,7 +256,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<ChatManagerBehavior>().networkObject = (ChatManagerNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -298,7 +298,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<CubeForgeGameBehavior>().networkObject = (CubeForgeGameNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -340,7 +340,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<ExampleProximityPlayerBehavior>().networkObject = (ExampleProximityPlayerNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -382,7 +382,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<NetworkCameraBehavior>().networkObject = (NetworkCameraNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -424,7 +424,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<TestBehavior>().networkObject = (TestNetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
