@@ -348,7 +348,8 @@ namespace BeardedManStudios.Forge.Networking
 									// Remove 
 									lock (reliableComposers)
 									{
-										reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == reliableComposersToRemove.Dequeue()));
+										ulong id = reliableComposersToRemove.Dequeue();
+										reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == id));
 									}
 								}
 							}

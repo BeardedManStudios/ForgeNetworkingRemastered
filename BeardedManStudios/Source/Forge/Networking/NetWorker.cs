@@ -929,15 +929,19 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Used to bind to a port then unbind to trigger any operating system firewall requests
 		/// </summary>
-		public static void PingForFirewall()
+		public static void PingForFirewall(ushort port = 0)
 		{
+			if (port < 1)
+			{
+				port = DEFAULT_PORT - 1;
+			}
 			Task.Queue(() =>
 			{
 				try
 				{
 					//IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
 					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
-					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), DEFAULT_PORT);
+					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
 					System.Net.Sockets.TcpListener t = new System.Net.Sockets.TcpListener(ipLocalEndPoint);
 					t.Start();

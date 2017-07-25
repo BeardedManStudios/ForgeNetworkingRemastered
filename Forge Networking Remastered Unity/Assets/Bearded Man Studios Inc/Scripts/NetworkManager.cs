@@ -451,8 +451,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				MainThreadManager.Run(() =>
 				{
-					//if (loadedScenes.Count == 0)
-					//	return;
+					if (loadedScenes.Count == 0)
+						return;
 
 					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
 
