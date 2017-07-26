@@ -33,7 +33,7 @@ namespace BeardedManStudios
 		/// <summary>
 		/// A lookup of various types that are allowed to be stored and pulled from this object
 		/// </summary>
-		private static Dictionary<Type, Array> allowedTypes = new Dictionary<Type, Array>()
+		private Dictionary<Type, Array> allowedTypes = new Dictionary<Type, Array>()
 		{
 			{ typeof(char), new char[1] },
 			{ typeof(string), new string[1] },

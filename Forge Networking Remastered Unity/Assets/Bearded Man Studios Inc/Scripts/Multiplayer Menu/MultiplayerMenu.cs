@@ -49,7 +49,7 @@ public class MultiplayerMenu : MonoBehaviour
 		if (!useTCP)
 		{
 			// Do any firewall opening requests on the operating system
-			NetWorker.PingForFirewall();
+			NetWorker.PingForFirewall(ushort.Parse(portNumber.text));
 		}
 
 		if (useMainThreadManagerForRPCs)
