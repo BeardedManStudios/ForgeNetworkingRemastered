@@ -1,10 +1,14 @@
-### Version Number and Operating System(s)
+
+### Version Number and Operating System(s):
 
 
-### Expected behavior
+### Expected behavior:
 
 
-### Actual behavior
+### Actual behavior:
 
 
-### Steps to reproduce
+### Steps to reproduce:
+
+
+#### [Optional] Discord Username:
