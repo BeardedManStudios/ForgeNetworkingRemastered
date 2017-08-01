@@ -22,10 +22,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		protected virtual void NetworkStart()
 		{
+			CompleteRegistration();
+
 			if (networkStarted != null)
 				networkStarted(this);
-
-			CompleteRegistration();
 		}
 
 		protected virtual void CompleteRegistration() { }
