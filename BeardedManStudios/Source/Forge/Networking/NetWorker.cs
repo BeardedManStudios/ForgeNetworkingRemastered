@@ -483,7 +483,10 @@ namespace BeardedManStudios.Forge.Networking
 				NetworkObjects.Add(networkObject.NetworkId, networkObject);
 				NetworkObjectList.Add(networkObject);
 			}
+		}
 
+		public void FlushCreateActions(NetworkObject networkObject)
+		{
 			List<Action<NetworkObject>> actions = null;
 			lock (missingObjectBuffer)
 			{

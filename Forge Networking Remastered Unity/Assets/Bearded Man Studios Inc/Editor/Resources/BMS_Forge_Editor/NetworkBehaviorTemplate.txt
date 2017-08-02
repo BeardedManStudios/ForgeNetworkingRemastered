@@ -28,7 +28,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc(">:[0]:<", >:[0]:<>:[1]:<);
 			>:ENDFOREVERY:<
 
-			MainThreadManager.Run(NetworkStart);
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 
 			networkObject.onDestroy += DestroyGameObject;
 
