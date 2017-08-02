@@ -284,6 +284,17 @@ namespace UnitTests.NetworkObjects
 				countUShort++;
 				objectUShort = args.GetNext<ushort>();
 			}
+
+			public override void FuncStringByteArray(RpcArgs args)
+			{
+				calledString = true;
+				countString++;
+				objectString = args.GetNext<string>();
+
+				calledByteArray = true;
+				countByteArray++;
+				objectByteArray = args.GetNext<byte[]>();
+			}
 		}
 	}
 }

@@ -19,6 +19,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public const byte RPC_FUNC_STRING = 12 + 4;
 		public const byte RPC_FUNC_BYTE_ARRAY = 13 + 4;
 		public const byte RPC_FUNC_ALL = 14 + 4;
+		public const byte RPC_FUNC_STRING_BYTE_ARRAY = 15 + 4;
 
 		public int TempAttachCode { get; set; }
 
@@ -47,6 +48,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("FuncString", FuncString, typeof(string));
 			networkObject.RegisterRpc("FuncByteArray", FuncByteArray, typeof(byte[]));
 			networkObject.RegisterRpc("FuncAll", FuncAll, typeof(byte), typeof(char), typeof(short), typeof(ushort), typeof(bool), typeof(int), typeof(uint), typeof(float), typeof(long), typeof(ulong), typeof(double), typeof(string), typeof(byte[]));
+			networkObject.RegisterRpc("FuncStringByteArray", FuncStringByteArray, typeof(string), typeof(byte[]));
 
 			networkObject.onDestroy += DestroyGameObject;
 		}
@@ -131,6 +133,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// </summary>
 		public abstract void FuncAll(RpcArgs args);
+
+		public abstract void FuncStringByteArray(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}
