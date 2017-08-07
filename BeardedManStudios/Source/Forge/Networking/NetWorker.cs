@@ -1010,6 +1010,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
+			if (localListingsClient != null)
+			{
+				localListingsClient.Client.Close();
+				localListingsClient = null;
+			}
+
 			// Initialize the list to hold all of the local network endpoints that respond to the request
 			if (LocalEndpoints == null)
 				LocalEndpoints = new List<BroadcastEndpoints>();
