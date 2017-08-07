@@ -102,6 +102,9 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void Connect(string host = "0.0.0.0", ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT)
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("UDPServer", "This object has been disposed and can not be used to connect, please use a new UDPServer");
+
 			try
 			{
 				Client = new CachedUdpClient(port);

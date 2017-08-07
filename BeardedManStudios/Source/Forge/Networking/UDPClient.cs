@@ -84,6 +84,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
 		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false)
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("UDPClient", "This object has been disposed and can not be used to connect, please use a new UDPClient");
+
 			// By default pending creates should be true and flushed when ready
 			if (!pendCreates)
 				PendCreates = true;

@@ -116,6 +116,9 @@ namespace BeardedManStudios.Forge.Networking
 		public virtual void Connect(string host, ushort port = DEFAULT_PORT)
 #endif
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("TCPClientBase", "This object has been disposed and can not be used to connect, please use a new TCPClientBase");
+
 			try
 			{
 				disconnectedSelf = false;

@@ -267,6 +267,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="port">[15937] Port to allow connections from</param>
 		public void Connect(string hostAddress = "0.0.0.0", ushort port = DEFAULT_PORT)
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("TCPServer", "This object has been disposed and can not be used to connect, please use a new TCPServer");
+
 			if (string.IsNullOrEmpty(hostAddress))
 				throw new BaseNetworkException("An ip address must be specified to bind to. If you are unsure, you can set to 127.0.0.1");
 

@@ -394,6 +394,11 @@ namespace BeardedManStudios.Forge.Networking
 		public bool IsBound { get; private set; }
 
 		/// <summary>
+		/// Used to determine if this NetWorker has already been disposed to avoid re-connections
+		/// </summary>
+		public bool Disposed { get; private set; }
+
+		/// <summary>
 		/// The unique GUID that will represent all networkers for this process instance
 		/// </summary>
 		public static Guid InstanceGuid { get; private set; }
@@ -895,6 +900,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (disconnected != null)
 				disconnected();
+
+			Disposed = true;
 		}
 
 		/// <summary>
@@ -906,6 +913,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (forcedDisconnect != null)
 				forcedDisconnect();
+
+			Disposed = true;
 		}
 
 		/// <summary>
