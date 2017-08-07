@@ -1016,7 +1016,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						{
 							string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
 
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkBehaviorData);
 							}
@@ -1024,7 +1024,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						else if (_editorButtons[i].TiedObject.IsNetworkObject)
 						{
 							string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkObjectData);
 							}
