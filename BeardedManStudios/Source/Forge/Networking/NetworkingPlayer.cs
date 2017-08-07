@@ -270,7 +270,7 @@ namespace BeardedManStudios.Forge.Networking
 			StopComposers();
 
 			if (disconnected != null)
-				disconnected();
+				disconnected(Networker);
 		}
 
 		public void QueueComposer(UDPPacketComposer composer)

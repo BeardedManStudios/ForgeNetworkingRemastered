@@ -52,7 +52,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("FuncByteArray", FuncByteArray, typeof(byte[]));
 			networkObject.RegisterRpc("FuncAll", FuncAll, typeof(byte), typeof(char), typeof(short), typeof(ushort), typeof(bool), typeof(int), typeof(uint), typeof(float), typeof(long), typeof(ulong), typeof(double), typeof(string), typeof(byte[]));
 
-			MainThreadManager.Run(NetworkStart);
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -105,7 +109,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			Initialize(new TestNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
-		private void DestroyGameObject()
+		private void DestroyGameObject(NetWorker sender)
 		{
 			MainThreadManager.Run(() => { try { Destroy(gameObject); } catch { } });
 			networkObject.onDestroy -= DestroyGameObject;

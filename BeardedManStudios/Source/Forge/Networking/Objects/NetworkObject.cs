@@ -385,19 +385,19 @@ namespace BeardedManStudios.Forge.Networking
 				bool useMask = networker is TCPClient;
 				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
 
-				NetWorker.BaseNetworkEvent request = () =>
+				NetWorker.BaseNetworkEvent request = (NetWorker sender) =>
 				{
 					// Send the message to the server
-					if (networker is UDPClient)
-						((UDPClient)networker).Send(createRequest, true);
+					if (sender is UDPClient)
+						((UDPClient)sender).Send(createRequest, true);
 					else
-						((TCPClient)networker).Send(createRequest);
+						((TCPClient)sender).Send(createRequest);
 				};
 
 				if (Networker.Me == null)
 					Networker.serverAccepted += request;
 				else
-					request();
+					request(networker);
 
 				//TODO: FROM HERE (#1)
 			}
@@ -546,7 +546,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected virtual void OwnershipChanged()
 		{
 			if (ownershipChanged != null)
-				ownershipChanged();
+				ownershipChanged(Networker);
 		}
 
 		/// <summary>
@@ -728,7 +728,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			if (onReady != null)
-				onReady();
+				onReady(Networker);
 
 			if (pendingBehavior != null)
 			{
@@ -751,7 +751,7 @@ namespace BeardedManStudios.Forge.Networking
 						continue;
 
 					if (pendingCreates[i].onReady != null)
-						pendingCreates[i].onReady();
+						pendingCreates[i].onReady(target);
 
 					target.OnObjectCreated(pendingCreates[i]);
 					pendingCreates.RemoveAt(i--);
@@ -789,7 +789,7 @@ namespace BeardedManStudios.Forge.Networking
 			Initialize(id);
 
 			if (onReady != null)
-				onReady();
+				onReady(Networker);
 		}
 
 		/// <summary>
@@ -1523,7 +1523,7 @@ namespace BeardedManStudios.Forge.Networking
 				SendBinaryData(null, Receivers.Others, DESTROY_SUB_ROUTER_ID, skipOwner: Networker is IServer && remoteCall);
 
 			if (onDestroy != null)
-				onDestroy();
+				onDestroy(Networker);
 		}
 
 		public virtual void InterpolateUpdate() { }

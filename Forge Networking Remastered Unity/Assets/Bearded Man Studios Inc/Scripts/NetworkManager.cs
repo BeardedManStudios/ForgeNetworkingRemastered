@@ -130,7 +130,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			TCPMasterClient client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -162,7 +162,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			// An event that is raised when the server responds with hosts
-			client.textMessageReceived += (player, frame) =>
+			client.textMessageReceived += (player, frame, sender) =>
 			{
 				try
 				{
@@ -236,7 +236,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			TCPMasterClient client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -256,7 +256,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += () =>
+			Networker.disconnected += (sender) =>
 			{
 				client.Disconnect(false);
 				MasterServerNetworker = null;
@@ -290,7 +290,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			TCPMasterClient client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should send it's update request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -310,9 +310,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += () =>
+			Networker.disconnected += (sender) =>
 			{
-				client.Disconnect(false);
+				sender.Disconnect(false);
 				MasterServerNetworker = null;
 			};
 
@@ -422,7 +422,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// the currently loaded scene indexes for the client to load
 		/// </summary>
 		/// <param name="player">The player that was just accepted</param>
-		private void PlayerAcceptedSceneSetup(NetworkingPlayer player)
+		private void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
 		{
 			BMSByte data = new BMSByte();
 			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
@@ -431,12 +431,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			for (int i = 0; i < loadedScenes.Count; i++)
 				ObjectMapper.Instance.MapBytes(data, loadedScenes[i]);
 
-			Binary frame = new Binary(Networker.Time.Timestep, false, data, Receivers.Target, MessageGroupIds.VIEW_INITIALIZE, Networker is BaseTCP);
+			Binary frame = new Binary(sender.Time.Timestep, false, data, Receivers.Target, MessageGroupIds.VIEW_INITIALIZE, sender is BaseTCP);
 
-			SendFrame(Networker, frame, player);
+			SendFrame(sender, frame, player);
 		}
 
-		private void ReadBinary(NetworkingPlayer player, Binary frame)
+		private void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			if (frame.GroupId == MessageGroupIds.VIEW_INITIALIZE)
 			{
@@ -470,7 +470,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				// The client has loaded the scene
 				if (playerLoadedScene != null)
-					playerLoadedScene(player);
+					playerLoadedScene(player, Networker);
 
 				return;
 			}

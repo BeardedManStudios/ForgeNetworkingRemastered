@@ -53,7 +53,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should sent it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -78,7 +78,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			// An event that is raised when the server responds with hosts
-			client.textMessageReceived += (player, frame) =>
+			client.textMessageReceived += (player, frame, sender) =>
 			{
 				try
 				{

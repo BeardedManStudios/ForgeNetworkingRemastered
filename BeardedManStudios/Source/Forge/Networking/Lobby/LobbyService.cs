@@ -655,13 +655,13 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			return targetPlayer;
 		}
 
-		private void PlayerConnected(NetworkingPlayer player)
+		private void PlayerConnected(NetworkingPlayer player, NetWorker sender)
 		{
 			//Logging.BMSLog.Log("GG: " + player.Ip);
 			player.Name = "Player " + player.NetworkId;
 			networkObject.SendRpc(RPC_PLAYER_JOINED, Receivers.All, player.NetworkId);
 
-			networkObject.Networker.IteratePlayers((p) =>
+			sender.IteratePlayers((p) =>
 			{
 				if (p == player)
 					return;
@@ -672,7 +672,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			});
 		}
 
-		private void PlayerDisconnected(NetworkingPlayer player)
+		private void PlayerDisconnected(NetworkingPlayer player, NetWorker sender)
 		{
 			// TODO:  This should be called
 			//Logging.BMSLog.Log("OH NO: " + player.Ip);

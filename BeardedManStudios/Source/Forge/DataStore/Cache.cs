@@ -100,12 +100,12 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 		/// </summary>
 		/// <param name="player">The server</param>
 		/// <param name="frame">The data that was received</param>
-		private void BinaryMessageReceived(NetworkingPlayer player, Binary frame)
+		private void BinaryMessageReceived(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			if (frame.GroupId != MessageGroupIds.CACHE)
 				return;
 
-			if (Socket is IServer)
+			if (sender is IServer)
 			{
 				byte type = ObjectMapper.Instance.Map<byte>(frame.StreamData);
 				int responseHookId = ObjectMapper.Instance.Map<int>(frame.StreamData);
@@ -120,12 +120,12 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 				BMSByte data = new BMSByte();
 				ObjectMapper.Instance.MapBytes(data, type, responseHookId, obj);
 
-				Binary sendFrame = new Binary(Socket.Time.Timestep, Socket is TCPClient, data, Receivers.Target, MessageGroupIds.CACHE, Socket is BaseTCP);
+				Binary sendFrame = new Binary(sender.Time.Timestep, sender is TCPClient, data, Receivers.Target, MessageGroupIds.CACHE, sender is BaseTCP);
 
-				if (Socket is BaseTCP)
-					((TCPServer)Socket).Send(player.TcpClientHandle, sendFrame);
+				if (sender is BaseTCP)
+					((TCPServer)sender).Send(player.TcpClientHandle, sendFrame);
 				else
-					((UDPServer)Socket).Send(player, sendFrame, true);
+					((UDPServer)sender).Send(player, sendFrame, true);
 			}
 			else
 			{

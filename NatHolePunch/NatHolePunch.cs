@@ -25,7 +25,7 @@ namespace NatHolePunchServer
 			while (!quit) ;
 		}
 
-		private static void TextMessageReceived(NetworkingPlayer player, Text frame)
+		private static void TextMessageReceived(NetworkingPlayer player, Text frame, NetWorker sender)
 		{
 			try
 			{

@@ -62,7 +62,7 @@ public class MultiplayerMenu : MonoBehaviour
 		}
 	}
 
-	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint)
+	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
 	{
 		Debug.Log("Found endpoint: " + endpoint.Address + ":" + endpoint.Port);
 	}
@@ -151,7 +151,7 @@ public class MultiplayerMenu : MonoBehaviour
 				((UDPServer)server).Connect(natHost: natServerHost, natPort: natServerPort);
 		}
 
-		server.playerTimeout += (player) =>
+		server.playerTimeout += (player, sender) =>
 		{
 			Debug.Log("Player " + player.NetworkId + " timed out");
 		};

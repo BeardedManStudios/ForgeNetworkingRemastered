@@ -83,7 +83,7 @@ namespace ConsoleTestProgram
 				}
 			};
 
-			networkHandle.serverAccepted += () =>
+			networkHandle.serverAccepted += (sender) =>
 			{
 				if (networkHandle is IClient)
 					new ConsoleNetworkObject(networkHandle);
@@ -130,7 +130,7 @@ namespace ConsoleTestProgram
 			}
 		}
 
-		private static void ReadTextMessage(NetworkingPlayer player, Text frame)
+		private static void ReadTextMessage(NetworkingPlayer player, Text frame, NetWorker sender)
 		{
 			Console.WriteLine("");
 			Console.WriteLine("Read: " + frame.ToString());
@@ -143,7 +143,7 @@ namespace ConsoleTestProgram
 			TCPClient client = new TCPClient();
 
 			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -178,7 +178,7 @@ namespace ConsoleTestProgram
 
 			client.Connect(masterServerHost, masterServerPort);
 
-			client.disconnected += () =>
+			client.disconnected += (sender) =>
 			{
 				client.Disconnect(false);
 				Console.WriteLine("Master server disconnected");
@@ -190,7 +190,7 @@ namespace ConsoleTestProgram
 			//};
 		}
 
-		private static void ReadBinaryMessage(NetworkingPlayer player, Binary frame)
+		private static void ReadBinaryMessage(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			BMSByte data = new BMSByte();
 			data.Clone(frame.GetData());

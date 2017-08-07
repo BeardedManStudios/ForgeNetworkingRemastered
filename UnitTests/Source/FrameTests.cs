@@ -29,13 +29,13 @@ namespace UnitTests
 			client.textMessageReceived += TextMessageRead;
 		}
 
-		private static void BinaryMessageRead(NetworkingPlayer player, Binary frame)
+		private static void BinaryMessageRead(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			responsePlayer = player;
 			response = ObjectMapper.Instance.Map<string>(frame.StreamData);
 		}
 
-		private static void TextMessageRead(NetworkingPlayer player, Text frame)
+		private static void TextMessageRead(NetworkingPlayer player, Text frame, NetWorker sender)
 		{
 			responsePlayer = player;
 			response = frame.ToString();

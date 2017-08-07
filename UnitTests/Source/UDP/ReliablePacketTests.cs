@@ -26,7 +26,7 @@ namespace UnitTests.Source.UDP
 			client.binaryMessageReceived += BinaryMessageRead;
 		}
 
-		private static void BinaryMessageRead(NetworkingPlayer player, Binary frame)
+		private static void BinaryMessageRead(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			responsePlayer = player;
 			response = ObjectMapper.Instance.Map<string>(frame.StreamData);

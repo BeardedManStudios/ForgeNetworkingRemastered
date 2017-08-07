@@ -85,7 +85,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			Initialize(new >:networkObject:<(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
-		private void DestroyGameObject()
+		private void DestroyGameObject(NetWorker sender)
 		{
 			MainThreadManager.Run(() => { try { Destroy(gameObject); } catch { } });
 			networkObject.onDestroy -= DestroyGameObject;

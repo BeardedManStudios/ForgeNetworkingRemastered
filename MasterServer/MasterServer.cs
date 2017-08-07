@@ -40,12 +40,12 @@ namespace MasterServer
 			server.textMessageReceived += MessageReceived;
 
 			IsRunning = true;
-			server.disconnected += () =>
+			server.disconnected += (sender) =>
 			{
 				IsRunning = false;
 			};
 
-			server.playerDisconnected += (player) =>
+			server.playerDisconnected += (player, sender) =>
 			{
 				for (int i = 0; i < hosts.Count; i++)
 				{
@@ -67,7 +67,7 @@ namespace MasterServer
 			}, PING_INTERVAL);
 		}
 
-		private void MessageReceived(NetworkingPlayer player, Text frame)
+		private void MessageReceived(NetworkingPlayer player, Text frame, NetWorker sender)
 		{
 			try
 			{

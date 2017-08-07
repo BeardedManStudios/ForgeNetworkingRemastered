@@ -134,7 +134,7 @@ namespace BeardedManStudios.Forge.Networking
 				catch
 				{
 					if (connectAttemptFailed != null)
-						connectAttemptFailed();
+						connectAttemptFailed(this);
 
 					return;
 				}

@@ -156,7 +156,7 @@ namespace BeardedManStudios.Forge.Networking
 					if (connectCounter >= CONNECT_TRIES)
 					{
 						if (connectAttemptFailed != null)
-							connectAttemptFailed();
+							connectAttemptFailed(this);
 					}
 				});
 			}

@@ -64,7 +64,7 @@ namespace BeardedManStudios.Forge.Networking.Nat
 			Client = new UDPClient();
 			Client.Connect(natServer, natPort, pendCreates: true);
 
-			NetWorker.BaseNetworkEvent accepted = () =>
+			NetWorker.BaseNetworkEvent accepted = (NetWorker sender) =>
 			{
 				// Send the data to the nat server with the host address and port that this client
 				// is trying to connect to so that it can punch a hole in the network for this client
@@ -99,7 +99,7 @@ namespace BeardedManStudios.Forge.Networking.Nat
 			Client.Connect(natServer, natPort, pendCreates: true);
 
 			// When connected, request for this server to be registered to the NAT lookup for clients
-			NetWorker.BaseNetworkEvent accepted = () =>
+			NetWorker.BaseNetworkEvent accepted = (NetWorker sender) =>
 			{
 				JSONNode obj = JSONNode.Parse("{}");
 				obj.Add("port", new JSONData(currentPort));
@@ -124,7 +124,7 @@ namespace BeardedManStudios.Forge.Networking.Nat
 		/// </summary>
 		/// <param name="player">The NAT server player</param>
 		/// <param name="frame">The data that the NAT server has sent for consumption</param>
-		private void PlayerConnectRequestReceived(NetworkingPlayer player, Text frame)
+		private void PlayerConnectRequestReceived(NetworkingPlayer player, Text frame, NetWorker sender)
 		{
 			Logging.BMSLog.Log("PLAYER CONNECTION REQUEST");
 			Logging.BMSLog.Log(frame.ToString());

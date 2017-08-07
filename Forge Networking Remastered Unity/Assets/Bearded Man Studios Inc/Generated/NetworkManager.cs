@@ -23,8 +23,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void OnDestroy()
 		{
-            if (Networker != null)
-                Networker.objectCreated -= CaptureObjects;
+		    if (Networker != null)
+				Networker.objectCreated -= CaptureObjects;
 		}
 		
 		private void CaptureObjects(NetworkObject obj)
