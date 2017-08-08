@@ -915,7 +915,7 @@ namespace BeardedManStudios.Forge.Networking
 				// Validate the RPC call using the method name and the supplied arguments from the client
 				// then replicate to the correct receivers
 				// Do not read or replicate if the server denies replication
-				if (ServerAllowRpc(methodName, receivers, rpcArgs))
+				if (ServerAllowRpc(methodId, receivers, rpcArgs))
 					SendRpc(null, methodId, overwriteExisting, receivers, sender, args);
 
 				return;
@@ -928,11 +928,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Called only on the server and will determine if an RPC call should be replicated
 		/// </summary>
-		/// <param name="methodName">The name of the RPC that is being executed</param>
+		/// <param name="methodId">The id of the RPC to be executed (this will match the generated constant)</param>
 		/// <param name="receivers">The receivers that are being requested</param>
 		/// <param name="args">The arguments that were supplied by the client when invoked</param>
 		/// <returns>If <c>true</c> the RPC will be replicated to other clients</returns>
-		protected virtual bool ServerAllowRpc(string methodName, Receivers receivers, RpcArgs args)
+		protected virtual bool ServerAllowRpc(byte methodId, Receivers receivers, RpcArgs args)
 		{
 			return true;
 		}
