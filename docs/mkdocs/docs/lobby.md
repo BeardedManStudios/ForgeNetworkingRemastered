@@ -30,6 +30,8 @@ The lobby player item prefab is just a prefab that stores the users name, color,
 
 4. Congratulations you have officially added the lobby system to your game and can start using it! Change your name in your player top let, and start talking in the chat bottom left, change the UI to however you please as well as the prefab.
 
+5. PS- To get better results, make sure in the build settings Multiplayermenu -> *Lobby* -> Game
+
 ## Lobby Service API Calls
 The lobby service has built in api calls that are currently being used in the LobbyManager. For reason of explaining it further, these api calls can be called from anywhere in code as long as you are connected to a socket. This allows you to change the users name from anywhere other than the built in Lobby system.
 
@@ -88,14 +90,43 @@ The lobby player item prefab is used to populate itself with the data of a given
 
 We store a reference to the Lobby system itself, but you can easily do other ways of sending the button calls to your own custom lobby system by passing in the actions and the like. This way you would remove the need to have the lobby system being stored as a reference in every lobby player item. The reason we stuck with this format is to just showcase the ease of expanding this item with future features that we plan on adding.
 
+### Start Game
+The start game button sends all the players to the Game scene. How this is setup in build settings. 
+
+MultiplayerMenu -> Lobby Scene -> Game 
+
+Here is the script of Start Game, if you want to use it in other applications.
+
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class StartGame : MonoBehaviour
+{
+public void startGame (int Levelnum)
+    { 
+        Application.LoadLevel(Levelnum);
+    }
+}
+```
+
+### Create Your Own Lobby (Easier way)
+1) Create a new scene.
+2) Add the LobbySystem Prefab.
+3) Change the UI, Change the buttons and edit/copy off of the LobbySystem Prefab.
+4) make sure the scripts in the LobbySystem prefab go into the desired area in the scene as well as the Inspector (Button scripts go in the button scripts, etc).
+5) add it to MultiplayerMenu -> *Lobby* -> Game
+
+### Lobby Scene
+This Lobby can be used for your game or used as a reference for you to make your own Lobby. This is the Game-Scene.
+![Lobby Scene](https://github.com/NuclearRasberry/ForgeNetworkingRemastered/blob/master/docs/mkdocs/docs/images/(Lobby-Scene-View).png)
+
+
+
+### Lobby Overview
+This system allows us to be able to control the list of players and functionality of those players at runtime. There is a basic dummy lobby master class that will be the default system chosen until overridden with either our custom Lobby Master (unity implementation) or your own Custom Lobby Master. Because of the way it is written for forge, this system does not need to be ran from Unity and can work perfectly fine on your linux builds (more on this later).
+
+
 ### To Be Continued
 As the lobby system is a great system to add to your game, we are very open to suggestions that can add further features to this as well as give the users the ability to chime in over Discord. As we add more features expect this documentation to cover that and expand.
-
-### How To Use
-1: Open the Lobby scene in Unity.
-2: Open Build settings put your game in where it says 1 (2nd scene down).
-3: Add your game scene to 2 (3rd scene down)
-4: Build your Game.
-5: enjoy playing around with the lobby!
-
-This system allows us to be able to control the list of players and functionality of those players at runtime. There is a basic dummy lobby master class that will be the default system chosen until overridden with either our custom Lobby Master (unity implementation) or your own Custom Lobby Master. Because of the way it is written for forge, this system does not need to be ran from Unity and can work perfectly fine on your linux builds (more on this later).
