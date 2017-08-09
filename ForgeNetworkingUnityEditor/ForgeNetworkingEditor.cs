@@ -5,13 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-using SimpleJSONEditor;
-using System.Reflection;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -224,11 +222,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			string[] files = Directory.GetFiles(_storingPath, "*.cs", SearchOption.TopDirectoryOnly);
 			string[] userFiles = Directory.GetFiles(_userStoringPath, "*.cs", SearchOption.TopDirectoryOnly);
 
-			if (File.Exists(Path.Combine(_storingPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
+			if (File.Exists(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
 			{
 				IFormatter bFormatter = new BinaryFormatter();
 				bool updateColors = false;
-				using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
 				{
 					try
 					{
@@ -258,7 +256,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						else
 							ReloadScripts(files, userFiles);
 					}
-					catch (Exception ex)
+					catch
 					{
 						ReloadScripts(files, userFiles);
 					}
@@ -503,7 +501,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							}
 
 							IFormatter previousSavedState = new BinaryFormatter();
-							using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+							using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
 							{
 								previousSavedState.Serialize(s, _editorButtons);
 							}
@@ -1018,7 +1016,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						{
 							string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
 
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkBehaviorData);
 							}
@@ -1026,7 +1024,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						else if (_editorButtons[i].TiedObject.IsNetworkObject)
 						{
 							string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkObjectData);
 							}
@@ -1048,13 +1046,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				sw.Write(networkManagerData);
 			}
 
-			IFormatter previousSavedState = new BinaryFormatter();
-			using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-			{
-				previousSavedState.Serialize(s, _editorButtons);
-			}
+			var formatter = new BinaryFormatter();
+            using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            {
+                formatter.Serialize(s, _editorButtons);
+            }
 
-			EditorApplication.UnlockReloadAssemblies();
+            EditorApplication.UnlockReloadAssemblies();
 
 			AssetDatabase.Refresh();
 

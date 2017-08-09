@@ -48,6 +48,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		protected override void OwnershipChanged()
 		{
+			base.OwnershipChanged();
 			SnapInterpolations();
 		}
 		

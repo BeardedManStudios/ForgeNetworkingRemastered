@@ -19,22 +19,41 @@
 
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
+using System.Collections.Generic;
 
 namespace BeardedManStudios.Forge.Networking
 {
 	public abstract class BaseUDP : NetWorker
 	{
-		public delegate void PacketComplete(BMSByte data, int groupId, byte receivers);
+		public delegate void PacketComplete(BMSByte data, int groupId, byte receivers, bool isReliable);
 		public delegate void MessageConfirmedEvent(NetworkingPlayer player, UDPPacket packet);
 
 		public event MessageConfirmedEvent messageConfirmed;
 
 		public CachedUdpClient Client { get; protected set; }
 
+		protected List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
+
 		public BaseUDP() { }
 		public BaseUDP(int maxConnections) : base(maxConnections) { }
 
 		public abstract void Send(FrameStream frame, bool reliable = false);
+
+		/// <summary>
+		/// Used to clean up the target composer from memory
+		/// </summary>
+		/// <param name="composer">The composer that has completed</param>
+		protected void ComposerCompleted(UDPPacketComposer composer)
+		{
+#if DEEP_LOGGING
+			Logging.BMSLog.Log($"<<<<<<<<<<<<<<<<<<<<<<<<<<< CONFIRMING: {composer.Frame.UniqueId}");
+#endif
+
+			lock (pendingComposers)
+			{
+				pendingComposers.Remove(composer);
+			}
+		}
 
 		private byte PullPacketMetadata(BMSByte packet)
 		{
@@ -99,6 +118,10 @@ namespace BeardedManStudios.Forge.Networking
 			// Check to see if this should respond to the sender that this packet has been received
 			if (reliable && !confirmationPacket)
 			{
+#if DEEP_LOGGING
+				Logging.BMSLog.Log($">>>>>>>>>>>>>>>>>>>>>>>>>>> SEND CONFIRM: {uniqueId}");
+#endif
+
 				byte[] confirmation = new byte[sizeof(ulong) + sizeof(int) + sizeof(int) + sizeof(byte)];
 				Buffer.BlockCopy(BitConverter.GetBytes(uniqueId), 0, confirmation, 0, sizeof(ulong));
 				Buffer.BlockCopy(BitConverter.GetBytes(groupId), 0, confirmation, sizeof(ulong), sizeof(int));

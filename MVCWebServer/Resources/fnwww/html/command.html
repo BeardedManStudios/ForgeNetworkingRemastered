@@ -1,0 +1,64 @@
+﻿<html>
+<head>
+	<title>Forge Networking Web Server Console</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script>
+		function ExecuteAction(action, args, callback) {
+			var query = "";
+			if (args != null) {
+				for (var i = 0; i < args.length; i++) {
+					if (query.length == 0) {
+						query += "?";
+					} else {
+						query += "&";
+					}
+
+					query += args[i][0] + "=" + args[i][1];
+				}
+			}
+
+			$.post(window.location.origin + "/Console/" + action + query, function (data) {
+				if (callback == null) {
+					return;
+				}
+
+				callback(data);
+			});
+		}
+
+		function SendCommand() {
+			var val = $("#cmd").val();
+			$("#cmd").val("");
+			ExecuteAction(val, null, function (response) {
+				if (response.data.error == null) {
+					$("#cmdWindow").prepend("<p>" + response.time + ": " + response.data.message + "</p><hr />");
+				} else {
+					$("#cmdWindow").prepend("<p>" + response.time + ": " + response.data.error + "</p><hr />");
+				}
+			});
+		}
+
+		window.onload = function() {
+			$("#cmd").keyup(function (event) {
+				if (event.keyCode == 13) {
+					SendCommand();
+				}
+			});
+		}
+	</script>
+</head>
+<body>
+	<h1>Forge Networking Command Console</h1>
+	<div>
+		<a href="Index">Home</a> | <a href="Cmd">Commands</a>
+	</div>
+	<p>Welcome to the Forge Networking command console. Type "help" to see a list of commands.</p>
+	<div style="width:600px; height:500px; margin:auto;">
+		<div id="cmdWindow" style="width:600px; height:500px; overflow:auto; border:1px solid black; padding: 0 10px 0 10px"></div>
+		<input id="cmd" type="text" placeholder="Enter a command..." style="width:500px;" />
+		<input type="button" value="Execute" onclick="SendCommand()" style="width:96px;" />
+	</div>
+</body>
+</html>

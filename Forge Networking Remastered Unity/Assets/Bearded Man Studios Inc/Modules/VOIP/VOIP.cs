@@ -120,11 +120,11 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 			if (Socket.IsServer)
 			{
 				((UDPServer)Socket).Connect(hostAddress, port);
-				Socket.playerConnected += (player) => { BMSLog.Log("PLAYER CONNECTED " + player.IPEndPointHandle.Address); };
-				Socket.playerAccepted += (player) => { BMSLog.Log("PLAYER ACCEPTED " + player.IPEndPointHandle.Address); };
-				Socket.playerRejected += (player) => { BMSLog.Log("PLAYER REJECTED " + player.IPEndPointHandle.Address); };
-				Socket.playerDisconnected += (player) => { BMSLog.Log("PLAYER DISCONNECTED " + player.IPEndPointHandle.Address); };
-				StartVOIP();
+				Socket.playerConnected += (player, sender) => { BMSLog.Log("PLAYER CONNECTED " + player.IPEndPointHandle.Address); };
+				Socket.playerAccepted += (player, sender) => { BMSLog.Log("PLAYER ACCEPTED " + player.IPEndPointHandle.Address); };
+				Socket.playerRejected += (player, sender) => { BMSLog.Log("PLAYER REJECTED " + player.IPEndPointHandle.Address); };
+				Socket.playerDisconnected += (player, sender) => { BMSLog.Log("PLAYER DISCONNECTED " + player.IPEndPointHandle.Address); };
+				StartVOIP(Socket);
 			}
 			else
 			{
@@ -133,9 +133,9 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 			}
 		}
 
-		private void StartVOIP()
+		private void StartVOIP(NetWorker sender)
 		{
-			Socket.serverAccepted -= StartVOIP;
+			sender.serverAccepted -= StartVOIP;
 
 			MainThreadManager.Run(() =>
 			{
@@ -267,7 +267,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 			}
 		}
 
-		private void Read(NetworkingPlayer player, Binary frame)
+		private void Read(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			// This read is not for VOIP
 			if (frame.GroupId != MessageGroupIds.VOIP)

@@ -173,6 +173,12 @@
      <changefreq>daily</changefreq>
     </url>
         
+    <url>
+     <loc>/BasicNetworkSamples/send-file/</loc>
+     <lastmod>2017-06-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
     

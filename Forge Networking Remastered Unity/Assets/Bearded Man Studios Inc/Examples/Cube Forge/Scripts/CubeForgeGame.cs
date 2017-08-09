@@ -72,10 +72,10 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 			// When this object is destroyed we need to decrement the player count as the camera
 			// represents the player
-			obj.onDestroy += () => { playerCount--; };
+			obj.onDestroy += (sender) => { playerCount--; };
 
 			if (NetworkManager.Instance.Networker is IServer)
-				obj.Owner.disconnected += () => { obj.Destroy(); };
+				obj.Owner.disconnected += (sender) => { obj.Destroy(); };
 
 			netCam = obj as NetworkCameraNetworkObject;
 		};
@@ -93,7 +93,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		{
 			// When a player is accepted on the server we need to send them the map
 			// information through the rpc attached to this object
-			NetworkManager.Instance.Networker.playerAccepted += (player) =>
+			NetworkManager.Instance.Networker.playerAccepted += (player, sender) =>
 			{
 				MainThreadManager.Run(() => { networkObject.SendRpc(player, RPC_INITIALIZE_MAP, min, max, SerializeMap()); });
 			};
@@ -104,7 +104,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		}
 	}
 
-	private void DisconnectedFromServer()
+	private void DisconnectedFromServer(NetWorker sender)
 	{
 		NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
 
@@ -115,7 +115,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		});
 	}
 
-	private void PingReceived(double ping)
+	private void PingReceived(double ping, NetWorker sender)
 	{
 		Debug.Log("Ping Received: " + ping);
 	}
@@ -134,14 +134,14 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		if (!NetworkManager.Instance.Networker.IsServer)
 			return;
 
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			// We need to clean up the network objects before we change the scene
-			// since we are loading this same scene. When that scene loads it will
-			// re-create the objects, so we don't want lingering ones
-			Cleanup();
-			SceneManager.LoadScene(1);
-		}
+		//if (Input.GetKeyDown(KeyCode.Space))
+		//{
+		//	// We need to clean up the network objects before we change the scene
+		//	// since we are loading this same scene. When that scene loads it will
+		//	// re-create the objects, so we don't want lingering ones
+		//	Cleanup();
+		//	SceneManager.LoadScene(1);
+		//}
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{

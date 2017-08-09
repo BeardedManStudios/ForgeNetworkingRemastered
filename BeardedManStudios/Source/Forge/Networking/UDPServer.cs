@@ -30,13 +30,18 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class UDPServer : BaseUDP, IServer
 	{
+		private CommonServerLogic commonServerLogic;
+
 		public Dictionary<string, UDPNetworkingPlayer> udpPlayers = new Dictionary<string, UDPNetworkingPlayer>();
 
 		private UDPNetworkingPlayer currentReadingPlayer = null;
 
-		private List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
-
-		public UDPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; BannedAddresses = new List<string>(); }
+		public UDPServer(int maxConnections) : base(maxConnections)
+		{
+			AcceptingConnections = true;
+			BannedAddresses = new List<string>();
+			commonServerLogic = new CommonServerLogic(this);
+		}
 
 		public NatHolePunch nat = new NatHolePunch();
 
@@ -80,27 +85,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				foreach (NetworkingPlayer player in Players)
 				{
-					// Don't send messages to a player who has not been accepted by the server yet
-					if ((!player.Accepted && !player.PendingAccpeted) || player == skipPlayer)
+					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
 						continue;
-
-					if (player == frame.Sender)
-					{
-						// Don't send a message to the sending player if it was meant for others
-						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
-							continue;
-					}
-
-					// Check to see if the request is based on proximity
-					if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
-					{
-						// If the target player is not in the same proximity zone as the sender
-						// then it should not be sent to that player
-						if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > ProximityDistance)
-						{
-							continue;
-						}
-					}
 
 					try
 					{
@@ -114,20 +100,11 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		/// <summary>
-		/// Used to clean up the target composer from memory
-		/// </summary>
-		/// <param name="composer">The composer that has completed</param>
-		private void ComposerCompleted(UDPPacketComposer composer)
-		{
-			lock (pendingComposers)
-			{
-				pendingComposers.Remove(composer);
-			}
-		}
-
 		public void Connect(string host = "0.0.0.0", ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT)
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("UDPServer", "This object has been disposed and can not be used to connect, please use a new UDPServer");
+
 			try
 			{
 				Client = new CachedUdpClient(port);
@@ -135,14 +112,22 @@ namespace BeardedManStudios.Forge.Networking
 				Me = new NetworkingPlayer(ServerPlayerCounter++, host, true, ResolveHost(host, port), this);
 				Me.InstanceGuid = InstanceGuid.ToString();
 
+				// Do any generic initialization in result of the successful bind
+				OnBindSuccessful();
+
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadClients);
 
 				// Create the thread that will check for player timeouts
-				Task.Queue(CheckClientTimeout);
-
-				// Do any generic initialization in result of the successful bind
-				OnBindSuccessful();
+				Task.Queue(() =>
+				{
+					commonServerLogic.CheckClientTimeout((player) =>
+					{
+						Disconnect(player, true);
+						OnPlayerTimeout(player);
+						CleanupDisconnections();
+					});
+				});
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(Me);
@@ -228,6 +213,11 @@ namespace BeardedManStudios.Forge.Networking
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
 		/// <summary>
+		/// Commit the disconnects
+		/// </summary>
+		public void CommitDisconnects() { CleanupDisconnections(); }
+
+		/// <summary>
 		/// Fully remove the player from the network
 		/// </summary>
 		/// <param name="player">The target player</param>
@@ -237,7 +227,7 @@ namespace BeardedManStudios.Forge.Networking
 			// Tell the player that they are getting disconnected
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
-			Thread.Sleep(500);
+			//Thread.Sleep(500);
 
 			FinalizeRemovePlayer(player);
 		}
@@ -246,43 +236,6 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
-		}
-
-		/// <summary>
-		/// Checks all of the clients to see if any of them are timed out
-		/// </summary>
-		private void CheckClientTimeout()
-		{
-			List<NetworkingPlayer> timedoutPlayers = new List<NetworkingPlayer>();
-			while (IsBound)
-			{
-				IteratePlayers((player) =>
-				{
-					// Don't process the server during this check
-					if (player == Me)
-						return;
-
-					if (player.TimedOut())
-					{
-						timedoutPlayers.Add(player);
-					}
-				});
-
-				if (timedoutPlayers.Count > 0)
-				{
-					foreach (NetworkingPlayer player in timedoutPlayers)
-					{
-						Disconnect(player, true);
-						OnPlayerTimeout(player);
-						CleanupDisconnections();
-					}
-
-					timedoutPlayers.Clear();
-				}
-
-				// Wait a second before checking again
-				Thread.Sleep(1000);
-			}
 		}
 
 		/// <summary>
@@ -456,7 +409,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete);
+				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 			}
 			catch (Exception ex)
 			{
@@ -467,34 +420,49 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers)
+		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
 			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, currentReadingPlayer, receivers);
 
+			if (isReliable)
+			{
+				frame.ExtractReliableId();
+
+				// TODO:  If the current reliable index for this player is not at
+				// the specified index, then it needs to wait for the correct ordering
+				currentReadingPlayer.WaitReliable(frame);
+			}
+			else
+				FireRead(frame, currentReadingPlayer);
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
 			// Check for default messages
 			if (frame is Text)
 			{
 				// This packet is sent if the player did not receive it's network id
 				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
 				{
-					currentReadingPlayer.InstanceGuid = frame.ToString();
+					currentPlayer.InstanceGuid = frame.ToString();
+					currentPlayer.InstanceGuid = currentPlayer.InstanceGuid.Remove(currentPlayer.InstanceGuid.Length - sizeof(ulong));
 
-					OnPlayerGuidAssigned(currentReadingPlayer);
+					OnPlayerGuidAssigned(currentPlayer);
 
 					// If so, just resend the player id
 					writeBuffer.Clear();
-					writeBuffer.Append(BitConverter.GetBytes(currentReadingPlayer.NetworkId));
-					Send(currentReadingPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+					writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
+					Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
 
-					SendBuffer(currentReadingPlayer);
+					SendBuffer(currentPlayer);
 					return;
 				}
 			}
 
 			if (frame is ConnectionClose)
 			{
-				Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
+				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 
 				Disconnect(currentReadingPlayer, false);
 				CleanupDisconnections();
@@ -528,8 +496,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void Ping()
 		{
-			//I am the server, so 0 ms...
-			OnPingRecieved(0);
+			// I am the server, so 0 ms...
+			OnPingRecieved(0, Me);
 		}
 
 		/// <summary>
@@ -559,6 +527,8 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			BannedAddresses.Add(player.Ip);
+			Disconnect(player, true);
+			CommitDisconnects();
 		}
 	}
 }

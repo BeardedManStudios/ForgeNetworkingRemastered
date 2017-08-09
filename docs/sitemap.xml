@@ -5,13 +5,13 @@
         
     <url>
      <loc>/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/authoritative-design/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -21,31 +21,31 @@
         
     <url>
      <loc>/getting-started/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/basic-moving-cube-example/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/basic-rpc-example/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/basic-instantiation-example/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/jump-start-guide/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -55,19 +55,19 @@
         
     <url>
      <loc>/network-contract-wizard-ncw/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/extending-generated-classes/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/name-collision-issues/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -77,19 +77,19 @@
         
     <url>
      <loc>/changing-ownership/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/destroying-the-network-object/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/fields/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -105,31 +105,37 @@
         
     <url>
      <loc>/gameobject-execution-order/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/network-instantiation/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/threading-in-unity/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/main-threading-rpcs/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/running-unity-specific-code-on-the-main-thread/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/unity-integration-network-start/</loc>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -139,13 +145,31 @@
         
     <url>
      <loc>/server-hosting-code/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/client-connecting-code/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/server-disconnect-client-code/</loc>
+     <lastmod>2017-04-20</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/ban-client-code/</loc>
+     <lastmod>2017-04-20</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/send-binary-frame/</loc>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -155,7 +179,7 @@
         
     <url>
      <loc>/connection-cycle-events/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -165,13 +189,13 @@
         
     <url>
      <loc>/loading-scenes/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/scene-events/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -180,7 +204,7 @@
     
     <url>
      <loc>/rewinding/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -189,7 +213,7 @@
         
     <url>
      <loc>/network-logging/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -199,13 +223,13 @@
         
     <url>
      <loc>/temporarily-blocking-connections/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/thread-safe-player-iteration/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -215,25 +239,25 @@
         
     <url>
      <loc>/master-server-quick-start/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/connecting-to-master-server/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/getting-host-list-from-master-server/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/windows-server-firewall-setup/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -242,7 +266,7 @@
     
     <url>
      <loc>/nat-hole-punching/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -251,19 +275,19 @@
         
     <url>
      <loc>/web-server-jumpstart/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/web-server-extending-with-mvc/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/web-server-command-plugins/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -272,7 +296,7 @@
     
     <url>
      <loc>/working-with-multiple-sockets/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -280,7 +304,7 @@
     
     <url>
      <loc>/lan-discovery/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -289,13 +313,13 @@
         
     <url>
      <loc>/troubleshooting/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/throttling-network-internal/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -304,7 +328,7 @@
     
     <url>
      <loc>/offline-mode/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -312,7 +336,7 @@
     
     <url>
      <loc>/lobby/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -321,7 +345,7 @@
         
     <url>
      <loc>/adding-and-updating-docs/</loc>
-     <lastmod>2017-04-07</lastmod>
+     <lastmod>2017-04-20</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

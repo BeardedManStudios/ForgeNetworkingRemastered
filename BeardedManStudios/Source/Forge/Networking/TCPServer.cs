@@ -40,6 +40,8 @@ namespace BeardedManStudios.Forge.Networking
 	/// </summary>
 	public class TCPServer : BaseTCP, IServer
 	{
+		private CommonServerLogic commonServerLogic;
+
 		#region Delegates
 		/// <summary>
 		/// A delegate for handling any raw TcpClient events
@@ -106,7 +108,12 @@ namespace BeardedManStudios.Forge.Networking
 		public List<string> BannedAddresses { get; set; }
 
 
-		public TCPServer(int maxConnections) : base(maxConnections) { AcceptingConnections = true; BannedAddresses = new List<string>(); }
+		public TCPServer(int maxConnections) : base(maxConnections)
+		{
+			AcceptingConnections = true;
+			BannedAddresses = new List<string>();
+			commonServerLogic = new CommonServerLogic(this);
+		}
 
 #if WINDOWS_UWP
 		private void RawWrite(StreamSocket client, byte[] data)
@@ -227,34 +234,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				foreach (NetworkingPlayer player in Players)
 				{
-					// Don't send messages to a player who has not been accepted by the server yet
-					if (!player.Accepted || player == skipPlayer)
+					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
 						continue;
-
-					if (player == frame.Sender)
-					{
-						// Don't send a message to the sending player if it was meant for others
-						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
-							continue;
-					}
-
-					if (player == frame.Sender)
-					{
-						// Don't send a message to the sending player if it was meant for others
-						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
-							continue;
-					}
-
-					// Check to see if the request is based on proximity
-					if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
-					{
-						// If the target player is not in the same proximity zone as the sender
-						// then it should not be sent to that player
-						if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > ProximityDistance)
-						{
-							continue;
-						}
-					}
 
 					try
 					{
@@ -274,6 +255,11 @@ namespace BeardedManStudios.Forge.Networking
 		private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
 		/// <summary>
+		/// Commits the disconnects
+		/// </summary>
+		public void CommitDisconnects() { CleanupDisconnections(); }
+
+		/// <summary>
 		/// This will begin the connection for TCP, this is a thread blocking operation until the connection
 		/// is either established or has failed
 		/// </summary>
@@ -281,6 +267,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="port">[15937] Port to allow connections from</param>
 		public void Connect(string hostAddress = "0.0.0.0", ushort port = DEFAULT_PORT)
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("TCPServer", "This object has been disposed and can not be used to connect, please use a new TCPServer");
+
 			if (string.IsNullOrEmpty(hostAddress))
 				throw new BaseNetworkException("An ip address must be specified to bind to. If you are unsure, you can set to 127.0.0.1");
 
@@ -306,14 +295,22 @@ namespace BeardedManStudios.Forge.Networking
 				listener.Start();
 				listener.BeginAcceptTcpClient(ListenForConnections, listener);
 
+				// Do any generic initialization in result of the successful bind
+				OnBindSuccessful();
+
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadClients);
 
 				// Create the thread that will check for player timeouts
-				Task.Queue(CheckClientTimeout);
-
-				// Do any generic initialization in result of the successful bind
-				OnBindSuccessful();
+				Task.Queue(() =>
+				{
+					commonServerLogic.CheckClientTimeout((player) =>
+					{
+						Disconnect(player, true);
+						OnPlayerTimeout(player);
+						CleanupDisconnections();
+					});
+				});
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(Me);
@@ -530,9 +527,7 @@ namespace BeardedManStudios.Forge.Networking
 											continue;
 										}
 
-										// A message has been successfully read from the network so relay that
-										// to all methods registered to the event
-										OnMessageReceived(Players[i], frame);
+										FireRead(frame, Players[i]);
 									}
 								}
 								catch
@@ -555,42 +550,6 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					Logging.BMSLog.LogException(ex);
 				}
-			}
-		}
-
-		/// <summary>
-		/// Checks all of the clients to see if any of them are timed out
-		/// </summary>
-		private void CheckClientTimeout()
-		{
-			List<NetworkingPlayer> timedoutPlayers = new List<NetworkingPlayer>();
-			while (IsBound)
-			{
-				IteratePlayers((player) =>
-				{
-					if (player == Me)
-						return;
-
-					if (player.TimedOut())
-					{
-						timedoutPlayers.Add(player);
-					}
-				});
-
-				if (timedoutPlayers.Count > 0)
-				{
-					foreach (NetworkingPlayer player in timedoutPlayers)
-					{
-						Disconnect(player, true);
-						OnPlayerTimeout(player);
-						CleanupDisconnections();
-					}
-
-					timedoutPlayers.Clear();
-				}
-
-				// Wait a second before checking again
-				Thread.Sleep(1000);
 			}
 		}
 
@@ -684,8 +643,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void Ping()
 		{
-			//I am the server, so 0 ms...
-			OnPingRecieved(0);
+			// I am the server, so 0 ms...
+			OnPingRecieved(0, Me);
 		}
 
 		/// <summary>
@@ -715,6 +674,15 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 
 			BannedAddresses.Add(player.Ip);
+			Disconnect(player, true);
+			CommitDisconnects();
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			// A message has been successfully read from the network so relay that
+			// to all methods registered to the event
+			OnMessageReceived(currentPlayer, frame);
 		}
 	}
 }

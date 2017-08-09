@@ -49,7 +49,7 @@ public class MultiplayerMenu : MonoBehaviour
 		if (!useTCP)
 		{
 			// Do any firewall opening requests on the operating system
-			NetWorker.PingForFirewall();
+			NetWorker.PingForFirewall(ushort.Parse(portNumber.text));
 		}
 
 		if (useMainThreadManagerForRPCs)
@@ -62,7 +62,7 @@ public class MultiplayerMenu : MonoBehaviour
 		}
 	}
 
-	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint)
+	private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
 	{
 		Debug.Log("Found endpoint: " + endpoint.Address + ":" + endpoint.Port);
 	}
@@ -74,11 +74,11 @@ public class MultiplayerMenu : MonoBehaviour
 			ConnectToMatchmaking();
 			return;
 		}
-		int port = ushort.Parse(portNumber.text);
-		if (port < 0 || port > ushort.MaxValue)
+		ushort port;
+		if(!ushort.TryParse(portNumber.text, out port))
 		{
 			Debug.LogError("The supplied port number is not within the allowed range 0-" + ushort.MaxValue);
-			return;
+		    	return;
 		}
 
 		NetWorker client;
@@ -151,11 +151,11 @@ public class MultiplayerMenu : MonoBehaviour
 				((UDPServer)server).Connect(natHost: natServerHost, natPort: natServerPort);
 		}
 
-		server.playerTimeout += (player) =>
+		server.playerTimeout += (player, sender) =>
 		{
 			Debug.Log("Player " + player.NetworkId + " timed out");
 		};
-		LobbyService.Instance.Initialize(server);
+		//LobbyService.Instance.Initialize(server);
 
 		Connected(server);
 	}
@@ -166,6 +166,17 @@ public class MultiplayerMenu : MonoBehaviour
 			Host();
 		else if (Input.GetKeyDown(KeyCode.C))
 			Connect();
+		else if (Input.GetKeyDown(KeyCode.L))
+		{
+			NetWorker.localServerLocated -= TestLocalServerFind;
+			NetWorker.localServerLocated += TestLocalServerFind;
+			NetWorker.RefreshLocalUdpListings();
+		}
+	}
+
+	private void TestLocalServerFind(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
+	{
+		Debug.Log("Address: " + endpoint.Address + ", Port: " + endpoint.Port + ", Server? " + endpoint.IsServer);
 	}
 
 	public void Connected(NetWorker networker)
