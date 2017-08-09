@@ -10,6 +10,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public string masterServerHost = "127.0.0.1";
 		public int masterServerPort = 15940;
+		public string natServerHost = "";
+		public ushort natServerPort = Nat.NatHolePunch.DEFAULT_NAT_SERVER_PORT;
 
 		public string gameId = "myGame";
 		public string gameType = "any";
@@ -36,8 +38,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				var option = Instantiate(serverOption);
 				option.transform.SetParent(content);
-				option.transform.FindChild("Name").GetComponent<Text>().text = name;
-				option.transform.FindChild("Connect").GetComponent<Button>().onClick.AddListener(callback);
+                var browserItem = option.GetComponent<ServerBrowserItem>();
+                if (browserItem != null)
+                    browserItem.SetData(name, callback);
 			});
 		}
 
@@ -51,7 +54,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should sent it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -76,7 +79,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			// An event that is raised when the server responds with hosts
-			client.textMessageReceived += (player, frame) =>
+			client.textMessageReceived += (player, frame, sender) =>
 			{
 				try
 				{
@@ -95,6 +98,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 								string address = server.Address;
 								ushort port = server.Port;
 								string name = server.Name;
+
 								// name, address, port, comment, type, mode, players, maxPlayers, protocol
 								CreateServerOption(name, () =>
 								{
@@ -103,9 +107,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 									if (protocol == "udp")
 									{
-										// TODO:  Add NAT hole punching server
 										socket = new UDPClient();
-										((UDPClient)socket).Connect(address, port);
+										((UDPClient)socket).Connect(address, port, natServerHost, natServerPort);
 									}
 									else if (protocol == "tcp")
 									{

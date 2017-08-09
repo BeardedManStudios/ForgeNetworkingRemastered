@@ -5,13 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-using SimpleJSONEditor;
-using System.Reflection;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -224,57 +222,57 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			string[] files = Directory.GetFiles(_storingPath, "*.cs", SearchOption.TopDirectoryOnly);
 			string[] userFiles = Directory.GetFiles(_userStoringPath, "*.cs", SearchOption.TopDirectoryOnly);
 
-			if (File.Exists(Path.Combine(_storingPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
-			{
-				IFormatter bFormatter = new BinaryFormatter();
-				bool updateColors = false;
-				using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
-				{
-					try
-					{
-						object deserializedObject = bFormatter.Deserialize(s);
-						if (deserializedObject != null)
-						{
-							_editorButtons = (List<ForgeEditorButton>)deserializedObject;
-							bool cleared = true;
-							for (int i = 0; i < _editorButtons.Count; ++i)
-							{
-								_editorButtons[i].SetupLists();
-								if (_editorButtons[i].TiedObject == null)
-								{
-									cleared = false;
-									break;
-								}
-							}
+			//if (File.Exists(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
+			//{
+			//	IFormatter bFormatter = new BinaryFormatter();
+			//	bool updateColors = false;
+			//	using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
+			//	{
+			//		try
+			//		{
+			//			object deserializedObject = bFormatter.Deserialize(s);
+			//			if (deserializedObject != null)
+			//			{
+			//				_editorButtons = (List<ForgeEditorButton>)deserializedObject;
+			//				bool cleared = true;
+			//				for (int i = 0; i < _editorButtons.Count; ++i)
+			//				{
+			//					_editorButtons[i].SetupLists();
+			//					if (_editorButtons[i].TiedObject == null)
+			//					{
+			//						cleared = false;
+			//						break;
+			//					}
+			//				}
 
-							if (cleared)
-								updateColors = true;
-							else
-							{
-								_editorButtons = new List<ForgeEditorButton>();
-								ReloadScripts(files, userFiles);
-							}
-						}
-						else
-							ReloadScripts(files, userFiles);
-					}
-					catch (Exception ex)
-					{
-						ReloadScripts(files, userFiles);
-					}
-				}
+			//				if (cleared)
+			//					updateColors = true;
+			//				else
+			//				{
+			//					_editorButtons = new List<ForgeEditorButton>();
+			//					ReloadScripts(files, userFiles);
+			//				}
+			//			}
+			//			else
+			//				ReloadScripts(files, userFiles);
+			//		}
+			//		catch
+			//		{
+			//			ReloadScripts(files, userFiles);
+			//		}
+			//	}
 
-				if (updateColors)
-				{
-					for (int i = 0; i < _editorButtons.Count; ++i)
-					{
-						_editorButtons[i].UpdateButtonColor();
-						if (_editorButtons[i].IsNetworkObject)
-							ForgeClassObject.IDENTITIES++;
-					}
-				}
-			}
-			else
+			//	if (updateColors)
+			//	{
+			//		for (int i = 0; i < _editorButtons.Count; ++i)
+			//		{
+			//			_editorButtons[i].UpdateButtonColor();
+			//			if (_editorButtons[i].IsNetworkObject)
+			//				ForgeClassObject.IDENTITIES++;
+			//		}
+			//	}
+			//}
+			//else
 				ReloadScripts(files, userFiles);
 
 			#region Texture Loading
@@ -502,11 +500,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 								sw.Write(networkManagerData);
 							}
 
-							IFormatter previousSavedState = new BinaryFormatter();
-							using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-							{
-								previousSavedState.Serialize(s, _editorButtons);
-							}
+							//IFormatter previousSavedState = new BinaryFormatter();
+							//using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+							//{
+							//	previousSavedState.Serialize(s, _editorButtons);
+							//}
 						}
 						else
 						{
@@ -1018,7 +1016,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						{
 							string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
 
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkBehaviorData);
 							}
@@ -1026,7 +1024,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						else if (_editorButtons[i].TiedObject.IsNetworkObject)
 						{
 							string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
-							using (StreamWriter sw = File.CreateText(_editorButtons[i].TiedObject.FileLocation))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
 							{
 								sw.Write(networkObjectData);
 							}
@@ -1048,13 +1046,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				sw.Write(networkManagerData);
 			}
 
-			IFormatter previousSavedState = new BinaryFormatter();
-			using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-			{
-				previousSavedState.Serialize(s, _editorButtons);
-			}
+            //IFormatter previousSavedState = new BinaryFormatter();
+            //using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            //{
+            //    previousSavedState.Serialize(s, _editorButtons);
+            //}
 
-			EditorApplication.UnlockReloadAssemblies();
+            EditorApplication.UnlockReloadAssemblies();
 
 			AssetDatabase.Refresh();
 

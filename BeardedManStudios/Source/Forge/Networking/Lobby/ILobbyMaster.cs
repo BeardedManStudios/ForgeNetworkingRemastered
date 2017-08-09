@@ -40,14 +40,17 @@ namespace BeardedManStudios.Forge.Networking.Lobby
         /// Called when a player has changed their team
         /// </summary>
         /// <param name="player">The player who changed their team</param>
-        /// <param name="newID">The team the player will now be apart of</param>
-        void OnFNTeamChanged(IClientMockPlayer player, int newID);
+        void OnFNTeamChanged(IClientMockPlayer player);
         /// <summary>
         /// Called when a player has changed their avatar id
         /// </summary>
         /// <param name="player">The player who changed his avatar id</param>
-        /// <param name="newID">The new avatar id</param>
-        void OnFNAvatarIDChanged(IClientMockPlayer player, int newID);
+        void OnFNAvatarIDChanged(IClientMockPlayer player);
+        /// <summary>
+        /// Called when a player has synced with the server
+        /// </summary>
+        /// <param name="player">The player to update</param>
+        void OnFNPlayerSync(IClientMockPlayer player);
         /// <summary>
         /// This is only called when you change the lobby service
         /// </summary>

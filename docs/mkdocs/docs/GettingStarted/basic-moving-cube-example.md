@@ -16,7 +16,7 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
-![opening-the-ncw](images/opening-ncw.jpg "How to open the NCW")
+![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
 Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fi elds, the **Fields** field, and the **Remote Procedure Calls** field.
 
@@ -39,7 +39,7 @@ Let's begin by naming our Network Object:
 11. Set the interpolate time (the text field that pops up after clicking the **Interpolate** button) as **0.15**
 12. Click the **Save & Compile** button
 
-![ncw-save-and-compile](images/ncw-save-and-compile.jpg "Save & Compile the NCW")
+![ncw-save-and-compile](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/ncw-save-and-compile.jpg "Save & Compile the NCW")
 
 ## Extending Generated Classes
 
@@ -135,4 +135,4 @@ The most common user errors with this part of the documentation are:
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
-![Common Error Getting Started](images/common-error-getting-started.png)
+![Common Error Getting Started](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/common-error-getting-started.png)

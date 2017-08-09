@@ -101,44 +101,44 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A base delegate for any kind of network event
 		/// </summary>
-		public delegate void BaseNetworkEvent();
+		public delegate void BaseNetworkEvent(NetWorker sender);
 
 		/// <summary>
 		/// Used to fire events that relate to a broadcast endpoint
 		/// </summary>
-		public delegate void BroadcastEndpointEvent(BroadcastEndpoints endpoint);
+		public delegate void BroadcastEndpointEvent(BroadcastEndpoints endpoint, NetWorker sender);
 
 		/// <summary>
 		/// A base delegate for any kind of network ping event
 		/// </summary>
 		/// <param name="ping">The latency between client and server</param>
-		public delegate void PingEvent(double ping);
+		public delegate void PingEvent(double ping, NetWorker sender);
 
 		/// <summary>
 		/// Used for any events that relate to a NetworkingPlayer
 		/// </summary>
-		public delegate void PlayerEvent(NetworkingPlayer player);
+		public delegate void PlayerEvent(NetworkingPlayer player, NetWorker sender);
 
 		/// <summary>
 		/// Used for any events that relate to a frame and the target player
 		/// </summary>
 		/// <param name="player">The player the message came from</param>
 		/// <param name="frame">The frame data</param>
-		public delegate void FrameEvent(NetworkingPlayer player, FrameStream frame);
+		public delegate void FrameEvent(NetworkingPlayer player, FrameStream frame, NetWorker sender);
 
 		/// <summary>
 		/// Used for any events that relate to a binary frame and the target player
 		/// </summary>
 		/// <param name="player">The player the message came from</param>
 		/// <param name="frame">The frame data</param>
-		public delegate void BinaryFrameEvent(NetworkingPlayer player, Binary frame);
+		public delegate void BinaryFrameEvent(NetworkingPlayer player, Binary frame, NetWorker sender);
 
 		/// <summary>
 		/// Used for any events that relate to a text frame and the target player
 		/// </summary>
 		/// <param name="player">The player the message came from</param>
 		/// <param name="frame">The frame data</param>
-		public delegate void TextFrameEvent(NetworkingPlayer player, Text frame);
+		public delegate void TextFrameEvent(NetworkingPlayer player, Text frame, NetWorker sender);
 		#endregion
 
 		#region Events
@@ -227,6 +227,26 @@ namespace BeardedManStudios.Forge.Networking
 		/// the player is uniquely identifiable across networkers
 		/// </summary>
 		public event PlayerEvent playerGuidAssigned;
+
+		/// <summary>
+		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
+		/// </summary>
+		public event NetworkObject.CreateEvent objectCreateAttach;
+
+		/// <summary>
+		/// Occurs when a network object has been created on the network
+		/// </summary>
+		public event NetworkObject.NetworkObjectEvent objectCreated;
+
+		/// <summary>
+		/// TODO: COMMENT
+		/// </summary>
+		public event NetworkObject.CreateRequestEvent objectCreateRequested;
+
+		/// <summary>
+		/// TODO: COMMENT
+		/// </summary>
+		public event NetworkObject.NetworkObjectEvent factoryObjectCreated;
 		#endregion
 
 		#region Properties
@@ -295,6 +315,13 @@ namespace BeardedManStudios.Forge.Networking
 		/// Used to simulate network latency to test experience at high pings
 		/// </summary>
 		public int LatencySimulation { get; set; }
+
+		internal bool ObjectCreatedRegistered { get { return objectCreated != null; } }
+
+		/// <summary>
+		/// A cached BMSByte to prevent large amounts of garbage collection on packet sequences
+		/// </summary>
+		public BMSByte PacketSequenceData { get; private set; }
 		#endregion
 
 		/// <summary>
@@ -367,6 +394,11 @@ namespace BeardedManStudios.Forge.Networking
 		public bool IsBound { get; private set; }
 
 		/// <summary>
+		/// Used to determine if this NetWorker has already been disposed to avoid re-connections
+		/// </summary>
+		public bool Disposed { get; private set; }
+
+		/// <summary>
 		/// The unique GUID that will represent all networkers for this process instance
 		/// </summary>
 		public static Guid InstanceGuid { get; private set; }
@@ -397,6 +429,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void Initialize()
 		{
+			PacketSequenceData = new BMSByte();
+
 			if (!setupInstanceGuid)
 			{
 				InstanceGuid = Guid.NewGuid();
@@ -448,10 +482,16 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (NetworkObjects)
 			{
+				if (NetworkObjects.ContainsKey(networkObject.NetworkId))
+					return;
+
 				NetworkObjects.Add(networkObject.NetworkId, networkObject);
 				NetworkObjectList.Add(networkObject);
 			}
+		}
 
+		public void FlushCreateActions(NetworkObject networkObject)
+		{
 			List<Action<NetworkObject>> actions = null;
 			lock (missingObjectBuffer)
 			{
@@ -472,6 +512,28 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				for (int i = 0; i < Players.Count; i++)
 					expression(Players[i]);
+			}
+		}
+
+		public NetworkingPlayer GetPlayerById(uint id)
+		{
+			lock (Players)
+			{
+				for (int i = 0; i < Players.Count; i++)
+				{
+					if (Players[i].NetworkId == id)
+						return Players[i];
+				}
+			}
+
+			return null;
+		}
+
+		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
+		{
+			lock (Players)
+			{
+				return Players.FirstOrDefault(expression);
 			}
 		}
 
@@ -543,7 +605,7 @@ namespace BeardedManStudios.Forge.Networking
 			networkObject.RegisterOnce(id);
 
 			// When this object is destroyed it needs to remove itself from the list
-			networkObject.onDestroy += () =>
+			networkObject.onDestroy += (NetWorker sender) =>
 			{
 				lock (NetworkObjects)
 				{
@@ -560,6 +622,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public abstract void Disconnect(bool forced);
+
+		/// <summary>
+		/// Reads the frame stream as if it were read on the network
+		/// </summary>
+		/// <param name="frame">The target frame stream to be read</param>
+		public abstract void FireRead(FrameStream frame, NetworkingPlayer currentPlayer);
 
 		/// <summary>
 		/// Goes through all of the pending disconnect players and disconnects them
@@ -591,7 +659,7 @@ namespace BeardedManStudios.Forge.Networking
 			IsBound = true;
 			NetworkInitialize();
 			if (bindSuccessful != null)
-				bindSuccessful();
+				bindSuccessful(this);
 		}
 
 		/// <summary>
@@ -600,7 +668,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnBindFailure()
 		{
 			if (bindFailure != null)
-				bindFailure();
+				bindFailure(this);
 		}
 
 		/// <summary>
@@ -619,7 +687,31 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			if (playerConnected != null)
-				playerConnected(player);
+				playerConnected(player, this);
+		}
+
+		internal void OnObjectCreated(NetworkObject target)
+		{
+			if (objectCreated != null)
+				objectCreated(target);
+		}
+
+		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
+		{
+			if (objectCreateAttach != null)
+				objectCreateAttach(identity, hash, id, frame);
+		}
+
+		internal void OnObjectCreateRequested(int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
+		{
+			if (objectCreateRequested != null)
+				objectCreateRequested(this, identity, id, frame, callback);
+		}
+
+		internal void OnFactoryObjectCreated(NetworkObject obj)
+		{
+			if (factoryObjectCreated != null)
+				factoryObjectCreated(obj);
 		}
 
 		/// <summary>
@@ -637,13 +729,13 @@ namespace BeardedManStudios.Forge.Networking
 			player.OnDisconnect();
 
 			if (playerDisconnected != null)
-				playerDisconnected(player);
+				playerDisconnected(player, this);
 		}
 
 		protected void OnPlayerTimeout(NetworkingPlayer player)
 		{
 			if (playerTimeout != null)
-				playerTimeout(player);
+				playerTimeout(player, this);
 		}
 
 		/// <summary>
@@ -654,10 +746,16 @@ namespace BeardedManStudios.Forge.Networking
 			player.Accepted = true;
 			player.PendingAccpeted = false;
 
-			NetworkObject.PlayerAccepted(player, NetworkObjects.Values.ToArray());
+			NetworkObject[] currentObjects;
+			lock (NetworkObjects)
+			{
+				currentObjects = NetworkObjects.Values.ToArray();
+			}
+
+			NetworkObject.PlayerAccepted(player, currentObjects);
 
 			if (playerAccepted != null)
-				playerAccepted(player);
+				playerAccepted(player, this);
 		}
 
 		/// <summary>
@@ -668,7 +766,7 @@ namespace BeardedManStudios.Forge.Networking
 			player.Accepted = false;
 
 			if (playerRejected != null)
-				playerRejected(player);
+				playerRejected(player, this);
 		}
 
 		/// <summary>
@@ -684,10 +782,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// A wrapper for the pingReceived event call that children of this can call
 		/// </summary>
 		/// <param name="ping"></param>
-		protected void OnPingRecieved(double ping)
+		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
 			if (pingReceived != null)
-				pingReceived(ping);
+				pingReceived(ping, this);
+
+			player.RoundTripLatency = (int)ping;
 		}
 
 		/// <summary>
@@ -719,7 +819,7 @@ namespace BeardedManStudios.Forge.Networking
 
 				DateTime received = new DateTime(receivedTimestep);
 				TimeSpan ms = DateTime.UtcNow - received;
-				OnPingRecieved(ms.TotalMilliseconds);
+				OnPingRecieved(ms.TotalMilliseconds, player);
 				return;
 			}
 
@@ -764,13 +864,13 @@ namespace BeardedManStudios.Forge.Networking
 				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
 					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
 				else if (binaryMessageReceived != null)
-					binaryMessageReceived(player, (Binary)frame);
+					binaryMessageReceived(player, (Binary)frame, this);
 			}
 			else if (frame is Text && textMessageReceived != null)
-				textMessageReceived(player, (Text)frame);
+				textMessageReceived(player, (Text)frame, this);
 
 			if (messageReceived != null)
-				messageReceived(player, frame);
+				messageReceived(player, frame, this);
 		}
 
 		private void ExecuteRouterAction(byte routerId, NetworkObject networkObject, Binary frame, NetworkingPlayer player)
@@ -799,7 +899,9 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			if (disconnected != null)
-				disconnected();
+				disconnected(this);
+
+			Disposed = true;
 		}
 
 		/// <summary>
@@ -810,7 +912,9 @@ namespace BeardedManStudios.Forge.Networking
 			IsBound = false;
 
 			if (forcedDisconnect != null)
-				forcedDisconnect();
+				forcedDisconnect(this);
+
+			Disposed = true;
 		}
 
 		/// <summary>
@@ -821,7 +925,7 @@ namespace BeardedManStudios.Forge.Networking
 			Me.Connected = true;
 
 			if (serverAccepted != null)
-				serverAccepted();
+				serverAccepted(this);
 		}
 
 		/// <summary>
@@ -831,21 +935,25 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerGuidAssigned(NetworkingPlayer player)
 		{
 			if (playerGuidAssigned != null)
-				playerGuidAssigned(player);
+				playerGuidAssigned(player, this);
 		}
 
 		/// <summary>
 		/// Used to bind to a port then unbind to trigger any operating system firewall requests
 		/// </summary>
-		public static void PingForFirewall()
+		public static void PingForFirewall(ushort port = 0)
 		{
+			if (port < 1)
+			{
+				port = DEFAULT_PORT - 1;
+			}
 			Task.Queue(() =>
 			{
 				try
 				{
 					//IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
 					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
-					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), DEFAULT_PORT);
+					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
 					System.Net.Sockets.TcpListener t = new System.Net.Sockets.TcpListener(ipLocalEndPoint);
 					t.Start();
@@ -902,6 +1010,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
+			if (localListingsClient != null)
+			{
+				localListingsClient.Client.Close();
+				localListingsClient = null;
+			}
+
 			// Initialize the list to hold all of the local network endpoints that respond to the request
 			if (LocalEndpoints == null)
 				LocalEndpoints = new List<BroadcastEndpoints>();
@@ -942,7 +1056,7 @@ namespace BeardedManStudios.Forge.Networking
 							LocalEndpoints.Add(ep);
 
 							if (localServerLocated != null)
-								localServerLocated(ep);
+								localServerLocated(ep, null);
 						}
 						else if (data[0] == CLIENT_BROADCAST_CODE)
 							LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));

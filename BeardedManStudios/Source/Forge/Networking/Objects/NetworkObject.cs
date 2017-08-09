@@ -100,26 +100,6 @@ namespace BeardedManStudios.Forge.Networking
 		public delegate void CreateRequestEvent(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback);
 
 		/// <summary>
-		/// Occurs when a client get's an id from the server asynchronously that belongs to this NetworkObject
-		/// </summary>
-		public static event CreateEvent objectCreateAttach;
-
-		/// <summary>
-		/// Occurs when a network object has been created on the network
-		/// </summary>
-		public static event NetworkObjectEvent objectCreated;
-
-		/// <summary>
-		/// TODO: COMMENT
-		/// </summary>
-		public static event CreateRequestEvent objectCreateRequested;
-
-		/// <summary>
-		/// TODO: COMMENT
-		/// </summary>
-		public static event NetworkObjectEvent factoryObjectCreated;
-
-		/// <summary>
 		/// Called whenever this NetworkObject has its owning player changed
 		/// </summary>
 		public event NetWorker.BaseNetworkEvent ownershipChanged;
@@ -167,6 +147,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// only use as a last resort
 		/// </summary>
 		public bool AuthorityUpdateMode { get; set; }
+
+		/// <summary>
+		/// If this is set to true then the fields for this network object will only be sent
+		/// via proximity all; this value can be changed at runtime
+		/// </summary>
+		public bool ProximityBasedFields { get; set; }
 
 		/// <summary>
 		/// A lookup table for all of the RPC's that are available to this network object
@@ -385,7 +371,7 @@ namespace BeardedManStudios.Forge.Networking
 				CreateCode = createCode;
 
 				// Tell this object to listen for the create network object message from the server
-				objectCreateAttach += CreatedOnNetwork;
+				Networker.objectCreateAttach += CreatedOnNetwork;
 				//TODO: MOVED HERE (#1)
 
 				ObjectMapper.Instance.MapBytes(data, UniqueIdentity, hash, CreateCode);
@@ -399,19 +385,19 @@ namespace BeardedManStudios.Forge.Networking
 				bool useMask = networker is TCPClient;
 				Binary createRequest = new Binary(CreateTimestep, useMask, data, Receivers.Server, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.NETWORK_OBJECT_ROUTER_ID);
 
-				NetWorker.BaseNetworkEvent request = () =>
+				NetWorker.BaseNetworkEvent request = (NetWorker sender) =>
 				{
 					// Send the message to the server
-					if (networker is UDPClient)
-						((UDPClient)networker).Send(createRequest, true);
+					if (sender is UDPClient)
+						((UDPClient)sender).Send(createRequest, true);
 					else
-						((TCPClient)networker).Send(createRequest);
+						((TCPClient)sender).Send(createRequest);
 				};
 
 				if (Networker.Me == null)
 					Networker.serverAccepted += request;
 				else
-					request();
+					request(networker);
 
 				//TODO: FROM HERE (#1)
 			}
@@ -560,7 +546,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected virtual void OwnershipChanged()
 		{
 			if (ownershipChanged != null)
-				ownershipChanged();
+				ownershipChanged(Networker);
 		}
 
 		/// <summary>
@@ -742,7 +728,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			if (onReady != null)
-				onReady();
+				onReady(Networker);
 
 			if (pendingBehavior != null)
 			{
@@ -751,8 +737,8 @@ namespace BeardedManStudios.Forge.Networking
 				if (pendingInitialized != null)
 					pendingInitialized(pendingBehavior, this);
 			}
-			else if (objectCreated != null)
-				objectCreated(this);
+			else
+				Networker.OnObjectCreated(this);
 		}
 
 		public static void Flush(NetWorker target)
@@ -761,13 +747,13 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
-					if (objectCreated == null)
+					if (!target.ObjectCreatedRegistered)
 						continue;
 
 					if (pendingCreates[i].onReady != null)
-						pendingCreates[i].onReady();
+						pendingCreates[i].onReady(target);
 
-					objectCreated(pendingCreates[i]);
+					target.OnObjectCreated(pendingCreates[i]);
 					pendingCreates.RemoveAt(i--);
 				}
 			}
@@ -795,7 +781,7 @@ namespace BeardedManStudios.Forge.Networking
 			Owner = Networker.Me;
 
 			// This object has been found, remove it from listening to any more create messages
-			objectCreateAttach -= CreatedOnNetwork;
+			Networker.objectCreateAttach -= CreatedOnNetwork;
 
 			// Move the start index passed the identity bytes and the hash bytes
 			frame.StreamData.MoveStartIndex(sizeof(int) * 2);
@@ -803,7 +789,7 @@ namespace BeardedManStudios.Forge.Networking
 			Initialize(id);
 
 			if (onReady != null)
-				onReady();
+				onReady(Networker);
 		}
 
 		/// <summary>
@@ -929,7 +915,7 @@ namespace BeardedManStudios.Forge.Networking
 				// Validate the RPC call using the method name and the supplied arguments from the client
 				// then replicate to the correct receivers
 				// Do not read or replicate if the server denies replication
-				if (ServerAllowRpc(methodName, receivers, rpcArgs))
+				if (ServerAllowRpc(methodId, receivers, rpcArgs))
 					SendRpc(null, methodId, overwriteExisting, receivers, sender, args);
 
 				return;
@@ -942,11 +928,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Called only on the server and will determine if an RPC call should be replicated
 		/// </summary>
-		/// <param name="methodName">The name of the RPC that is being executed</param>
+		/// <param name="methodId">The id of the RPC to be executed (this will match the generated constant)</param>
 		/// <param name="receivers">The receivers that are being requested</param>
 		/// <param name="args">The arguments that were supplied by the client when invoked</param>
 		/// <returns>If <c>true</c> the RPC will be replicated to other clients</returns>
-		protected virtual bool ServerAllowRpc(string methodName, Receivers receivers, RpcArgs args)
+		protected virtual bool ServerAllowRpc(byte methodId, Receivers receivers, RpcArgs args)
 		{
 			return true;
 		}
@@ -1172,6 +1158,10 @@ namespace BeardedManStudios.Forge.Networking
 			// The server should execute the RPC before it is sent out to the clients
 			if (Networker is IServer)
 			{
+				// If we are only sending the message to the owner, we need to specify that
+				if (receivers == Receivers.Owner || receivers == Receivers.ServerAndOwner)
+					targetPlayer = Owner;
+
 				// We don't need to do any extra work if the target player is the server
 				if (targetPlayer == Networker.Me)
 				{
@@ -1245,11 +1235,14 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (Networker is IServer)
 			{
+				// Invoke if the the target player is the server itself or is an explicit receiver
+				if (targetPlayer == Networker.Me || receivers == Receivers.Server || receivers == Receivers.ServerAndOwner)
+					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				// Don't execute the RPC if the server is sending it to receivers
 				// that don't include itself
-				if (((sender != Networker.Me && sender != null) || receivers != Receivers.Others && receivers != Receivers.Target &&
-					receivers != Receivers.OthersBuffered && receivers != Receivers.OthersProximity) ||
-					targetPlayer == Networker.Me)  // Invoke if the the target player is the server itself
+				else if (receivers != Receivers.Owner && ((sender != Networker.Me && sender != null) ||
+					(receivers != Receivers.Others && receivers != Receivers.OthersBuffered &&
+					receivers != Receivers.OthersProximity && receivers != Receivers.Target)))
 				{
 					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}
@@ -1299,6 +1292,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (Owner == Networker.Me || !AuthorityUpdateMode)
 					skipPlayer = Owner;
 			}
+
 
 			lock (sendBinaryData)
 			{
@@ -1392,7 +1386,7 @@ namespace BeardedManStudios.Forge.Networking
 				BMSByte data = SerializeDirtyFields();
 
 				if (data != null)
-					SendBinaryData(data, Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+					SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximity : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
 
 				hasDirtyFields = false;
 				lastUpdateTimestep = timeStep;
@@ -1458,18 +1452,15 @@ namespace BeardedManStudios.Forge.Networking
 				if (hash != 0)
 				{
 					// The server is responding to the create request
-					objectCreateAttach(identity, hash, id, frame);
+					networker.OnObjectCreateAttach(identity, hash, id, frame);
 					return;
 				}
 
-				if (objectCreateRequested != null)
+				networker.OnObjectCreateRequested(identity, id, frame, (obj) =>
 				{
-					objectCreateRequested(networker, identity, id, frame, (obj) =>
-					{
-						if (obj != null)
-							networkObjects.Add(obj);
-					});
-				}
+					if (obj != null)
+						networkObjects.Add(obj);
+				});
 
 				// The server is dictating to create a new networked object
 				if (Factory != null)
@@ -1477,8 +1468,7 @@ namespace BeardedManStudios.Forge.Networking
 					Factory.NetworkCreateObject(networker, identity, id, frame, (obj) =>
 					{
 						networkObjects.Add(obj);
-						if (factoryObjectCreated != null)
-							factoryObjectCreated(obj);
+						networker.OnFactoryObjectCreated(obj);
 					});
 				}
 			}
@@ -1529,11 +1519,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="remoteCall">Used to know if this call was made over the network</param>
 		private void Destroy(bool remoteCall)
 		{
-			if (IsOwner || (Networker is IServer && !remoteCall))
-				SendBinaryData(null, Receivers.All, DESTROY_SUB_ROUTER_ID);
+			if ((IsOwner && !remoteCall) || Networker is IServer)
+				SendBinaryData(null, Receivers.Others, DESTROY_SUB_ROUTER_ID, skipOwner: Networker is IServer && remoteCall);
 
 			if (onDestroy != null)
-				onDestroy();
+				onDestroy(Networker);
 		}
 
 		public virtual void InterpolateUpdate() { }

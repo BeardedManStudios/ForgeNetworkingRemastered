@@ -21,6 +21,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public NetWorker MasterServerNetworker { get; private set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
+		private string _masterServerHost;
+		private ushort _masterServerPort;
 
 		private List<int> loadedScenes = new List<int>();
 
@@ -48,8 +50,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
-
-			NetworkObject.objectCreated += CreatePendingObjects;
 		}
 
 		private void OnEnable()
@@ -67,7 +67,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			Networker = networker;
+			networker.objectCreated += CreatePendingObjects;
 			Networker.binaryMessageReceived += ReadBinary;
+			SetupObjectCreatedEvent();
 
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
@@ -75,7 +77,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker is IServer)
 			{
 				if (!string.IsNullOrEmpty(masterServerHost))
-					RegisterOnMasterServer(networker.Port, networker.MaxConnections, masterServerHost, masterServerPort, masterServerRegisterData);
+				{
+					_masterServerHost = masterServerHost;
+					_masterServerPort = masterServerPort;
+
+					RegisterOnMasterServer(masterServerRegisterData);
+				}
 
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
 
@@ -107,8 +114,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			behavior.Initialize(obj);
 			pendingObjects.Remove(obj.CreateCode);
 
-			//if (pendingObjects.Count == 0)
-			// NetworkObject.objectCreated -= CreatePendingObjects;
+			if (pendingObjects.Count == 0)
+				Networker.objectCreated -= CreatePendingObjects;
 		}
 
 		public void MatchmakingServersFromMasterServer(string masterServerHost,
@@ -123,7 +130,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			TCPMasterClient client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -138,7 +145,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					sendData.Add("get", getData);
 
 					// Send the request to the server
-					client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+					client.Send(Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
 				}
 				catch
 				{
@@ -155,7 +162,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			// An event that is raised when the server responds with hosts
-			client.textMessageReceived += (player, frame) =>
+			client.textMessageReceived += (player, frame, sender) =>
 			{
 				try
 				{
@@ -223,17 +230,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return sendData;
 		}
 
-		private void RegisterOnMasterServer(ushort port, int maxPlayers, string masterServerHost, ushort masterServerPort, JSONNode masterServerData)
+		private void RegisterOnMasterServer(JSONNode masterServerData)
 		{
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
 
 			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += () =>
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
-					Frame.Text temp = Frame.Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
+					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
 
 					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server
@@ -247,11 +254,65 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				}
 			};
 
-			client.Connect(masterServerHost, masterServerPort);
+			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += () =>
+			Networker.disconnected += (sender) =>
 			{
 				client.Disconnect(false);
+				MasterServerNetworker = null;
+			};
+
+			MasterServerNetworker = client;
+		}
+
+		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
+		{
+			JSONNode sendData = JSONNode.Parse("{}");
+			JSONClass registerData = new JSONClass();
+			registerData.Add("playerCount", new JSONData(server.MaxConnections));
+			registerData.Add("comment", comment);
+			registerData.Add("type", gameType);
+			registerData.Add("mode", mode);
+			registerData.Add("port", new JSONData(server.Port));
+			sendData.Add("update", registerData);
+
+			UpdateMasterServerListing(sendData);
+		}
+
+		private void UpdateMasterServerListing(JSONNode masterServerData)
+		{
+			if (string.IsNullOrEmpty(_masterServerHost))
+			{
+				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
+			}
+
+			// The Master Server communicates over TCP
+			TCPMasterClient client = new TCPMasterClient();
+
+			// Once this client has been accepted by the master server it should send it's update request
+			client.serverAccepted += (sender) =>
+			{
+				try
+				{
+					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
+
+					//Debug.Log(temp.GetData().Length);
+					// Send the request to the server
+					client.Send(temp);
+				}
+				catch
+				{
+					// If anything fails, then this client needs to be disconnected
+					client.Disconnect(true);
+					client = null;
+				}
+			};
+
+			client.Connect(_masterServerHost, _masterServerPort);
+
+			Networker.disconnected += (sender) =>
+			{
+				sender.Disconnect(false);
 				MasterServerNetworker = null;
 			};
 
@@ -263,6 +324,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 #if FN_WEBSERVER
 			webserver.Stop();
 #endif
+
+			Networker.objectCreated -= CreatePendingObjects;
 
 			if (Networker != null)
 				Networker.Disconnect(false);
@@ -276,7 +339,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Networker = null;
 			Instance = null;
 			Destroy(gameObject);
-			NetworkObject.objectCreated -= CreatePendingObjects;
 		}
 
 		private void OnApplicationQuit()
@@ -317,7 +379,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				var no = components[i].CreateNetworkObject(Networker, 0);
 
 				if (Networker.IsServer)
-					FinializeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation, false, true);
+					FinalizeInitialization(obj.gameObject, components[i], no, obj.position, obj.rotation, false, true);
 				else
 					components[i].AwaitNetworkBind(Networker, createTarget, idOffset++);
 			}
@@ -326,7 +388,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				ProcessOthers(obj.transform.GetChild(i), createTarget, idOffset);
 		}
 
-		private void FinializeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
+		private void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
 		{
 			if (Networker is IServer)
 				InitializedObject(netBehavior, obj);
@@ -360,7 +422,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// the currently loaded scene indexes for the client to load
 		/// </summary>
 		/// <param name="player">The player that was just accepted</param>
-		private void PlayerAcceptedSceneSetup(NetworkingPlayer player)
+		private void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
 		{
 			BMSByte data = new BMSByte();
 			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
@@ -369,12 +431,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			for (int i = 0; i < loadedScenes.Count; i++)
 				ObjectMapper.Instance.MapBytes(data, loadedScenes[i]);
 
-			Binary frame = new Binary(Networker.Time.Timestep, false, data, Receivers.Target, MessageGroupIds.VIEW_INITIALIZE, Networker is BaseTCP);
+			Binary frame = new Binary(sender.Time.Timestep, false, data, Receivers.Target, MessageGroupIds.VIEW_INITIALIZE, sender is BaseTCP);
 
-			SendFrame(Networker, frame, player);
+			SendFrame(sender, frame, player);
 		}
 
-		private void ReadBinary(NetworkingPlayer player, Binary frame)
+		private void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			if (frame.GroupId == MessageGroupIds.VIEW_INITIALIZE)
 			{
@@ -408,7 +470,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				// The client has loaded the scene
 				if (playerLoadedScene != null)
-					playerLoadedScene(player);
+					playerLoadedScene(player, Networker);
 
 				return;
 			}
@@ -523,21 +585,21 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IClient)
 			{
+				NetworkObject.Flush(Networker);
+
 				NetworkObject foundNetworkObject;
 				for (int i = 0; i < behaviors.Count; i++)
 				{
 					if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
 					{
 						behaviors[i].Initialize(foundNetworkObject);
+						pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
 						behaviors.RemoveAt(i--);
 					}
 				}
 
 				if (behaviors.Count == 0)
-				{
-					NetworkObject.Flush(Networker);
 					return;
-				}
 			}
 
 			if (Networker is IServer)
@@ -552,8 +614,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			foreach (NetworkBehavior behavior in behaviors)
 				pendingObjects.Add(behavior.TempAttachCode, behavior);
 
-			//NetworkObject.objectCreated += CreatePendingObjects;
-			NetworkObject.Flush(Networker);
+			if (pendingNetworkObjects.Count == 0)
+				Networker.objectCreated -= CreatePendingObjects;
 		}
 	}
 }

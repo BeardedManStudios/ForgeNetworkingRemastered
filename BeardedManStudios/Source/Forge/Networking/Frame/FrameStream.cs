@@ -53,6 +53,15 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// </summary>
 		public ulong UniqueId { get; protected set; }
 
+		public bool IsReliable { get; private set; }
+
+		private BMSByte reliableCloneData = new BMSByte();
+
+		/// <summary>
+		/// The unique reliable id for this frame
+		/// </summary>
+		public ulong UniqueReliableId { get; protected set; }
+
 		/// <summary>
 		/// This is a user controlled byte that allows binary frames to be routed by the user
 		/// </summary>
@@ -292,11 +301,29 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			}
 		}
 
+		private void MakeReliable(NetworkingPlayer player)
+		{
+			UniqueReliableId = player.GetNextReliableId();
+			IsReliable = true;
+		}
+
 		/// <summary>
 		/// Gets the raw data for this frame
 		/// </summary>
 		/// <returns>The raw byte data prepared by this frame</returns>
-		public byte[] GetData() { return StreamData.CompressBytes(); }
+		public byte[] GetData(bool makeReliable = false, NetworkingPlayer player = null)
+		{
+			if (makeReliable)
+			{
+				MakeReliable(player);
+				reliableCloneData.Clone(StreamData);
+
+				reliableCloneData.InsertRange(StreamData.Size - (sizeof(ulong) * 2), BitConverter.GetBytes(UniqueReliableId));
+				return reliableCloneData.CompressBytes();
+			}
+
+			return StreamData.CompressBytes();
+		}
 
 		protected FrameStream BaseClone(FrameStream target)
 		{
@@ -312,6 +339,19 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			target.Sender = Sender;
 
 			return target;
+		}
+
+		public void ExtractReliableId()
+		{
+			// We've already made this frame reliable
+			if (IsReliable)
+				return;
+
+			int currentIndex = StreamData.StartIndex();
+			StreamData.MoveStartIndex((StreamData.Size - currentIndex - sizeof(ulong)));
+			UniqueReliableId = ObjectMapper.Instance.Map<ulong>(StreamData);
+			StreamData.MoveStartIndex(-StreamData.StartIndex() + currentIndex);
+			IsReliable = true;
 		}
 
 		public abstract object Clone();

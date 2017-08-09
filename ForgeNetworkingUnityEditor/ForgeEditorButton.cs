@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using System.Runtime.Serialization;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -90,7 +91,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			SetupLists();
 		}
 
-		public ForgeEditorButton(ForgeClassObject fcObj)
+        public ForgeEditorButton(ForgeClassObject fcObj)
 		{
 			_baseType = fcObj.ObjectClassType;
 			TiedObject = fcObj;
@@ -500,5 +501,5 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				};
 			}
 		}
-	}
+    }
 }

@@ -24,7 +24,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("SendMessage", SendMessage, typeof(string), typeof(string));
 
-			MainThreadManager.Run(NetworkStart);
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -77,7 +81,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			Initialize(new ChatManagerNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
-		private void DestroyGameObject()
+		private void DestroyGameObject(NetWorker sender)
 		{
 			MainThreadManager.Run(() => { try { Destroy(gameObject); } catch { } });
 			networkObject.onDestroy -= DestroyGameObject;

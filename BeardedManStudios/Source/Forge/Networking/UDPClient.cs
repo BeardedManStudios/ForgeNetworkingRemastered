@@ -21,7 +21,6 @@ using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -54,8 +53,6 @@ namespace BeardedManStudios.Forge.Networking
 
 		public UDPPacketManager packetManager = new UDPPacketManager();
 
-		private List<UDPPacketComposer> pendingComposers = new List<UDPPacketComposer>();
-
 		public NatHolePunch nat = new NatHolePunch();
 
 		public event BaseNetworkEvent connectAttemptFailed;
@@ -78,24 +75,30 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// Used to clean up the target composer from memory
+		/// This will connect a UDP client to a given UDP server
 		/// </summary>
-		/// <param name="composer">The composer that has completed</param>
-		private void ComposerCompleted(UDPPacketComposer composer)
+		/// <param name="host">The server's host address on the network</param>
+		/// <param name="port">The port that the server is hosting on</param>
+		/// <param name="natHost">The NAT server host address, if blank NAT will be skipped</param>
+		/// <param name="natPort">The port that the NAT server is hosting on</param>
+		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
+		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false)
 		{
-			pendingComposers.Remove(composer);
-		}
+			if (Disposed)
+				throw new ObjectDisposedException("UDPClient", "This object has been disposed and can not be used to connect, please use a new UDPClient");
 
-		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool isSpecial = false)
-		{
 			// By default pending creates should be true and flushed when ready
-			if (!isSpecial)
+			if (!pendCreates)
 				PendCreates = true;
 
 			try
 			{
-				// TODO:  Remove + 1, it is for linux tests
-				ushort clientPort = port;//(ushort)(port + 1);
+				ushort clientPort = DEFAULT_PORT + 1;
+
+				// Make sure not to listen on the same port as the server for local networks
+				if (clientPort == port)
+					clientPort++;
+
 				for (; ; clientPort++)
 				{
 					try
@@ -133,8 +136,10 @@ namespace BeardedManStudios.Forge.Networking
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(server);
+
 				// Set myself as a connected client
 				server.Connected = true;
+
 				//Set the port
 				SetPort(clientPort);
 
@@ -151,7 +156,7 @@ namespace BeardedManStudios.Forge.Networking
 					if (connectCounter >= CONNECT_TRIES)
 					{
 						if (connectAttemptFailed != null)
-							connectAttemptFailed();
+							connectAttemptFailed(this);
 					}
 				});
 			}
@@ -297,7 +302,7 @@ namespace BeardedManStudios.Forge.Networking
 						}
 
 						// Add the packet to the manager so that it can be tracked and executed on complete
-						packetManager.AddPacket(formattedPacket, PacketSequenceComplete);
+						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 					}
 				}
 			}
@@ -308,19 +313,21 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers)
+		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
 			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, Server, receivers);
 
-			if (frame is ConnectionClose)
+			if (isReliable)
 			{
-				CloseConnection();
-				return;
-			}
+				frame.ExtractReliableId();
 
-			// Send an event off that a packet has been read
-			OnMessageReceived(Server, frame);
+				// TODO:  If the current reliable index for this player is not at
+				// the specified index, then it needs to wait for the correct ordering
+				Server.WaitReliable(frame);
+			}
+			else
+				FireRead(frame, Server);
 		}
 
 		private void CloseConnection()
@@ -344,6 +351,18 @@ namespace BeardedManStudios.Forge.Networking
 		public override void Ping()
 		{
 			Send(GeneratePing());
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			if (frame is ConnectionClose)
+			{
+				CloseConnection();
+				return;
+			}
+
+			// Send an event off that a packet has been read
+			OnMessageReceived(currentPlayer, frame);
 		}
 	}
 }

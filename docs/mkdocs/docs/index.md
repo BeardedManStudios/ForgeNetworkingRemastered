@@ -16,7 +16,7 @@ Now for the reveal of the biggest change to Forge Networking, the Network Object
 
 Of course you will find many things that you once knew such as [Network Instantiation](network-instantiation), [Remote Procedure Calls RPC](remote-procedure-calls), **MainThreadManager** ([Threading in Unity](threading-in-unity)) however you will find that some of the older models (such as **NetSync** ) have been removed. I know, I know, **NetSync** is awesome and it works kinda like UNET's **SyncVar** ; however, we believe we have a much simpler, more controlled, less magical, and more powerful approach to serializing network variables. Since we have abstracted all the network code to be an attachment, you will find a new fancy **network Object** variable that is a part of the class you create. This object will house all of your network variables and allow you to set the sync time as well as access any variable from the network easily. This means you can **choose** when to use the network variable, choices are good, yes?
 
-![smile](images/smile.png "Smile") Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!
+![smile](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/smile.png "Smile") Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!
 
 So, what are the difference highlights?
 

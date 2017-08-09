@@ -1,3 +1,4 @@
+using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedRPCVariableNames("{\"types\":[]")]
 	public abstract partial class NetworkCameraBehavior : NetworkBehavior
 	{
-
+		
 		public NetworkCameraNetworkObject networkObject = null;
 
 		public override void Initialize(NetworkObject obj)
@@ -15,13 +16,17 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			// We have already initialized this object
 			if (networkObject != null && networkObject.AttachedBehavior != null)
 				return;
-
+			
 			networkObject = (NetworkCameraNetworkObject)obj;
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
 
-			MainThreadManager.Run(NetworkStart);
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -74,7 +79,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			Initialize(new NetworkCameraNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
-		private void DestroyGameObject()
+		private void DestroyGameObject(NetWorker sender)
 		{
 			MainThreadManager.Run(() => { try { Destroy(gameObject); } catch { } });
 			networkObject.onDestroy -= DestroyGameObject;

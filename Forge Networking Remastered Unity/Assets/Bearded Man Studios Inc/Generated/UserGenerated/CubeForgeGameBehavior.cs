@@ -30,7 +30,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("DestroyPrimitive", DestroyPrimitive, typeof(Vector3));
 			networkObject.RegisterRpc("TestMe", TestMe, typeof(string));
 
-			MainThreadManager.Run(NetworkStart);
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -83,7 +87,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			Initialize(new CubeForgeGameNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
-		private void DestroyGameObject()
+		private void DestroyGameObject(NetWorker sender)
 		{
 			MainThreadManager.Run(() => { try { Destroy(gameObject); } catch { } });
 			networkObject.onDestroy -= DestroyGameObject;
