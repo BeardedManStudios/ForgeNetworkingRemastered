@@ -38,8 +38,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				var option = Instantiate(serverOption);
 				option.transform.SetParent(content);
-				option.transform.FindChild("Name").GetComponent<Text>().text = name;
-				option.transform.FindChild("Connect").GetComponent<Button>().onClick.AddListener(callback);
+                var browserItem = option.GetComponent<ServerBrowserItem>();
+                if (browserItem != null)
+                    browserItem.SetData(name, callback);
 			});
 		}
 
