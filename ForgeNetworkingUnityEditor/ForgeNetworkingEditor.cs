@@ -222,11 +222,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			string[] files = Directory.GetFiles(_storingPath, "*.cs", SearchOption.TopDirectoryOnly);
 			string[] userFiles = Directory.GetFiles(_userStoringPath, "*.cs", SearchOption.TopDirectoryOnly);
 
-			if (File.Exists(Path.Combine(_storingPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
+			if (File.Exists(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA))) //Check for our temp file, this will make it so that we can load this data from memory regaurdless of errors
 			{
 				IFormatter bFormatter = new BinaryFormatter();
 				bool updateColors = false;
-				using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.Open, FileAccess.Read, FileShare.Read))
 				{
 					try
 					{
@@ -501,7 +501,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							}
 
 							IFormatter previousSavedState = new BinaryFormatter();
-							using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+							using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
 							{
 								previousSavedState.Serialize(s, _editorButtons);
 							}
@@ -1046,13 +1046,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				sw.Write(networkManagerData);
 			}
 
-			IFormatter previousSavedState = new BinaryFormatter();
-			using (Stream s = new FileStream(Path.Combine(_storingPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-			{
-				previousSavedState.Serialize(s, _editorButtons);
-			}
+			var formatter = new BinaryFormatter();
+            using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            {
+                formatter.Serialize(s, _editorButtons);
+            }
 
-			EditorApplication.UnlockReloadAssemblies();
+            EditorApplication.UnlockReloadAssemblies();
 
 			AssetDatabase.Refresh();
 
