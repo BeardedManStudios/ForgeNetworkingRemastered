@@ -11,7 +11,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 	/// This is the forge editor button that contains key information to the behavior or network object
 	/// </summary>
 	[Serializable]
-	public class ForgeEditorButton : ISerializable
+	public class ForgeEditorButton
 	{
 		public string ButtonName;
 		private string _defaultName;
@@ -90,53 +90,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			ButtonColor = ForgeNetworkingEditor.CoolBlue;
 			SetupLists();
 		}
-
-        protected ForgeEditorButton(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info was null for the button class");
-
-            ButtonName = (string)info.GetValue("ButtonName", typeof(string));
-            CanRender = (bool)info.GetValue("CanRender", typeof(bool));
-            IsCreated = (bool)info.GetValue("IsCreated", typeof(bool));
-            MarkedForDeletion = (bool)info.GetValue("MarkedForDeletion", typeof(bool));
-            _baseType = (ForgeBaseClassType)info.GetValue("_baseType", typeof(ForgeBaseClassType));
-            CanRenderFields = (bool)info.GetValue("CanRenderFields", typeof(bool));
-            CanRenderRPCS = (bool)info.GetValue("CanRenderRPCS", typeof(bool));
-            InvokedAction = (Action)info.GetValue("InvokedAction", typeof(Action));
-            ClassVariables = (List<ForgeEditorField>)info.GetValue("ClassVariables", typeof(List<ForgeEditorField>));
-            _defaultClassVariablesCount = (int)info.GetValue("_defaultClassVariablesCount", typeof(int));
-            RewindVariables = (List<ForgeEditorField>)info.GetValue("RewindVariables", typeof(List<ForgeEditorField>));
-            TiedObject = (ForgeClassObject)info.GetValue("TiedObject", typeof(ForgeClassObject));
-            _tiedBehavior = (ForgeEditorButton)info.GetValue("_tiedBehavior", typeof(ForgeEditorButton));
-
-            if (TiedObject.IsNetworkBehavior)
-                ButtonColor = ForgeNetworkingEditor.DarkBlue;
-            else if (TiedObject.IsNetworkObject)
-                ButtonColor = ForgeNetworkingEditor.LightBlue;
-            else
-                ButtonColor = ForgeNetworkingEditor.CoolBlue;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info was null for the button class");
-
-            info.AddValue("ButtonName", ButtonName);
-            info.AddValue("CanRender", CanRender);
-            info.AddValue("IsCreated", IsCreated);
-            info.AddValue("MarkedForDeletion", MarkedForDeletion);
-            info.AddValue("_baseType", _baseType);
-            info.AddValue("CanRenderFields", CanRenderFields);
-            info.AddValue("CanRenderRPCS", CanRenderRPCS);
-            info.AddValue("InvokedAction", InvokedAction);
-            info.AddValue("ClassVariables", ClassVariables);
-            info.AddValue("_defaultClassVariablesCount", _defaultClassVariablesCount);
-            info.AddValue("RewindVariables", RewindVariables);
-            info.AddValue("TiedObject", TiedObject);
-            info.AddValue("_tiedBehavior", _tiedBehavior);
-        }
 
         public ForgeEditorButton(ForgeClassObject fcObj)
 		{

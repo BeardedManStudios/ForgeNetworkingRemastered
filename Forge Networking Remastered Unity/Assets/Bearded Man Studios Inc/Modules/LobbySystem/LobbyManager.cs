@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BeardedManStudios.Forge.Networking.Lobby;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 {
@@ -132,10 +133,19 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 			LobbyService.Instance.SendPlayerMessage(chatMessage);
 			ChatInputBox.text = string.Empty;
 		}
-		#endregion
 
-		#region Private API
-		private LobbyPlayerItem GetNewPlayerItem()
+        public void StartGame(int sceneID)
+        {
+#if UNITY_5_6_OR_NEWER
+            SceneManager.LoadScene(sceneID);
+#else
+            Application.LoadLevel(sceneID);
+#endif
+        }
+        #endregion
+
+        #region Private API
+        private LobbyPlayerItem GetNewPlayerItem()
 		{
 			LobbyPlayerItem returnValue = null;
 
