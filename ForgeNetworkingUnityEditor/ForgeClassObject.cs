@@ -265,6 +265,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 				for (int i = 0; i < uniqueFields.Count; ++i)
 				{
+					if (_interpolationValues.Count == 0)
+						break;
+
 					ForgeClassFieldValue val = ForgeClassFieldValue.GetClassField(uniqueFields[i], currentType, _interpolationValues[i] > 0, _interpolationValues[i]);
 					Fields.Add(val);
 #if FORGE_EDITOR_DEBUGGING
