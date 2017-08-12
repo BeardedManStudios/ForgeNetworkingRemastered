@@ -1040,7 +1040,7 @@ namespace BeardedManStudios.Forge.Networking
 
 				try
 				{
-					while (localListingsClient != null && !EndingSession)
+					while (localListingsClient != null)
 					{
 						var data = localListingsClient.Receive(ref groupEp, ref endpoint);
 
