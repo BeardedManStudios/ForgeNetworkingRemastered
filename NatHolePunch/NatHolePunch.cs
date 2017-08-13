@@ -12,6 +12,7 @@ namespace NatHolePunchServer
 
 		static void Main(string[] args)
 		{
+			string read;
 			bool quit = false;
 
 			server = new UDPServer(2048);
@@ -22,7 +23,10 @@ namespace NatHolePunchServer
 
 			server.textMessageReceived += TextMessageReceived;
 
-			while (!quit) ;
+			while (!quit)
+			{
+				read = System.Console.ReadLine().ToLower();
+			}
 		}
 
 		private static void TextMessageReceived(NetworkingPlayer player, Text frame, NetWorker sender)

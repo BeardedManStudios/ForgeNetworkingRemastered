@@ -1,7 +1,5 @@
 ﻿using BeardedManStudios;
-using BeardedManStudios.Threading;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace MasterServer
 {
@@ -45,19 +43,11 @@ namespace MasterServer
 				}
 			}
 
-			MasterServer server = null;
+			System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+			System.Console.WriteLine("Commands Available\n(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
+			MasterServer server = new MasterServer(host, port);
+			server.EloRange = eloRange;
 
-			Thread serverThread = new Thread(new ThreadStart(() =>
-			{
-				System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-				System.Console.WriteLine("Commands Available\n(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
-				server = new MasterServer(host, port);
-				server.EloRange = eloRange;
-				while (server.IsRunning) ;
-			}));
-
-			serverThread.IsBackground = true;
-			serverThread.Start();
 			while (true)
 			{
 				read = System.Console.ReadLine().ToLower();
@@ -81,15 +71,8 @@ namespace MasterServer
 					}
 
 					System.Console.WriteLine("Restarting...");
-					serverThread = new Thread(new ThreadStart(() =>
-					{
-						System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-						server = new MasterServer(host, port);
-						while (server.IsRunning) ;
-					}));
-
-					serverThread.IsBackground = true;
-					serverThread.Start();
+					System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+					server = new MasterServer(host, port);
 				}
 				else if (read == "q" || read == "quit")
 				{
