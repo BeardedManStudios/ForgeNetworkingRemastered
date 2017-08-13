@@ -970,6 +970,13 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			EndingSession = true;
 			CloseLocalListingsClient();
+
+			// Reset the ending session after 1000ms so that we know all the threads have cleaned up
+			// for any remaining threads that may be going for this previous process
+			Task.Queue(() =>
+			{
+				EndingSession = false;
+			}, 1000);
 		}
 
 		protected Ping GeneratePing()
