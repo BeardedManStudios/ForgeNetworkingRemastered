@@ -955,7 +955,7 @@ namespace BeardedManStudios.Forge.Networking
 					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
 					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
-					System.Net.Sockets.TcpListener t = new System.Net.Sockets.TcpListener(ipLocalEndPoint);
+					TcpListener t = new TcpListener(ipLocalEndPoint);
 					t.Start();
 					t.Stop();
 				}
