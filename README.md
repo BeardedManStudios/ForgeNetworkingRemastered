@@ -51,10 +51,7 @@ Git Source Code:
 
 [Getting Started Docs](http://docs.forgepowered.com/getting-started/)
 
-## Unity Package Download
-Most Used: [Version 21.5](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V21.5.unitypackage)
-
-Most Recent: [Version 23.02](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/ForgeNetworking-Release-V23.02.unitypackage)
+## [Unity Package Download](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/Forge-Networking-Remastered-v24.unitypackage)
 
 ## Ways to support the project
 1) Make pull requests :D
