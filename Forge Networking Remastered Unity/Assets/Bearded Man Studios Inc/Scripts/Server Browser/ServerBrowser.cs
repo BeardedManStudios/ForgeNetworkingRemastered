@@ -38,9 +38,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				var option = Instantiate(serverOption);
 				option.transform.SetParent(content);
-                var browserItem = option.GetComponent<ServerBrowserItem>();
-                if (browserItem != null)
-                    browserItem.SetData(name, callback);
+				var browserItem = option.GetComponent<ServerBrowserItem>();
+				if (browserItem != null)
+					browserItem.SetData(name, callback);
 			});
 		}
 
