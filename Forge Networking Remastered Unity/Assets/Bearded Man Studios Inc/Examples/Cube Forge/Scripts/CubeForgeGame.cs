@@ -174,8 +174,12 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
 		NetworkManager.Instance.Networker.pingReceived -= PingReceived;
 		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
-		networkObject.Destroy();
-		netCam.Destroy();
+
+		if (networkObject != null)
+			networkObject.Destroy();
+
+		if (netCam != null)
+			netCam.Destroy();
 	}
 
 	private void WriteLabel(Rect rect, string message)
