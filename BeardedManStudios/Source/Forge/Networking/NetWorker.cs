@@ -807,19 +807,17 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-			if (frame.GroupId == MessageGroupIds.PING && this is IServer)
+			if (frame.GroupId == MessageGroupIds.PING)
 			{
 				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-
 				DateTime received = new DateTime(receivedTimestep);
 				Pong(player, received);
+				OnPingRecieved(receivedTimestep, player);
 				return;
 			}
-
-			if (frame.GroupId == MessageGroupIds.PONG && this is IClient)
+			else if (frame.GroupId == MessageGroupIds.PONG)
 			{
 				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-
 				DateTime received = new DateTime(receivedTimestep);
 				TimeSpan ms = DateTime.UtcNow - received;
 				OnPingRecieved(ms.TotalMilliseconds, player);
@@ -982,7 +980,7 @@ namespace BeardedManStudios.Forge.Networking
 			}, 1000);
 		}
 
-		protected Ping GeneratePing()
+		public Ping GeneratePing()
 		{
 			BMSByte payload = new BMSByte();
 			long ticks = DateTime.UtcNow.Ticks;
@@ -1004,7 +1002,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public abstract void Ping();
 
-		protected virtual void Pong(NetworkingPlayer playerRequesting, DateTime time) { }
+		protected abstract void Pong(NetworkingPlayer playerRequesting, DateTime time);
 
 		private static void CloseLocalListingsClient()
 		{
