@@ -126,6 +126,11 @@ namespace BeardedManStudios.Forge.Networking
 		public bool IsHost { get; private set; }
 
 		/// <summary>
+		/// Used to determine if this player is in the process of disconnecting
+		/// </summary>
+		public bool IsDisconnecting { get; set; }
+
+		/// <summary>
 		/// Whether we are locked
 		/// </summary>
 		public object MutexLock = new object();

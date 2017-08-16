@@ -6,7 +6,7 @@ namespace MasterServer
 {
 	class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			string host = "0.0.0.0";
 			ushort port = 15940;
@@ -45,7 +45,7 @@ namespace MasterServer
 			}
 
 			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-			Console.WriteLine("Commands Available\n(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
+			PrintHelp();
 			MasterServer server = new MasterServer(host, port);
 			server.EloRange = eloRange;
 
@@ -92,9 +92,7 @@ namespace MasterServer
 					break;
 				}
 				else if (read == "h" || read == "help")
-				{
-					Console.WriteLine("(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(e)lo - Set the elo range to accept in difference [i.e. \"elorange = 10\"]\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
-				}
+					PrintHelp();
 				else if (read.StartsWith("elo"))
 				{
 					int index = read.IndexOf("=");
@@ -112,6 +110,16 @@ namespace MasterServer
 				else
 					Console.WriteLine("Command not recognized, please try again");
 			}
+		}
+
+		private static void PrintHelp()
+		{
+			Console.WriteLine(@"Commands Available
+(s)top - Stops hosting
+(r)estart - Restarts the hosting service even when stopped
+(l)og - Toggles logging (starts off)
+(q)uit - Quits the application
+(h)elp - Get a full list of comands");
 		}
 	}
 }
