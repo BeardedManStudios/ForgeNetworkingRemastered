@@ -202,9 +202,15 @@ namespace BeardedManStudios.Forge.Networking
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
 			if (!forced)
-				DisconnectingPlayers.Add(player);
+			{
+				if (!DisconnectingPlayers.Contains(player))
+					DisconnectingPlayers.Add(player);
+			}
 			else
-				ForcedDisconnectingPlayers.Add(player);
+			{
+				if (!ForcedDisconnectingPlayers.Contains(player))
+					ForcedDisconnectingPlayers.Add(player);
+			}
 		}
 
 		/// <summary>
@@ -224,20 +230,28 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
+			if (player.IsDisconnecting)
+				return;
+
 			// Tell the player that they are getting disconnected
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
 			// Give a grace time for the client to get the message
 			Task.Queue(() =>
 			{
-				FinalizeRemovePlayer(player);
+				FinalizeRemovePlayer(player, forced);
 			}, 1000);
 		}
 
-		private void FinalizeRemovePlayer(NetworkingPlayer player)
+		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
 		{
 			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
+
+			if (forced)
+				ForcedDisconnectingPlayers.Remove(player);
+			else
+				DisconnectingPlayers.Remove(player);
 		}
 
 		/// <summary>
@@ -319,7 +333,7 @@ namespace BeardedManStudios.Forge.Networking
 						// will be 71 and the second packet be 69 is a forced disconnect reconnect
 						if (packet[0] == 71 && packet[1] == 69)
 						{
-							FinalizeRemovePlayer(currentReadingPlayer);
+							FinalizeRemovePlayer(currentReadingPlayer, true);
 							continue;
 						}
 

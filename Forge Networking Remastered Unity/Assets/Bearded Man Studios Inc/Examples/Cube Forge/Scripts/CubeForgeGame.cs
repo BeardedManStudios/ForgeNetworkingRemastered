@@ -61,24 +61,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void Start()
 	{
-		NetworkManager.Instance.objectInitialized += (INetworkBehavior behavior, NetworkObject obj) =>
-		{
-			if (!(obj is NetworkCameraNetworkObject))
-				return;
-
-			// Since the camera represents the player, if one is being created
-			// we need to increment the player count for the display. NOTE:
-			playerCount++;
-
-			// When this object is destroyed we need to decrement the player count as the camera
-			// represents the player
-			obj.onDestroy += (sender) => { playerCount--; };
-
-			if (NetworkManager.Instance.Networker is IServer)
-				obj.Owner.disconnected += (sender) => { obj.Destroy(); };
-
-			netCam = obj as NetworkCameraNetworkObject;
-		};
+		NetworkManager.Instance.objectInitialized += ObjectInitialized;
 
 		// Since this object is a singleton we can create the player from here as
 		// it is in the scene at start time and we want to create a player camera
@@ -93,15 +76,44 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		{
 			// When a player is accepted on the server we need to send them the map
 			// information through the rpc attached to this object
-			NetworkManager.Instance.Networker.playerAccepted += (player, sender) =>
-			{
-				MainThreadManager.Run(() => { networkObject.SendRpc(player, RPC_INITIALIZE_MAP, min, max, SerializeMap()); });
-			};
+			NetworkManager.Instance.Networker.playerAccepted += PlayerAccepted;
 		}
 		else
 		{
 			NetworkManager.Instance.Networker.disconnected += DisconnectedFromServer;
 		}
+	}
+
+	private void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
+	{
+		MainThreadManager.Run(() => { networkObject.SendRpc(player, RPC_INITIALIZE_MAP, min, max, SerializeMap()); });
+	}
+
+	/// <summary>
+	/// Called whenever a new object is being initialized on the network
+	/// </summary>
+	/// <param name="behavior">The behavior for the object that is initialized</param>
+	/// <param name="obj">The network object that is being initialized</param>
+	private void ObjectInitialized(INetworkBehavior behavior, NetworkObject obj)
+	{
+		if (!(obj is NetworkCameraNetworkObject))
+			return;
+
+		// Since the camera represents the player, if one is being created
+		// we need to increment the player count for the display. NOTE:
+		playerCount++;
+
+		// When this object is destroyed we need to decrement the player count as the camera
+		// represents the player
+		obj.onDestroy += (sender) =>
+		{
+			playerCount--;
+		};
+
+		if (NetworkManager.Instance.Networker is IServer)
+			obj.Owner.disconnected += (sender) => { obj.Destroy(); };
+
+		netCam = obj as NetworkCameraNetworkObject;
 	}
 
 	private void DisconnectedFromServer(NetWorker sender)
@@ -152,8 +164,16 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		// TODO:  Add a sphere to this if chain
 	}
 
+	private void OnDestroy()
+	{
+		Cleanup();
+	}
+
 	private void Cleanup()
 	{
+		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
+		NetworkManager.Instance.Networker.pingReceived -= PingReceived;
+		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
 		networkObject.Destroy();
 		netCam.Destroy();
 	}
