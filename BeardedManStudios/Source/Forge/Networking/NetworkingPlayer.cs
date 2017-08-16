@@ -98,7 +98,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// Determines if the player has been sent an accept request but the server
 		/// is still waiting on a confirmation of the acceptance
 		/// </summary>
-		public bool PendingAccpeted { get; set; }
+		public bool PendingAccepted { get; set; }
 
 		/// <summary>
 		/// Determines if the player is currently connected

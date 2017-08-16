@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking
 		public bool PlayerIsReceiver(NetworkingPlayer player, FrameStream frame, float proximityDistance, NetworkingPlayer skipPlayer = null)
 		{
 			// Don't send messages to a player who has not been accepted by the server yet
-			if ((!player.Accepted && !player.PendingAccpeted) || player == skipPlayer)
+			if ((!player.Accepted && !player.PendingAccepted) || player == skipPlayer)
 				return false;
 
 			if (player == frame.Sender)

@@ -309,7 +309,7 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					currentReadingPlayer = udpPlayers[incomingEndpoint];
 
-					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccpeted)
+					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccepted)
 					{
 						// It is possible that the response validation was dropped so
 						// check if the client is resending for a response
@@ -323,7 +323,7 @@ namespace BeardedManStudios.Forge.Networking
 						}
 						else
 						{
-							currentReadingPlayer.PendingAccpeted = true;
+							currentReadingPlayer.PendingAccepted = true;
 							ReadPacket(packet);
 						}
 					}

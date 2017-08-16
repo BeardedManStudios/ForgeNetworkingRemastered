@@ -181,7 +181,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (Players.Contains(targetPlayer))
 				{
 					NetworkingPlayer player = Players[Players.IndexOf(targetPlayer)];
-					if (!player.Accepted && !player.PendingAccpeted)
+					if (!player.Accepted && !player.PendingAccepted)
 						return;
 
 					if (player == frame.Sender)
