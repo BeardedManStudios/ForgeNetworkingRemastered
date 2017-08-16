@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System;
 
 namespace MasterServer
 {
 	public class MasterServer
 	{
-		private const int PING_INTERVAL = 30000;
+		private const int PING_INTERVAL = 10000;
 
 		public bool IsRunning { get; private set; }
 		private TCPServer server;
@@ -33,6 +34,21 @@ namespace MasterServer
 			}
 		}
 
+		private bool _logging;
+		public bool ToggleLogging()
+		{
+			_logging = !_logging;
+			return _logging;
+		}
+
+		private void Log(object message)
+		{
+			if (!_logging)
+				return;
+
+			Console.WriteLine(message);
+		}
+
 		public MasterServer(string host, ushort port)
 		{
 			server = new TCPServer(2048);
@@ -51,6 +67,7 @@ namespace MasterServer
 				{
 					if (hosts[i].Player == player)
 					{
+						Log($"Host [{hosts[i].Address}] on port [{hosts[i].Port}] with name [{hosts[i].Name}] removed");
 						hosts.RemoveAt(i);
 						return;
 					}
@@ -120,7 +137,7 @@ namespace MasterServer
 			};
 
 			hosts.Add(host);
-			System.Console.WriteLine(string.Format("Host [{0}] registered on port [{1}] with name [{2}]", address, port, name));
+			Log(string.Format($"Host [{address}] registered on port [{port}] with name [{name}]"));
 		}
 
 		private void Update(NetworkingPlayer player, JSONNode data)

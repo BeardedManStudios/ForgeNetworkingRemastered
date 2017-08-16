@@ -57,3 +57,5 @@ After opening the window you will be presented with this.
 You will notice that all generated code will be located in your project directory under **Generated**.
 
 Note: This will be changeable from the editor in the future.
+
+Note: if you are getting RPCs lagging, then being called all at once, make sure "autoconnect profiler" is turned off in your build settings.

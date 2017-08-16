@@ -908,7 +908,7 @@ namespace BeardedManStudios.Forge.Networking
 			RpcArgs rpcArgs = new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep });
 
 			// If we are the server we need to determine if this RPC is okay to replicate
-			if (Networker is IServer && receivers != Receivers.Server && receivers != Receivers.Target)
+			if (Networker is IServer && receivers != Receivers.Target)
 			{
 				string methodName = inverseRpcLookup[methodId];
 

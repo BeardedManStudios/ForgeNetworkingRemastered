@@ -955,7 +955,7 @@ namespace BeardedManStudios.Forge.Networking
 					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
 					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
-					System.Net.Sockets.TcpListener t = new System.Net.Sockets.TcpListener(ipLocalEndPoint);
+					TcpListener t = new TcpListener(ipLocalEndPoint);
 					t.Start();
 					t.Stop();
 				}
@@ -970,6 +970,13 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			EndingSession = true;
 			CloseLocalListingsClient();
+
+			// Reset the ending session after 1000ms so that we know all the threads have cleaned up
+			// for any remaining threads that may be going for this previous process
+			Task.Queue(() =>
+			{
+				EndingSession = false;
+			}, 1000);
 		}
 
 		protected Ping GeneratePing()

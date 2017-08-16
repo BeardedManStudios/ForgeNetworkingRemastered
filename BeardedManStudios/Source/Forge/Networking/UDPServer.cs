@@ -227,9 +227,11 @@ namespace BeardedManStudios.Forge.Networking
 			// Tell the player that they are getting disconnected
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
-			//Thread.Sleep(500);
-
-			FinalizeRemovePlayer(player);
+			// Give a grace time for the client to get the message
+			Task.Queue(() =>
+			{
+				FinalizeRemovePlayer(player);
+			}, 1000);
 		}
 
 		private void FinalizeRemovePlayer(NetworkingPlayer player)
