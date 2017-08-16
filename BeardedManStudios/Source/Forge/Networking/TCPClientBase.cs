@@ -308,14 +308,22 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-
-
 		/// <summary>
 		/// Request the ping from the server (pingReceived will be triggered if it receives it)
 		/// </summary>
 		public override void Ping()
 		{
 			Send(GeneratePing());
+		}
+
+		/// <summary>
+		/// A ping was receieved from the server so we need to respond with the pong
+		/// </summary>
+		/// <param name="playerRequesting">The server</param>
+		/// <param name="time">The time that the ping was received for</param>
+		protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
+		{
+			Send(GeneratePong(time));
 		}
 	}
 }

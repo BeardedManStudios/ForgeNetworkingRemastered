@@ -78,7 +78,7 @@ namespace MasterServer
 			{
 				while (server.IsBound)
 				{
-					server.SendAll(new Ping(server.Time.Timestep, false, Receivers.All, MessageGroupIds.PING, true));
+					server.SendAll(server.GeneratePing());
 					Thread.Sleep(PING_INTERVAL);
 				}
 			}, PING_INTERVAL);

@@ -353,6 +353,16 @@ namespace BeardedManStudios.Forge.Networking
 			Send(GeneratePing());
 		}
 
+		/// <summary>
+		/// A ping was receieved from the server so we need to respond with the pong
+		/// </summary>
+		/// <param name="playerRequesting">The server</param>
+		/// <param name="time">The time that the ping was received for</param>
+		protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
+		{
+			Send(GeneratePong(time));
+		}
+
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
 			if (frame is ConnectionClose)
