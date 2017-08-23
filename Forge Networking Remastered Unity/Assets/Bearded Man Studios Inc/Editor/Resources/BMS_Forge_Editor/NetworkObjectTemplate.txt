@@ -129,7 +129,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				return;
 
 			>:FOREVERY variables:<
-			if (>:[1]:<Interpolation.Enabled && !>:[1]:<Interpolation.current.Near(>:[1]:<Interpolation.target, 0.0015f))
+			if (>:[1]:<Interpolation.Enabled && !>:[1]:<Interpolation.current.UnityNear(>:[1]:<Interpolation.target, 0.0015f))
 			{
 				_>:[1]:< = (>:[0]:<)>:[1]:<Interpolation.Interpolate();
 				RunChange_>:[1]:<(>:[1]:<Interpolation.Timestep);

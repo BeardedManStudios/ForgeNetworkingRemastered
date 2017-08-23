@@ -19,14 +19,20 @@
 
 namespace BeardedManStudios.Forge.Networking
 {
-	public struct InterpolateUnknown : IInterpolator<object>
+	public struct Interpolated<T> : IInterpolator<T>
 	{
-		public object current;
-		public object target;
+		public T current;
+		public T target;
 		public float LerpT { get; set; }
 		public bool Enabled { get; set; }
 		public ulong Timestep { get; set; }
 
-		public object Interpolate() { return target; }
+		public T Interpolate()
+		{
+			if (!Enabled) return target;
+
+			current = BeardedMath.Lerp(current, target, LerpT);
+			return current;
+		}
 	}
 }

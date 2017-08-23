@@ -76,9 +76,9 @@ namespace BeardedManStudios
 			return target.Between(other - distance, other + distance);
 		}
 
-		public static bool Near(this object target, object other, float distance)
+		public static bool Near<T>(this T target, T other, float distance)
 		{
-			return target == other;
+			return target.Equals(other);
 		}
 	}
 }
