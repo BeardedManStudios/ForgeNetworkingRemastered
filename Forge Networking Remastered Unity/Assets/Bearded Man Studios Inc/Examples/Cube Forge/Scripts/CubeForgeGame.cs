@@ -46,6 +46,11 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	/// </summary>
 	private Vector3 max = Vector3.zero;
 
+	/// <summary>
+	/// The amount of time in milliseconds for the round trip latency to/from the server
+	/// </summary>
+	public double RoundTripLatency { get; private set; }
+
 	private NetworkCameraNetworkObject netCam;
 
 	private void Awake()
@@ -68,7 +73,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		// for this newly created server or newly connected client
 		NetworkManager.Instance.InstantiateNetworkCamera();
 
-		NetworkManager.Instance.Networker.pingReceived += PingReceived;
+		NetworkManager.Instance.Networker.onPingPong += OnPingPong;
 
 		// If the current networker is the server, then setup the callbacks for when
 		// a player connects
@@ -127,9 +132,9 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		});
 	}
 
-	private void PingReceived(double ping, NetWorker sender)
+	private void OnPingPong(double ping, NetWorker sender)
 	{
-		Debug.Log("Ping Received: " + ping);
+		RoundTripLatency = ping;
 	}
 
 	private void Update()
@@ -172,7 +177,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	private void Cleanup()
 	{
 		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
-		NetworkManager.Instance.Networker.pingReceived -= PingReceived;
+		NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
 		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
 
 		if (networkObject != null)
@@ -208,6 +213,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		WriteLabel(new Rect(14, 28, 100, 25), "Time: " + NetworkManager.Instance.Networker.Time.Timestep);
 		WriteLabel(new Rect(14, 42, 256, 25), "Bandwidth In: " + NetworkManager.Instance.Networker.BandwidthIn);
 		WriteLabel(new Rect(14, 56, 256, 25), "Bandwidth Out: " + NetworkManager.Instance.Networker.BandwidthOut);
+		WriteLabel(new Rect(14, 56, 256, 25), "Round Trip Latency (ms): " + RoundTripLatency);
 	}
 
 	/// <summary>

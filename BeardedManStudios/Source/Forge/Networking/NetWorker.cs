@@ -220,7 +220,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Occurs when a ping is received over the network from a remote machine
 		/// </summary>
-		public event PingEvent pingReceived;
+		public event PingEvent onPingPong;
 
 		/// <summary>
 		/// Called when a player has provided it's guid, this is useful for waiting until
@@ -787,8 +787,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="ping"></param>
 		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
-			if (pingReceived != null)
-				pingReceived(ping, this);
+			if (onPingPong != null)
+				onPingPong(ping, this);
 
 			player.RoundTripLatency = (int)ping;
 		}
@@ -807,20 +807,17 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-			if (frame.GroupId == MessageGroupIds.PING)
-			{
-				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-				DateTime received = new DateTime(receivedTimestep);
-				Pong(player, received);
-				OnPingRecieved(receivedTimestep, player);
-				return;
-			}
-			else if (frame.GroupId == MessageGroupIds.PONG)
+			if (frame.GroupId == MessageGroupIds.PING || frame.GroupId == MessageGroupIds.PONG)
 			{
 				long receivedTimestep = frame.StreamData.GetBasicType<long>();
 				DateTime received = new DateTime(receivedTimestep);
 				TimeSpan ms = DateTime.UtcNow - received;
-				OnPingRecieved(ms.TotalMilliseconds, player);
+
+				if (frame.GroupId == MessageGroupIds.PING)
+					Pong(player, received);
+				else
+					OnPingRecieved(ms.TotalMilliseconds, player);
+
 				return;
 			}
 
