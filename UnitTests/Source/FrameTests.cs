@@ -87,6 +87,24 @@ namespace UnitTests
 			Assert.AreEqual(MESSAGE, response);
 
 			response = null;
+
+			response = null;
+			client.Send(SendBinary(client), true);
+
+			WaitFor(() => { return !string.IsNullOrEmpty(response); });
+			Assert.AreEqual(server.Players.Last(), responsePlayer);
+			Assert.AreEqual(MESSAGE, response);
+
+			responsePlayer = null;
+			response = null;
+
+			server.Send(SendBinary(server), true);
+
+			WaitFor(() => { return !string.IsNullOrEmpty(response); });
+			Assert.AreEqual(client.Server, responsePlayer);
+			Assert.AreEqual(MESSAGE, response);
+
+			response = null;
 		}
 
 		[TestMethod]
@@ -105,6 +123,24 @@ namespace UnitTests
 			response = null;
 
 			server.Send(SendText(server), false);
+
+			WaitFor(() => { return !string.IsNullOrEmpty(response); });
+			Assert.AreEqual(client.Server, responsePlayer);
+			Assert.AreEqual(MESSAGE, response);
+
+			response = null;
+
+			response = null;
+			client.Send(SendText(client), true);
+
+			WaitFor(() => { return !string.IsNullOrEmpty(response); });
+			Assert.AreEqual(server.Players.Last(), responsePlayer);
+			Assert.AreEqual(MESSAGE, response);
+
+			responsePlayer = null;
+			response = null;
+
+			server.Send(SendText(server), true);
 
 			WaitFor(() => { return !string.IsNullOrEmpty(response); });
 			Assert.AreEqual(client.Server, responsePlayer);

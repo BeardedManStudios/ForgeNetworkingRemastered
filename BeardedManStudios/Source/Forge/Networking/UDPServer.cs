@@ -462,7 +462,6 @@ namespace BeardedManStudios.Forge.Networking
 				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
 				{
 					currentPlayer.InstanceGuid = frame.ToString();
-					currentPlayer.InstanceGuid = currentPlayer.InstanceGuid.Remove(currentPlayer.InstanceGuid.Length - sizeof(ulong));
 
 					OnPlayerGuidAssigned(currentPlayer);
 
