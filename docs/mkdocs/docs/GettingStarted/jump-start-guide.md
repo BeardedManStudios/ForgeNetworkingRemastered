@@ -416,14 +416,14 @@ public class GameBall : GameBallBehavior
 			return;
 
 		// Only move if a player touched the ball
-		if (c.gameObject.GetComponent<Player>() == null)
+		if (c.GetComponent<Player>() == null)
 			return;
 
 		// Call an RPC on the Game Logic to print the player's name as the last
 		// player to touch the ball
 		gameLogic.networkObject.SendRpc(GameLogicBehavior.RPC_PLAYER_SCORED, Receivers.All,
 
-		c.transform.GetComponent<Player>().Name);
+		c.GetComponent<Player>().Name);
 
 		// Reset the ball
 		Reset();
