@@ -203,6 +203,8 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			if (!player.IsDisconnecting)
 				player.IsDisconnecting = true;
+			else
+				return;
 
 			if (!forced)
 			{
