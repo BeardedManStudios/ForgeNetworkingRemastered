@@ -201,6 +201,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
+			if (!player.IsDisconnecting)
+				player.IsDisconnecting = true;
+
 			if (!forced)
 			{
 				if (!DisconnectingPlayers.Contains(player))
