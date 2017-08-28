@@ -201,9 +201,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
-			if (!player.IsDisconnecting)
-				player.IsDisconnecting = true;
-			else
+			if (player.IsDisconnecting)
 				return;
 
 			if (!forced)
@@ -242,6 +240,7 @@ namespace BeardedManStudios.Forge.Networking
 			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
 
 			// Give a grace time for the client to get the message
+			player.IsDisconnecting = true;
 			Task.Queue(() =>
 			{
 				FinalizeRemovePlayer(player, forced);
