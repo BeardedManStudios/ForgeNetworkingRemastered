@@ -192,7 +192,7 @@ public class Player : PlayerBehavior
 	private string[] nameParts = new string[] { "crazy", "cat", "dog", "homie", "bobble", "mr", "ms", "mrs", "castle", "flip", "flop" };
 
 	public string Name { get; private set; }
-	
+
 	protected override void NetworkStart()
 	{
 		base.NetworkStart();
@@ -214,7 +214,7 @@ public class Player : PlayerBehavior
 		// Assign the name when this object is setup on the network
 		ChangeName();
 	}
-	
+
 	public void ChangeName()
 	{
 		// Only the owning client of this object can assign the name
@@ -247,7 +247,7 @@ public class Player : PlayerBehavior
 			transform.position = networkObject.position;
 			return;
 		}
-	 
+
 		// When our position changes the networkObject.position will detect the
 		// change based on this assignment automatically, this data will then be
 		// syndicated across the network on the next update pass for this networkObject
@@ -303,7 +303,7 @@ public class GameLogic : GameLogicBehavior
 	{
 		// This will be called on every client, so each client will essentially instantiate
 		// their own player on the network. We also pass in the position we want them to spawn at
-		NetworkManager.Instance.InstantiatePlayerNetworkObject(position: new Vector3(0, 5, 0));
+		NetworkManager.Instance.InstantiatePlayer(position: new Vector3(0, 5, 0));
 	}
 
 	// Override the abstract RPC method that we made in the NCW
@@ -359,7 +359,7 @@ public class GameBall : GameBallBehavior
 {
 	private Rigidbody rigidbodyRef;
 	private GameLogic gameLogic;
-	
+
 	private void Awake()
 	{
 		rigidbodyRef = GetComponent<Rigidbody>();
@@ -377,7 +377,7 @@ public class GameBall : GameBallBehavior
 			transform.position = networkObject.position;
 			return;
 		}
-		
+
 		// When our position changes the networkObject.position will detect the
 		// change based on this assignment automatically, this data will then be
 		// syndicated across the network on the next update pass for this networkObject
@@ -400,14 +400,14 @@ public class GameBall : GameBallBehavior
 		// Randomly invert along the number line by 50%
 		if (Random.value < 0.5f)
 			force.x *= -1;
-		
+
 		if (Random.value < 0.5f)
 			force.z *= -1;
 
 		// Add the random force to the ball
 		rigidbodyRef.AddForce(force);
 	}
-		
+
 	private void OnCollisionEnter(Collision c)
 	{
 		// We are making this authoritative by only
@@ -416,14 +416,14 @@ public class GameBall : GameBallBehavior
 			return;
 
 		// Only move if a player touched the ball
-		if (c.gameObject.GetComponent<Player>() == null)
+		if (c.GetComponent<Player>() == null)
 			return;
 
 		// Call an RPC on the Game Logic to print the player's name as the last
 		// player to touch the ball
 		gameLogic.networkObject.SendRpc(GameLogicBehavior.RPC_PLAYER_SCORED, Receivers.All,
 
-		c.transform.GetComponent<Player>().Name);
+		c.GetComponent<Player>().Name);
 
 		// Reset the ball
 		Reset();
@@ -449,7 +449,7 @@ using UnityEngine;
 public class GameTrigger : MonoBehaviour
 {
 	private bool started;
-	
+
 	private void Update()
 	{
 		// If the game started we will remove this trigger from the scene
@@ -478,7 +478,7 @@ public class GameTrigger : MonoBehaviour
 		started = true;
 
 		// We need to create the ball on the network
-		GameBall ball = NetworkManager.Instance.InstantiateGameBallNetworkObject() as GameBall;
+		GameBall ball = NetworkManager.Instance.InstantiateGameBall() as GameBall;
 
 		// Reset the ball position and give it a random velocity
 		ball.Reset();
