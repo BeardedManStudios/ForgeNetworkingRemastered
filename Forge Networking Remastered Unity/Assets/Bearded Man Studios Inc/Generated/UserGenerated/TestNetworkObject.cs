@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		#pragma warning restore 0067
 		private byte _fieldByte;
 		public event FieldEvent<byte> fieldByteChanged;
-		public InterpolateUnknown fieldByteInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<byte> fieldByteInterpolation = new Interpolated<byte>() { LerpT = 0f, Enabled = false };
 		public byte fieldByte
 		{
 			get { return _fieldByte; }
@@ -47,7 +47,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private char _fieldChar;
 		public event FieldEvent<char> fieldCharChanged;
-		public InterpolateUnknown fieldCharInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<char> fieldCharInterpolation = new Interpolated<char>() { LerpT = 0f, Enabled = false };
 		public char fieldChar
 		{
 			get { return _fieldChar; }
@@ -77,7 +77,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private short _fieldShort;
 		public event FieldEvent<short> fieldShortChanged;
-		public InterpolateUnknown fieldShortInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<short> fieldShortInterpolation = new Interpolated<short>() { LerpT = 0f, Enabled = false };
 		public short fieldShort
 		{
 			get { return _fieldShort; }
@@ -107,7 +107,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private ushort _fieldUShort;
 		public event FieldEvent<ushort> fieldUShortChanged;
-		public InterpolateUnknown fieldUShortInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<ushort> fieldUShortInterpolation = new Interpolated<ushort>() { LerpT = 0f, Enabled = false };
 		public ushort fieldUShort
 		{
 			get { return _fieldUShort; }
@@ -137,7 +137,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private bool _fieldBool;
 		public event FieldEvent<bool> fieldBoolChanged;
-		public InterpolateUnknown fieldBoolInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<bool> fieldBoolInterpolation = new Interpolated<bool>() { LerpT = 0f, Enabled = false };
 		public bool fieldBool
 		{
 			get { return _fieldBool; }
@@ -167,7 +167,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private int _fieldInt;
 		public event FieldEvent<int> fieldIntChanged;
-		public InterpolateUnknown fieldIntInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<int> fieldIntInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
 		public int fieldInt
 		{
 			get { return _fieldInt; }
@@ -197,7 +197,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private uint _fieldUInt;
 		public event FieldEvent<uint> fieldUIntChanged;
-		public InterpolateUnknown fieldUIntInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<uint> fieldUIntInterpolation = new Interpolated<uint>() { LerpT = 0f, Enabled = false };
 		public uint fieldUInt
 		{
 			get { return _fieldUInt; }
@@ -287,7 +287,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private long _fieldLong;
 		public event FieldEvent<long> fieldLongChanged;
-		public InterpolateUnknown fieldLongInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<long> fieldLongInterpolation = new Interpolated<long>() { LerpT = 0f, Enabled = false };
 		public long fieldLong
 		{
 			get { return _fieldLong; }
@@ -317,7 +317,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private ulong _fieldULong;
 		public event FieldEvent<ulong> fieldULongChanged;
-		public InterpolateUnknown fieldULongInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<ulong> fieldULongInterpolation = new Interpolated<ulong>() { LerpT = 0f, Enabled = false };
 		public ulong fieldULong
 		{
 			get { return _fieldULong; }
@@ -347,7 +347,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private double _fieldDouble;
 		public event FieldEvent<double> fieldDoubleChanged;
-		public InterpolateUnknown fieldDoubleInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<double> fieldDoubleInterpolation = new Interpolated<double>() { LerpT = 0f, Enabled = false };
 		public double fieldDouble
 		{
 			get { return _fieldDouble; }
@@ -674,62 +674,62 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (IsOwner)
 				return;
 
-			if (fieldByteInterpolation.Enabled && !fieldByteInterpolation.current.Near(fieldByteInterpolation.target, 0.0015f))
+			if (fieldByteInterpolation.Enabled && !fieldByteInterpolation.current.UnityNear(fieldByteInterpolation.target, 0.0015f))
 			{
 				_fieldByte = (byte)fieldByteInterpolation.Interpolate();
 				RunChange_fieldByte(fieldByteInterpolation.Timestep);
 			}
-			if (fieldCharInterpolation.Enabled && !fieldCharInterpolation.current.Near(fieldCharInterpolation.target, 0.0015f))
+			if (fieldCharInterpolation.Enabled && !fieldCharInterpolation.current.UnityNear(fieldCharInterpolation.target, 0.0015f))
 			{
 				_fieldChar = (char)fieldCharInterpolation.Interpolate();
 				RunChange_fieldChar(fieldCharInterpolation.Timestep);
 			}
-			if (fieldShortInterpolation.Enabled && !fieldShortInterpolation.current.Near(fieldShortInterpolation.target, 0.0015f))
+			if (fieldShortInterpolation.Enabled && !fieldShortInterpolation.current.UnityNear(fieldShortInterpolation.target, 0.0015f))
 			{
 				_fieldShort = (short)fieldShortInterpolation.Interpolate();
 				RunChange_fieldShort(fieldShortInterpolation.Timestep);
 			}
-			if (fieldUShortInterpolation.Enabled && !fieldUShortInterpolation.current.Near(fieldUShortInterpolation.target, 0.0015f))
+			if (fieldUShortInterpolation.Enabled && !fieldUShortInterpolation.current.UnityNear(fieldUShortInterpolation.target, 0.0015f))
 			{
 				_fieldUShort = (ushort)fieldUShortInterpolation.Interpolate();
 				RunChange_fieldUShort(fieldUShortInterpolation.Timestep);
 			}
-			if (fieldBoolInterpolation.Enabled && !fieldBoolInterpolation.current.Near(fieldBoolInterpolation.target, 0.0015f))
+			if (fieldBoolInterpolation.Enabled && !fieldBoolInterpolation.current.UnityNear(fieldBoolInterpolation.target, 0.0015f))
 			{
 				_fieldBool = (bool)fieldBoolInterpolation.Interpolate();
 				RunChange_fieldBool(fieldBoolInterpolation.Timestep);
 			}
-			if (fieldIntInterpolation.Enabled && !fieldIntInterpolation.current.Near(fieldIntInterpolation.target, 0.0015f))
+			if (fieldIntInterpolation.Enabled && !fieldIntInterpolation.current.UnityNear(fieldIntInterpolation.target, 0.0015f))
 			{
 				_fieldInt = (int)fieldIntInterpolation.Interpolate();
 				RunChange_fieldInt(fieldIntInterpolation.Timestep);
 			}
-			if (fieldUIntInterpolation.Enabled && !fieldUIntInterpolation.current.Near(fieldUIntInterpolation.target, 0.0015f))
+			if (fieldUIntInterpolation.Enabled && !fieldUIntInterpolation.current.UnityNear(fieldUIntInterpolation.target, 0.0015f))
 			{
 				_fieldUInt = (uint)fieldUIntInterpolation.Interpolate();
 				RunChange_fieldUInt(fieldUIntInterpolation.Timestep);
 			}
-			if (fieldFloatInterpolation.Enabled && !fieldFloatInterpolation.current.Near(fieldFloatInterpolation.target, 0.0015f))
+			if (fieldFloatInterpolation.Enabled && !fieldFloatInterpolation.current.UnityNear(fieldFloatInterpolation.target, 0.0015f))
 			{
 				_fieldFloat = (float)fieldFloatInterpolation.Interpolate();
 				RunChange_fieldFloat(fieldFloatInterpolation.Timestep);
 			}
-			if (fieldFloatInterpolateInterpolation.Enabled && !fieldFloatInterpolateInterpolation.current.Near(fieldFloatInterpolateInterpolation.target, 0.0015f))
+			if (fieldFloatInterpolateInterpolation.Enabled && !fieldFloatInterpolateInterpolation.current.UnityNear(fieldFloatInterpolateInterpolation.target, 0.0015f))
 			{
 				_fieldFloatInterpolate = (float)fieldFloatInterpolateInterpolation.Interpolate();
 				RunChange_fieldFloatInterpolate(fieldFloatInterpolateInterpolation.Timestep);
 			}
-			if (fieldLongInterpolation.Enabled && !fieldLongInterpolation.current.Near(fieldLongInterpolation.target, 0.0015f))
+			if (fieldLongInterpolation.Enabled && !fieldLongInterpolation.current.UnityNear(fieldLongInterpolation.target, 0.0015f))
 			{
 				_fieldLong = (long)fieldLongInterpolation.Interpolate();
 				RunChange_fieldLong(fieldLongInterpolation.Timestep);
 			}
-			if (fieldULongInterpolation.Enabled && !fieldULongInterpolation.current.Near(fieldULongInterpolation.target, 0.0015f))
+			if (fieldULongInterpolation.Enabled && !fieldULongInterpolation.current.UnityNear(fieldULongInterpolation.target, 0.0015f))
 			{
 				_fieldULong = (ulong)fieldULongInterpolation.Interpolate();
 				RunChange_fieldULong(fieldULongInterpolation.Timestep);
 			}
-			if (fieldDoubleInterpolation.Enabled && !fieldDoubleInterpolation.current.Near(fieldDoubleInterpolation.target, 0.0015f))
+			if (fieldDoubleInterpolation.Enabled && !fieldDoubleInterpolation.current.UnityNear(fieldDoubleInterpolation.target, 0.0015f))
 			{
 				_fieldDouble = (double)fieldDoubleInterpolation.Interpolate();
 				RunChange_fieldDouble(fieldDoubleInterpolation.Timestep);

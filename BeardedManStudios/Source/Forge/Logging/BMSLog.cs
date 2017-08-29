@@ -29,12 +29,12 @@ namespace BeardedManStudios.Forge.Logging
 		}
 		#endregion
 
-        public enum Logtype
-        {
-            Info,
-            Warning,
-            Exception
-        }
+		public enum Logtype
+		{
+			Info,
+			Warning,
+			Exception
+		}
 
 		private IBMSLogger _loggerService;
 
@@ -44,35 +44,35 @@ namespace BeardedManStudios.Forge.Logging
 			Instance.InternalLog(Logtype.Info, text);
 		}
 
-        public static void LogFormat(string text, params object[] args)
-        {
-            Instance.InternalLog(Logtype.Info, text, args);
-        }
+		public static void LogFormat(string text, params object[] args)
+		{
+			Instance.InternalLog(Logtype.Info, text, args);
+		}
 
-        public static void LogException(System.Exception ex)
-        {
-            Instance.InternalLog(Logtype.Exception, string.Format("Message: {0}{1}{2}", ex.Message, System.Environment.NewLine, ex.StackTrace));
-        }
+		public static void LogException(System.Exception ex)
+		{
+			Instance.InternalLog(Logtype.Exception, string.Format("Message: {0}{1}{2}", ex.Message, System.Environment.NewLine, ex.StackTrace));
+		}
 
-        public static void LogException(string text)
-        {
-            Instance.InternalLog(Logtype.Exception, text);
-        }
+		public static void LogException(string text)
+		{
+			Instance.InternalLog(Logtype.Exception, text);
+		}
 
-        public static void LogExceptionFormat(string text, params object[] args)
-        {
-            Instance.InternalLog(Logtype.Exception, text, args);
-        }
+		public static void LogExceptionFormat(string text, params object[] args)
+		{
+			Instance.InternalLog(Logtype.Exception, text, args);
+		}
 
-        public static void LogWarning(string text)
-        {
-            Instance.InternalLog(Logtype.Warning, text);
-        }
+		public static void LogWarning(string text)
+		{
+			Instance.InternalLog(Logtype.Warning, text);
+		}
 
-        public static void LogWarningFormat(string text, params object[] args)
-        {
-            Instance.InternalLog(Logtype.Warning, text, args);
-        }
+		public static void LogWarningFormat(string text, params object[] args)
+		{
+			Instance.InternalLog(Logtype.Warning, text, args);
+		}
 
 		public void RegisterLoggerService(IBMSLogger service)
 		{
@@ -80,33 +80,33 @@ namespace BeardedManStudios.Forge.Logging
 		}
 		#endregion
 
-        private void InternalLog(Logtype type, string text, params object[] args)
+		private void InternalLog(Logtype type, string text, params object[] args)
 		{
 #if !UNITY_IOS
-            if (_loggerService == null)
-                return;
+			if (_loggerService == null)
+				return;
 
-            switch (type)
-            {
-                case Logtype.Info:
-                    if (args != null && args.Length > 0)
-                        _loggerService.LogFormat(text, args);
-                    else
-                        _loggerService.Log(text);
-                    break;
-                case Logtype.Warning:
-                    if (args != null && args.Length > 0)
-                        _loggerService.LogWarningFormat(text, args);
-                    else
-                        _loggerService.LogWarning(text);
-                    break;
-                case Logtype.Exception:
-                    if (args != null && args.Length > 0)
-                        _loggerService.LogExceptionFormat(text, args);
-                    else
-                        _loggerService.LogException(text);
-                    break;
-            }
+			switch (type)
+			{
+				case Logtype.Info:
+					if (args != null && args.Length > 0)
+						_loggerService.LogFormat(text, args);
+					else
+						_loggerService.Log(text);
+					break;
+				case Logtype.Warning:
+					if (args != null && args.Length > 0)
+						_loggerService.LogWarningFormat(text, args);
+					else
+						_loggerService.LogWarning(text);
+					break;
+				case Logtype.Exception:
+					if (args != null && args.Length > 0)
+						_loggerService.LogExceptionFormat(text, args);
+					else
+						_loggerService.LogException(text);
+					break;
+			}
 #endif
 		}
 	}

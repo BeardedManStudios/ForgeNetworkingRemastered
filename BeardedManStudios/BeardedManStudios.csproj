@@ -87,7 +87,7 @@
     <Compile Include="Source\Forge\Networking\Objects\INetworkObjectFactory.cs" />
     <Compile Include="Source\Forge\Networking\Objects\InterpolateDouble.cs" />
     <Compile Include="Source\Forge\Networking\Objects\InterpolateFloat.cs" />
-    <Compile Include="Source\Forge\Networking\Objects\InterpolateUnknown.cs" />
+    <Compile Include="Source\Forge\Networking\Objects\Interpolated.cs" />
     <Compile Include="Source\Forge\Networking\Objects\NetworkObject.cs" />
     <Compile Include="Source\Forge\Networking\Objects\Rewind.cs" />
     <Compile Include="Source\Forge\Networking\Rpc.cs" />

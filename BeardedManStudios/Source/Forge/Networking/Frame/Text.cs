@@ -55,7 +55,15 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		/// Converts the data bytes of this frame to a string
 		/// </summary>
 		/// <returns>The string representation of the data bytes for this frame</returns>
-		public override string ToString() { return Encoding.UTF8.GetString(StreamData.CompressBytes()); }
+		public override string ToString()
+		{
+			string stringData = Encoding.UTF8.GetString(StreamData.CompressBytes());
+
+			if (IsReliable)
+				return stringData.Remove(stringData.Length - sizeof(ulong));
+
+			return stringData;
+		}
 
 		public override object Clone()
 		{

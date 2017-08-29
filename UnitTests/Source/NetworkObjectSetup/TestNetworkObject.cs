@@ -15,7 +15,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 #pragma warning restore 0067
 		private byte _fieldByte;
 		public event FieldEvent<byte> fieldByteChanged;
-		public InterpolateUnknown fieldByteInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldByteInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public byte fieldByte
 		{
 			get { return _fieldByte; }
@@ -45,7 +45,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private sbyte _fieldSByte;
 		public event FieldEvent<sbyte> fieldSByteChanged;
-		public InterpolateUnknown fieldSByteInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldSByteInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public sbyte fieldSByte
 		{
 			get { return _fieldSByte; }
@@ -75,7 +75,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private char _fieldChar;
 		public event FieldEvent<char> fieldCharChanged;
-		public InterpolateUnknown fieldCharInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldCharInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public char fieldChar
 		{
 			get { return _fieldChar; }
@@ -105,7 +105,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private short _fieldShort;
 		public event FieldEvent<short> fieldShortChanged;
-		public InterpolateUnknown fieldShortInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldShortInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public short fieldShort
 		{
 			get { return _fieldShort; }
@@ -135,7 +135,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private ushort _fieldUShort;
 		public event FieldEvent<ushort> fieldUShortChanged;
-		public InterpolateUnknown fieldUShortInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldUShortInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public ushort fieldUShort
 		{
 			get { return _fieldUShort; }
@@ -165,7 +165,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private bool _fieldBool;
 		public event FieldEvent<bool> fieldBoolChanged;
-		public InterpolateUnknown fieldBoolInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldBoolInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public bool fieldBool
 		{
 			get { return _fieldBool; }
@@ -195,7 +195,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private int _fieldInt;
 		public event FieldEvent<int> fieldIntChanged;
-		public InterpolateUnknown fieldIntInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldIntInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public int fieldInt
 		{
 			get { return _fieldInt; }
@@ -225,7 +225,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private uint _fieldUInt;
 		public event FieldEvent<uint> fieldUIntChanged;
-		public InterpolateUnknown fieldUIntInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldUIntInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public uint fieldUInt
 		{
 			get { return _fieldUInt; }
@@ -315,7 +315,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private long _fieldLong;
 		public event FieldEvent<long> fieldLongChanged;
-		public InterpolateUnknown fieldLongInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldLongInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public long fieldLong
 		{
 			get { return _fieldLong; }
@@ -345,7 +345,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private ulong _fieldULong;
 		public event FieldEvent<ulong> fieldULongChanged;
-		public InterpolateUnknown fieldULongInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldULongInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public ulong fieldULong
 		{
 			get { return _fieldULong; }
@@ -375,7 +375,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		}
 		private double _fieldDouble;
 		public event FieldEvent<double> fieldDoubleChanged;
-		public InterpolateUnknown fieldDoubleInterpolation = new InterpolateUnknown() { LerpT = 0f, Enabled = false };
+		public Interpolated<object> fieldDoubleInterpolation = new Interpolated<object>() { LerpT = 0f, Enabled = false };
 		public double fieldDouble
 		{
 			get { return _fieldDouble; }

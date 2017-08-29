@@ -48,6 +48,7 @@ namespace MasterServer
 			PrintHelp();
 			MasterServer server = new MasterServer(host, port);
 			server.EloRange = eloRange;
+			server.ToggleLogging();
 
 			while (true)
 			{

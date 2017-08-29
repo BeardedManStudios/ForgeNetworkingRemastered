@@ -28,9 +28,19 @@ namespace BeardedManStudios
 		/// <summary>
 		/// Precise method which guarantees v = v1 when t = 1, Mathf doesn't support doubles so this one will
 		/// </summary>
+		public static float Lerp(float a0, float a1, float t)
+		{
+			return (1 - t) * a0 + t * a1;
+		}
+
 		public static double Lerp(double a0, double a1, float t)
 		{
 			return (1 - t) * a0 + t * a1;
+		}
+
+		public static T Lerp<T>(T a0, T a1, float t)
+		{
+			return a0;
 		}
 
 		/// <summary>

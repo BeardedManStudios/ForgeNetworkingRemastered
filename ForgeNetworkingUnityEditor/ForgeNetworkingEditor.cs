@@ -736,21 +736,21 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			for (i = 0, j = 0; i < btn.ClassVariables.Count; ++i)
 			{
 				Type t = ForgeClassFieldValue.GetTypeFromAcceptable(btn.ClassVariables[i].FieldType);
-				interpolateType = ForgeClassFieldValue.GetInterpolateFromAcceptable(btn.ClassVariables[i].FieldType);
+				interpolateType = ForgeClassFieldValue.GetInterpolateFromAcceptable(_referenceVariables[t.Name], btn.ClassVariables[i].FieldType);
 
 				if (i != 0 && i % 8 == 0)
 					j++;
 
 				object[] fieldData = new object[]
-			{
-				_referenceVariables[t.Name],						// Data type
-				btn.ClassVariables[i].FieldName.Replace(" ", string.Empty),	// Field name
-				btn.ClassVariables[i].Interpolate,					// Interpolated
-				interpolateType,									// Interpolate type
-				btn.ClassVariables[i].InterpolateValue,				// Interpolate time
-				_referenceBitWise[i % 8],							// Hexcode
-				j													// Dirty fields index
-			};
+				{
+					_referenceVariables[t.Name],						// Data type
+					btn.ClassVariables[i].FieldName.Replace(" ", string.Empty),	// Field name
+					btn.ClassVariables[i].Interpolate,					// Interpolated
+					interpolateType,									// Interpolate type
+					btn.ClassVariables[i].InterpolateValue,				// Interpolate time
+					_referenceBitWise[i % 8],							// Hexcode
+					j													// Dirty fields index
+				};
 
 				if (i + 1 < btn.ClassVariables.Count)
 					interpolateValues += btn.ClassVariables[i].InterpolateValue.ToString() + ",";

@@ -232,10 +232,10 @@ namespace BeardedManStudios.Templating
 				return data.ToString().ToLower();
 			else if (data is float)
 			{
-			    float fData = (float) data;
-			    return fData.ToString(CultureInfo.InvariantCulture) + "f";
-            }
-            return data.ToString();
+				float fData = (float) data;
+				return fData.ToString(CultureInfo.InvariantCulture) + "f";
+			}
+			return data.ToString();
 		}
 	}
 }

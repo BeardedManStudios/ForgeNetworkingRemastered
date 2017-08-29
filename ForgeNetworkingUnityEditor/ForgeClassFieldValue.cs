@@ -1,15 +1,7 @@
 ﻿//#define FORGE_EDITOR_DEBUGGING
 
-using BeardedManStudios.Forge.Networking.Generated;
-using BeardedManStudios.Templating;
-using SimpleJSONEditor;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using UnityEditor;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
@@ -145,7 +137,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			}
 		}
 
-		public static string GetInterpolateFromAcceptable(ForgeAcceptableFieldTypes type)
+		public static string GetInterpolateFromAcceptable(string baseTypeString, ForgeAcceptableFieldTypes type)
 		{
 			string returnValue = string.Empty;
 
@@ -166,9 +158,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				case ForgeAcceptableFieldTypes.QUATERNION:
 					returnValue = "InterpolateQuaternion";
 					break;
+				default:
+					returnValue = "Interpolated<" + baseTypeString + ">";
+					break;
 			}
 
-			return !string.IsNullOrEmpty(returnValue) ? returnValue : "InterpolateUnknown";
+			return !string.IsNullOrEmpty(returnValue) ? returnValue : "Interpolated<object>";
 		}
 
 		public static bool IsInterpolatable(ForgeAcceptableFieldTypes type)
@@ -233,7 +228,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				//	return ForgeAcceptableFieldTypes.BYTE_ARRAY;
 				default:
 					return ForgeAcceptableFieldTypes.BYTE;
-				//return ForgeAcceptableFieldTypes.Unknown; //Unsupported
+					//return ForgeAcceptableFieldTypes.Unknown; //Unsupported
 			}
 		}
 
