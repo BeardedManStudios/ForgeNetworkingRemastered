@@ -201,19 +201,13 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
-			if (player.IsDisconnecting)
+			if (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player))
 				return;
 
 			if (!forced)
-			{
-				if (!DisconnectingPlayers.Contains(player))
-					DisconnectingPlayers.Add(player);
-			}
+				DisconnectingPlayers.Add(player);
 			else
-			{
-				if (!ForcedDisconnectingPlayers.Contains(player))
-					ForcedDisconnectingPlayers.Add(player);
-			}
+				ForcedDisconnectingPlayers.Add(player);
 		}
 
 		/// <summary>
@@ -233,24 +227,32 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
-			if (player.IsDisconnecting)
-				return;
+			lock (Players)
+			{
+				if (player.IsDisconnecting)
+					return;
+
+				player.IsDisconnecting = true;
+			}
 
 			// Tell the player that they are getting disconnected
-			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
+			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), !forced);
 
-			// Give a grace time for the client to get the message
-			player.IsDisconnecting = true;
-			Task.Queue(() =>
+			if (!forced)
 			{
+				Task.Queue(() =>
+				{
+					FinalizeRemovePlayer(player, forced);
+				}, 1000);
+			}
+			else
 				FinalizeRemovePlayer(player, forced);
-			}, 1000);
 		}
 
 		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
 		{
-			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
+			OnPlayerDisconnected(player);
 
 			if (forced)
 				ForcedDisconnectingPlayers.Remove(player);
@@ -291,10 +293,10 @@ namespace BeardedManStudios.Forge.Networking
 				}
 				catch
 				{
-					if (udpPlayers.ContainsKey(incomingEndpoint))
+					UDPNetworkingPlayer player;
+					if (udpPlayers.TryGetValue(incomingEndpoint, out player))
 					{
-						Disconnect(udpPlayers[incomingEndpoint], true);
-						CleanupDisconnections();
+						FinalizeRemovePlayer(player, true);
 					}
 
 					continue;
@@ -337,6 +339,7 @@ namespace BeardedManStudios.Forge.Networking
 						// will be 71 and the second packet be 69 is a forced disconnect reconnect
 						if (packet[0] == 71 && packet[1] == 69)
 						{
+							udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
 							FinalizeRemovePlayer(currentReadingPlayer, true);
 							continue;
 						}
@@ -483,7 +486,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 
-				Disconnect(currentReadingPlayer, false);
+				Disconnect(currentReadingPlayer, true);
 				CleanupDisconnections();
 				return;
 			}

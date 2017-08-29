@@ -641,16 +641,10 @@ namespace BeardedManStudios.Forge.Networking
 			lock (Players)
 			{
 				for (int i = DisconnectingPlayers.Count - 1; i >= 0; --i)
-				{
 					disconnectMethod(DisconnectingPlayers[i], false);
-					DisconnectingPlayers[i].IsDisconnecting = true;
-				}
 
 				for (int i = ForcedDisconnectingPlayers.Count - 1; i >= 0; --i)
-				{
 					disconnectMethod(ForcedDisconnectingPlayers[i], true);
-					ForcedDisconnectingPlayers[i].IsDisconnecting = true;
-				}
 			}
 		}
 
