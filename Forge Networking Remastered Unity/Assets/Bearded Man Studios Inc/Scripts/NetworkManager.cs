@@ -245,6 +245,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server
 					client.Send(temp);
+
+					Networker.disconnected += s =>
+					{
+						client.Disconnect(false);
+						MasterServerNetworker = null;
+					};
 				}
 				catch
 				{
@@ -256,11 +262,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += (sender) =>
-			{
-				client.Disconnect(false);
-				MasterServerNetworker = null;
-			};
+			
 
 			MasterServerNetworker = client;
 		}
