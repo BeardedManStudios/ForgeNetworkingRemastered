@@ -287,24 +287,27 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public override void Disconnect(bool forced)
 		{
-			lock (client)
+			if (client != null)
 			{
-				disconnectedSelf = true;
+				lock (client)
+				{
+					disconnectedSelf = true;
 
-				// Close our TcpClient so that it can no longer be used
-				if (forced)
-					client.Close();
-				else
-					Send(new ConnectionClose(Time.Timestep, true, Receivers.Server, MessageGroupIds.DISCONNECT, true));
+					// Close our TcpClient so that it can no longer be used
+					if (forced)
+						client.Close();
+					else
+						Send(new ConnectionClose(Time.Timestep, true, Receivers.Server, MessageGroupIds.DISCONNECT, true));
 
-				// Send signals to the methods registered to the disconnec events
-				if (!forced)
-					OnDisconnected();
-				else
-					OnForcedDisconnect();
+					// Send signals to the methods registered to the disconnec events
+					if (!forced)
+						OnDisconnected();
+					else
+						OnForcedDisconnect();
 
-				for (int i = 0; i < Players.Count; ++i)
-					OnPlayerDisconnected(Players[i]);
+					for (int i = 0; i < Players.Count; ++i)
+						OnPlayerDisconnected(Players[i]);
+				}
 			}
 		}
 
