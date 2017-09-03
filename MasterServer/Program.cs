@@ -33,8 +33,6 @@ namespace MasterServer
 				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
 					host = "0.0.0.0";
-				else
-					host = read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
 				read = Console.ReadLine();
