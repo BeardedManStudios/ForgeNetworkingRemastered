@@ -256,13 +256,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += (sender) =>
-			{
-				client.Disconnect(false);
-				MasterServerNetworker = null;
-			};
-
+			Networker.disconnected += NetworkerDisconnected;
 			MasterServerNetworker = client;
+		}
+
+		private void NetworkerDisconnected(NetWorker sender)
+		{
+			Networker.disconnected -= NetworkerDisconnected;
+			MasterServerNetworker.Disconnect(false);
+			MasterServerNetworker = null;
 		}
 
 		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
@@ -287,7 +289,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			// The Master Server communicates over TCP
-			TCPMasterClient client = new TCPMasterClient();
+			TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
 
 			// Once this client has been accepted by the master server it should send it's update request
 			client.serverAccepted += (sender) =>
@@ -309,14 +311,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			client.Connect(_masterServerHost, _masterServerPort);
-
-			Networker.disconnected += (sender) =>
-			{
-				sender.Disconnect(false);
-				MasterServerNetworker = null;
-			};
-
-			MasterServerNetworker = client;
 		}
 
 		public void Disconnect()
