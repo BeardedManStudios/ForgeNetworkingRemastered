@@ -347,5 +347,17 @@ namespace BeardedManStudios.Forge.Networking
 				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
 			}
 		}
+
+		
+		/// <summary>
+		/// Creates a BMSByte using ObjectMapper
+		/// </summary>
+		/// <param name="argsToMap">Objects to be mapped</param>
+		public static BMSByte BMSByte(params object[] argsToMap)
+		{
+			BMSByte data = new BMSByte();
+			Instance.MapBytes(data, argsToMap);
+			return data;
+		}
 	}
 }
