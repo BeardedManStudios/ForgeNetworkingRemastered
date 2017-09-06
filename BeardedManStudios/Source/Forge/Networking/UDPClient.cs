@@ -82,7 +82,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="natHost">The NAT server host address, if blank NAT will be skipped</param>
 		/// <param name="natPort">The port that the NAT server is hosting on</param>
 		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
-		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false)
+		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false, ushort overrideBindingPort = DEFAULT_PORT + 1)
 		{
 			if (Disposed)
 				throw new ObjectDisposedException("UDPClient", "This object has been disposed and can not be used to connect, please use a new UDPClient");
@@ -93,7 +93,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				ushort clientPort = DEFAULT_PORT + 1;
+				ushort clientPort = overrideBindingPort;
 
 				// Make sure not to listen on the same port as the server for local networks
 				if (clientPort == port)
