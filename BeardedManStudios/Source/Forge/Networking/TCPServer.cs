@@ -359,7 +359,7 @@ namespace BeardedManStudios.Forge.Networking
 				Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
 				// Do disconnect logic for client
-				Disconnect(client, false);
+				ClientRejected(client, false);
 				return;
 			}
 			else if (!AcceptingConnections)
@@ -371,7 +371,7 @@ namespace BeardedManStudios.Forge.Networking
 				Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
 				// Do disconnect logic for client
-				Disconnect(client, false);
+				ClientRejected(client, false);
 				return;
 			}
 
@@ -585,16 +585,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
-			if (!forced)
-			{
-				if (!DisconnectingPlayers.Contains(player))
-					DisconnectingPlayers.Add(player);
-			}
-			else
-			{
-				if (!ForcedDisconnectingPlayers.Contains(player))
-					ForcedDisconnectingPlayers.Add(player);
-			}
+			commonServerLogic.Disconnect(player, forced, DisconnectingPlayers, ForcedDisconnectingPlayers);
 		}
 
 		/// <summary>
@@ -604,41 +595,58 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
-			Disconnect(player.TcpClientHandle, forced);
+			lock (Players)
+			{
+				if (player.IsDisconnecting)
+					return;
+
+				player.IsDisconnecting = true;
+			}
+
+			// Tell the player that he is getting disconnected
+			Send(player.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+			
+			if (!forced)
+			{
+				Task.Queue(() =>
+				{
+					FinalizeRemovePlayer(player, forced);
+				}, 1000);
+			}
+			else
+				FinalizeRemovePlayer(player, forced);
+		}
+
+		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
+		{
 			OnPlayerDisconnected(player);
+			player.TcpClientHandle.Close();
+			rawClients.Remove(player.TcpClientHandle);
+
+			if (!forced)
+			{
+				// Let all of the event listeners know that the client has successfully disconnected
+				if (rawClientDisconnected != null)
+					rawClientDisconnected(player.TcpClientHandle);
+				DisconnectingPlayers.Remove(player);
+			}
+			else
+			{
+				// Let all of the event listeners know that this was a forced disconnect
+				if (forced && rawClientForceClosed != null)
+					rawClientForceClosed(player.TcpClientHandle);
+				ForcedDisconnectingPlayers.Remove(player);
+			}
 		}
 
 #if WINDOWS_UWP
-		private void Disconnect(StreamSocket client, bool forced)
+		private void ClientRejected(StreamSocket client, bool forced)
 #else
-		private void Disconnect(TcpClient client, bool forced)
+		private void ClientRejected(TcpClient client, bool forced)
 #endif
 		{
-			// Send the connection close frame to the client
-			Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
-
 			// Clean up the client objects
 			client.Close();
-
-			// Only do client removal logic if the client has been a fully successful connection and
-			// not immediately kicked
-			if (rawClients.Contains(client))
-			{
-				rawClients.Remove(client);
-
-				if (!forced)
-				{
-					// Let all of the event listeners know that the client has successfully disconnected
-					if (rawClientDisconnected != null)
-						rawClientDisconnected(client);
-				}
-				else
-				{
-					// Let all of the event listeners know that this was a forced disconnect
-					if (forced && rawClientForceClosed != null)
-						rawClientForceClosed(client);
-				}
-			}
 		}
 
 		private void SendBuffer(NetworkingPlayer player)
