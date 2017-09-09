@@ -66,6 +66,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Source\Forge\Networking\Frame\FactoryTests.cs" />
     <Compile Include="Source\UnityEditor\JSONNodeTests.cs" />
     <Compile Include="Source\BaseTest.cs" />
     <Compile Include="Source\FrameTests.cs" />
