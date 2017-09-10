@@ -167,6 +167,24 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific tcp client(s)
+		/// </summary>
+		/// <param name="client">The client to receive the message</param>
+		/// <param name="receivers">Receiver's type</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public bool Send(TcpClient client, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
+#if WINDOWS_UWP
+			public bool Send(StreamSocket client, FrameStream frame)
+#else
+			return Send(client, sendFrame);
+#endif
+		}
+
+		/// <summary>
 		/// Send a frame to a specific player
 		/// </summary>
 		/// <param name="frame">The frame to send to that specific player</param>
@@ -183,13 +201,6 @@ namespace BeardedManStudios.Forge.Networking
 					NetworkingPlayer player = Players[Players.IndexOf(targetPlayer)];
 					if (!player.Accepted && !player.PendingAccepted)
 						return;
-
-					if (player == frame.Sender)
-					{
-						// Don't send a message to the sending player if it was meant for others
-						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
-							return;
-					}
 
 					if (player == frame.Sender)
 					{
@@ -222,6 +233,20 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific client
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="targetPlayer">The client to receive the message</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public void SendToPlayer(NetworkingPlayer targetPlayer, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			SendToPlayer(sendFrame, targetPlayer);
+		}
+
+		/// <summary>
 		/// Goes through all of the currently connected players and send them the frame
 		/// </summary>
 		/// <param name="frame">The frame to send to all of the connected players</param>
@@ -247,6 +272,20 @@ namespace BeardedManStudios.Forge.Networking
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Goes through all of the currently connected players and send them the frame
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="playerToIgnore">The client to ignore</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public void SendAll(Receivers receivers = Receivers.All, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, NetworkingPlayer playerToIgnore = null, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, true);
+			SendAll(sendFrame, playerToIgnore);
 		}
 
 		/// <summary>

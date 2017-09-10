@@ -105,6 +105,19 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific receiver(s)
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers, int messageGroupId, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, true, data, receivers, messageGroupId, true);
+			Send(sendFrame);
+		}
+
+		/// <summary>
 		/// This will begin the connection for TCP, this is a thread blocking operation
 		/// until the connection is either established or has failed
 		/// </summary>
