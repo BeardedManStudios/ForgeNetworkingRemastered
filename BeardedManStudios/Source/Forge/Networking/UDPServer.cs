@@ -100,6 +100,35 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// Sends binary message to the specified receiver(s)
+		/// </summary>
+		/// <param name="receivers">The client to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
+			Send(player, sendFrame, reliable);
+		}
+
+		/// <summary>
+		/// Sends binary message to all clients ignoring the specific one
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="playerToIgnore"></param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers = Receivers.Target, NetworkingPlayer playerToIgnore = null, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			Send(sendFrame, reliable, playerToIgnore);
+		}
+
 		public void Connect(string host = "0.0.0.0", ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT)
 		{
 			if (Disposed)

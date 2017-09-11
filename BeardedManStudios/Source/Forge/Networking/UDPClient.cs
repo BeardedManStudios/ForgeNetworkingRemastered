@@ -75,6 +75,20 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specified receiver(s)
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false , params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			Send(sendFrame, reliable);
+		}
+
+		/// <summary>
 		/// This will connect a UDP client to a given UDP server
 		/// </summary>
 		/// <param name="host">The server's host address on the network</param>
