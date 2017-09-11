@@ -28,12 +28,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc(">:[0]:<", >:[0]:<>:[1]:<);
 			>:ENDFOREVERY:<
 
-			MainThreadManager.Run(() =>
-			{
-				NetworkStart();
-				networkObject.Networker.FlushCreateActions(networkObject);
-			});
-
 			networkObject.onDestroy += DestroyGameObject;
 
 			if (!obj.IsOwner)
@@ -72,6 +66,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				MainThreadManager.Run(() => { transform.rotation = ObjectMapper.Instance.Map<Quaternion>(metadataTransform); });
 			}
+
+			MainThreadManager.Run(() =>
+			{
+				NetworkStart();
+				networkObject.Networker.FlushCreateActions(networkObject);
+			});
 		}
 
 		protected override void CompleteRegistration()
