@@ -426,8 +426,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// <param name="player">The player that was just accepted</param>
 		private void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
 		{
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
+			BMSByte data = ObjectMapper.BMSByte(loadedScenes.Count);
 
 			// Go through all the loaded scene indexes and send them to the connecting player
 			for (int i = 0; i < loadedScenes.Count; i++)
@@ -553,8 +552,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (networkSceneLoaded != null)
 				networkSceneLoaded(scene, mode);
 
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, scene.buildIndex, (int)mode);
+			BMSByte data = ObjectMapper.BMSByte(scene.buildIndex, (int)mode);
 
 			Binary frame = new Binary(Networker.Time.Timestep, false, data, Networker is IServer ? Receivers.All : Receivers.Server, MessageGroupIds.VIEW_CHANGE, Networker is BaseTCP);
 

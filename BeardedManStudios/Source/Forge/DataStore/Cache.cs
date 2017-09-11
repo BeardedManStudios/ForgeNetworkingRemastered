@@ -117,8 +117,7 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 				if (obj == null)
 					return;
 
-				BMSByte data = new BMSByte();
-				ObjectMapper.Instance.MapBytes(data, type, responseHookId, obj);
+				BMSByte data = ObjectMapper.BMSByte(type, responseHookId, obj);
 
 				Binary sendFrame = new Binary(sender.Time.Timestep, sender is TCPClient, data, Receivers.Target, MessageGroupIds.CACHE, sender is BaseTCP);
 
@@ -224,7 +223,6 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 
 			responseHooks.Add(responseHookIncrementer, callback);
 
-			BMSByte data = new BMSByte();
 			byte targetType = byte.MaxValue;
 
 			foreach (KeyValuePair<byte, Type> kv in typeMap)
@@ -239,7 +237,7 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 			if (targetType == byte.MaxValue)
 				throw new Exception("Invalid type specified");
 
-			ObjectMapper.Instance.MapBytes(data, targetType, responseHookIncrementer, key);
+			BMSByte data = ObjectMapper.BMSByte(targetType, responseHookIncrementer, key);
 
 			Binary sendFrame = new Binary(Socket.Time.Timestep, Socket is TCPClient, data, Receivers.Server, MessageGroupIds.CACHE, Socket is BaseTCP);
 

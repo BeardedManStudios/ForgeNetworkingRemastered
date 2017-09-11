@@ -52,8 +52,7 @@ namespace UnitTests
 
 		private Binary SendBinary(NetWorker networker)
 		{
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, MESSAGE);
+			BMSByte data = ObjectMapper.BMSByte(MESSAGE);
 
 			ulong timestep = (ulong)(DateTime.UtcNow - start).TotalMilliseconds;
 			return new Binary(timestep, networker is TCPClient, data, Receivers.Target, 17931, networker is BaseTCP);
