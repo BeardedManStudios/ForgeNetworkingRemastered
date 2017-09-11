@@ -73,5 +73,21 @@ namespace BeardedManStudios.Forge.Networking
 				Thread.Sleep(1000);
 			}
 		}
+
+		/// <summary>
+		/// Disconnects a client
+		/// </summary>
+		/// <param name="client">The target client to be disconnected</param>
+		public void Disconnect(NetworkingPlayer player, bool forced,
+			List<NetworkingPlayer> DisconnectingPlayers, List<NetworkingPlayer> ForcedDisconnectingPlayers)
+		{
+			if (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player))
+				return;
+
+			if (!forced)
+				DisconnectingPlayers.Add(player);
+			else
+				ForcedDisconnectingPlayers.Add(player);
+		}
 	}
 }
