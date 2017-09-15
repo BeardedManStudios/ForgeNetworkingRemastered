@@ -1,6 +1,7 @@
 ﻿using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 
 namespace UnitTests
 {
@@ -10,9 +11,13 @@ namespace UnitTests
 		[TestMethod]
 		public void TestObjectMapper()
 		{
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Start();
 			BMSByte data = new BMSByte();
 			Write(data);
 			Read(data);
+			watch.Stop();
+			Debug.WriteLine(watch.ElapsedMilliseconds.ToString());
 		}
 
 		public void Write(BMSByte data)

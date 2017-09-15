@@ -379,19 +379,11 @@ namespace BeardedManStudios.Forge.Networking
 			else if (type == null) //TODO: Check if this causes other issues
 				return new byte[1] { 0 };
 			else if (type == typeof(sbyte))
-			{
-				byte[] bytes = new byte[sizeof(sbyte)];
-				Buffer.BlockCopy(new sbyte[] { (sbyte)o }, 0, bytes, 0, sizeof(sbyte));
-				return bytes;
-			}
+				return new byte[1] {(byte) ((sbyte)o) };
 			else if (type == typeof(byte))
 				return new byte[1] { (byte)o };
 			else if (type == typeof(char))
-			{
-				byte[] bytes = new byte[sizeof(char)];
-				Buffer.BlockCopy(new char[] { (char)o }, 0, bytes, 0, sizeof(sbyte));
-				return bytes;
-			}
+				return new byte[1] { (byte)((char)o) };
 			else if (type == typeof(bool))
 				return BitConverter.GetBytes((bool)o);
 			else if (type == typeof(short))
