@@ -175,6 +175,32 @@ namespace BeardedManStudios
 			PointToEnd();
 		}
 
+
+		/// <summary>
+		/// Adds the arrays of bytes to the end of the byte array and resizes only ONCE
+		/// </summary>
+		/// <param name="input">The bytes arrays to be appended to the end of the internal byte array</param>
+		public void Append(params byte[][] input)
+		{
+			int lengthSum = 0;
+			foreach (byte[] array in input)
+			{
+				lengthSum += array.Length;
+			}
+
+			if (byteArr.Length <= index + lengthSum)
+				Array.Resize<byte>(ref byteArr, index + lengthSum + 1);
+
+			foreach (byte[] array in input)
+			{
+				Buffer.BlockCopy(array, 0, byteArr, index, array.Length);
+				Size += array.Length;
+				PointToEnd();
+			}
+
+		}
+
+
 		/// <summary>
 		/// Adds the bytes to the end of the byte array and resizes when needed
 		/// </summary>
