@@ -12,14 +12,15 @@ namespace UnitTests
 		public void TestObjectMapper()
 		{
 			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			BMSByte data = new BMSByte();
 			watch.Start();
-			for (int i = 1; i < 10000; i++)
+			for (int i = 1; i < 100000; i++)
 			{
-				BMSByte data = new BMSByte();
+				data = new BMSByte();
 				Write(data);
-				Read(data);
 			}
 			watch.Stop();
+			Read(data);
 			Debug.WriteLine(watch.ElapsedMilliseconds.ToString());
 		}
 
