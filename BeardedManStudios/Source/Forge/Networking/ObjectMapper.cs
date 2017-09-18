@@ -22,6 +22,7 @@
 #endif
 
 using System;
+using System.IO;
 using System.Text;
 
 namespace BeardedManStudios.Forge.Networking
@@ -225,15 +226,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns>A byte[] of the mapped arguments</returns>
 		public BMSByte MapBytes(BMSByte bytes, params object[] args)
 		{
-			foreach (object o in args)
+			byte[][] bytesToMap = new byte[args.Length][];
+			for (int i = 0; i < args.Length; i++)
 			{
 				Type type = null;
-				if (o != null)
-					type = o.GetType();
+				if (args[i] != null)
+					type = args[i].GetType();
 
-				GetBytes(o, type, ref bytes);
+				bytesToMap[i] = GetBytesArray(args[i], type);
 			}
-
+			bytes.Append(bytesToMap);
 			return bytes;
 		}
 
@@ -348,7 +350,131 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		
+		/// <summary>
+		/// Gets the bytes array for the Instance of an Object
+		/// </summary>
+		/// <param name="o">The Instance of the Object.</param>
+		/// <param name="type">The Type of the Object.</param>
+		protected virtual byte[] GetBytesArray(object o, Type type)
+		{
+			if (type == typeof(string))
+			{
+				var strBytes = Encoding.UTF8.GetBytes(o == null ? string.Empty : (string)o);
+				byte[] bytes = new byte[strBytes.Length + sizeof(int)];
+				// TODO:  Need to make custom string serialization to binary
+				Buffer.BlockCopy(BitConverter.GetBytes(strBytes.Length), 0, bytes, 0, sizeof(int));
+				if (strBytes.Length > 0)
+					Buffer.BlockCopy(strBytes, 0, bytes, sizeof(int), strBytes.Length);
+				return bytes;
+			}
+			else if (type == typeof(Vector))
+			{
+				Vector vec = (Vector)o;
+				byte[] bytes = new byte[sizeof(float) * 3];
+				Buffer.BlockCopy(BitConverter.GetBytes(vec.x), 0, bytes, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(vec.y), 0, bytes, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(vec.z), 0, bytes, sizeof(float) * 2, sizeof(float));
+				return bytes;
+			}
+			else if (type == null) //TODO: Check if this causes other issues
+				return new byte[1] { 0 };
+			else if (type == typeof(sbyte))
+				return new byte[1] {(byte) ((sbyte)o) };
+			else if (type == typeof(byte))
+				return new byte[1] { (byte)o };
+			else if (type == typeof(char))
+				return new byte[1] { (byte)((char)o) };
+			else if (type == typeof(bool))
+				return BitConverter.GetBytes((bool)o);
+			else if (type == typeof(short))
+				return BitConverter.GetBytes((short)o);
+			else if (type == typeof(ushort))
+				return BitConverter.GetBytes((ushort)o);
+			else if (type == typeof(int))
+				return BitConverter.GetBytes((int)o);
+			else if (type == typeof(uint))
+				return BitConverter.GetBytes((uint)o);
+			else if (type == typeof(long))
+				return BitConverter.GetBytes((long)o);
+			else if (type == typeof(ulong))
+				return BitConverter.GetBytes((ulong)o);
+			else if (type == typeof(float))
+				return BitConverter.GetBytes((float)o);
+			else if (type == typeof(double))
+				return BitConverter.GetBytes((double)o);
+			else if (type.IsArray)
+			{
+				byte[] bytes;
+
+				using (MemoryStream stream = new MemoryStream())
+				{
+					using (BinaryWriter writer = new BinaryWriter(stream))
+					{
+						int rank = type.GetArrayRank();
+						Type targetType = type.GetElementType();
+
+						if (targetType != typeof(byte))
+							throw new Exception("Currently only byte arrays can be sent as arrays");
+
+						if (rank > 4)
+							throw new Exception("Currently the system only supports up to 4 dimensions in an array");
+
+						int i, j, k, l;
+
+						// Write each dimension length first
+						int[] lengths = new int[rank];
+						for (i = 0; i < rank; i++)
+						{
+							lengths[i] = ((Array)o).GetLength(i);
+							writer.Write(BitConverter.GetBytes(lengths[i]));
+						}
+
+						switch (rank)
+						{
+							case 1:
+								for (i = 0; i < lengths[0]; i++)
+									writer.Write(GetBytesArray(((Array)o).GetValue(i), targetType));
+								break;
+							case 2:
+								for (i = 0; i < lengths[0]; i++)
+									for (j = 0; j < lengths[1]; j++)
+										writer.Write(GetBytesArray(((Array)o).GetValue(i, j), targetType));
+								break;
+							case 3:
+								for (i = 0; i < lengths[0]; i++)
+									for (j = 0; j < lengths[1]; j++)
+										for (k = 0; k < lengths[2]; k++)
+											writer.Write(GetBytesArray(((Array)o).GetValue(i, j, k), targetType));
+								break;
+							case 4:
+								for (i = 0; i < lengths[0]; i++)
+									for (j = 0; j < lengths[1]; j++)
+										for (k = 0; k < lengths[2]; k++)
+											for (l = 0; l < lengths[3]; l++)
+												writer.Write(GetBytesArray(((Array)o).GetValue(i, j, k, l), targetType));
+								break;
+						}
+						bytes = stream.ToArray();
+					}
+					return bytes;
+				}
+			}
+			else if (type == typeof(BMSByte))
+			{
+				byte[] bytesSize = BitConverter.GetBytes(((BMSByte)o).Size);
+				byte[] bytes = new byte[bytesSize.Length + ((BMSByte)o).Size];
+				Buffer.BlockCopy(((BMSByte)o).byteArr, ((BMSByte)o).StartIndex(), bytes, bytesSize.Length, ((BMSByte)o).Size);
+				return bytes;
+			}
+			else if (type.IsEnum)
+				return GetBytesArray(o, Enum.GetUnderlyingType(type));
+			else
+			{
+				// TODO:  Make this a more appropriate exception
+				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
+			}
+		}
+
 		/// <summary>
 		/// Creates a BMSByte using ObjectMapper
 		/// </summary>
