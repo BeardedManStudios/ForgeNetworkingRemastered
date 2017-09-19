@@ -1,55 +1,56 @@
 ﻿using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Generated;
 using System;
-using System.Text;
+using System.Collections.Generic;
 
 namespace BasicStandAloneServer
 {
-	class Program
-	{
-		private static void Main(string[] args)
-		{
-			int playerCount = 32;
-			UDPServer networkHandle = new UDPServer(playerCount);
-			networkHandle.textMessageReceived += ReadTextFrame;
-			networkHandle.binaryMessageReceived += ReadBinaryFrame;
-			networkHandle.playerAccepted += PlayerAccepted;
+    class Program
+    {
+        private static List<BasicCubeNetworkObject> cubes = new List<BasicCubeNetworkObject>();
+        private static void Main(string[] args)
+        {
+            NetworkObject.Factory = new NetworkObjectFactory();
 
-			networkHandle.Connect();
+            int playerCount = 32;
+            UDPServer networkHandle = new UDPServer(playerCount);
+            networkHandle.textMessageReceived += ReadTextFrame;
+            networkHandle.playerAccepted += PlayerAccepted;
 
-			while (true)
-			{
-				if (Console.ReadLine().ToLower() == "exit")
-				{
-					break;
-				}
-			}
+            networkHandle.objectCreated += NetworkObjectCreated;
 
-			networkHandle.Disconnect(false);
-		}
+            networkHandle.Connect();
 
-		private static void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
-		{
-			Console.WriteLine($"New player accepted with id {player.NetworkId}");
-		}
+            while (true)
+            {
+                if (Console.ReadLine().ToLower() == "exit")
+                {
+                    break;
+                }
+            }
 
-		private static void ReadBinaryFrame(NetworkingPlayer player, BeardedManStudios.Forge.Networking.Frame.Binary frame, NetWorker sender)
-		{
-			StringBuilder message = new StringBuilder(frame.StreamData.byteArr.Length);
-			message.Append("Bytes: ");
-			foreach (byte b in frame.StreamData.byteArr)
-			{
-				if (message.Length > 0)
-					message.Append(',');
+            networkHandle.Disconnect(false);
+        }
 
-				message.Append(b.ToString());
-			}
+        private static void NetworkObjectCreated(NetworkObject target)
+        {
+            if (target is BasicCubeNetworkObject)
+            {
+                var cube = (BasicCubeNetworkObject)target;
+                cubes.Add(cube);
+                target.Networker.FlushCreateActions(target);
+                target.ReleaseCreateBuffer();
+            }
+        }
 
-			Console.WriteLine(message);
-		}
+        private static void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
+        {
+            Console.WriteLine($"New player accepted with id {player.NetworkId}");
+        }
 
-		private static void ReadTextFrame(NetworkingPlayer player, BeardedManStudios.Forge.Networking.Frame.Text frame, NetWorker sender)
-		{
-			Console.WriteLine("Read: " + frame.ToString());
-		}
-	}
+        private static void ReadTextFrame(NetworkingPlayer player, BeardedManStudios.Forge.Networking.Frame.Text frame, NetWorker sender)
+        {
+            Console.WriteLine("Read: " + frame.ToString());
+        }
+    }
 }
