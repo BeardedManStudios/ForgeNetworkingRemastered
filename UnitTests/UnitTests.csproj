@@ -89,11 +89,11 @@
     <Compile Include="Source\UDP\UDPServerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ForgeNetworkingRemastered\BeardedManStudios\BeardedManStudios.csproj">
+    <ProjectReference Include="..\BeardedManStudios\BeardedManStudios.csproj">
       <Project>{1dc34cdd-667a-40be-9447-45866bf4607d}</Project>
       <Name>BeardedManStudios</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ForgeNetworkingRemastered\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj">
+    <ProjectReference Include="..\ForgeNetworkingCommon\ForgeNetworkingCommon.csproj">
       <Project>{9c3af9d0-b19f-44a6-9068-84b636892bde}</Project>
       <Name>ForgeNetworkingCommon</Name>
     </ProjectReference>

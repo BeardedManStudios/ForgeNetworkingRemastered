@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Stitch">
+      <HintPath>..\..\Visual Studio Projects\Stitch\Stitch\bin\Debug\Stitch.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,7 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ForgeNetworkingRemastered\BeardedManStudios\BeardedManStudios.csproj">
+    <ProjectReference Include="..\BeardedManStudios\BeardedManStudios.csproj">
       <Project>{1dc34cdd-667a-40be-9447-45866bf4607d}</Project>
       <Name>BeardedManStudios</Name>
     </ProjectReference>

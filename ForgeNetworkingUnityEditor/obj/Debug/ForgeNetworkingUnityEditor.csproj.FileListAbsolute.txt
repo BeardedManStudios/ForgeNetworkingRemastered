@@ -34,3 +34,15 @@ G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\o
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Mono.Cecil.xml
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.dll
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingUnityEditor.pdb
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingCommon.dll
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.dll
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.dll
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\ForgeNetworkingCommon.pdb
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.xml
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.xml
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csproj.CoreCompileInputs.cache
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.dll
+J:\Files\ForgeNetworkingRemastered-master\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.pdb

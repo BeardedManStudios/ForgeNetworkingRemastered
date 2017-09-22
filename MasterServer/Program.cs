@@ -1,6 +1,7 @@
 ﻿using BeardedManStudios;
 using System;
 using System.Collections.Generic;
+using Stitch;
 
 namespace MasterServer
 {
@@ -28,22 +29,25 @@ namespace MasterServer
 			}
 			else
 			{
-				Console.WriteLine("Entering nothing will choose defaults.");
-				Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
-				read = Console.ReadLine();
-				if (string.IsNullOrEmpty(read))
-					host = "0.0.0.0";
-				else
-					host = read;
+                //Console.WriteLine("Entering nothing will choose defaults.");
+                //Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
+                //read = Console.ReadLine();
+                //if (string.IsNullOrEmpty(read))
+                //	host = "0.0.0.0";
+                //else
+                //	host = read;
 
-				Console.WriteLine("Enter Port (Default: 15940):");
-				read = Console.ReadLine();
-				if (string.IsNullOrEmpty(read))
-					port = 15940;
-				else
-				{
-					ushort.TryParse(read, out port);
-				}
+                //Console.WriteLine("Enter Port (Default: 15940):");
+                //read = Console.ReadLine();
+                //if (string.IsNullOrEmpty(read))
+                //	port = 15940;
+                //else
+                //{
+                //	ushort.TryParse(read, out port);
+                //}
+
+                host = Address.MYIP.ToString();
+                port = ushort.Parse(Address.PORT.ToString());
 			}
 
 			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
