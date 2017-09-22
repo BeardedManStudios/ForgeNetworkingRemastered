@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Stitch">
-      <HintPath>..\..\Visual Studio Projects\Stitch\Stitch\bin\Debug\Stitch.dll</HintPath>
+      <HintPath>..\..\..\Visual Studio Projects\Stitch\Stitch\bin\Debug\Stitch.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

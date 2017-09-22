@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using Stitch;
+using System.Net;
 
 namespace MasterServer
 {
-	class Program
+    class Program
 	{
 		private static void Main(string[] args)
 		{
@@ -29,26 +30,54 @@ namespace MasterServer
 			}
 			else
 			{
-                //Console.WriteLine("Entering nothing will choose defaults.");
-                //Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
-                //read = Console.ReadLine();
-                //if (string.IsNullOrEmpty(read))
-                //	host = "0.0.0.0";
-                //else
-                //	host = read;
+                Console.WriteLine("Do you want to use Stitch Auto Address Finder (y or n)?");
+                read = Console.ReadLine().ToLower();
 
-                //Console.WriteLine("Enter Port (Default: 15940):");
-                //read = Console.ReadLine();
-                //if (string.IsNullOrEmpty(read))
-                //	port = 15940;
-                //else
-                //{
-                //	ushort.TryParse(read, out port);
-                //}
-
-                host = Address.MYIP.ToString();
-                port = ushort.Parse(Address.PORT.ToString());
-			}
+                if (read.ToLower().StartsWith("y"))
+                {
+                    host = Address.MYIP.ToString();
+                    port = ushort.Parse(Address.PORT.ToString());
+                }
+                else
+                {
+                  
+                    Console.WriteLine("Entering nothing will choose defaults.");
+                    getip:
+                    Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
+                    read = Console.ReadLine();
+                    if (string.IsNullOrEmpty(read))
+                        host = "0.0.0.0";
+                    else
+                    {
+                        IPAddress tmp;
+                       if(IPAddress.TryParse(read, out tmp))
+                        {
+                            host = tmp.ToString();
+                        }
+                       else
+                        {
+                            goto getip;
+                        }
+                    }
+                    getport:
+                    Console.WriteLine("Enter Port (Default: 15940):");
+                    read = Console.ReadLine();
+                    if (string.IsNullOrEmpty(read))
+                        port = 15940;
+                    else
+                    {
+                        ushort tmp;
+                        if(ushort.TryParse(read, out tmp))
+                        {
+                            port = tmp;
+                        }
+                        else
+                        {
+                            goto getport;
+                        }
+                    }
+                }
+            }
 
 			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
 			PrintHelp();
