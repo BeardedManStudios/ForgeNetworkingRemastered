@@ -1172,7 +1172,8 @@ namespace BeardedManStudios.Forge.Networking
 			// Map the id of the object into the data so that the program knows what fire from
 			// Map the id of the Rpc as the second data into the byte array
 			// Map all of the data to bytes
-			BMSByte data = ObjectMapper.BMSByte(NetworkId, methodId, behaviorFlags, args);
+			BMSByte data = ObjectMapper.BMSByte(NetworkId, methodId, behaviorFlags);
+			ObjectMapper.Instance.MapBytes(data, args);
 
 			if (Networker is IServer)
 			{
