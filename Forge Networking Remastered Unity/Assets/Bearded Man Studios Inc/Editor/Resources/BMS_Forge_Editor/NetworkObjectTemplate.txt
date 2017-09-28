@@ -95,6 +95,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _>:[1]:<);
 			>:ENDFOREVERY:<
 
+			// Reset all the dirty fields
+			for (int i = 0; i < _dirtyFields.Length; i++)
+				_dirtyFields[i] = 0;
+
 			return dirtyFieldsData;
 		}
 
