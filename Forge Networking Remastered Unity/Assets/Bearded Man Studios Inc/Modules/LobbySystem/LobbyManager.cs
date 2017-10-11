@@ -433,6 +433,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 		private void SetupComplete()
 		{
 			LobbyService.Instance.SetLobbyMaster(this);
+            LobbyService.Instance.Initialize(NetworkManager.Instance.Networker);
             
 			//If I am the host, then I should show the kick button for all players here
 			LobbyPlayerItem item = GetNewPlayerItem(); //This will just auto generate the 10 items we need to start with
