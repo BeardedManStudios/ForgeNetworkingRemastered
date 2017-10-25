@@ -57,7 +57,7 @@ Git Source Code:
 
 [Getting Started Docs](http://docs.forgepowered.com/getting-started/)
 
-## [Unity Package Download V24.1](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/Forge-Networking-Release-V24.1.unitypackage)
+## [Unity Package Download V24.2](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/Forge-Networking-Release-V24.2.unitypackage)
 
 ## Ways to support the project
 1) Make pull requests :D
