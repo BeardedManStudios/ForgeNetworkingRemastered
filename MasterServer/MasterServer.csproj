@@ -46,7 +46,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ForgeNetworkingRemastered\BeardedManStudios\BeardedManStudios.csproj">
+    <ProjectReference Include="..\BeardedManStudios\BeardedManStudios.csproj">
       <Project>{1dc34cdd-667a-40be-9447-45866bf4607d}</Project>
       <Name>BeardedManStudios</Name>
     </ProjectReference>
