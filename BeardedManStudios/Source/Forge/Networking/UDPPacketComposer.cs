@@ -219,22 +219,40 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (PendingPackets)
 			{
-				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				foreach (var key in PendingPackets.Keys)
 				{
-					if (kv.Value.LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
+					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
 						continue;
 
 					if (counter <= 0)
 					{
-						kv.Value.UpdateTimestep(timestep);
+						PendingPackets[key] = PendingPackets[key].UpdateTimestep(timestep);
 						continue;
 					}
 
-					counter -= kv.Value.rawBytes.Length;
+					counter -= PendingPackets[key].rawBytes.Length;
 
-					kv.Value.DoingRetry(timestep);
-					Send(kv.Value.rawBytes);
-					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+					PendingPackets[key] = PendingPackets[key].DoingRetry(timestep);
+					Send(PendingPackets[key].rawBytes);
+					ClientWorker.BandwidthOut += (ulong)PendingPackets[key].rawBytes.Length;
+				}
+
+				foreach (var key in PendingPackets.Keys)
+				{
+					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
+						continue;
+
+					if (counter <= 0)
+					{
+						PendingPackets[key] = PendingPackets[key].UpdateTimestep(timestep);
+						continue;
+					}
+
+					counter -= PendingPackets[key].rawBytes.Length;
+
+					PendingPackets[key] = PendingPackets[key].DoingRetry(timestep);
+					Send(PendingPackets[key].rawBytes);
+					ClientWorker.BandwidthOut += (ulong)PendingPackets[key].rawBytes.Length;
 				}
 			}
 		}
