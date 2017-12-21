@@ -20,6 +20,7 @@
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
@@ -219,25 +220,7 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (PendingPackets)
 			{
-				foreach (var key in PendingPackets.Keys)
-				{
-					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
-						continue;
-
-					if (counter <= 0)
-					{
-						PendingPackets[key] = PendingPackets[key].UpdateTimestep(timestep);
-						continue;
-					}
-
-					counter -= PendingPackets[key].rawBytes.Length;
-
-					PendingPackets[key] = PendingPackets[key].DoingRetry(timestep);
-					Send(PendingPackets[key].rawBytes);
-					ClientWorker.BandwidthOut += (ulong)PendingPackets[key].rawBytes.Length;
-				}
-
-				foreach (var key in PendingPackets.Keys)
+				foreach (var key in PendingPackets.Keys.ToArray())
 				{
 					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
 						continue;
