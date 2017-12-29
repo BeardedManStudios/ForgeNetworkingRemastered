@@ -48,7 +48,7 @@ You can create a class that is dedicated to mapping objects to strings or intege
 You can create your own instantiate methods. You can wrap code around our code to spawn your objects. So imagine that you want to call the generated **NetworkManager.Instance.InstantiateSuperBall** method but you have some other stuff you always do before hand or that dynamically selects the proper index. In this case you can create a class that does all the helper logic before you call the instantiate method, then you would call the instantiate through this helper class.
 
 ### Manual Attachment Method
-You can create a NetworkObject without having to call this insantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the [Network Object Without Prefab](network-object-without-prefab) page.
+You can create a NetworkObject without having to call this insantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the **Getting Started** examples about network insantiation.
 
 ## Warnings
 If you are dynamically setting the array on the **NetworkManager.Instance** then you **MUST** make sure that the order being assigned is predictable on all clients. You can't exactly have the order of the array different on each client and expect it to still work properly can you?
