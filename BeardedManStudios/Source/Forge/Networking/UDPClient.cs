@@ -75,6 +75,20 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specified receiver(s)
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false , params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			Send(sendFrame, reliable);
+		}
+
+		/// <summary>
 		/// This will connect a UDP client to a given UDP server
 		/// </summary>
 		/// <param name="host">The server's host address on the network</param>
@@ -82,7 +96,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="natHost">The NAT server host address, if blank NAT will be skipped</param>
 		/// <param name="natPort">The port that the NAT server is hosting on</param>
 		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
-		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false)
+		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false, ushort overrideBindingPort = DEFAULT_PORT + 1)
 		{
 			if (Disposed)
 				throw new ObjectDisposedException("UDPClient", "This object has been disposed and can not be used to connect, please use a new UDPClient");
@@ -93,7 +107,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				ushort clientPort = DEFAULT_PORT + 1;
+				ushort clientPort = overrideBindingPort;
 
 				// Make sure not to listen on the same port as the server for local networks
 				if (clientPort == port)
@@ -351,6 +365,16 @@ namespace BeardedManStudios.Forge.Networking
 		public override void Ping()
 		{
 			Send(GeneratePing());
+		}
+
+		/// <summary>
+		/// A ping was receieved from the server so we need to respond with the pong
+		/// </summary>
+		/// <param name="playerRequesting">The server</param>
+		/// <param name="time">The time that the ping was received for</param>
+		protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
+		{
+			Send(GeneratePong(time));
 		}
 
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)

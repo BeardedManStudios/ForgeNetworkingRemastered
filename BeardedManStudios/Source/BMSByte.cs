@@ -33,7 +33,7 @@ namespace BeardedManStudios
 		/// <summary>
 		/// A lookup of various types that are allowed to be stored and pulled from this object
 		/// </summary>
-		private Dictionary<Type, Array> allowedTypes = new Dictionary<Type, Array>()
+		private static Dictionary<Type, Array> allowedTypes = new Dictionary<Type, Array>()
 		{
 			{ typeof(char), new char[1] },
 			{ typeof(string), new string[1] },
@@ -175,6 +175,32 @@ namespace BeardedManStudios
 			PointToEnd();
 		}
 
+
+		/// <summary>
+		/// Adds the arrays of bytes to the end of the byte array and resizes only ONCE
+		/// </summary>
+		/// <param name="input">The bytes arrays to be appended to the end of the internal byte array</param>
+		public void Append(params byte[][] input)
+		{
+			int lengthSum = 0;
+			foreach (byte[] array in input)
+			{
+				lengthSum += array.Length;
+			}
+
+			if (byteArr.Length <= index + lengthSum)
+				Array.Resize<byte>(ref byteArr, index + lengthSum + 1);
+
+			foreach (byte[] array in input)
+			{
+				Buffer.BlockCopy(array, 0, byteArr, index, array.Length);
+				Size += array.Length;
+				PointToEnd();
+			}
+
+		}
+
+
 		/// <summary>
 		/// Adds the bytes to the end of the byte array and resizes when needed
 		/// </summary>
@@ -231,7 +257,7 @@ namespace BeardedManStudios
 			if (obj is string)
 				Buffer.BlockCopy(Encoding.UTF8.GetBytes(((string)obj)), 0, byteArr, index, count);
 			else
-				Buffer.BlockCopy(GetArray(typeof(T), obj), 0, byteArr, index, count);
+				Buffer.BlockCopy(GetArray<T>(obj), 0, byteArr, index, count);
 
 			Size = index + count;
 			PointToEnd();
@@ -380,150 +406,26 @@ namespace BeardedManStudios
 			if (raw)
 				Append(new byte[] { 1 });
 		}
-
+		
 		/// <summary>
 		/// Get an array of a specific type from the internally tracked byte array
 		/// </summary>
 		/// <param name="type">The type of array to be pulled</param>
 		/// <param name="o"></param>
 		/// <returns>The updated array of data</returns>
-		private Array GetArray(Type type, object o)
+		private Array GetArray<T>(object o)
 		{
-			if (type == typeof(sbyte))
+			Type type = typeof(T);
+			if (allowedTypes.ContainsKey(type))
 			{
-				((sbyte[])allowedTypes[typeof(sbyte)])[0] = (sbyte)o;
-				return allowedTypes[typeof(sbyte)];
-			}
-			else if (type == typeof(byte))
-			{
-				((byte[])allowedTypes[typeof(byte)])[0] = (byte)o;
-				return allowedTypes[typeof(byte)];
-			}
-			else if (type == typeof(char))
-			{
-				((char[])allowedTypes[typeof(char)])[0] = (char)o;
-				return allowedTypes[typeof(char)];
-			}
-			else if (type == typeof(bool))
-			{
-				((bool[])allowedTypes[typeof(bool)])[0] = (bool)o;
-				return allowedTypes[typeof(bool)];
-			}
-			else if (type == typeof(short))
-			{
-				((short[])allowedTypes[typeof(short)])[0] = (short)o;
-				return allowedTypes[typeof(short)];
-			}
-			else if (type == typeof(ushort))
-			{
-				((ushort[])allowedTypes[typeof(ushort)])[0] = (ushort)o;
-				return allowedTypes[typeof(ushort)];
-			}
-			else if (type == typeof(int))
-			{
-				((int[])allowedTypes[typeof(int)])[0] = (int)o;
-				return allowedTypes[typeof(int)];
-			}
-			else if (type == typeof(uint))
-			{
-				((uint[])allowedTypes[typeof(uint)])[0] = (uint)o;
-				return allowedTypes[typeof(uint)];
-			}
-			else if (type == typeof(long))
-			{
-				((long[])allowedTypes[typeof(long)])[0] = (long)o;
-				return allowedTypes[typeof(long)];
-			}
-			else if (type == typeof(ulong))
-			{
-				((ulong[])allowedTypes[typeof(ulong)])[0] = (ulong)o;
-				return allowedTypes[typeof(ulong)];
-			}
-			else if (type == typeof(float))
-			{
-				((float[])allowedTypes[typeof(float)])[0] = (float)o;
-				return allowedTypes[typeof(float)];
-			}
-			else if (type == typeof(double))
-			{
-				((double[])allowedTypes[typeof(double)])[0] = (double)o;
-				return allowedTypes[typeof(double)];
+				T[] array = (T[])allowedTypes[type];
+				array[0] = (T)o;
+				return array;
+
 			}
 			else
 				throw new Exception("The type " + type.ToString() + " is not allowed");
 		}
-
-		/// <summary>
-		/// Get an array of a specific type from the internally tracked byte array
-		/// </summary>
-		/// <param name="o"></param>
-		/// <returns>The updated array of data</returns>
-		private Array GetArray(object obj)
-		{
-			if (obj is sbyte)
-			{
-				((sbyte[])allowedTypes[typeof(sbyte)])[0] = (sbyte)obj;
-				return allowedTypes[typeof(sbyte)];
-			}
-			else if (obj is byte)
-			{
-				((byte[])allowedTypes[typeof(byte)])[0] = (byte)obj;
-				return allowedTypes[typeof(byte)];
-			}
-			else if (obj is char)
-			{
-				((char[])allowedTypes[typeof(char)])[0] = (char)obj;
-				return allowedTypes[typeof(char)];
-			}
-			else if (obj is bool)
-			{
-				((bool[])allowedTypes[typeof(bool)])[0] = (bool)obj;
-				return allowedTypes[typeof(bool)];
-			}
-			else if (obj is short)
-			{
-				((short[])allowedTypes[typeof(short)])[0] = (short)obj;
-				return allowedTypes[typeof(short)];
-			}
-			else if (obj is ushort)
-			{
-				((ushort[])allowedTypes[typeof(ushort)])[0] = (ushort)obj;
-				return allowedTypes[typeof(ushort)];
-			}
-			else if (obj is int)
-			{
-				((int[])allowedTypes[typeof(int)])[0] = (int)obj;
-				return allowedTypes[typeof(int)];
-			}
-			else if (obj is uint)
-			{
-				((uint[])allowedTypes[typeof(uint)])[0] = (uint)obj;
-				return allowedTypes[typeof(uint)];
-			}
-			else if (obj is long)
-			{
-				((long[])allowedTypes[typeof(long)])[0] = (long)obj;
-				return allowedTypes[typeof(long)];
-			}
-			else if (obj is ulong)
-			{
-				((ulong[])allowedTypes[typeof(ulong)])[0] = (ulong)obj;
-				return allowedTypes[typeof(ulong)];
-			}
-			else if (obj is float)
-			{
-				((float[])allowedTypes[typeof(float)])[0] = (float)obj;
-				return allowedTypes[typeof(float)];
-			}
-			else if (obj is double)
-			{
-				((double[])allowedTypes[typeof(double)])[0] = (double)obj;
-				return allowedTypes[typeof(double)];
-			}
-			else
-				throw new Exception("The type " + obj.GetType().ToString() + " is not allowed");
-		}
-
 		/// <summary>
 		/// Used to get the size of a specific type of object, will only be types specified in the type lookup
 		/// </summary>

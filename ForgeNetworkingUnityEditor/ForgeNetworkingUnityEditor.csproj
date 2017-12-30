@@ -69,7 +69,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Editor\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Editor\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Editor\$(TargetName).pdb"
+echo %25DATE%25-%25TIME%25 &gt; "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Editor\Resources\BMS_Forge_Editor\version.txt"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

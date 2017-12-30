@@ -33,7 +33,7 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class NetworkingPlayer
 	{
-		private const uint PLAYER_TIMEOUT_DISCONNECT = 90000;
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 30000;
 		private const int DEFAULT_PING_INTERVAL = 5000;
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// Determines if the player has been sent an accept request but the server
 		/// is still waiting on a confirmation of the acceptance
 		/// </summary>
-		public bool PendingAccpeted { get; set; }
+		public bool PendingAccepted { get; set; }
 
 		/// <summary>
 		/// Determines if the player is currently connected
@@ -124,6 +124,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// Whether this player is the one hosting
 		/// </summary>
 		public bool IsHost { get; private set; }
+
+		/// <summary>
+		/// Used to determine if this player is in the process of disconnecting
+		/// </summary>
+		public bool IsDisconnecting { get; set; }
 
 		/// <summary>
 		/// Whether we are locked

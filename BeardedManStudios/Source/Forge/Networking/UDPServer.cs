@@ -100,6 +100,35 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// Sends binary message to the specified receiver(s)
+		/// </summary>
+		/// <param name="receivers">The client to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
+			Send(player, sendFrame, reliable);
+		}
+
+		/// <summary>
+		/// Sends binary message to all clients ignoring the specific one
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="playerToIgnore"></param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers = Receivers.Target, NetworkingPlayer playerToIgnore = null, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			Send(sendFrame, reliable, playerToIgnore);
+		}
+
 		public void Connect(string host = "0.0.0.0", ushort port = DEFAULT_PORT, string natHost = "", ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT)
 		{
 			if (Disposed)
@@ -201,10 +230,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
-			if (!forced)
-				DisconnectingPlayers.Add(player);
-			else
-				ForcedDisconnectingPlayers.Add(player);
+			commonServerLogic.Disconnect(player, forced, DisconnectingPlayers, ForcedDisconnectingPlayers);
 		}
 
 		/// <summary>
@@ -224,18 +250,37 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
+			lock (Players)
+			{
+				if (player.IsDisconnecting)
+					return;
+
+				player.IsDisconnecting = true;
+			}
+
 			// Tell the player that they are getting disconnected
-			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), true);
+			Send(player, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), !forced);
 
-			//Thread.Sleep(500);
-
-			FinalizeRemovePlayer(player);
+			if (!forced)
+			{
+				Task.Queue(() =>
+				{
+					FinalizeRemovePlayer(player, forced);
+				}, 1000);
+			}
+			else
+				FinalizeRemovePlayer(player, forced);
 		}
 
-		private void FinalizeRemovePlayer(NetworkingPlayer player)
+		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
 		{
-			OnPlayerDisconnected(player);
 			udpPlayers.Remove(player.Ip + "+" + player.Port);
+			OnPlayerDisconnected(player);
+
+			if (forced)
+				ForcedDisconnectingPlayers.Remove(player);
+			else
+				DisconnectingPlayers.Remove(player);
 		}
 
 		/// <summary>
@@ -271,10 +316,10 @@ namespace BeardedManStudios.Forge.Networking
 				}
 				catch
 				{
-					if (udpPlayers.ContainsKey(incomingEndpoint))
+					UDPNetworkingPlayer player;
+					if (udpPlayers.TryGetValue(incomingEndpoint, out player))
 					{
-						Disconnect(udpPlayers[incomingEndpoint], true);
-						CleanupDisconnections();
+						FinalizeRemovePlayer(player, true);
 					}
 
 					continue;
@@ -293,7 +338,7 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					currentReadingPlayer = udpPlayers[incomingEndpoint];
 
-					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccpeted)
+					if (!currentReadingPlayer.Accepted && !currentReadingPlayer.PendingAccepted)
 					{
 						// It is possible that the response validation was dropped so
 						// check if the client is resending for a response
@@ -307,7 +352,7 @@ namespace BeardedManStudios.Forge.Networking
 						}
 						else
 						{
-							currentReadingPlayer.PendingAccpeted = true;
+							currentReadingPlayer.PendingAccepted = true;
 							ReadPacket(packet);
 						}
 					}
@@ -317,7 +362,8 @@ namespace BeardedManStudios.Forge.Networking
 						// will be 71 and the second packet be 69 is a forced disconnect reconnect
 						if (packet[0] == 71 && packet[1] == 69)
 						{
-							FinalizeRemovePlayer(currentReadingPlayer);
+							udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
+							FinalizeRemovePlayer(currentReadingPlayer, true);
 							continue;
 						}
 
@@ -446,7 +492,6 @@ namespace BeardedManStudios.Forge.Networking
 				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
 				{
 					currentPlayer.InstanceGuid = frame.ToString();
-					currentPlayer.InstanceGuid = currentPlayer.InstanceGuid.Remove(currentPlayer.InstanceGuid.Length - sizeof(ulong));
 
 					OnPlayerGuidAssigned(currentPlayer);
 
@@ -464,7 +509,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 
-				Disconnect(currentReadingPlayer, false);
+				Disconnect(currentReadingPlayer, true);
 				CleanupDisconnections();
 				return;
 			}

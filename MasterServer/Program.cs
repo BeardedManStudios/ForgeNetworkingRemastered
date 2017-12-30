@@ -1,13 +1,12 @@
 ﻿using BeardedManStudios;
-using BeardedManStudios.Threading;
+using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace MasterServer
 {
 	class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			string host = "0.0.0.0";
 			ushort port = 15940;
@@ -29,14 +28,16 @@ namespace MasterServer
 			}
 			else
 			{
-				System.Console.WriteLine("Entering nothing will choose defaults.");
-				System.Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
-				read = System.Console.ReadLine();
+				Console.WriteLine("Entering nothing will choose defaults.");
+				Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
+				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
 					host = "0.0.0.0";
+				else
+					host = read;
 
-				System.Console.WriteLine("Enter Port (Default: 15940):");
-				read = System.Console.ReadLine();
+				Console.WriteLine("Enter Port (Default: 15940):");
+				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
 					port = 15940;
 				else
@@ -45,29 +46,29 @@ namespace MasterServer
 				}
 			}
 
-			MasterServer server = null;
+			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+			PrintHelp();
+			MasterServer server = new MasterServer(host, port);
+			server.EloRange = eloRange;
+			server.ToggleLogging();
 
-			Thread serverThread = new Thread(new ThreadStart(() =>
-			{
-				System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-				System.Console.WriteLine("Commands Available\n(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
-				server = new MasterServer(host, port);
-				server.EloRange = eloRange;
-				while (server.IsRunning) ;
-			}));
-
-			serverThread.IsBackground = true;
-			serverThread.Start();
 			while (true)
 			{
-				read = System.Console.ReadLine().ToLower();
+				read = Console.ReadLine().ToLower();
 				if (read == "s" || read == "stop")
 				{
 					lock (server)
 					{
-						System.Console.WriteLine("Server stopped.");
+						Console.WriteLine("Server stopped.");
 						server.Dispose();
 					}
+				}
+				else if (read == "l" || read == "log")
+				{
+					if (server.ToggleLogging())
+						Console.WriteLine("Logging has been enabled");
+					else
+						Console.WriteLine("Logging has been disabled");
 				}
 				else if (read == "r" || read == "restart")
 				{
@@ -75,50 +76,53 @@ namespace MasterServer
 					{
 						if (server.IsRunning)
 						{
-							System.Console.WriteLine("Server stopped.");
+							Console.WriteLine("Server stopped.");
 							server.Dispose();
 						}
 					}
 
-					System.Console.WriteLine("Restarting...");
-					serverThread = new Thread(new ThreadStart(() =>
-					{
-						System.Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-						server = new MasterServer(host, port);
-						while (server.IsRunning) ;
-					}));
-
-					serverThread.IsBackground = true;
-					serverThread.Start();
+					Console.WriteLine("Restarting...");
+					Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+					server = new MasterServer(host, port);
 				}
 				else if (read == "q" || read == "quit")
 				{
 					lock (server)
 					{
-						System.Console.WriteLine("Quitting...");
+						Console.WriteLine("Quitting...");
 						server.Dispose();
 					}
 					break;
 				}
 				else if (read == "h" || read == "help")
-				{
-					System.Console.WriteLine("(s)top - Stops hosting\n(r)estart - Restarts the hosting service even when stopped\n(e)lo - Set the elo range to accept in difference [i.e. \"elorange = 10\"]\n(q)uit - Quits the application\n(h)elp - Get a full list of comands");
-				}
+					PrintHelp();
 				else if (read.StartsWith("elo"))
 				{
 					int index = read.IndexOf("=");
 					string val = read.Substring(index + 1, read.Length - (index + 1));
 					if (int.TryParse(val.Replace(" ", string.Empty), out index))
 					{
-						System.Console.WriteLine(string.Format("Elo range set to {0}", index));
+						Console.WriteLine(string.Format("Elo range set to {0}", index));
 						if (index == 0)
-							System.Console.WriteLine("Elo turned off");
+							Console.WriteLine("Elo turned off");
 						server.EloRange = index;
 					}
 					else
-						System.Console.WriteLine("Invalid elo range provided (Must be an integer)\n");
+						Console.WriteLine("Invalid elo range provided (Must be an integer)\n");
 				}
+				else
+					Console.WriteLine("Command not recognized, please try again");
 			}
+		}
+
+		private static void PrintHelp()
+		{
+			Console.WriteLine(@"Commands Available
+(s)top - Stops hosting
+(r)estart - Restarts the hosting service even when stopped
+(l)og - Toggles logging (starts off)
+(q)uit - Quits the application
+(h)elp - Get a full list of comands");
 		}
 	}
 }

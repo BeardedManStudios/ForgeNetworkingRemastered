@@ -62,7 +62,7 @@ public class PlayerCube : PlayerCubeBehavior
 	/// The speed that this cube should move by when there are axis inputs
 	/// </summary>
 	public float speed = 5.0f;
-	
+
 	private void Update()
 	{
 		// If this is not owned by the current network client then it needs to
@@ -71,7 +71,7 @@ public class PlayerCube : PlayerCubeBehavior
 		{
 			// Assign the position of this cube to the position sent on the network
 			transform.position = networkObject.position;
-			
+
 			// Assign the rotation of this cube to the rotation sent on the network
 			transform.rotation = networkObject.rotation; |
 
@@ -158,7 +158,7 @@ public class GameLogic : MonoBehaviour
 {
 	private void Start()
 	{
-		NetworkManager.Instance.InstantiatePlayerCubeNetworkObject();
+		NetworkManager.Instance.InstantiatePlayerCube();
 	}
 }
 ```

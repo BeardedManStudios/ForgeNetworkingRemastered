@@ -38,9 +38,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				var option = Instantiate(serverOption);
 				option.transform.SetParent(content);
-                var browserItem = option.GetComponent<ServerBrowserItem>();
-                if (browserItem != null)
-                    browserItem.SetData(name, callback);
+				var browserItem = option.GetComponent<ServerBrowserItem>();
+				if (browserItem != null)
+					browserItem.SetData(name, callback);
 			});
 		}
 
@@ -115,12 +115,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 										socket = new TCPClient();
 										((TCPClient)socket).Connect(address, port);
 									}
+									#if !UNITY_IOS && !UNITY_ANDROID
 									else if (protocol == "web")
 									{
 										socket = new TCPClientWebsockets();
 										((TCPClientWebsockets)socket).Connect(address, port);
 									}
-
+									#endif
 									if (socket == null)
 										throw new Exception("No socket of type " + protocol + " could be established");
 

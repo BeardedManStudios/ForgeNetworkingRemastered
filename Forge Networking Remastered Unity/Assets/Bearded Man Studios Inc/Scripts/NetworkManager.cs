@@ -245,6 +245,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server
 					client.Send(temp);
+
+					Networker.disconnected += s =>
+					{
+						client.Disconnect(false);
+						MasterServerNetworker = null;
+					};
 				}
 				catch
 				{
@@ -256,13 +262,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			client.Connect(_masterServerHost, _masterServerPort);
 
-			Networker.disconnected += (sender) =>
-			{
-				client.Disconnect(false);
-				MasterServerNetworker = null;
-			};
-
+			Networker.disconnected += NetworkerDisconnected;
 			MasterServerNetworker = client;
+		}
+
+		private void NetworkerDisconnected(NetWorker sender)
+		{
+			Networker.disconnected -= NetworkerDisconnected;
+			MasterServerNetworker.Disconnect(false);
+			MasterServerNetworker = null;
 		}
 
 		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
@@ -287,7 +295,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			// The Master Server communicates over TCP
-			TCPMasterClient client = new TCPMasterClient();
+			TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
 
 			// Once this client has been accepted by the master server it should send it's update request
 			client.serverAccepted += (sender) =>
@@ -309,14 +317,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			client.Connect(_masterServerHost, _masterServerPort);
-
-			Networker.disconnected += (sender) =>
-			{
-				sender.Disconnect(false);
-				MasterServerNetworker = null;
-			};
-
-			MasterServerNetworker = client;
 		}
 
 		public void Disconnect()
@@ -424,8 +424,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// <param name="player">The player that was just accepted</param>
 		private void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
 		{
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, loadedScenes.Count);
+			BMSByte data = ObjectMapper.BMSByte(loadedScenes.Count);
 
 			// Go through all the loaded scene indexes and send them to the connecting player
 			for (int i = 0; i < loadedScenes.Count; i++)
@@ -551,8 +550,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (networkSceneLoaded != null)
 				networkSceneLoaded(scene, mode);
 
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, scene.buildIndex, (int)mode);
+			BMSByte data = ObjectMapper.BMSByte(scene.buildIndex, (int)mode);
 
 			Binary frame = new Binary(Networker.Time.Timestep, false, data, Networker is IServer ? Receivers.All : Receivers.Server, MessageGroupIds.VIEW_CHANGE, Networker is BaseTCP);
 

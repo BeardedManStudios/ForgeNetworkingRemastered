@@ -26,7 +26,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private const string EDITOR_DISCORD_LINK = "https://discord.gg/yzZwEYm";
 		private const string EDITOR_FORUM_LINK = "https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/";
 		private const string EDITOR_EMAIL_LINK = "support@beardedmangames.com";
-		private const string VERSION = "23.0";
+		private string Version { get { return Resources.Load<TextAsset>(ForgeNetworkingEditor.EDITOR_RESOURCES_DIR + "/version").text; } }
+
 		//private static bool ProVersion = false;
 		private static bool IgnoreEditorStartup = false;
 		#endregion
@@ -130,7 +131,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				IgnoreEditorStartup = currentSetup;
 				EditorPrefs.SetBool(EDITOR_PREF_IGNORE, IgnoreEditorStartup);
 			}
-			EditorGUILayout.LabelField("Version " + VERSION, EditorStyles.boldLabel);
+			EditorGUILayout.LabelField("Version " + Version, EditorStyles.boldLabel);
 			GUILayout.EndHorizontal();
 		}
 	}

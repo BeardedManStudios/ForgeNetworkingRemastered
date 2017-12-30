@@ -42,15 +42,27 @@ namespace BeardedManStudios.Forge.Networking
 			retryCount = 0;
 		}
 
-		public void DoingRetry(ulong timestep)
+		public UDPPacket DoingRetry(ulong timestep)
 		{
 			retryCount++;
-			UpdateTimestep(timestep);
+			return UpdateTimestep(timestep);
 		}
 
-		public void UpdateTimestep(ulong timestep)
+		public UDPPacket UpdateTimestep(ulong timestep)
 		{
-			LastSentTimestep = timestep;
+			return new UDPPacket
+			{
+				reliable = reliable,
+				endPacket = endPacket,
+				groupId = groupId,
+				orderId = orderId,
+				uniqueId = uniqueId,
+				rawBytes = rawBytes,
+				isConfirmation = isConfirmation,
+				receivers = receivers,
+				LastSentTimestep = timestep,
+				retryCount = retryCount
+			};
 		}
 	}
 }

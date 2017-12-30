@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking
 		public bool PlayerIsReceiver(NetworkingPlayer player, FrameStream frame, float proximityDistance, NetworkingPlayer skipPlayer = null)
 		{
 			// Don't send messages to a player who has not been accepted by the server yet
-			if ((!player.Accepted && !player.PendingAccpeted) || player == skipPlayer)
+			if ((!player.Accepted && !player.PendingAccepted) || player == skipPlayer)
 				return false;
 
 			if (player == frame.Sender)
@@ -72,6 +72,22 @@ namespace BeardedManStudios.Forge.Networking
 				// Wait a second before checking again
 				Thread.Sleep(1000);
 			}
+		}
+
+		/// <summary>
+		/// Disconnects a client
+		/// </summary>
+		/// <param name="client">The target client to be disconnected</param>
+		public void Disconnect(NetworkingPlayer player, bool forced,
+			List<NetworkingPlayer> DisconnectingPlayers, List<NetworkingPlayer> ForcedDisconnectingPlayers)
+		{
+			if (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player))
+				return;
+
+			if (!forced)
+				DisconnectingPlayers.Add(player);
+			else
+				ForcedDisconnectingPlayers.Add(player);
 		}
 	}
 }

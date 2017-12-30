@@ -167,6 +167,24 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific tcp client(s)
+		/// </summary>
+		/// <param name="client">The client to receive the message</param>
+		/// <param name="receivers">Receiver's type</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public bool Send(TcpClient client, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
+#if WINDOWS_UWP
+			public bool Send(StreamSocket client, FrameStream frame)
+#else
+			return Send(client, sendFrame);
+#endif
+		}
+
+		/// <summary>
 		/// Send a frame to a specific player
 		/// </summary>
 		/// <param name="frame">The frame to send to that specific player</param>
@@ -181,15 +199,8 @@ namespace BeardedManStudios.Forge.Networking
 				if (Players.Contains(targetPlayer))
 				{
 					NetworkingPlayer player = Players[Players.IndexOf(targetPlayer)];
-					if (!player.Accepted && !player.PendingAccpeted)
+					if (!player.Accepted && !player.PendingAccepted)
 						return;
-
-					if (player == frame.Sender)
-					{
-						// Don't send a message to the sending player if it was meant for others
-						if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
-							return;
-					}
 
 					if (player == frame.Sender)
 					{
@@ -222,6 +233,20 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific client
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="targetPlayer">The client to receive the message</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public void SendToPlayer(NetworkingPlayer targetPlayer, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
+			SendToPlayer(sendFrame, targetPlayer);
+		}
+
+		/// <summary>
 		/// Goes through all of the currently connected players and send them the frame
 		/// </summary>
 		/// <param name="frame">The frame to send to all of the connected players</param>
@@ -247,6 +272,20 @@ namespace BeardedManStudios.Forge.Networking
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Goes through all of the currently connected players and send them the frame
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="playerToIgnore">The client to ignore</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public void SendAll(Receivers receivers = Receivers.All, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, NetworkingPlayer playerToIgnore = null, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, true);
+			SendAll(sendFrame, playerToIgnore);
 		}
 
 		/// <summary>
@@ -359,7 +398,7 @@ namespace BeardedManStudios.Forge.Networking
 				Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
 				// Do disconnect logic for client
-				Disconnect(client, false);
+				ClientRejected(client, false);
 				return;
 			}
 			else if (!AcceptingConnections)
@@ -371,7 +410,7 @@ namespace BeardedManStudios.Forge.Networking
 				Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
 				// Do disconnect logic for client
-				Disconnect(client, false);
+				ClientRejected(client, false);
 				return;
 			}
 
@@ -585,10 +624,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="client">The target client to be disconnected</param>
 		public void Disconnect(NetworkingPlayer player, bool forced)
 		{
-			if (forced)
-				DisconnectingPlayers.Add(player);
-			else
-				ForcedDisconnectingPlayers.Add(player);
+			commonServerLogic.Disconnect(player, forced, DisconnectingPlayers, ForcedDisconnectingPlayers);
 		}
 
 		/// <summary>
@@ -598,41 +634,58 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
-			Disconnect(player.TcpClientHandle, forced);
+			lock (Players)
+			{
+				if (player.IsDisconnecting)
+					return;
+
+				player.IsDisconnecting = true;
+			}
+
+			// Tell the player that he is getting disconnected
+			Send(player.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+			
+			if (!forced)
+			{
+				Task.Queue(() =>
+				{
+					FinalizeRemovePlayer(player, forced);
+				}, 1000);
+			}
+			else
+				FinalizeRemovePlayer(player, forced);
+		}
+
+		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
+		{
 			OnPlayerDisconnected(player);
+			player.TcpClientHandle.Close();
+			rawClients.Remove(player.TcpClientHandle);
+
+			if (!forced)
+			{
+				// Let all of the event listeners know that the client has successfully disconnected
+				if (rawClientDisconnected != null)
+					rawClientDisconnected(player.TcpClientHandle);
+				DisconnectingPlayers.Remove(player);
+			}
+			else
+			{
+				// Let all of the event listeners know that this was a forced disconnect
+				if (forced && rawClientForceClosed != null)
+					rawClientForceClosed(player.TcpClientHandle);
+				ForcedDisconnectingPlayers.Remove(player);
+			}
 		}
 
 #if WINDOWS_UWP
-		private void Disconnect(StreamSocket client, bool forced)
+		private void ClientRejected(StreamSocket client, bool forced)
 #else
-		private void Disconnect(TcpClient client, bool forced)
+		private void ClientRejected(TcpClient client, bool forced)
 #endif
 		{
-			// Send the connection close frame to the client
-			Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
-
 			// Clean up the client objects
 			client.Close();
-
-			// Only do client removal logic if the client has been a fully successful connection and
-			// not immediately kicked
-			if (rawClients.Contains(client))
-			{
-				rawClients.Remove(client);
-
-				if (!forced)
-				{
-					// Let all of the event listeners know that the client has successfully disconnected
-					if (rawClientDisconnected != null)
-						rawClientDisconnected(client);
-				}
-				else
-				{
-					// Let all of the event listeners know that this was a forced disconnect
-					if (forced && rawClientForceClosed != null)
-						rawClientForceClosed(client);
-				}
-			}
 		}
 
 		private void SendBuffer(NetworkingPlayer player)

@@ -95,6 +95,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _>:[1]:<);
 			>:ENDFOREVERY:<
 
+			// Reset all the dirty fields
+			for (int i = 0; i < _dirtyFields.Length; i++)
+				_dirtyFields[i] = 0;
+
 			return dirtyFieldsData;
 		}
 
@@ -129,10 +133,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				return;
 
 			>:FOREVERY variables:<
-			if (>:[1]:<Interpolation.Enabled && !>:[1]:<Interpolation.current.Near(>:[1]:<Interpolation.target, 0.0015f))
+			if (>:[1]:<Interpolation.Enabled && !>:[1]:<Interpolation.current.UnityNear(>:[1]:<Interpolation.target, 0.0015f))
 			{
 				_>:[1]:< = (>:[0]:<)>:[1]:<Interpolation.Interpolate();
-				RunChange_>:[1]:<(>:[1]:<Interpolation.Timestep);
+				//RunChange_>:[1]:<(>:[1]:<Interpolation.Timestep);
 			}
 			>:ENDFOREVERY:<
 		}

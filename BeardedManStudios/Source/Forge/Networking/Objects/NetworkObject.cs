@@ -362,8 +362,6 @@ namespace BeardedManStudios.Forge.Networking
 				// This is a client so it needs to request the creation by the server
 				NetworkReady = false;
 
-				BMSByte data = new BMSByte();
-
 				// Create a hash for this object so it knows that the response from the server is
 				// for this particular create and not another one
 				hash = GlobalHash == -1 ? (GlobalHash += 2) : ++GlobalHash;
@@ -374,7 +372,7 @@ namespace BeardedManStudios.Forge.Networking
 				Networker.objectCreateAttach += CreatedOnNetwork;
 				//TODO: MOVED HERE (#1)
 
-				ObjectMapper.Instance.MapBytes(data, UniqueIdentity, hash, CreateCode);
+				BMSByte data = ObjectMapper.BMSByte(UniqueIdentity, hash, CreateCode);
 				WritePayload(data);
 
 				// Write if the object has metadata
@@ -454,8 +452,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (frame.StreamData.GetBasicType<bool>())
 					Metadata = ObjectMapper.Instance.Map<byte[]>(frame.StreamData);
 
-				BMSByte createdByteData = new BMSByte();
-				ObjectMapper.Instance.MapBytes(createdByteData, serverId);
+				BMSByte createdByteData = ObjectMapper.BMSByte(serverId);
 
 				Binary createdFrame = new Binary(Networker.Time.Timestep, Networker is TCPClient, createdByteData, Receivers.Server, MessageGroupIds.GetId("NO_CREATED_" + NetworkId), Networker is BaseTCP, RouterIds.CREATED_OBJECT_ROUTER_ID);
 
@@ -617,8 +614,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			// The data that is to be sent to all the clients who did not request this object to be created
-			BMSByte data = new BMSByte();
-			ObjectMapper.Instance.MapBytes(data, UniqueIdentity, targetHash, NetworkId, CreateCode);
+			BMSByte data = ObjectMapper.BMSByte(UniqueIdentity, targetHash, NetworkId, CreateCode);
 
 			// Write all of the most up to date data for this object
 			WritePayload(data);
@@ -677,8 +673,7 @@ namespace BeardedManStudios.Forge.Networking
 						networker = obj.Networker;
 					}
 
-					BMSByte indexBytes = new BMSByte();
-					ObjectMapper.Instance.MapBytes(indexBytes, indexes.Count);
+					BMSByte indexBytes = ObjectMapper.BMSByte(indexes.Count);
 					for (int i = 0; i < indexes.Count; i++)
 						ObjectMapper.Instance.MapBytes(indexBytes, indexes[i]);
 
@@ -908,7 +903,7 @@ namespace BeardedManStudios.Forge.Networking
 			RpcArgs rpcArgs = new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep });
 
 			// If we are the server we need to determine if this RPC is okay to replicate
-			if (Networker is IServer && receivers != Receivers.Server && receivers != Receivers.Target)
+			if (Networker is IServer && receivers != Receivers.Target)
 			{
 				string methodName = inverseRpcLookup[methodId];
 
@@ -1169,21 +1164,15 @@ namespace BeardedManStudios.Forge.Networking
 					return;
 				}
 			}
-
-			BMSByte data = new BMSByte();
-
-			// Map the id of the object into the data so that the program knows what fire from
-			ObjectMapper.Instance.MapBytes(data, NetworkId);
-
-			// Map the id of the Rpc as the second data into the byte array
-			ObjectMapper.Instance.MapBytes(data, methodId);
-
+			
 			// Map the behavior flags to the rpc
 			byte behaviorFlags = 0;
 			behaviorFlags |= replacePrevious ? RPC_BEHAVIOR_OVERWRITE : (byte)0;
-			ObjectMapper.Instance.MapBytes(data, behaviorFlags);
 
+			// Map the id of the object into the data so that the program knows what fire from
+			// Map the id of the Rpc as the second data into the byte array
 			// Map all of the data to bytes
+			BMSByte data = ObjectMapper.BMSByte(NetworkId, methodId, behaviorFlags);
 			ObjectMapper.Instance.MapBytes(data, args);
 
 			if (Networker is IServer)

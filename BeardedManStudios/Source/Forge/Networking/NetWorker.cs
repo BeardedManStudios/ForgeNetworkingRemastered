@@ -220,7 +220,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Occurs when a ping is received over the network from a remote machine
 		/// </summary>
-		public event PingEvent pingReceived;
+		public event PingEvent onPingPong;
 
 		/// <summary>
 		/// Called when a player has provided it's guid, this is useful for waiting until
@@ -645,9 +645,6 @@ namespace BeardedManStudios.Forge.Networking
 
 				for (int i = ForcedDisconnectingPlayers.Count - 1; i >= 0; --i)
 					disconnectMethod(ForcedDisconnectingPlayers[i], true);
-
-				DisconnectingPlayers.Clear();
-				ForcedDisconnectingPlayers.Clear();
 			}
 		}
 
@@ -744,7 +741,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerAccepted(NetworkingPlayer player)
 		{
 			player.Accepted = true;
-			player.PendingAccpeted = false;
+			player.PendingAccepted = false;
 
 			NetworkObject[] currentObjects;
 			lock (NetworkObjects)
@@ -784,8 +781,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="ping"></param>
 		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
-			if (pingReceived != null)
-				pingReceived(ping, this);
+			if (onPingPong != null)
+				onPingPong(ping, this);
 
 			player.RoundTripLatency = (int)ping;
 		}
@@ -804,22 +801,17 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-			if (frame.GroupId == MessageGroupIds.PING && this is IServer)
+			if (frame.GroupId == MessageGroupIds.PING || frame.GroupId == MessageGroupIds.PONG)
 			{
 				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-
-				DateTime received = new DateTime(receivedTimestep);
-				Pong(player, received);
-				return;
-			}
-
-			if (frame.GroupId == MessageGroupIds.PONG && this is IClient)
-			{
-				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-
 				DateTime received = new DateTime(receivedTimestep);
 				TimeSpan ms = DateTime.UtcNow - received;
-				OnPingRecieved(ms.TotalMilliseconds, player);
+
+				if (frame.GroupId == MessageGroupIds.PING)
+					Pong(player, received);
+				else
+					OnPingRecieved(ms.TotalMilliseconds, player);
+
 				return;
 			}
 
@@ -955,7 +947,7 @@ namespace BeardedManStudios.Forge.Networking
 					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
 					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
-					System.Net.Sockets.TcpListener t = new System.Net.Sockets.TcpListener(ipLocalEndPoint);
+					TcpListener t = new TcpListener(ipLocalEndPoint);
 					t.Start();
 					t.Stop();
 				}
@@ -970,9 +962,16 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			EndingSession = true;
 			CloseLocalListingsClient();
+
+			// Reset the ending session after 1000ms so that we know all the threads have cleaned up
+			// for any remaining threads that may be going for this previous process
+			Task.Queue(() =>
+			{
+				EndingSession = false;
+			}, 1000);
 		}
 
-		protected Ping GeneratePing()
+		public Ping GeneratePing()
 		{
 			BMSByte payload = new BMSByte();
 			long ticks = DateTime.UtcNow.Ticks;
@@ -994,7 +993,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public abstract void Ping();
 
-		protected virtual void Pong(NetworkingPlayer playerRequesting, DateTime time) { }
+		protected abstract void Pong(NetworkingPlayer playerRequesting, DateTime time);
 
 		private static void CloseLocalListingsClient()
 		{
