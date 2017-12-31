@@ -445,7 +445,7 @@ Debug.Log(ball.transform.position);
 <h3 id="method-2">Method 2</h3>
 <p>You can create your own instantiate methods. You can wrap code around our code to spawn your objects. So imagine that you want to call the generated <strong>NetworkManager.Instance.InstantiateSuperBall</strong> method but you have some other stuff you always do before hand or that dynamically selects the proper index. In this case you can create a class that does all the helper logic before you call the instantiate method, then you would call the instantiate through this helper class.</p>
 <h3 id="manual-attachment-method">Manual Attachment Method</h3>
-<p>You can create a NetworkObject without having to call this insantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the <a href="../network-object-without-prefab">Network Object Without Prefab</a> page.</p>
+<p>You can create a NetworkObject without having to call this insantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the <strong>Getting Started</strong> examples about network insantiation.</p>
 <h2 id="warnings">Warnings</h2>
 <p>If you are dynamically setting the array on the <strong>NetworkManager.Instance</strong> then you <strong>MUST</strong> make sure that the order being assigned is predictable on all clients. You can't exactly have the order of the array different on each client and expect it to still work properly can you?</p>
               
