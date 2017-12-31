@@ -132,6 +132,57 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				base.GetBytes(o, type, ref bytes);
 		}
 
+		protected override byte[] GetBytesArray(object o, Type type)
+		{
+			byte[] data;
+			byte[] buffer;
+			if (type == typeof(Vector2))
+			{
+				data = new byte[sizeof(float) * 2];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector2)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector2)o).y), 0, data, sizeof(float), sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Vector3))
+			{
+				data = new byte[sizeof(float) * 3];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector3)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector3)o).y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector3)o).z), 0, data, sizeof(float) * 2, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Vector4))
+			{
+				data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector4)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector4)o).y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector4)o).z), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Vector4)o).w), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Color))
+			{
+				data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Color)o).r), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Color)o).g), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Color)o).b), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Color)o).a), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Quaternion))
+			{
+				data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Quaternion)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Quaternion)o).y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Quaternion)o).z), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Quaternion)o).w), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
+			else
+				return base.GetBytesArray(o, type);
+		}
+
+
 		/// <summary>
 		/// Get a Vector2 out of a FrameStream
 		/// </summary>

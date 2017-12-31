@@ -1164,21 +1164,15 @@ namespace BeardedManStudios.Forge.Networking
 					return;
 				}
 			}
-
-			BMSByte data = new BMSByte();
-
-			// Map the id of the object into the data so that the program knows what fire from
-			ObjectMapper.Instance.MapBytes(data, NetworkId);
-
-			// Map the id of the Rpc as the second data into the byte array
-			ObjectMapper.Instance.MapBytes(data, methodId);
-
+			
 			// Map the behavior flags to the rpc
 			byte behaviorFlags = 0;
 			behaviorFlags |= replacePrevious ? RPC_BEHAVIOR_OVERWRITE : (byte)0;
-			ObjectMapper.Instance.MapBytes(data, behaviorFlags);
 
+			// Map the id of the object into the data so that the program knows what fire from
+			// Map the id of the Rpc as the second data into the byte array
 			// Map all of the data to bytes
+			BMSByte data = ObjectMapper.BMSByte(NetworkId, methodId, behaviorFlags);
 			ObjectMapper.Instance.MapBytes(data, args);
 
 			if (Networker is IServer)
