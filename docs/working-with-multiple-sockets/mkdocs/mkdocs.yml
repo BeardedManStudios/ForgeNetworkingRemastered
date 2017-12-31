@@ -1,0 +1,80 @@
+site_name: Forge Networking Remastered
+pages:
+    - Home:
+        - index.md
+        - authoritative-design.md
+    - Getting Started:
+        - GettingStarted/getting-started.md
+        - GettingStarted/basic-moving-cube-example.md
+        - GettingStarted/basic-rpc-example.md
+        - GettingStarted/basic-instantiation-example.md
+        - GettingStarted/jump-start-guide.md
+#       - Game Lobby Example
+    - Network Contract Wizard (NCW):
+        - NetworkContractWizard/network-contract-wizard-ncw.md
+        - NetworkContractWizard/extending-generated-classes.md
+        - NetworkContractWizard/name-collision-issues.md
+    - Network Object:
+        - NetworkObject/changing-ownership.md
+        - NetworkObject/destroying-the-network-object.md
+        - NetworkObject/fields.md
+        - Remote Procedure Calls (RPCs):
+            - NetworkObject/RemoteProcedureCalls/remote-procedure-calls.md
+            - NetworkObject/RemoteProcedureCalls/buffered-rpcs.md
+            - NetworkObject/RemoteProcedureCalls/sending-rpc-to-a-single-player.md
+            - NetworkObject/RemoteProcedureCalls/rpcargs-and-rpcinfo-structs.md
+            - NetworkObject/RemoteProcedureCalls/rpc-validation-by-server.md
+            - NetworkObject/RemoteProcedureCalls/replacing-previous-buffered-rpcs.md
+            - NetworkObject/RemoteProcedureCalls/clearing-buffered-rpcs.md
+    - Unity Integration:
+        - UnityIntegration/gameobject-execution-order.md
+#        - Network Manager
+        - UnityIntegration/network-instantiation.md
+#        - Network Object Without Prefab
+        - UnityIntegration/threading-in-unity.md
+        - UnityIntegration/main-threading-rpcs.md
+        - UnityIntegration/running-unity-specific-code-on-the-main-thread.md
+        - UnityIntegration/network-start.md
+    - Basic Network Samples:
+        - BasicNetworkSamples/server-hosting-code.md
+        - BasicNetworkSamples/client-connecting-code.md
+        - BasicNetworkSamples/server-disconnect-client-code.md
+        - BasicNetworkSamples/ban-client-code.md
+        - BasicNetworkSamples/send-binary-frame.md
+        - BasicNetworkSamples/send-file.md
+    - Scene Navigation:
+        - SceneNavigation/loading-scenes.md
+        - SceneNavigation/scene-events.md
+    - NetWorker:
+#        - NetworkingPlayer
+        - NetWorker/temporarily-blocking-connections.md
+        - NetWorker/thread-safe-player-iteration.md
+    - Master Server:
+        - MasterServer/quick-start.md
+        - MasterServer/connecting-to-master-server.md
+        - MasterServer/getting-host-list.md
+        - MasterServer/windows-server-firewall-setup.md
+#        - Matchmaking
+    - Web Server:
+        - WebServer/jumpstart.md
+        - WebServer/extending-with-mvc.md
+        - WebServer/command-plugins.md
+    - Troubleshooting:
+        - Troubleshooting/troubleshooting.md
+        - Troubleshooting/throttling-network-internal.md
+#    - Master Class:
+#        - 
+    - Events: connection-cycle-events.md
+    - Rewinding: rewinding.md
+    - Debugging: network-logging.md
+    - Working With Multiple Sockets: working-with-multiple-sockets.md
+    - NAT Hole Punching: nat-hole-punching.md
+    - LAN Discovery: lan-discovery.md
+    - Offline Mode: offline-mode.md
+    - Lobby System: lobby.md
+    - Contributing:  adding-and-updating-docs.md
+
+theme: readthedocs
+
+markdown_extensions:
+    - pyembed.markdown
