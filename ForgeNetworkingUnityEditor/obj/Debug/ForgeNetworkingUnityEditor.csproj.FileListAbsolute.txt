@@ -34,3 +34,5 @@ G:\Work\BeardedManStudios\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\o
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEditor.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\UnityEngine.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\bin\Debug\Mono.Cecil.xml
+D:\Unity Projects\ForgeNetworkingRemastered2\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache
+D:\Unity Projects\ForgeNetworkingRemastered2\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csproj.CoreCompileInputs.cache
