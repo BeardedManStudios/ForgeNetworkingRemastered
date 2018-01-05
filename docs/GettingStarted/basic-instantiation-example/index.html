@@ -643,14 +643,14 @@ public class PlayerCube : PlayerCubeBehavior
             transform.position = networkObject.position;
 
             // Assign the rotation of this cube to the rotation sent on the network
-            transform.rotation = networkObject.rotation; |
+            transform.rotation = networkObject.rotation;
 
             // Stop the function here and don't run any more code in this function
             return;
         }
 
         // Get the movement based on the axis input values
-        Vector3 translation = new Vector3(Input.GetAxis(&quot;Horizontal&quot;), Input.GetAxis(&quot;Vertical&quot;), 0);
+        Vector3 translation = new Vector3(Input.GetAxis(&quot;Horizontal&quot;), 0, Input.GetAxis(&quot;Vertical&quot;)).normalized;
 
         // Scale the speed to normalize for processors
         translation *= speed * Time.deltaTime;

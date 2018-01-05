@@ -5,21 +5,13 @@
         
     <url>
      <loc>/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/authoritative-design/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -29,51 +21,31 @@
         
     <url>
      <loc>/GettingStarted/getting-started/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/GettingStarted/basic-moving-cube-example/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/GettingStarted/basic-rpc-example/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/GettingStarted/basic-instantiation-example/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/GettingStarted/jump-start-guide/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -83,31 +55,19 @@
         
     <url>
      <loc>/NetworkContractWizard/network-contract-wizard-ncw/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/NetworkContractWizard/extending-generated-classes/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/NetworkContractWizard/name-collision-issues/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -117,31 +77,19 @@
         
     <url>
      <loc>/NetworkObject/changing-ownership/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/NetworkObject/destroying-the-network-object/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/NetworkObject/fields/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -157,61 +105,37 @@
         
     <url>
      <loc>/UnityIntegration/gameobject-execution-order/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/UnityIntegration/network-instantiation/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/UnityIntegration/threading-in-unity/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/UnityIntegration/main-threading-rpcs/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/UnityIntegration/running-unity-specific-code-on-the-main-thread/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/UnityIntegration/network-start/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -221,61 +145,37 @@
         
     <url>
      <loc>/BasicNetworkSamples/server-hosting-code/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/BasicNetworkSamples/client-connecting-code/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/BasicNetworkSamples/server-disconnect-client-code/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/BasicNetworkSamples/ban-client-code/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/BasicNetworkSamples/send-binary-frame/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/BasicNetworkSamples/send-file/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -285,21 +185,13 @@
         
     <url>
      <loc>/SceneNavigation/loading-scenes/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/SceneNavigation/scene-events/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -309,21 +201,13 @@
         
     <url>
      <loc>/NetWorker/temporarily-blocking-connections/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/NetWorker/thread-safe-player-iteration/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -333,41 +217,25 @@
         
     <url>
      <loc>/MasterServer/quick-start/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/MasterServer/connecting-to-master-server/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/MasterServer/getting-host-list/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/MasterServer/windows-server-firewall-setup/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -377,31 +245,19 @@
         
     <url>
      <loc>/WebServer/jumpstart/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/WebServer/extending-with-mvc/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/WebServer/command-plugins/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -411,21 +267,13 @@
         
     <url>
      <loc>/Troubleshooting/troubleshooting/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/Troubleshooting/throttling-network-internal/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
         
@@ -434,11 +282,7 @@
     
     <url>
      <loc>/connection-cycle-events/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -446,11 +290,7 @@
     
     <url>
      <loc>/rewinding/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -458,11 +298,7 @@
     
     <url>
      <loc>/network-logging/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -470,11 +306,7 @@
     
     <url>
      <loc>/working-with-multiple-sockets/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -482,11 +314,7 @@
     
     <url>
      <loc>/nat-hole-punching/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -494,11 +322,7 @@
     
     <url>
      <loc>/lan-discovery/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -506,11 +330,7 @@
     
     <url>
      <loc>/offline-mode/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -518,11 +338,7 @@
     
     <url>
      <loc>/lobby/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
@@ -530,11 +346,7 @@
     
     <url>
      <loc>/adding-and-updating-docs/</loc>
-<<<<<<< HEAD
      <lastmod>2018-01-05</lastmod>
-=======
-     <lastmod>2018-01-04</lastmod>
->>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
      <changefreq>daily</changefreq>
     </url>
     
