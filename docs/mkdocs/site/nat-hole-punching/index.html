@@ -491,6 +491,7 @@
         
             <ul>
             
+<<<<<<< HEAD
                 <li class="toctree-l3"><a href="#nat-hole-punching">NAT Hole Punching</a></li>
                 
             
@@ -498,6 +499,19 @@
         
     </li>
 <li>
+=======
+    <li class="toctree-l2"><a href="#nat-hole-punching">NAT Hole Punching</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#video-tutorial-on-how-to-test">Video Tutorial On How To Test</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+>>>>>>> 1c7ea6a1ba2813c106093fed6e576fd65d885252
           
             <li>
     <li class="toctree-l1 ">
@@ -563,6 +577,8 @@
 <p>Nat hole punching is a way for users behind a firewall to be able to connect to each other without requireing them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.</p>
 <p>When you look at the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> classes you will notice that there are 2 optional parameters related to nat traversal. One is the NAT host address and the other is the NAT server port. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ServerUDP</strong> object, you will be telling the server where it needs to register itself and you will be opening communication with the NAT server for it to forward client connection requests. When you provide a NAT host address to the <strong>Connect</strong> method on a <strong>ClientUDP</strong> object, you will be telling the client to communicate with that specific NAT host to open communications with the desired server.</p>
 <p>Setting the correct NAT host in the <strong>Connect</strong> method of the <strong>ServerUDP</strong> and <strong>ClientUDP</strong> is all you will need to do in order to enable NAT hole punching in your application.</p>
+<h2 id="video-tutorial-on-how-to-test">Video Tutorial On How To Test</h2>
+<iframe width="640" height="360" src="https://www.youtube.com/embed/AbZX8GchHS4?feature=oembed" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
               
             </div>
           </div>
