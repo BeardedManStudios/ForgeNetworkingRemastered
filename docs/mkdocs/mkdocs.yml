@@ -62,8 +62,7 @@ pages:
     - Troubleshooting:
         - Troubleshooting/troubleshooting.md
         - Troubleshooting/throttling-network-internal.md
-#    - Master Class:
-#        - 
+
     - Events: connection-cycle-events.md
     - Rewinding: rewinding.md
     - Debugging: network-logging.md
