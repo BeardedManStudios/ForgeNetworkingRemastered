@@ -120,9 +120,9 @@ namespace MasterServer
 			Console.WriteLine(@"Commands Available
 (s)top - Stops hosting
 (r)estart - Restarts the hosting service even when stopped
-(l)og - Toggles logging (starts off)
+(l)og - Toggles logging (starts enabled)
 (q)uit - Quits the application
-(h)elp - Get a full list of comands");
+(h)elp - Get a full list of commands");
 		}
 	}
 }
