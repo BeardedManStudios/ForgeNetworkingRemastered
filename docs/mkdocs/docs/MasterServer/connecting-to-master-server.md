@@ -1,5 +1,5 @@
 # Connecting to Master Server
-_If you have not already, we would suggest reviewing the [Master Server Quick Start](master-server-quick-start) documentation to get familiar with the Master Server and to setup the stand alone executable._
+_If you have not already, we would suggest reviewing the [Master Server Quick Start](quick-start) documentation to get familiar with the Master Server and to setup the stand alone executable._
 
 When you first initialize your **NetworkManager** (as seen in `MultiplayerMenu.cs`) you will need to provide it with the NetWorker that you wish to use for standard game network communications. To do this the NetworkManager has a method `MasterServerRegisterData` that you can use in order to get the registration data object to allow you to register your game server with the Master Server. Below is an example of how to use the `MasterServerRegisterData` method to generate the json data needed to register the game server.
 

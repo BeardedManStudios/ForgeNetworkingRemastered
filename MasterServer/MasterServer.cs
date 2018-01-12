@@ -143,10 +143,13 @@ namespace MasterServer
 		private void Update(NetworkingPlayer player, JSONNode data)
 		{
 			int playerCount = data["playerCount"].AsInt;
-			string comment = data["comment"];
-			string gameType = data["type"];
-			string mode = data["mode"];
-			ushort port = data["port"].AsUShort;
+            if (comment != null)
+                host.Comment = comment;
+            if (gameType != null)
+                host.Type = gameType;
+            if (mode != null)
+                host.Mode = mode;
+            ushort port = data["port"].AsUShort;
 
 			string address = ((IPEndPoint)player.TcpClientHandle.Client.RemoteEndPoint).Address.ToString();
 			for (int i = 0; i < hosts.Count; i++)

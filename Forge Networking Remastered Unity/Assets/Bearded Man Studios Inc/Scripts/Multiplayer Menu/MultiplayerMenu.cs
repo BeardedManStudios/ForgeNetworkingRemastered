@@ -148,7 +148,7 @@ public class MultiplayerMenu : MonoBehaviour
 			if (natServerHost.Trim().Length == 0)
 				((UDPServer)server).Connect(ipAddress.text, ushort.Parse(portNumber.text));
 			else
-				((UDPServer)server).Connect(natHost: natServerHost, natPort: natServerPort);
+				((UDPServer)server).Connect(port: ushort.Parse(portNumber.text), natHost: natServerHost, natPort: natServerPort);
 		}
 
 		server.playerTimeout += (player, sender) =>

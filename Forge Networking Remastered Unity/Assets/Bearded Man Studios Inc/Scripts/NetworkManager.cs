@@ -217,7 +217,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			registerData.Add("id", id);
 			registerData.Add("name", serverName);
 			registerData.Add("port", new JSONData(server.Port));
-			registerData.Add("playerCount", new JSONData(0));
+			registerData.Add("playerCount", new JSONData(server.ServerPlayerCounter));
 			registerData.Add("maxPlayers", new JSONData(server.MaxConnections));
 			registerData.Add("comment", comment);
 			registerData.Add("type", type);
@@ -277,11 +277,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			JSONNode sendData = JSONNode.Parse("{}");
 			JSONClass registerData = new JSONClass();
-			registerData.Add("playerCount", new JSONData(server.MaxConnections));
-			registerData.Add("comment", comment);
-			registerData.Add("type", gameType);
-			registerData.Add("mode", mode);
-			registerData.Add("port", new JSONData(server.Port));
+            registerData.Add("playerCount", new JSONData(server.ServerPlayerCounter));
+            if (!string.IsNullOrEmpty(comment))
+                registerData.Add("comment", comment);
+            if (!string.IsNullOrEmpty(gameType))
+                registerData.Add("type", gameType);
+            if (!string.IsNullOrEmpty(mode))
+                registerData.Add("mode", mode);
+            registerData.Add("port", new JSONData(server.Port));
 			sendData.Add("update", registerData);
 
 			UpdateMasterServerListing(sendData);
@@ -294,24 +297,23 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
 			}
 
-			// The Master Server communicates over TCP
-			TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
+            // The Master Server communicates over TCP
+            TCPMasterClient client = new TCPMasterClient();
 
-			// Once this client has been accepted by the master server it should send it's update request
-			client.serverAccepted += (sender) =>
+            // Once this client has been accepted by the master server it should send it's update request
+            client.serverAccepted += (sender) =>
 			{
 				try
 				{
 					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
 
-					//Debug.Log(temp.GetData().Length);
 					// Send the request to the server
 					client.Send(temp);
 				}
-				catch
-				{
-					// If anything fails, then this client needs to be disconnected
-					client.Disconnect(true);
+                finally
+                {
+                    // Disconnect the client after sending the update
+                    client.Disconnect(true);
 					client = null;
 				}
 			};
