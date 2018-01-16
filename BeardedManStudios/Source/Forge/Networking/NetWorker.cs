@@ -515,6 +515,15 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		public void IterateNetworkObjects(Action<NetworkObject> expression)
+		{
+			lock (Players)
+			{
+				for (int i = 0; i < NetworkObjectList.Count; i++)
+					expression(NetworkObjectList[i]);
+			}
+		}
+
 		public NetworkingPlayer GetPlayerById(uint id)
 		{
 			lock (Players)
