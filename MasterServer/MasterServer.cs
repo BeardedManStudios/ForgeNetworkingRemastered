@@ -154,9 +154,12 @@ namespace MasterServer
 				if (hosts[i].Address == address && hosts[i].Port == port)
 				{
 					Host host = hosts[i];
-					host.Comment = comment;
-					host.Type = gameType;
-					host.Mode = mode;
+					if(comment != null)
+                        host.Comment = comment;
+					if(gameType != null)
+                        host.Type = gameType;
+					if (mode != null)
+                        host.Mode = mode;
 					host.PlayerCount = playerCount;
 
 					hosts[i] = host;
