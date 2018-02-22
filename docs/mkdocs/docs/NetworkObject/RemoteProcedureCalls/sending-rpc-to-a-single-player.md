@@ -18,7 +18,7 @@ if (networker.IsServer)
 
 // ...
 
-private void PlayerAcceptedSetup(NetworkingPlayer newPlayer)
+private void PlayerAcceptedSetup(NetworkingPlayer newPlayer, Networker sender)
 {
     networkObject.SendRpc(newPlayer, RPC_RPC_NAME, args);
 }
