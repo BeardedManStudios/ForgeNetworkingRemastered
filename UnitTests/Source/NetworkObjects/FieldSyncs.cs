@@ -13,8 +13,6 @@ namespace UnitTests.Source.NetworkObjects
 		[ClassInitialize]
 		public static void CreateServer(TestContext context)
 		{
-			ConnectSetup(objectCreatedCallback: ObjectCreated);
-
 			NetworkObject.Factory = new NetworkObjectFactory();
 		}
 
@@ -24,13 +22,21 @@ namespace UnitTests.Source.NetworkObjects
 			ConnectTeardown(ObjectCreated);
 		}
 
+        [TestInitialize]
+        public void Startup()
+        {
+            ConnectSetup(objectCreatedCallback: ObjectCreated);
+        }
+
 		[TestCleanup]
 		public void Cleanup()
 		{
 			serverObj = null;
 			clientObj = null;
 			otherClientObj = null;
-		}
+
+            ConnectTeardown(ObjectCreated);
+        }
 
 		private void SetTargetFields(TestNetworkObject target)
 		{
