@@ -1172,7 +1172,7 @@ namespace BeardedManStudios.Forge.Networking
 					TargetPlayer = targetPlayer,
 					MethodId = methodId,
 					Receivers = receivers,
-                    /*Reliable = reliable,*/
+                    Reliable = reliable,
 					Args = args
 				});
 
