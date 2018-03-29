@@ -511,26 +511,32 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				if (targetPlayer != null)
 				{
-					if (networker is TCPServer)
-						((TCPServer)networker).SendToPlayer(frame, targetPlayer);
-					else
-						((UDPServer)networker).Send(targetPlayer, frame, true);
-				}
+                    if (networker is SteamP2PServer)
+                        ((SteamP2PServer)networker).Send(targetPlayer, frame, true);
+                    else if (networker is TCPServer)
+                        ((TCPServer)networker).SendToPlayer(frame, targetPlayer);
+                    else
+                        ((UDPServer)networker).Send(targetPlayer, frame, true);
+                }
 				else
 				{
-					if (networker is TCPServer)
-						((TCPServer)networker).SendAll(frame);
-					else
-						((UDPServer)networker).Send(frame, true);
-				}
+                    if (networker is SteamP2PServer)
+                        ((SteamP2PServer)networker).Send(frame, true);
+                    else if (networker is TCPServer)
+                        ((TCPServer)networker).SendAll(frame);
+                    else
+                        ((UDPServer)networker).Send(frame, true);
+                }
 			}
 			else
 			{
-				if (networker is TCPClientBase)
-					((TCPClientBase)networker).Send(frame);
-				else
-					((UDPClient)networker).Send(frame, true);
-			}
+                if (networker is SteamP2PClient)
+                    ((SteamP2PClient)networker).Send(frame, true);
+                else if (networker is TCPClientBase)
+                    ((TCPClientBase)networker).Send(frame);
+                else
+                    ((UDPClient)networker).Send(frame, true);
+            }
 		}
 
 		private void SceneReady(Scene scene, LoadSceneMode mode)

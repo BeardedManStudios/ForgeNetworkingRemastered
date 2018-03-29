@@ -19,6 +19,7 @@
 
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
+using Steamworks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -138,7 +139,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Keep a list of all of the composers that are reliable so that they are sent in order
 		/// </summary>
-		private List<UDPPacketComposer> reliableComposers = new List<UDPPacketComposer>();
+		private List<BasePacketComposer> reliableComposers = new List<BasePacketComposer>();
 
 		/// <summary>
 		/// Should be used for matching this networking player with another networking player reference
@@ -174,16 +175,27 @@ namespace BeardedManStudios.Forge.Networking
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
-		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
+        /// <summary>
+        /// This is used for steam networking API calls;
+        /// this is the steam ID of this networked player.
+        /// </summary>
+        public CSteamID SteamID { get; protected set; }
 
-		/// <summary>
-		/// Constructor for the NetworkingPlayer
-		/// </summary>
-		/// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
-		/// <param name="ip">IP address of the NetworkingPlayer</param>
-		/// <param name="socketEndpoint">The socket to the Networking player</param>
-		/// <param name="name">Name of the NetworkingPlayer</param>
-		public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
+        private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
+
+        public void AssignOwnSteamId()
+        {
+            SteamID = SteamUser.GetSteamID();
+        }
+
+        /// <summary>
+        /// Constructor for the NetworkingPlayer
+        /// </summary>
+        /// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
+        /// <param name="ip">IP address of the NetworkingPlayer</param>
+        /// <param name="socketEndpoint">The socket to the Networking player</param>
+        /// <param name="name">Name of the NetworkingPlayer</param>
+        public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
 		{
 			Networker = networker;
 			NetworkId = networkId;
@@ -232,7 +244,18 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		public void AssignPort(ushort port)
+        public NetworkingPlayer(uint networkId, CSteamID steamId, bool isHost, NetWorker networker)
+        {
+            SteamID = steamId;
+            Networker = networker;
+            NetworkId = networkId;
+            IsHost = isHost;
+            LastPing = networker.Time.Timestep;
+            TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
+            PingInterval = DEFAULT_PING_INTERVAL;
+        }
+
+        public void AssignPort(ushort port)
 		{
 			// Only allow to be assigned once
 			if (Port != 0)
@@ -278,8 +301,8 @@ namespace BeardedManStudios.Forge.Networking
 				disconnected(Networker);
 		}
 
-		public void QueueComposer(UDPPacketComposer composer)
-		{
+        public void QueueComposer(BasePacketComposer composer)
+        {
 			if (Disconnected)
 				return;
 
