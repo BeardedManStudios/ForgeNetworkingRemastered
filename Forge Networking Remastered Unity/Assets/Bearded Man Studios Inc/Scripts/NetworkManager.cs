@@ -273,52 +273,52 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			MasterServerNetworker = null;
 		}
 
-        public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
-        {
-            JSONNode sendData = JSONNode.Parse("{}");
-            JSONClass registerData = new JSONClass();
-            registerData.Add("playerCount", new JSONData(server.ServerPlayerCounter));
-            registerData.Add("comment", comment);
-            registerData.Add("type", gameType);
-            registerData.Add("mode", mode);
-            registerData.Add("port", new JSONData(Networker.Port));
-            sendData.Add("update", registerData);
+		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
+		{
+			JSONNode sendData = JSONNode.Parse("{}");
+			JSONClass registerData = new JSONClass();
+			registerData.Add("playerCount", new JSONData(server.ServerPlayerCounter));
+			registerData.Add("comment", comment);
+			registerData.Add("type", gameType);
+			registerData.Add("mode", mode);
+			registerData.Add("port", new JSONData(Networker.Port));
+			sendData.Add("update", registerData);
+			
+			UpdateMasterServerListing(sendData);
+		}
 
-            UpdateMasterServerListing(sendData);
-        }
-
-        private void UpdateMasterServerListing(JSONNode masterServerData)
-        {
-            if (string.IsNullOrEmpty(_masterServerHost))
-            {
-                throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
-            }
-
-            if (MasterServerNetworker == null)
-            {
-                throw new System.Exception("Connection to master server is closed. Make sure to be connected to master server before update trial");
-            }
-
-            // The Master Server communicates over TCP
-            TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
-
-            try
-            {
-                Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
-
-                // Send the request to the server
-                client.Send(temp);
-            }
-            catch
-            {
-                // If anything fails, then this client needs to be disconnected
-                client.Disconnect(true);
-                client = null;
-            }
-
-        }
-
-        public void Disconnect()
+		private void UpdateMasterServerListing(JSONNode masterServerData)
+		{
+			if (string.IsNullOrEmpty(_masterServerHost))
+			{
+				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
+			}
+			
+			if (MasterServerNetworker == null)
+			{
+				throw new System.Exception("Connection to master server is closed. Make sure to be connected to master server before update trial");
+			}
+			
+			// The Master Server communicates over TCP
+			TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
+			
+			try
+			{
+				Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
+				
+				// Send the request to the server
+				client.Send(temp);
+			}
+			catch
+			{
+				// If anything fails, then this client needs to be disconnected
+				client.Disconnect(true);
+				client = null;
+			}
+			
+		}
+		
+		public void Disconnect()
 		{
 #if FN_WEBSERVER
 			webserver.Stop();
