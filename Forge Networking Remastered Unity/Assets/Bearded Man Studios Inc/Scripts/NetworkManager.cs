@@ -281,7 +281,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			registerData.Add("comment", comment);
 			registerData.Add("type", gameType);
 			registerData.Add("mode", mode);
-			registerData.Add("port", new JSONData(Networker.Port));
+			registerData.Add("port", new JSONData(server.Port));
 			sendData.Add("update", registerData);
 			
 			UpdateMasterServerListing(sendData);
