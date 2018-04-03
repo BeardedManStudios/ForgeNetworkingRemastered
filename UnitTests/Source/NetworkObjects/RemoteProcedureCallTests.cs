@@ -287,6 +287,17 @@ namespace UnitTests.NetworkObjects
         }
 
         [TestMethod]
+        public void UnreliableRpcTest()
+        {
+            SetupClientBehavior();
+            clientObj.SendRpcUnreliable(TestBehavior.RPC_FUNC_BLANK, Receivers.All);
+            WaitFor(() => { return clientBehavior.calledBlank && serverBehavior.calledBlank; });
+            Assert.IsNull(clientBehavior.objectBlank);
+            Assert.IsNull(serverBehavior.objectBlank);
+            Destroy(clientObj);
+        }
+
+        [TestMethod]
         public void CallMulti()
         {
             int count = 100;
