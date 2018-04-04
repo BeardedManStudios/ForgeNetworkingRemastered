@@ -1,5 +1,5 @@
-﻿//#define FORGE_EDITOR_DEBUGGING
-
+//#define FORGE_EDITOR_DEBUGGING
+#if UNITY_EDITOR
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Templating;
 using SimpleJSONEditor;
@@ -10,6 +10,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEditor;
+
+
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
@@ -79,4 +81,5 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			return type;
 		}
 	}
-}
+}  
+#endif
