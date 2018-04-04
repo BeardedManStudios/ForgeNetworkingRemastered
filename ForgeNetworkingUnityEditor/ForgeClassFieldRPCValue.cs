@@ -1,4 +1,4 @@
-﻿//#define FORGE_EDITOR_DEBUGGING
+//#define FORGE_EDITOR_DEBUGGING
 
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Templating;
@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor

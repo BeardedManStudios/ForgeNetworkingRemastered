@@ -1,5 +1,5 @@
-﻿//#define FORGE_EDITOR_DEBUGGING
-
+//#define FORGE_EDITOR_DEBUGGING
+#if UNITY_EDITOR
 using BeardedManStudios.Templating;
 using System;
 using System.Collections.Generic;
@@ -1075,3 +1075,4 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		#endregion
 	}
 }
+#endif

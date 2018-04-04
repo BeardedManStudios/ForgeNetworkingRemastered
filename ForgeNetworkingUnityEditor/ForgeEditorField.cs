@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 using System;
 
@@ -94,3 +95,4 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 	}
 }
+#endif
