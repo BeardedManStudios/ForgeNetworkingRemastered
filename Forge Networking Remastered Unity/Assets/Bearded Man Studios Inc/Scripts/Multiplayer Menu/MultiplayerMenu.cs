@@ -24,6 +24,7 @@ public class MultiplayerMenu : MonoBehaviour
 	public GameObject networkManager = null;
 	public GameObject[] ToggledButtons;
 	private NetworkManager mgr = null;
+	private NetWorker server;
 
 	private List<Button> _uiButtons = new List<Button>();
 	private bool _matchmaking = false;
@@ -134,8 +135,6 @@ public class MultiplayerMenu : MonoBehaviour
 
 	public void Host()
 	{
-		NetWorker server;
-
 		if (useTCP)
 		{
 			server = new TCPServer(64);
@@ -240,5 +239,7 @@ public class MultiplayerMenu : MonoBehaviour
 	{
 		if (getLocalNetworkConnections)
 			NetWorker.EndSession();
+
+		server.Disconnect(true);
 	}
 }
