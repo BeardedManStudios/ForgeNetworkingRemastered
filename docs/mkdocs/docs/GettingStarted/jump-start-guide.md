@@ -106,21 +106,20 @@ First we will create the basic world for our players to run around in.
     2. Rename it to **Last Scored**
     3. Change the **Text** field to be empty
     4. Set the **Anchor Preset** to **Top Left** _(this is the one with the top left being highlighted in the anchor image)_ e.  Set the **Pivot X** to 0
-10.
-    1. Set the **Pivot Y** to 1
-    2. Set **Pos X** to 0
-    3. Set **Pos Y** to 0
-    4. Set **Pos Z** to 0
-    5. Set **Width** to 500
+    5. Set the **Pivot Y** to 1
+    6. Set **Pos X** to 0
+    7. Set **Pos Y** to 0
+    8. Set **Pos Z** to 0
+    9. Set **Width** to 500
 11. Save the scene
 
 Now we have completed the setup for our game, let's setup our **Build Settings**
 
 1. Open Build Settings from **File>Build Settings** (Ctrl + Shift + B on windows)
 2. Add **MultiplayerMenu** scene as the 0th scene index
-3. Add your newly saved scene as the 1st index 4.  Click **Player Settings...**
-
-a.  Turn on **Run In Background**
+3. Add your newly saved scene as the 1st index
+4. Click **Player Settings...**
+5. Turn on **Run In Background**
 
 Now all that is left to do is setup our **Player** prefab and then we will be ready to jump into setting up our network.
 
@@ -165,7 +164,7 @@ Now let's get started on making the network contract for our simple game:
 4. Click the **Add RPC** button
     1. Type **UpdateName** into the text field
     2. Open the **Arguments** cascade
-        1.Click the ![add-button](images/add.png "Add Button") button
+        1.Click the ![add-button](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/add.png "Add Button") button
         2. Type **newName** into the text field
         3. Click the drop down iv.  Select **STRING** from the drop down
 5. Click **Save &amp; Compile**
@@ -193,7 +192,7 @@ public class Player : PlayerBehavior
 	private string[] nameParts = new string[] { "crazy", "cat", "dog", "homie", "bobble", "mr", "ms", "mrs", "castle", "flip", "flop" };
 
 	public string Name { get; private set; }
-	
+
 	protected override void NetworkStart()
 	{
 		base.NetworkStart();
@@ -215,7 +214,7 @@ public class Player : PlayerBehavior
 		// Assign the name when this object is setup on the network
 		ChangeName();
 	}
-	
+
 	public void ChangeName()
 	{
 		// Only the owning client of this object can assign the name
@@ -248,7 +247,7 @@ public class Player : PlayerBehavior
 			transform.position = networkObject.position;
 			return;
 		}
-	 
+
 		// When our position changes the networkObject.position will detect the
 		// change based on this assignment automatically, this data will then be
 		// syndicated across the network on the next update pass for this networkObject
@@ -273,7 +272,7 @@ This is all the code we need to allow for all of the connections to see the move
 3. Click the **Add RPC** button
     1. Type **PlayerScored** into the text field
     2. Open the **Arguments** cascade
-        1. Click the ![add-button](images/add.png "Add Button") button
+        1. Click the ![add-button](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/add.png "Add Button") button
         2. Type **playerName** into the text field
         3. Click the drop down iv.  Select **STRING** from the drop down
 4. Click **Save &amp; Compile**
@@ -304,7 +303,7 @@ public class GameLogic : GameLogicBehavior
 	{
 		// This will be called on every client, so each client will essentially instantiate
 		// their own player on the network. We also pass in the position we want them to spawn at
-		NetworkManager.Instance.InstantiatePlayerNetworkObject(position: new Vector3(0, 5, 0));
+		NetworkManager.Instance.InstantiatePlayer(position: new Vector3(0, 5, 0));
 	}
 
 	// Override the abstract RPC method that we made in the NCW
@@ -360,7 +359,7 @@ public class GameBall : GameBallBehavior
 {
 	private Rigidbody rigidbodyRef;
 	private GameLogic gameLogic;
-	
+
 	private void Awake()
 	{
 		rigidbodyRef = GetComponent<Rigidbody>();
@@ -378,7 +377,7 @@ public class GameBall : GameBallBehavior
 			transform.position = networkObject.position;
 			return;
 		}
-		
+
 		// When our position changes the networkObject.position will detect the
 		// change based on this assignment automatically, this data will then be
 		// syndicated across the network on the next update pass for this networkObject
@@ -401,14 +400,14 @@ public class GameBall : GameBallBehavior
 		// Randomly invert along the number line by 50%
 		if (Random.value < 0.5f)
 			force.x *= -1;
-		
+
 		if (Random.value < 0.5f)
 			force.z *= -1;
 
 		// Add the random force to the ball
 		rigidbodyRef.AddForce(force);
 	}
-		
+
 	private void OnCollisionEnter(Collision c)
 	{
 		// We are making this authoritative by only
@@ -417,14 +416,14 @@ public class GameBall : GameBallBehavior
 			return;
 
 		// Only move if a player touched the ball
-		if (c.gameObject.GetComponent<Player>() == null)
+		if (c.GetComponent<Player>() == null)
 			return;
 
 		// Call an RPC on the Game Logic to print the player's name as the last
 		// player to touch the ball
 		gameLogic.networkObject.SendRpc(GameLogicBehavior.RPC_PLAYER_SCORED, Receivers.All,
 
-		c.transform.GetComponent<Player>().Name);
+		c.GetComponent<Player>().Name);
 
 		// Reset the ball
 		Reset();
@@ -450,7 +449,7 @@ using UnityEngine;
 public class GameTrigger : MonoBehaviour
 {
 	private bool started;
-	
+
 	private void Update()
 	{
 		// If the game started we will remove this trigger from the scene
@@ -479,7 +478,7 @@ public class GameTrigger : MonoBehaviour
 		started = true;
 
 		// We need to create the ball on the network
-		GameBall ball = NetworkManager.Instance.InstantiateGameBallNetworkObject() as GameBall;
+		GameBall ball = NetworkManager.Instance.InstantiateGameBall() as GameBall;
 
 		// Reset the ball position and give it a random velocity
 		ball.Reset();

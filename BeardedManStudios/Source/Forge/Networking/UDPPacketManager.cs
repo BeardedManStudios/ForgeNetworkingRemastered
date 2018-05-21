@@ -30,13 +30,13 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		/// <param name="packet">The packet to be added</param>
 		/// <param name="packetCompleteHandle">The method to call and pass the data to when a sequence is complete</param>
-		public void AddPacket(UDPPacket packet, BaseUDP.PacketComplete packetCompleteHandle)
+		public void AddPacket(UDPPacket packet, BaseUDP.PacketComplete packetCompleteHandle, NetWorker networker)
 		{
 			// Check to see if we have already started this sequence
 			if (!packetGroups.ContainsKey(packet.groupId))
 				packetGroups.Add(packet.groupId, new UDPPacketGroup(packet.groupId));
 
-			packetGroups[packet.groupId].AddPacket(packet, packetCompleteHandle);
+			packetGroups[packet.groupId].AddPacket(packet, packetCompleteHandle, networker);
 		}
 	}
 }

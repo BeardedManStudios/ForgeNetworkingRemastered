@@ -44,6 +44,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 
@@ -173,13 +174,13 @@ namespace BeardedManStudios.SimpleJSON
 			get
 			{
 				float v = 0.0f;
-				if (float.TryParse(Value, out v))
+				if (float.TryParse(Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out v))
 					return v;
 				return 0.0f;
 			}
 			set
 			{
-				Value = value.ToString();
+				Value = value.ToString(CultureInfo.InvariantCulture);
 				Tag = JSONBinaryTag.FloatValue;
 			}
 		}
@@ -189,13 +190,13 @@ namespace BeardedManStudios.SimpleJSON
 			get
 			{
 				double v = 0.0;
-				if (double.TryParse(Value, out v))
+				if (double.TryParse(Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out v))
 					return v;
 				return 0.0;
 			}
 			set
 			{
-				Value = value.ToString();
+				Value = value.ToString(CultureInfo.InvariantCulture);
 				Tag = JSONBinaryTag.DoubleValue;
 
 			}

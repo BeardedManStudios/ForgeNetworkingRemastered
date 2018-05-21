@@ -48,6 +48,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		protected override void OwnershipChanged()
 		{
+			base.OwnershipChanged();
 			SnapInterpolations();
 		}
 		
@@ -112,7 +113,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (IsOwner)
 				return;
 
-			if (positionInterpolation.Enabled && !positionInterpolation.current.Near(positionInterpolation.target, 0.0015f))
+			if (positionInterpolation.Enabled && !positionInterpolation.current.UnityNear(positionInterpolation.target, 0.0015f))
 			{
 				_position = (Vector3)positionInterpolation.Interpolate();
 				RunChange_position(positionInterpolation.Timestep);

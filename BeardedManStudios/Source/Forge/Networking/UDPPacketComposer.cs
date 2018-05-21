@@ -20,6 +20,7 @@
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
@@ -72,6 +73,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
+#if DEEP_LOGGING
+			Logging.BMSLog.Log("---------------------------\n" + (new System.Diagnostics.StackTrace()).ToString() + "\nUNIQUE ID: " + frame.UniqueId.ToString() + "\n---------------------------");
+#endif
+
 			Init(clientWorker, player, frame, reliable);
 		}
 
@@ -139,11 +144,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (completed != null)
 				completed(this);
-
-			if (!Reliable)
-				return;
-
-			Player.CleanupComposer();
 		}
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace BeardedManStudios.Forge.Networking
 			PendingPackets = new Dictionary<int, UDPPacket>();
 
 			// Get all of the data that is available for this frame
-			byte[] data = Frame.GetData();
+			byte[] data = Frame.GetData(Reliable, Player);
 
 			int byteIndex = 0, orderId = 0;
 
@@ -198,7 +198,7 @@ namespace BeardedManStudios.Forge.Networking
 					// Add the receivers to the end header byte
 					trailer[trailer.Length - 1] |= (byte)(((int)Frame.Receivers) << 4);
 				}
-				else	// We need to copy the unique id into this message
+				else    // We need to copy the unique id into this message
 					Buffer.BlockCopy(BitConverter.GetBytes(Frame.UniqueId), 0, packet, length, sizeof(ulong));
 
 				// Set the order id for this packet in the trailer
@@ -216,15 +216,26 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Go through all of the pending packets and resend them
 		/// </summary>
-		public void ResendPackets()
+		public void ResendPackets(ulong timestep, ref int counter)
 		{
 			lock (PendingPackets)
 			{
-				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				foreach (var key in PendingPackets.Keys.ToArray())
 				{
-					kv.Value.DoingRetry();
-					Send(kv.Value.rawBytes);
-					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
+						continue;
+
+					if (counter <= 0)
+					{
+						PendingPackets[key] = PendingPackets[key].UpdateTimestep(timestep);
+						continue;
+					}
+
+					counter -= PendingPackets[key].rawBytes.Length;
+
+					PendingPackets[key] = PendingPackets[key].DoingRetry(timestep);
+					Send(PendingPackets[key].rawBytes);
+					ClientWorker.BandwidthOut += (ulong)PendingPackets[key].rawBytes.Length;
 				}
 			}
 		}
@@ -248,9 +259,13 @@ namespace BeardedManStudios.Forge.Networking
 
 			lock (PendingPackets)
 			{
+				UDPPacket foundPacket;
+
 				// Check to see if we already received a confirmation for this packet
-				if (!PendingPackets.ContainsKey(packet.orderId))
+				if (!PendingPackets.TryGetValue(packet.orderId, out foundPacket))
 					return;
+
+				player.RoundTripLatency = (int)(player.Networker.Time.Timestep - foundPacket.LastSentTimestep);
 
 				// Remove the packet from pending so that it isn't sent again
 				PendingPackets.Remove(packet.orderId);
@@ -259,7 +274,9 @@ namespace BeardedManStudios.Forge.Networking
 				if (PendingPackets.Count == 0)
 				{
 					ClientWorker.messageConfirmed -= MessageConfirmed;
+
 					Cleanup();
+					Player.EnqueueComposerToRemove(packet.uniqueId);
 				}
 			}
 		}

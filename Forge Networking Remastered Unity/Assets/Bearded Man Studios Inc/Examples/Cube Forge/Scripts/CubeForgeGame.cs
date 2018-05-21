@@ -46,6 +46,11 @@ public class CubeForgeGame : CubeForgeGameBehavior
 	/// </summary>
 	private Vector3 max = Vector3.zero;
 
+	/// <summary>
+	/// The amount of time in milliseconds for the round trip latency to/from the server
+	/// </summary>
+	public double RoundTripLatency { get; private set; }
+
 	private NetworkCameraNetworkObject netCam;
 
 	private void Awake()
@@ -61,31 +66,14 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void Start()
 	{
-		NetworkManager.Instance.objectInitialized += (INetworkBehavior behavior, NetworkObject obj) =>
-		{
-			if (!(obj is NetworkCameraNetworkObject))
-				return;
-
-			// Since the camera represents the player, if one is being created
-			// we need to increment the player count for the display. NOTE:
-			playerCount++;
-
-			// When this object is destroyed we need to decrement the player count as the camera
-			// represents the player
-			obj.onDestroy += () => { playerCount--; };
-
-			if (NetworkManager.Instance.Networker is IServer)
-				obj.Owner.disconnected += () => { obj.Destroy(); };
-
-			netCam = obj as NetworkCameraNetworkObject;
-		};
+		NetworkManager.Instance.objectInitialized += ObjectInitialized;
 
 		// Since this object is a singleton we can create the player from here as
 		// it is in the scene at start time and we want to create a player camera
 		// for this newly created server or newly connected client
 		NetworkManager.Instance.InstantiateNetworkCamera();
 
-		NetworkManager.Instance.Networker.pingReceived += PingReceived;
+		NetworkManager.Instance.Networker.onPingPong += OnPingPong;
 
 		// If the current networker is the server, then setup the callbacks for when
 		// a player connects
@@ -93,10 +81,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		{
 			// When a player is accepted on the server we need to send them the map
 			// information through the rpc attached to this object
-			NetworkManager.Instance.Networker.playerAccepted += (player) =>
-			{
-				MainThreadManager.Run(() => { networkObject.SendRpc(player, RPC_INITIALIZE_MAP, min, max, SerializeMap()); });
-			};
+			NetworkManager.Instance.Networker.playerAccepted += PlayerAccepted;
 		}
 		else
 		{
@@ -104,7 +89,39 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		}
 	}
 
-	private void DisconnectedFromServer()
+	private void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
+	{
+		MainThreadManager.Run(() => { networkObject.SendRpc(player, RPC_INITIALIZE_MAP, min, max, SerializeMap()); });
+	}
+
+	/// <summary>
+	/// Called whenever a new object is being initialized on the network
+	/// </summary>
+	/// <param name="behavior">The behavior for the object that is initialized</param>
+	/// <param name="obj">The network object that is being initialized</param>
+	private void ObjectInitialized(INetworkBehavior behavior, NetworkObject obj)
+	{
+		if (!(obj is NetworkCameraNetworkObject))
+			return;
+
+		// Since the camera represents the player, if one is being created
+		// we need to increment the player count for the display. NOTE:
+		playerCount++;
+
+		// When this object is destroyed we need to decrement the player count as the camera
+		// represents the player
+		obj.onDestroy += (sender) =>
+		{
+			playerCount--;
+		};
+
+		if (NetworkManager.Instance.Networker is IServer)
+			obj.Owner.disconnected += (sender) => { obj.Destroy(); };
+
+		netCam = obj as NetworkCameraNetworkObject;
+	}
+
+	private void DisconnectedFromServer(NetWorker sender)
 	{
 		NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
 
@@ -115,9 +132,9 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		});
 	}
 
-	private void PingReceived(double ping)
+	private void OnPingPong(double ping, NetWorker sender)
 	{
-		Debug.Log("Ping Received: " + ping);
+		RoundTripLatency = ping;
 	}
 
 	private void Update()
@@ -134,14 +151,14 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		if (!NetworkManager.Instance.Networker.IsServer)
 			return;
 
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			// We need to clean up the network objects before we change the scene
-			// since we are loading this same scene. When that scene loads it will
-			// re-create the objects, so we don't want lingering ones
-			Cleanup();
-			SceneManager.LoadScene(1);
-		}
+		//if (Input.GetKeyDown(KeyCode.Space))
+		//{
+		//	// We need to clean up the network objects before we change the scene
+		//	// since we are loading this same scene. When that scene loads it will
+		//	// re-create the objects, so we don't want lingering ones
+		//	Cleanup();
+		//	SceneManager.LoadScene(1);
+		//}
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -152,10 +169,22 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		// TODO:  Add a sphere to this if chain
 	}
 
+	private void OnDestroy()
+	{
+		Cleanup();
+	}
+
 	private void Cleanup()
 	{
-		networkObject.Destroy();
-		netCam.Destroy();
+		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
+		NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
+		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
+
+		if (networkObject != null)
+			networkObject.Destroy();
+
+		if (netCam != null)
+			netCam.Destroy();
 	}
 
 	private void WriteLabel(Rect rect, string message)
@@ -184,6 +213,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		WriteLabel(new Rect(14, 28, 100, 25), "Time: " + NetworkManager.Instance.Networker.Time.Timestep);
 		WriteLabel(new Rect(14, 42, 256, 25), "Bandwidth In: " + NetworkManager.Instance.Networker.BandwidthIn);
 		WriteLabel(new Rect(14, 56, 256, 25), "Bandwidth Out: " + NetworkManager.Instance.Networker.BandwidthOut);
+		WriteLabel(new Rect(14, 56, 256, 25), "Round Trip Latency (ms): " + RoundTripLatency);
 	}
 
 	/// <summary>

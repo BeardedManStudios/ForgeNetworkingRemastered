@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace BeardedManStudios.Templating
@@ -230,8 +231,10 @@ namespace BeardedManStudios.Templating
 			if (data is bool)
 				return data.ToString().ToLower();
 			else if (data is float)
-				return data.ToString() + "f";
-
+			{
+				float fData = (float) data;
+				return fData.ToString(CultureInfo.InvariantCulture) + "f";
+			}
 			return data.ToString();
 		}
 	}

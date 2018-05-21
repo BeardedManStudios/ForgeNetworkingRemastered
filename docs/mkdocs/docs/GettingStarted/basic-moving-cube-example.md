@@ -16,12 +16,12 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
-![opening-the-ncw](images/opening-ncw.jpg "How to open the NCW")
+![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
-Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fi elds, the **Fields** field, and the **Remote Procedure Calls** field.
+Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fields, the **Fields** field, and the **Remote Procedure Calls** field.
 
 1. The **Name** field is where we create the name for our Network Object and behavior, this is a friendly name that should be written in "Pascal case" to follow the C# convention since it is going to be a part of the class names that are generated.
-2. The **Fields** section shows all of the various fields that our network should be aware of. In this case, we are going to want to make a **positi on** and **rotation** field which are **Vector3** and **Quaternion** respectively. _Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used_
+2. The **Fields** section shows all of the various fields that our network should be aware of. In this case, we are going to want to make a **position** and **rotation** field which are **Vector3** and **Quaternion** respectively. _Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used_
 3. The **Remote Procedure Calls** field is where you will design any Remote Procedure Call (RPC) function signatures. We are not going to go over this field in this tutorial as we do not need it for the goal we are attempting to accomplish.
 
 Let's begin by naming our Network Object:
@@ -39,7 +39,7 @@ Let's begin by naming our Network Object:
 11. Set the interpolate time (the text field that pops up after clicking the **Interpolate** button) as **0.15**
 12. Click the **Save & Compile** button
 
-![ncw-save-and-compile](images/ncw-save-and-compile.jpg "Save & Compile the NCW")
+![ncw-save-and-compile](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/ncw-save-and-compile.jpg "Save & Compile the NCW")
 
 ## Extending Generated Classes
 
@@ -62,7 +62,7 @@ public class BasicCube : BasicCubeBehavior
 	/// Horizontal or Vertical mapped key
 	/// </summary>
 	public float speed = 5.0f;
-	
+
 	private void Update()
 	{
 		// If we are not the owner of this network object then we should
@@ -73,10 +73,10 @@ public class BasicCube : BasicCubeBehavior
 			transform.rotation = networkObject.rotation;
 			return;
 		}
-		
+
 		// Let the owner move the cube around with the arrow keys
-		transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f) * speed * Time.deltaTime;
-		
+		transform.position += new Vector3(Input.GetAxis("Horizontal") 0, Input.GetAxis("Vertical")).normalized * speed * Time.deltaTime;
+
 		// If we are the owner of the object we should send the new position
 		// and rotation across the network for receivers to move to in the above code
 		networkObject.position = transform.position;
@@ -135,4 +135,4 @@ The most common user errors with this part of the documentation are:
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
-![Common Error Getting Started](images/common-error-getting-started.png)
+![Common Error Getting Started](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/common-error-getting-started.png)

@@ -105,6 +105,19 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// Sends binary message to the specific receiver(s)
+		/// </summary>
+		/// <param name="receivers">The clients / server to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(Receivers receivers, int messageGroupId, params object[] objectsToSend)
+		{
+			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
+			Binary sendFrame = new Binary(Time.Timestep, true, data, receivers, messageGroupId, true);
+			Send(sendFrame);
+		}
+
+		/// <summary>
 		/// This will begin the connection for TCP, this is a thread blocking operation
 		/// until the connection is either established or has failed
 		/// </summary>
@@ -116,6 +129,9 @@ namespace BeardedManStudios.Forge.Networking
 		public virtual void Connect(string host, ushort port = DEFAULT_PORT)
 #endif
 		{
+			if (Disposed)
+				throw new ObjectDisposedException("TCPClientBase", "This object has been disposed and can not be used to connect, please use a new TCPClientBase");
+
 			try
 			{
 				disconnectedSelf = false;
@@ -131,7 +147,7 @@ namespace BeardedManStudios.Forge.Networking
 				catch
 				{
 					if (connectAttemptFailed != null)
-						connectAttemptFailed();
+						connectAttemptFailed(this);
 
 					return;
 				}
@@ -265,19 +281,17 @@ namespace BeardedManStudios.Forge.Networking
 				// does not send masked data, only the client so send false for mask
 				FrameStream frame = Factory.DecodeMessage(messageBytes, false, MessageGroupIds.TCP_FIND_GROUP_ID, Server);
 
-				if (frame is ConnectionClose)
-				{
-					// Close our CachedUDPClient so that it can no longer be used
-					client.Close();
-					return ReadState.Disconnect;
-				}
-
-				// A message has been successfully read from the network so relay that
-				// to all methods registered to the event
-				OnMessageReceived(Server, frame);
+				FireRead(frame, Server);
 			}
 
 			return ReadState.Void;
+		}
+
+		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			// A message has been successfully read from the network so relay that
+			// to all methods registered to the event
+			OnMessageReceived(currentPlayer, frame);
 		}
 
 		/// <summary>
@@ -286,28 +300,29 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public override void Disconnect(bool forced)
 		{
-			lock (client)
+			if (client != null)
 			{
-				disconnectedSelf = true;
+				lock (client)
+				{
+					disconnectedSelf = true;
 
-				// Close our TcpClient so that it can no longer be used
-				if (forced)
-					client.Close();
-				else
-					Send(new ConnectionClose(Time.Timestep, true, Receivers.Server, MessageGroupIds.DISCONNECT, true));
+					// Close our TcpClient so that it can no longer be used
+					if (forced)
+						client.Close();
+					else
+						Send(new ConnectionClose(Time.Timestep, true, Receivers.Server, MessageGroupIds.DISCONNECT, true));
 
-				// Send signals to the methods registered to the disconnec events
-				if (!forced)
-					OnDisconnected();
-				else
-					OnForcedDisconnect();
+					// Send signals to the methods registered to the disconnec events
+					if (!forced)
+						OnDisconnected();
+					else
+						OnForcedDisconnect();
 
-				for (int i = 0; i < Players.Count; ++i)
-					OnPlayerDisconnected(Players[i]);
+					for (int i = 0; i < Players.Count; ++i)
+						OnPlayerDisconnected(Players[i]);
+				}
 			}
 		}
-
-
 
 		/// <summary>
 		/// Request the ping from the server (pingReceived will be triggered if it receives it)
@@ -315,6 +330,16 @@ namespace BeardedManStudios.Forge.Networking
 		public override void Ping()
 		{
 			Send(GeneratePing());
+		}
+
+		/// <summary>
+		/// A ping was receieved from the server so we need to respond with the pong
+		/// </summary>
+		/// <param name="playerRequesting">The server</param>
+		/// <param name="time">The time that the ping was received for</param>
+		protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
+		{
+			Send(GeneratePong(time));
 		}
 	}
 }

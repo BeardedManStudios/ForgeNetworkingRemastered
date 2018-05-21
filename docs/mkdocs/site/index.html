@@ -329,6 +329,13 @@
     </li>
 
         
+            
+    <li class="toctree-l1 ">
+        <a class="" href="BasicNetworkSamples/send-file/">Send file</a>
+        
+    </li>
+
+        
     </ul>
 <li>
           
@@ -571,7 +578,7 @@
 <p>Forge Networking Remastered (FNR) is a re-imagining of networking for Forge. We took everything we learned, all the feedback we could get and we started <strong>from scratch</strong> on FNR. We kept some of the helper classes such as <strong>ObjectMapper</strong> and <strong>BMSByte</strong> as those were optimized classes just for generic network data transfer. Secondly, we started FNR with the thought of <strong>Web Sockets</strong> and WebGL in mind. Though (at the time of this writing) WebGL support is not officially complete, we are working very hard to solidify this platform (mainly in relation to Unity integration and limitations). Thirdly we wanted to completely remove any kind of reflection "magic" that was in the system. In place of reflection we opted for generated class files and code, this makes debugging and tracking execution much easier to maintain and test.</p>
 <p>Now for the reveal of the biggest change to Forge Networking, the Network Object. We have replaced the old singular, monolithic <strong>inheritance</strong> network model in place of an <strong>attachment</strong> network model. Now you can write your code as you wish without overly intrusive and complicated code/reflection and have a more solid extendable model. We have also included the new <a href="./network-contract-wizard-ncw">Network Contract Wizard (NCW)</a> which allows you to easily blueprint and review your network contracts without having to dig through tons of code. We have completely re-imagined networking to be more of a service, attachment, addon, and extension rather than an overly complex integrated model.</p>
 <p>Of course you will find many things that you once knew such as <a href="./network-instantiation">Network Instantiation</a>, <a href="./remote-procedure-calls">Remote Procedure Calls RPC</a>, <strong>MainThreadManager</strong> (<a href="./threading-in-unity">Threading in Unity</a>) however you will find that some of the older models (such as <strong>NetSync</strong> ) have been removed. I know, I know, <strong>NetSync</strong> is awesome and it works kinda like UNET's <strong>SyncVar</strong> ; however, we believe we have a much simpler, more controlled, less magical, and more powerful approach to serializing network variables. Since we have abstracted all the network code to be an attachment, you will find a new fancy <strong>network Object</strong> variable that is a part of the class you create. This object will house all of your network variables and allow you to set the sync time as well as access any variable from the network easily. This means you can <strong>choose</strong> when to use the network variable, choices are good, yes?</p>
-<p><img alt="smile" src="./images/smile.png" title="Smile" /> Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!</p>
+<p><img alt="smile" src="https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/smile.png" title="Smile" /> Also, the networkObject is powerful, it automatically detects changes to your variable (as a whole) and serializes only that variable as opposed to the whole network class!</p>
 <p>So, what are the difference highlights?</p>
 <ul>
 <li><a href="./network-instantiation">Instantiation</a> is done through <strong>NetworkManager.Instance.Instantiate...</strong></li>
@@ -637,5 +644,5 @@ Do not put NetworkManager into your scene, it will be spawned on its own
 
 <!--
 MkDocs version : 0.16.1
-Build Date UTC : 2017-06-28 17:59:19
+Build Date UTC : 2018-01-05 22:36:26
 -->

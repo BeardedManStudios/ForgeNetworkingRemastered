@@ -17,8 +17,10 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 #if WINDOWS_UWP
@@ -31,7 +33,7 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class NetworkingPlayer
 	{
-		private const uint PLAYER_TIMEOUT_DISCONNECT = 90000;
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 30000;
 		private const int DEFAULT_PING_INTERVAL = 5000;
 
 		/// <summary>
@@ -96,7 +98,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// Determines if the player has been sent an accept request but the server
 		/// is still waiting on a confirmation of the acceptance
 		/// </summary>
-		public bool PendingAccpeted { get; set; }
+		public bool PendingAccepted { get; set; }
 
 		/// <summary>
 		/// Determines if the player is currently connected
@@ -124,6 +126,11 @@ namespace BeardedManStudios.Forge.Networking
 		public bool IsHost { get; private set; }
 
 		/// <summary>
+		/// Used to determine if this player is in the process of disconnecting
+		/// </summary>
+		public bool IsDisconnecting { get; set; }
+
+		/// <summary>
 		/// Whether we are locked
 		/// </summary>
 		public object MutexLock = new object();
@@ -132,11 +139,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// Keep a list of all of the composers that are reliable so that they are sent in order
 		/// </summary>
 		private List<UDPPacketComposer> reliableComposers = new List<UDPPacketComposer>();
-
-		/// <summary>
-		/// Used to determine if there this player is ready to receive more reliable messages
-		/// </summary>
-		private bool nextComposerReady = true;
 
 		/// <summary>
 		/// Should be used for matching this networking player with another networking player reference
@@ -154,6 +156,11 @@ namespace BeardedManStudios.Forge.Networking
 		private int currentPingWait = 0;
 		public int PingInterval { get; set; }
 
+		/// <summary>
+		/// The amount of time it took for a ping to happen
+		/// </summary>
+		public int RoundTripLatency { get; set; }
+
 		public NetWorker Networker { get; private set; }
 
 		/// <summary>
@@ -161,6 +168,13 @@ namespace BeardedManStudios.Forge.Networking
 		/// the player location to properly be used with the NetWorker::ProximityDistance
 		/// </summary>
 		public Vector ProximityLocation { get; set; }
+
+		private ulong currentReliableId = 0;
+		public Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
+
+		public ulong UniqueReliableMessageIdCounter { get; private set; }
+
+		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
 
 		/// <summary>
 		/// Constructor for the NetworkingPlayer
@@ -256,10 +270,12 @@ namespace BeardedManStudios.Forge.Networking
 		public void OnDisconnect()
 		{
 			Disconnected = true;
+			Connected = false;
+
 			StopComposers();
 
 			if (disconnected != null)
-				disconnected();
+				disconnected(Networker);
 		}
 
 		public void QueueComposer(UDPPacketComposer composer)
@@ -276,8 +292,6 @@ namespace BeardedManStudios.Forge.Networking
 			NextComposerInQueue();
 		}
 
-		private UDPPacketComposer currentComposer;
-
 		/// <summary>
 		/// Star the next composer available composer
 		/// </summary>
@@ -287,27 +301,22 @@ namespace BeardedManStudios.Forge.Networking
 			if (reliableComposers.Count == 0)
 				return;
 
-			// If there are no more composers in queue, end
-			if (!nextComposerReady)
-				return;
-
-			// Prevent any queued composers from starting until this one finishes
-			nextComposerReady = false;
-
-			lock (reliableComposers)
-			{
-				currentComposer = reliableComposers[0];
-			}
-
 			if (!composerReady && Networker.IsBound && !NetWorker.EndingSession)
 			{
+				composerReady = true;
+
 				// Run this on a separate thread so that it doesn't interfere with the reading thread
 				Task.Queue(() =>
 				{
-					int waitTime = 10, pendingCount = 0;
+					int waitTime = 10, composerCount = 0;
 					while (Networker.IsBound && !Disconnected)
 					{
-						if (nextComposerReady)
+						lock (reliableComposers)
+						{
+							composerCount = reliableComposers.Count;
+						}
+
+						if (composerCount == 0)
 						{
 							Task.Sleep(waitTime);
 							currentPingWait += waitTime;
@@ -323,44 +332,63 @@ namespace BeardedManStudios.Forge.Networking
 
 						do
 						{
-							lock (currentComposer.PendingPackets)
+							// If there are too many packets to send, be sure to only send
+							// a few to not clog the network.
+							int counter = UDPPacketComposer.PACKET_SIZE;
+
+							// Send all the packets that are pending
+							lock (reliableComposers)
 							{
-								pendingCount = currentComposer.PendingPackets.Count;
+								for (int i = 0; i < reliableComposers.Count; i++)
+									reliableComposers[i].ResendPackets(Networker.Time.Timestep, ref counter);
 							}
 
-							if (pendingCount > 0)
-							{
-								if (Networker.LatencySimulation > 0)
-									Task.Sleep(Networker.LatencySimulation);
-
-								currentComposer.ResendPackets();
-							}
-
-							// TODO:  Wait the latency for this
 							Task.Sleep(10);
-						} while (!currentComposer.Player.Disconnected && currentComposer.PendingPackets.Count > 0 && Networker.IsBound && !NetWorker.EndingSession);
+
+							// Check if we have some composers queued to remove
+							lock (reliableComposersToRemove)
+							{
+								while (reliableComposersToRemove.Count > 0)
+								{
+									// Remove 
+									lock (reliableComposers)
+									{
+										ulong id = reliableComposersToRemove.Dequeue();
+										reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == id));
+									}
+								}
+							}
+
+							lock (reliableComposers)
+							{
+								composerCount = reliableComposers.Count;
+							}
+						} while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
 						currentPingWait = 0;
 					}
 				});
-
-				composerReady = true;
 			}
 		}
 
 		/// <summary>
 		/// Cleans up the current composer and prepares to start up the next in the queue
 		/// </summary>
-		public void CleanupComposer()
+		public void CleanupComposer(ulong uniqueId)
 		{
 			lock (reliableComposers)
 			{
-				// Reliable packets are sent in order so remove the first one
-				reliableComposers.RemoveAt(0);
+				reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == uniqueId));
+			}
+		}
 
-				nextComposerReady = true;
-
-				// Check to see if there are any more reliable packets queued up
-				NextComposerInQueue();
+		/// <summary>
+		/// Add composer to the queue, so it will be removed by sending thread
+		/// </summary>
+		public void EnqueueComposerToRemove(ulong uniqueId)
+		{
+			lock (reliableComposersToRemove)
+			{
+				reliableComposersToRemove.Enqueue(uniqueId);
 			}
 		}
 
@@ -374,6 +402,35 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				reliableComposers.Clear();
 			}
+		}
+
+		public void WaitReliable(FrameStream frame)
+		{
+			if (!frame.IsReliable)
+				return;
+
+			if (frame.UniqueReliableId == currentReliableId)
+			{
+				Networker.FireRead(frame, this);
+				currentReliableId++;
+
+				FrameStream next = null;
+				while (true)
+				{
+					if (!reliablePending.TryGetValue(currentReliableId, out next))
+						break;
+
+					reliablePending.Remove(currentReliableId++);
+					Networker.FireRead(next, this);
+				}
+			}
+			else if (frame.UniqueReliableId > currentReliableId)
+				reliablePending.Add(frame.UniqueReliableId, frame);
+		}
+
+		public ulong GetNextReliableId()
+		{
+			return UniqueReliableMessageIdCounter++;
 		}
 	}
 }

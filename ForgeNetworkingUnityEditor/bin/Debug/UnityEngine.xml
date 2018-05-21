@@ -359,6 +359,11 @@
         <para>The maximum acceleration of an agent as it follows a path, given in units / sec^2.</para>
       </summary>
     </member>
+    <member name="P:UnityEngine.AI.NavMeshAgent.agentTypeID">
+      <summary>
+        <para>The type ID for the agent.</para>
+      </summary>
+    </member>
     <member name="P:UnityEngine.AI.NavMeshAgent.angularSpeed">
       <summary>
         <para>Maximum turning speed in (deg/s) while following a path.</para>
@@ -781,6 +786,11 @@ The newly built NavMeshData, or null if the NavMeshData was empty or an error oc
         <para>The agent type ID the NavMesh will be baked for.</para>
       </summary>
     </member>
+    <member name="P:UnityEngine.AI.NavMeshBuildSettings.minRegionArea">
+      <summary>
+        <para>The approximate minimum area of individual NavMesh regions.</para>
+      </summary>
+    </member>
     <member name="P:UnityEngine.AI.NavMeshBuildSettings.overrideTileSize">
       <summary>
         <para>Enables overriding the default tile size. See Also: tileSize.</para>
@@ -898,6 +908,16 @@ The newly built NavMeshData, or null if the NavMeshData was empty or an error oc
     <member name="T:UnityEngine.AI.NavMeshData">
       <summary>
         <para>Contains and represents NavMesh data.</para>
+      </summary>
+    </member>
+    <member name="P:UnityEngine.AI.NavMeshData.position">
+      <summary>
+        <para>Gets or sets the world space position of the NavMesh data.</para>
+      </summary>
+    </member>
+    <member name="P:UnityEngine.AI.NavMeshData.rotation">
+      <summary>
+        <para>Gets or sets the orientation of the NavMesh data.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.AI.NavMeshData.sourceBounds">
@@ -4471,12 +4491,12 @@ Note: Using raw JNI functions requires advanced knowledge of the Android Java Na
     </member>
     <member name="P:UnityEngine.AnimatorControllerParameter.defaultFloat">
       <summary>
-        <para>The default bool value for the parameter.</para>
+        <para>The default float value for the parameter.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.AnimatorControllerParameter.defaultInt">
       <summary>
-        <para>The default bool value for the parameter.</para>
+        <para>The default int value for the parameter.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.AnimatorControllerParameter.name">
@@ -11708,7 +11728,7 @@ See Also: CanvasRenderer.SetMaterialCount, CanvasRenderer.SetTexture.</para>
       </summary>
       <param name="name">Name of kernel function.</param>
       <returns>
-        <para>Kernel index, or -1 if not found.</para>
+        <para>The Kernel index, or logs a "FindKernel failed" error message if the kernel is not found.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.ComputeShader.GetKernelThreadGroupSizes(System.Int32,System.UInt32&amp;,System.UInt32&amp;,System.UInt32&amp;)">
@@ -12175,6 +12195,11 @@ Sometimes it is not possible to project (for example when the joints form a cycl
         <para>A set of parameters for filtering contact results.</para>
       </summary>
     </member>
+    <member name="P:UnityEngine.ContactFilter2D.isFiltering">
+      <summary>
+        <para>Given the current state of the contact filter, determine whether it would filter anything.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.ContactFilter2D.layerMask">
       <summary>
         <para>Sets the contact filter to filter the results that only include Collider2D on the layers defined by the layer mask.</para>
@@ -12215,6 +12240,16 @@ Sometimes it is not possible to project (for example when the joints form a cycl
         <para>Sets the contact filter to filter the results by the collision's normal angle using minNormalAngle and maxNormalAngle.</para>
       </summary>
     </member>
+    <member name="F:UnityEngine.ContactFilter2D.useOutsideDepth">
+      <summary>
+        <para>Sets the contact filter to filter within the minDepth and maxDepth range, or outside that range.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEngine.ContactFilter2D.useOutsideNormalAngle">
+      <summary>
+        <para>Sets the contact filter to filter within the minNormalAngle and maxNormalAngle range, or outside that range.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.ContactFilter2D.useTriggers">
       <summary>
         <para>Sets to filter contact results based on trigger collider involvement.</para>
@@ -12222,18 +12257,63 @@ Sometimes it is not possible to project (for example when the joints form a cycl
     </member>
     <member name="M:UnityEngine.ContactFilter2D.ClearDepth">
       <summary>
-        <para>Turns off depth filtering by simply setting useDepth to false.  The associated values of minDepth and maxDepth are not changed.</para>
+        <para>Turns off depth filtering by setting useDepth to false.  The associated values of minDepth and maxDepth are not changed.</para>
       </summary>
     </member>
     <member name="M:UnityEngine.ContactFilter2D.ClearLayerMask">
       <summary>
-        <para>Turns off layer mask filtering by simple setting useLayerMask to false.  The associated value of layerMask is not changed.</para>
+        <para>Turns off layer mask filtering by setting useLayerMask to false.  The associated value of layerMask is not changed.</para>
       </summary>
     </member>
     <member name="M:UnityEngine.ContactFilter2D.ClearNormalAngle">
       <summary>
         <para>Turns off normal angle filtering by setting useNormalAngle to false. The associated values of minNormalAngle and maxNormalAngle are not changed.</para>
       </summary>
+    </member>
+    <member name="M:UnityEngine.ContactFilter2D.IsFilteringDepth(UnityEngine.GameObject)">
+      <summary>
+        <para>Checks if the Transform for obj is within the depth range to be filtered.</para>
+      </summary>
+      <param name="obj">The GameObject used to check the z-position (depth) of Transform.position.</param>
+      <returns>
+        <para>Returns true when obj is excluded by the filter and false if otherwise.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.ContactFilter2D.IsFilteringLayerMask(UnityEngine.GameObject)">
+      <summary>
+        <para>Checks if the GameObject.layer for obj is included in the layerMask to be filtered.</para>
+      </summary>
+      <param name="obj">The GameObject used to check the GameObject.layer.</param>
+      <returns>
+        <para>Returns true when obj is excluded by the filter and false if otherwise.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.ContactFilter2D.IsFilteringNormalAngle(UnityEngine.Vector2)">
+      <summary>
+        <para>Checks if the angle of normal is within the normal angle range to be filtered.</para>
+      </summary>
+      <param name="normal">The normal used to calculate an angle.</param>
+      <returns>
+        <para>Returns true when normal is excluded by the filter and false if otherwise.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.ContactFilter2D.IsFilteringNormalAngle(System.Single)">
+      <summary>
+        <para>Checks if the angle is within the normal angle range to be filtered.</para>
+      </summary>
+      <param name="angle">The angle used for comparison in the filter.</param>
+      <returns>
+        <para>Returns true when angle is excluded by the filter and false if otherwise.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.ContactFilter2D.IsFilteringTrigger(UnityEngine.Collider2D)">
+      <summary>
+        <para>Checks if the collider is a trigger and should be filtered by the useTriggers to be filtered.</para>
+      </summary>
+      <param name="collider">The Collider2D used to check for a trigger.</param>
+      <returns>
+        <para>Returns true when collider is excluded by the filter and false if otherwise.</para>
+      </returns>
     </member>
     <member name="M:UnityEngine.ContactFilter2D.NoFilter">
       <summary>
@@ -18157,6 +18237,21 @@ The destination texture format should be uncompressed and correspond to a suppor
       <param name="layer"> to use.</param>
       <param name="camera">If null (default), the mesh will be drawn in all cameras. Otherwise it will be drawn in the given camera only.</param>
     </member>
+    <member name="M:UnityEngine.Graphics.DrawMeshInstanced(UnityEngine.Mesh,System.Int32,UnityEngine.Material,System.Collections.Generic.List`1&lt;UnityEngine.Matrix4x4&gt;,UnityEngine.MaterialPropertyBlock,UnityEngine.Rendering.ShadowCastingMode,System.Boolean,System.Int32,UnityEngine.Camera)">
+      <summary>
+        <para>Draw the same mesh multiple times using GPU instancing.</para>
+      </summary>
+      <param name="mesh">The Mesh to draw.</param>
+      <param name="submeshIndex">Which subset of the mesh to draw. This applies only to meshes that are composed of several materials.</param>
+      <param name="material">Material to use.</param>
+      <param name="matrices">The array of object transformation matrices.</param>
+      <param name="count">The number of instances to be drawn.</param>
+      <param name="properties">Additional material properties to apply. See MaterialPropertyBlock.</param>
+      <param name="castShadows">Should the mesh cast shadows?</param>
+      <param name="receiveShadows">Should the mesh receive shadows?</param>
+      <param name="layer"> to use.</param>
+      <param name="camera">If null (default), the mesh will be drawn in all cameras. Otherwise it will be drawn in the given camera only.</param>
+    </member>
     <member name="M:UnityEngine.Graphics.DrawMeshInstancedIndirect(UnityEngine.Mesh,System.Int32,UnityEngine.Material,UnityEngine.Bounds,UnityEngine.ComputeBuffer,System.Int32,UnityEngine.MaterialPropertyBlock,UnityEngine.Rendering.ShadowCastingMode,System.Boolean,System.Int32,UnityEngine.Camera)">
       <summary>
         <para>Draw the same mesh multiple times using GPU instancing.</para>
@@ -18230,6 +18325,66 @@ The destination texture format should be uncompressed and correspond to a suppor
       <param name="argsOffset">Byte offset where in the buffer the draw arguments are.</param>
     </member>
     <member name="M:UnityEngine.Graphics.DrawTexture(UnityEngine.Rect,UnityEngine.Texture,UnityEngine.Material)">
+      <summary>
+        <para>Draw a texture in screen coordinates.</para>
+      </summary>
+      <param name="screenRect">Rectangle on the screen to use for the texture. In pixel coordinates with (0,0) in the upper-left corner.</param>
+      <param name="texture">Texture to draw.</param>
+      <param name="sourceRect">Region of the texture to use. In normalized coordinates with (0,0) in the bottom-left corner.</param>
+      <param name="leftBorder">Number of pixels from the left that are not affected by scale.</param>
+      <param name="rightBorder">Number of pixels from the right that are not affected by scale.</param>
+      <param name="topBorder">Number of pixels from the top that are not affected by scale.</param>
+      <param name="bottomBorder">Number of pixels from the bottom that are not affected by scale.</param>
+      <param name="color">Color that modulates the output. The neutral value is (0.5, 0.5, 0.5, 0.5). Set as vertex color for the shader.</param>
+      <param name="mat">Custom Material that can be used to draw the texture. If null is passed, a default material with the Internal-GUITexture.shader is used.</param>
+      <param name="pass">If -1 (default), draws all passes in the material. Otherwise, draws given pass only.</param>
+    </member>
+    <member name="M:UnityEngine.Graphics.DrawTexture(UnityEngine.Rect,UnityEngine.Texture,UnityEngine.Material,System.Int32)">
+      <summary>
+        <para>Draw a texture in screen coordinates.</para>
+      </summary>
+      <param name="screenRect">Rectangle on the screen to use for the texture. In pixel coordinates with (0,0) in the upper-left corner.</param>
+      <param name="texture">Texture to draw.</param>
+      <param name="sourceRect">Region of the texture to use. In normalized coordinates with (0,0) in the bottom-left corner.</param>
+      <param name="leftBorder">Number of pixels from the left that are not affected by scale.</param>
+      <param name="rightBorder">Number of pixels from the right that are not affected by scale.</param>
+      <param name="topBorder">Number of pixels from the top that are not affected by scale.</param>
+      <param name="bottomBorder">Number of pixels from the bottom that are not affected by scale.</param>
+      <param name="color">Color that modulates the output. The neutral value is (0.5, 0.5, 0.5, 0.5). Set as vertex color for the shader.</param>
+      <param name="mat">Custom Material that can be used to draw the texture. If null is passed, a default material with the Internal-GUITexture.shader is used.</param>
+      <param name="pass">If -1 (default), draws all passes in the material. Otherwise, draws given pass only.</param>
+    </member>
+    <member name="M:UnityEngine.Graphics.DrawTexture(UnityEngine.Rect,UnityEngine.Texture,System.Int32,System.Int32,System.Int32,System.Int32,UnityEngine.Material,System.Int32)">
+      <summary>
+        <para>Draw a texture in screen coordinates.</para>
+      </summary>
+      <param name="screenRect">Rectangle on the screen to use for the texture. In pixel coordinates with (0,0) in the upper-left corner.</param>
+      <param name="texture">Texture to draw.</param>
+      <param name="sourceRect">Region of the texture to use. In normalized coordinates with (0,0) in the bottom-left corner.</param>
+      <param name="leftBorder">Number of pixels from the left that are not affected by scale.</param>
+      <param name="rightBorder">Number of pixels from the right that are not affected by scale.</param>
+      <param name="topBorder">Number of pixels from the top that are not affected by scale.</param>
+      <param name="bottomBorder">Number of pixels from the bottom that are not affected by scale.</param>
+      <param name="color">Color that modulates the output. The neutral value is (0.5, 0.5, 0.5, 0.5). Set as vertex color for the shader.</param>
+      <param name="mat">Custom Material that can be used to draw the texture. If null is passed, a default material with the Internal-GUITexture.shader is used.</param>
+      <param name="pass">If -1 (default), draws all passes in the material. Otherwise, draws given pass only.</param>
+    </member>
+    <member name="M:UnityEngine.Graphics.DrawTexture(UnityEngine.Rect,UnityEngine.Texture,UnityEngine.Rect,System.Int32,System.Int32,System.Int32,System.Int32,UnityEngine.Material,System.Int32)">
+      <summary>
+        <para>Draw a texture in screen coordinates.</para>
+      </summary>
+      <param name="screenRect">Rectangle on the screen to use for the texture. In pixel coordinates with (0,0) in the upper-left corner.</param>
+      <param name="texture">Texture to draw.</param>
+      <param name="sourceRect">Region of the texture to use. In normalized coordinates with (0,0) in the bottom-left corner.</param>
+      <param name="leftBorder">Number of pixels from the left that are not affected by scale.</param>
+      <param name="rightBorder">Number of pixels from the right that are not affected by scale.</param>
+      <param name="topBorder">Number of pixels from the top that are not affected by scale.</param>
+      <param name="bottomBorder">Number of pixels from the bottom that are not affected by scale.</param>
+      <param name="color">Color that modulates the output. The neutral value is (0.5, 0.5, 0.5, 0.5). Set as vertex color for the shader.</param>
+      <param name="mat">Custom Material that can be used to draw the texture. If null is passed, a default material with the Internal-GUITexture.shader is used.</param>
+      <param name="pass">If -1 (default), draws all passes in the material. Otherwise, draws given pass only.</param>
+    </member>
+    <member name="M:UnityEngine.Graphics.DrawTexture(UnityEngine.Rect,UnityEngine.Texture,UnityEngine.Rect,System.Int32,System.Int32,System.Int32,System.Int32,UnityEngine.Color,UnityEngine.Material,System.Int32)">
       <summary>
         <para>Draw a texture in screen coordinates.</para>
       </summary>
@@ -20520,7 +20675,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(UnityEngine.Texture,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -20535,7 +20690,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(System.String,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -20550,7 +20705,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(UnityEngine.GUIContent,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -20565,7 +20720,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(UnityEngine.Texture,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -20580,7 +20735,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(System.String,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -20595,7 +20750,7 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
     </member>
     <member name="M:UnityEngine.GUILayout.Button(UnityEngine.GUIContent,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
       <summary>
-        <para>Make a single press button. The user clicks them and something happens immediately.</para>
+        <para>Make a single press button.</para>
       </summary>
       <param name="text">Text to display on the button.</param>
       <param name="image">Texture to display on the button.</param>
@@ -27737,6 +27892,16 @@ Only usable on Android, Windows Phone or Windows Tablets.</para>
         <para>Choose how textures are applied to Lines and Trails.</para>
       </summary>
     </member>
+    <member name="F:UnityEngine.LineTextureMode.DistributePerSegment">
+      <summary>
+        <para>Map the texture once along the entire length of the line, assuming all vertices are evenly spaced.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEngine.LineTextureMode.RepeatPerSegment">
+      <summary>
+        <para>Repeat the texture along the line, repeating at a rate of once per line segment. To adjust the tiling rate, use Material.SetTextureScale.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.LineTextureMode.Stretch">
       <summary>
         <para>Map the texture once along the entire length of the line.</para>
@@ -27744,7 +27909,7 @@ Only usable on Android, Windows Phone or Windows Tablets.</para>
     </member>
     <member name="F:UnityEngine.LineTextureMode.Tile">
       <summary>
-        <para>Repeat the texture along the line. To set the tiling rate, use Material.SetTextureScale.</para>
+        <para>Repeat the texture along the line, based on its length in world units. To set the tiling rate, use Material.SetTextureScale.</para>
       </summary>
     </member>
     <member name="T:UnityEngine.LocationInfo">
@@ -28285,6 +28450,11 @@ Only usable on Android, Windows Phone or Windows Tablets.</para>
     <member name="P:UnityEngine.Material.color">
       <summary>
         <para>The main material's color.</para>
+      </summary>
+    </member>
+    <member name="P:UnityEngine.Material.doubleSidedGI">
+      <summary>
+        <para>Gets and sets whether the Double Sided Global Illumination setting is enabled for this material.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Material.enableInstancing">
@@ -32402,11 +32572,11 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Tries to establish a connection to another peer.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="hostId">Host ID associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
       <param name="address">IPv4 address of the other peer.</param>
       <param name="port">Port of the other peer.</param>
       <param name="exceptionConnectionId">Set to 0 in the case of a default connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <param name="exeptionConnectionId"></param>
       <returns>
         <para>A unique connection identifier on success (otherwise zero).</para>
@@ -32416,20 +32586,20 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Create dedicated connection to Relay server.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="hostId">Host ID associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
       <param name="address">IPv4 address of the relay.</param>
       <param name="port">Port of the relay.</param>
       <param name="network">GUID for the relay match, retrieved by calling Networking.Match.NetworkMatch.CreateMatch and using the Networking.Match.MatchInfo.networkId.</param>
       <param name="source">GUID for the source, can be retrieved by calling Utility.GetSourceID.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
-      <param name="node">Slot id for this user, retrieved by calling Networking.Match.NetworkMatch.CreateMatch and using the Networking.Match.MatchInfo.nodeId.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <param name="node">Slot ID for this user, retrieved by calling Networking.Match.NetworkMatch.CreateMatch and using the Networking.Match.MatchInfo.nodeId.</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.ConnectEndPoint(System.Int32,System.Net.EndPoint,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Try to establish connection to other peer, where the peer is specified using a C# System.EndPoint.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <param name="xboxOneEndPoint">A valid System.EndPoint.</param>
       <param name="exceptionConnectionId">Set to 0 in the case of a default connection.</param>
       <param name="endPoint"></param>
@@ -32441,15 +32611,15 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Create a connection to another peer in the Relay group.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="hostId">Host ID associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
       <param name="address">IP address of the peer, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.address.</param>
       <param name="port">Port of the peer, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.port.</param>
       <param name="exceptionConnectionId">Set to 0 in the case of a default connection.</param>
-      <param name="relaySlotId">Id of the remote peer in relay.</param>
+      <param name="relaySlotId">ID of the remote peer in relay.</param>
       <param name="network">GUID for the relay match, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.networkId.</param>
       <param name="source">GUID for the source, can be retrieved by calling Utility.GetSourceID.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
-      <param name="node">Slot id reserved for the user, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.nodeId.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <param name="node">Slot ID reserved for the user, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.nodeId.</param>
       <param name="bucketSizeFactor">Allowed peak bandwidth (peak bandwidth = factor*bytesPerSec, recommended value is 2.0) If data has not been sent for a long time, it is allowed to send more data, with factor 2 it is allowed send 2*bytesPerSec bytes per sec.</param>
       <param name="bytesPerSec">Average bandwidth (bandwidth will be throttled on this level).</param>
       <returns>
@@ -32460,15 +32630,15 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Create a connection to another peer in the Relay group.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="hostId">Host ID associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
       <param name="address">IP address of the peer, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.address.</param>
       <param name="port">Port of the peer, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.port.</param>
       <param name="exceptionConnectionId">Set to 0 in the case of a default connection.</param>
-      <param name="relaySlotId">Id of the remote peer in relay.</param>
+      <param name="relaySlotId">ID of the remote peer in relay.</param>
       <param name="network">GUID for the relay match, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.networkId.</param>
       <param name="source">GUID for the source, can be retrieved by calling Utility.GetSourceID.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
-      <param name="node">Slot id reserved for the user, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.nodeId.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <param name="node">Slot ID reserved for the user, retrieved by calling Networking.Match.NetworkMatch.JoinMatch and using the Networking.Match.MatchInfo.nodeId.</param>
       <param name="bucketSizeFactor">Allowed peak bandwidth (peak bandwidth = factor*bytesPerSec, recommended value is 2.0) If data has not been sent for a long time, it is allowed to send more data, with factor 2 it is allowed send 2*bytesPerSec bytes per sec.</param>
       <param name="bytesPerSec">Average bandwidth (bandwidth will be throttled on this level).</param>
       <returns>
@@ -32479,11 +32649,11 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Connect with simulated latency.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="hostId">Host ID associated with this connection (Retrieved when calling Networking.NetworkTransport.AddHost).</param>
       <param name="address">IPv4 address of the other peer.</param>
       <param name="port">Port of the other peer.</param>
       <param name="exeptionConnectionId">Set to 0 in the case of a default connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <param name="conf">A Networking.ConnectionSimulatorConfig defined for this connection.</param>
       <returns>
         <para>A unique connection identifier on success (otherwise zero).</para>
@@ -32493,32 +32663,32 @@ To obtain sender connection info and possible complimentary message from them, c
       <summary>
         <para>Send a disconnect signal to the connected peer and close the connection. Poll Networking.NetworkTransport.Receive() to be notified that the connection is closed. This signal is only sent once (best effort delivery).  If this packet is dropped for some reason, the peer closes the connection by timeout.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">The connection id of the connection you want to close.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">The connection ID of the connection you want to close.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.DisconnectNetworkHost(System.Int32,System.Byte&amp;)">
       <summary>
         <para>This will disconnect the host and disband the group.
 DisconnectNetworkHost can only be called by the group owner on the relay server.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.FinishSendMulticast(System.Int32,System.Byte&amp;)">
       <summary>
         <para>Finalizes sending of a message to a group of connections. Only one multicast message at a time is allowed per host.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection (retrieved when calling Networking.NetworkTransport.AddHost).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetAckBufferCount(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Returns size of reliable buffer.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Size of ack buffer.</para>
       </returns>
@@ -32536,31 +32706,31 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>After Networking.NetworkTransport.Receive() returns Networking.NetworkEventType.BroadcastEvent, this function will return the connection information of the broadcast sender. This information can then be used for connecting to the broadcast sender.</para>
       </summary>
-      <param name="hostId">Id of the broadcast receiver.</param>
+      <param name="hostId">ID of the broadcast receiver.</param>
       <param name="address">IPv4 address of broadcast sender.</param>
       <param name="port">Port of broadcast sender.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetBroadcastConnectionMessage(System.Int32,System.Byte[],System.Int32,System.Int32&amp;,System.Byte&amp;)">
       <summary>
         <para>After Networking.NetworkTransport.Receive() returns Networking.NetworkEventType.BroadcastEvent, this function returns a complimentary message from the broadcast sender.</para>
       </summary>
-      <param name="hostId">Id of broadcast receiver.</param>
+      <param name="hostId">ID of broadcast receiver.</param>
       <param name="buffer">Message buffer provided by caller.</param>
       <param name="bufferSize">Buffer size.</param>
       <param name="receivedSize">Received size (if received size &gt; bufferSize, corresponding error will be set).</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetConnectionInfo(System.Int32,System.Int32,System.String&amp;,System.Int32&amp;,UnityEngine.Networking.Types.NetworkID&amp;,UnityEngine.Networking.Types.NodeID&amp;,System.Byte&amp;)">
       <summary>
         <para>Returns the connection parameters for the specified connectionId. These parameters can be sent to other users to establish a direct connection to this peer. If this peer is connected to the host via Relay, the Relay-related parameters are set.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of connection.</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of connection.</param>
       <param name="address">IP address.</param>
       <param name="port">Port.</param>
       <param name="network">Relay network guid.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <param name="dstNode">Destination slot id.</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetCurrentIncomingMessageAmount">
@@ -32577,9 +32747,9 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Return the round trip time for the given connectionId.</para>
       </summary>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
       <returns>
         <para>Current round trip time in ms.</para>
       </returns>
@@ -32588,7 +32758,7 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Returns the number of received messages waiting in the queue for processing.</para>
       </summary>
-      <param name="hostId">Host id associated with this queue.</param>
+      <param name="hostId">Host ID associated with this queue.</param>
       <param name="error">Error code. Cast this value to Networking.NetworkError for more information.</param>
       <returns>
         <para>The number of messages in the queue.</para>
@@ -32598,16 +32768,16 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Returns how many packets have been received from start for connection.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>The absolute number of packets received since the connection was established.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetIncomingPacketCountForAllHosts">
       <summary>
-        <para>Returns how many packets have been received from start. (from Init() call).</para>
+        <para>Returns how many packets have been received from start. (from Networking.NetworkTransport.Init call).</para>
       </summary>
       <returns>
         <para>Packets count received from start for all hosts.</para>
@@ -32625,9 +32795,9 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Returns how many incoming packets have been lost due transmitting (dropped by network).</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>The absolute number of packets that have been lost since the connection was established.</para>
       </returns>
@@ -32636,9 +32806,9 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Gets the currently-allowed network bandwidth in bytes per second. The value returned can vary because bandwidth can be throttled by flow control. If the bandwidth is throttled to zero, the connection is disconnected.ted.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Currently-allowed bandwidth in bytes per second.</para>
       </returns>
@@ -32655,9 +32825,9 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Return the total number of packets that has been lost.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetNetworkTimestamp">
       <summary>
@@ -32667,23 +32837,110 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
         <para>Timestamp.</para>
       </returns>
     </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingFullBytesCount">
+      <summary>
+        <para>Returns how much raw data (in bytes) have been sent from start for all hosts (from Networking.NetworkTransport.Init call).</para>
+      </summary>
+      <returns>
+        <para>Total data (user payload, protocol specific data, ip and udp headers) (in bytes) sent from start for all hosts.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingFullBytesCountForConnection(System.Int32,System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much raw data (in bytes) have been sent from start for connection (from call Networking.NetworkTransport.Connect for active connect or from connection request receiving for passive connect).</para>
+      </summary>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total data (user payload, protocol specific data, ip and udp headers) (in bytes) sent from start for connection.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingFullBytesCountForHost(System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much raw data (in bytes) have been sent from start for the host (from call Networking.NetworkTransport.AddHost).</para>
+      </summary>
+      <param name="hostId">ID of the host.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total data (user payload, protocol specific data, ip and udp headers) (in bytes) sent from start for the host.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingMessageCount">
+      <summary>
+        <para>Returns how many messages have been sent from start (from Networking.NetworkTransport.Init call).</para>
+      </summary>
+      <returns>
+        <para>Messages count sent from start (from call Networking.NetworkTransport.Init) for all hosts.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingMessageCountForConnection(System.Int32,System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how many packets have been sent from start for connection (from call Networking.NetworkTransport.Connect for active connect or from connection request receiving for passive connect).</para>
+      </summary>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Messages count sending from start for connection.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingMessageCountForHost(System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how many messages have been sent from start for host (from call Networking.NetworkTransport.AddHost).</para>
+      </summary>
+      <param name="hostId">ID of the host.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Messages count sending from start for the host.</para>
+      </returns>
+    </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingMessageQueueSize(System.Int32,System.Byte&amp;)">
       <summary>
         <para>Returns the number of messages waiting in the outgoing message queue to be sent.</para>
       </summary>
-      <param name="hostId">Host id associated with this queue.</param>
+      <param name="hostId">Host ID associated with this queue.</param>
       <param name="error">Error code. Cast this value to Networking.NetworkError for more information.</param>
       <returns>
         <para>The number of messages waiting in the outgoing message queue to be sent.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingPacketCount">
+      <summary>
+        <para>Returns how many packets have been sent from start (from call Networking.NetworkTransport.Init) for all hosts.</para>
+      </summary>
+      <returns>
+        <para>Packets count sent from networking library start (from call Networking.NetworkTransport.Init)  for all hosts.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingPacketCountForConnection(System.Int32,System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how many packets have been sent for connection from it start (from call Networking.NetworkTransport.Connect for active connect or from connection request receiving for passive connect).</para>
+      </summary>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Packets count sent for connection from it start.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingPacketCountForHost(System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how many packets have been sent for host from it start (from call Networking.NetworkTransport.AddHost).</para>
+      </summary>
+      <param name="hostId">ID of the host.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Count packets have been sent from host start.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingPacketNetworkLossPercent(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Returns the value in percent of the number of sent packets that were dropped by the network and not received by the peer.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>The number of packets dropped by the network in the last ping timeout period expressed as an integer percentage from 0 to 100.</para>
       </returns>
@@ -32692,45 +32949,103 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Returns the value in percent of the number of sent packets that were dropped by the peer.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>The number of packets dropped by the peer in the last ping timeout period expressed as an integer percentage from 0 to 100.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingSystemBytesCount">
+      <summary>
+        <para>Returns how much user payload and protocol system headers (in bytes)  have been sent from start (from Networking.NetworkTransport.Init call).</para>
+      </summary>
+      <returns>
+        <para>Total payload and protocol system headers (in bytes) sent from start for all hosts.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingSystemBytesCountForConnection(System.Int32,System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much payload and protocol system headers (in bytes) have been sent from start for connection (from call Networking.NetworkTransport.Connect for active connect or from connection request receiving for passive connect).</para>
+      </summary>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total user payload and protocol system headers (in bytes) sent from start for connection.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingSystemBytesCountForHost(System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much payload and protocol system headers (in bytes) have been sent from start for the host (from call Networking.NetworkTransport.AddHost).</para>
+      </summary>
+      <param name="hostId">ID of the host.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total user payload and protocol system headers (in bytes) sent from start for the host.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingUserBytesCount">
+      <summary>
+        <para>Returns how much payload (user) bytes have been sent from start (from Networking.NetworkTransport.Init call).</para>
+      </summary>
+      <returns>
+        <para>Total payload (in bytes) sent from start for all hosts.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingUserBytesCountForConnection(System.Int32,System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much payload (user) bytes have been sent from start for connection (from call Networking.NetworkTransport.Connect for active connect or from connection request receiving for passive connect).</para>
+      </summary>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total payload (in bytes) sent from start for connection.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.Networking.NetworkTransport.GetOutgoingUserBytesCountForHost(System.Int32,System.Byte&amp;)">
+      <summary>
+        <para>Returns how much payload (user) bytes have been sent from start for the host (from call Networking.NetworkTransport.AddHost).</para>
+      </summary>
+      <param name="hostId">ID of the host.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <returns>
+        <para>Total payload (in bytes) sent from start for the host.</para>
       </returns>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetPacketReceivedRate(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Return the current receive rate in bytes per second.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetPacketSentRate(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Return the current send rate in bytes per second.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetRemoteDelayTimeMS(System.Int32,System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Returns the delay for the timestamp received.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
       <param name="remoteTime">Timestamp delivered from peer.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.GetRemotePacketReceivedRate(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Deprecated. Use Networking.NetworkTransport.GetNetworkLostPacketNum() instead.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.Init">
       <summary>
@@ -32754,10 +33069,10 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Function is queueing but not sending messages.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
-      <param name="channelId">The channelId to send on.</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
+      <param name="channelId">The channel ID to send on.</param>
       <param name="buffer">Buffer containing the data to send.</param>
       <param name="size">Size of the buffer.</param>
       <returns>
@@ -32768,13 +33083,13 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Called to poll the underlying system for events.</para>
       </summary>
-      <param name="hostId">Host id associated with the event.</param>
-      <param name="connectionId">The connectionId that received the event.</param>
-      <param name="channelId">The channelId associated with the event.</param>
+      <param name="hostId">Host ID associated with the event.</param>
+      <param name="connectionId">The connectionID that received the event.</param>
+      <param name="channelId">The channel ID associated with the event.</param>
       <param name="buffer">The buffer that will hold the data received.</param>
       <param name="bufferSize">Size of the buffer supplied.</param>
       <param name="receivedSize">The actual receive size of the data.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Type of event returned.</para>
       </returns>
@@ -32783,13 +33098,13 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
       <summary>
         <para>Similar to Networking.NetworkTransport.Receive but will only poll for the provided hostId.</para>
       </summary>
-      <param name="hostId">The hostId to check for events.</param>
-      <param name="connectionId">The connectionId that received the event.</param>
-      <param name="channelId">The channelId associated with the event.</param>
+      <param name="hostId">The host ID to check for events.</param>
+      <param name="connectionId">The connection ID that received the event.</param>
+      <param name="channelId">The channel ID associated with the event.</param>
       <param name="buffer">The buffer that will hold the data received.</param>
       <param name="bufferSize">Size of the buffer supplied.</param>
       <param name="receivedSize">The actual receive size of the data.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Type of event returned.</para>
       </returns>
@@ -32799,8 +33114,8 @@ DisconnectNetworkHost can only be called by the group owner on the relay server.
         <para>Polls the host for the following events:  Networking.NetworkEventType.ConnectEvent and Networking.NetworkEventType.DisconnectEvent.
 Can only be called by the relay group owner.</para>
       </summary>
-      <param name="hostId">The hostId to check for events.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">The host ID to check for events.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Type of event returned.</para>
       </returns>
@@ -32809,34 +33124,34 @@ Can only be called by the relay group owner.</para>
       <summary>
         <para>Closes the opened socket, and closes all connections belonging to that socket.</para>
       </summary>
-      <param name="hostId">Host id to remove.</param>
+      <param name="hostId">Host ID to remove.</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.Send(System.Int32,System.Int32,System.Int32,System.Byte[],System.Int32,System.Byte&amp;)">
       <summary>
         <para>Send data to peer.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="channelId">The channelId to send on.</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="channelId">The channel ID to send on.</param>
       <param name="buffer">Buffer containing the data to send.</param>
       <param name="size">Size of the buffer.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.SendMulticast(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Add a connection for the multicast send.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.SendQueuedMessages(System.Int32,System.Int32,System.Byte&amp;)">
       <summary>
         <para>Sends messages, previously queued by NetworkTransport.QueueMessageForSending function.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="connectionId">Id of the connection.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="connectionId">ID of the connection.</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>True if hostId and connectioId are valid.</para>
       </returns>
@@ -32845,17 +33160,17 @@ Can only be called by the relay group owner.</para>
       <summary>
         <para>Sets the credentials required for receiving broadcast messages. Should any credentials of a received broadcast message not match, the broadcast discovery message is dropped.</para>
       </summary>
-      <param name="hostId">Host id associated with this broadcast.</param>
+      <param name="hostId">Host ID associated with this broadcast.</param>
       <param name="key">Key part of the credentials associated with this broadcast.</param>
       <param name="version">Version part of the credentials associated with this broadcast.</param>
       <param name="subversion">Subversion part of the credentials associated with this broadcast.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.SetPacketStat">
       <summary>
         <para>Used to inform the profiler of network packet statistics.</para>
       </summary>
-      <param name="packetStatId">The Id of the message being reported.</param>
+      <param name="packetStatId">The ID of the message being reported.</param>
       <param name="numMsgs">Number of message being reported.</param>
       <param name="numBytes">Number of bytes used by reported messages.</param>
     </member>
@@ -32868,7 +33183,7 @@ Can only be called by the relay group owner.</para>
       <summary>
         <para>Starts sending a broadcasting message in all local subnets.</para>
       </summary>
-      <param name="hostId">Host id which should be reported via broadcast (broadcast receivers will connect to this host).</param>
+      <param name="hostId">Host ID which should be reported via broadcast (broadcast receivers will connect to this host).</param>
       <param name="broadcastPort">Port used for the broadcast message.</param>
       <param name="key">Key part of the credentials associated with this broadcast.</param>
       <param name="version">Version part of the credentials associated with this broadcast.</param>
@@ -32876,7 +33191,7 @@ Can only be called by the relay group owner.</para>
       <param name="buffer">Complimentary message. This message will delivered to the receiver with the broadcast event.</param>
       <param name="size">Size of message.</param>
       <param name="timeout">Specifies how often the broadcast message should be sent in milliseconds.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
       <returns>
         <para>Return true if broadcasting request has been submitted.</para>
       </returns>
@@ -32885,11 +33200,11 @@ Can only be called by the relay group owner.</para>
       <summary>
         <para>Start to multicast send.</para>
       </summary>
-      <param name="hostId">Host id associated with this connection.</param>
-      <param name="channelId">The channelId.</param>
+      <param name="hostId">Host ID associated with this connection.</param>
+      <param name="channelId">The channel ID.</param>
       <param name="buffer">Buffer containing the data to send.</param>
       <param name="size">Size of the buffer.</param>
-      <param name="error">Error (can be casted to Networking.NetworkError for more information).</param>
+      <param name="error">Error (can be cast to Networking.NetworkError for more information).</param>
     </member>
     <member name="M:UnityEngine.Networking.NetworkTransport.StopBroadcastDiscovery">
       <summary>
@@ -33220,6 +33535,11 @@ The Player ID is always 1, because only one Editor can be connected.</param>
     <member name="P:UnityEngine.Networking.UnityWebRequest.responseCode">
       <summary>
         <para>The numeric HTTP response code returned by the server, such as 200, 404 or 500. (Read Only)</para>
+      </summary>
+    </member>
+    <member name="P:UnityEngine.Networking.UnityWebRequest.timeout">
+      <summary>
+        <para>Sets UnityWebRequest to attempt to abort after the number of seconds in timeout have passed.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Networking.UnityWebRequest.uploadedBytes">
@@ -37636,6 +37956,16 @@ The position stream is always enabled, and any attempts to remove it will be ign
         <para>Choose how textures are applied to Particle Trails.</para>
       </summary>
     </member>
+    <member name="F:UnityEngine.ParticleSystemTrailTextureMode.DistributePerSegment">
+      <summary>
+        <para>Map the texture once along the entire length of the trail, assuming all vertices are evenly spaced.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEngine.ParticleSystemTrailTextureMode.RepeatPerSegment">
+      <summary>
+        <para>Repeat the texture along the trail, repeating at a rate of once per trail segment. To adjust the tiling rate, use Material.SetTextureScale.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.ParticleSystemTrailTextureMode.Stretch">
       <summary>
         <para>Map the texture once along the entire length of the trail.</para>
@@ -38632,6 +38962,11 @@ Note that IgnoreLayerCollision will reset the trigger state of affected collider
     <member name="P:UnityEngine.Physics2D.baumgarteTOIScale">
       <summary>
         <para>The scale factor that controls how fast TOI overlaps are resolved.</para>
+      </summary>
+    </member>
+    <member name="P:UnityEngine.Physics2D.callbacksOnDisable">
+      <summary>
+        <para>Use this to control whether or not the appropriate OnCollisionExit2D or OnTriggerExit2D callbacks should be called when a Collider2D is disabled.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Physics2D.changeStopsCallbacks">
@@ -42031,13 +42366,13 @@ frame. Minimum value is 1 and maximum is 33.</para>
       <summary>
         <para>Get the corners of the calculated rectangle in the local space of its Transform.</para>
       </summary>
-      <param name="fourCornersArray">Array that corners should be filled into.</param>
+      <param name="fourCornersArray">The array that corners are filled into.</param>
     </member>
     <member name="M:UnityEngine.RectTransform.GetWorldCorners(UnityEngine.Vector3[])">
       <summary>
         <para>Get the corners of the calculated rectangle in world space.</para>
       </summary>
-      <param name="fourCornersArray">Array that corners should be filled into.</param>
+      <param name="fourCornersArray">The ray that corners are filled into.</param>
     </member>
     <member name="T:UnityEngine.RectTransform.ReapplyDrivenProperties">
       <summary>
@@ -43416,7 +43751,11 @@ See Also: ReflectionProbeTimeSlicingMode.</para>
     </member>
     <member name="M:UnityEngine.Rendering.CommandBuffer.DrawMeshInstanced(UnityEngine.Mesh,System.Int32,UnityEngine.Material,System.Int32,UnityEngine.Matrix4x4[],System.Int32,UnityEngine.MaterialPropertyBlock)">
       <summary>
-        <para>Add a "draw mesh with instancing" command.</para>
+        <para>Add a "draw mesh with instancing" command.
+
+The command will not immediately fail and throw an exception if Material.enableInstancing is false, but it will log an error and skips rendering each time the command is being executed if such a condition is detected.
+
+InvalidOperationException will be thrown if the current platform doesn't support this API (i.e. if GPU instancing is not available). See SystemInfo.supportsInstancing.</para>
       </summary>
       <param name="mesh">The Mesh to draw.</param>
       <param name="submeshIndex">Which subset of the mesh to draw. This applies only to meshes that are composed of several materials.</param>
@@ -45382,14 +45721,14 @@ Updating a probe's cubemap is a costly operation. Unity needs to render the enti
     </member>
     <member name="M:UnityEngine.RenderTexture.DiscardContents">
       <summary>
-        <para>Discards the contents of the RenderTexture.</para>
+        <para>Hint the GPU driver that the contents of the RenderTexture will not be used.</para>
       </summary>
       <param name="discardColor">Should the colour buffer be discarded?</param>
       <param name="discardDepth">Should the depth buffer be discarded?</param>
     </member>
     <member name="M:UnityEngine.RenderTexture.DiscardContents(System.Boolean,System.Boolean)">
       <summary>
-        <para>Discards the contents of the RenderTexture.</para>
+        <para>Hint the GPU driver that the contents of the RenderTexture will not be used.</para>
       </summary>
       <param name="discardColor">Should the colour buffer be discarded?</param>
       <param name="discardDepth">Should the depth buffer be discarded?</param>
@@ -45526,6 +45865,11 @@ Updating a probe's cubemap is a costly operation. Unity needs to render the enti
         <para>Scalar (R) render texture format, 32 bit floating point.</para>
       </summary>
     </member>
+    <member name="F:UnityEngine.RenderTextureFormat.RG16">
+      <summary>
+        <para>Two channel (RG) render texture format, 8 bits per channel.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.RenderTextureFormat.RG32">
       <summary>
         <para>Two color (RG) render texture format, 16 bits per channel, fixed point, unsigned normalized.</para>
@@ -45539,6 +45883,11 @@ Updating a probe's cubemap is a costly operation. Unity needs to render the enti
     <member name="F:UnityEngine.RenderTextureFormat.RGB565">
       <summary>
         <para>Color render texture format.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEngine.RenderTextureFormat.RGBAUShort">
+      <summary>
+        <para>Four channel (RGBA) render texture format, 16 bit unsigned integer per channel.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.RenderTextureFormat.RGFloat">
@@ -45604,7 +45953,7 @@ Updating a probe's cubemap is a costly operation. Unity needs to render the enti
     </member>
     <member name="M:UnityEngine.RequireComponent.#ctor(System.Type,System.Type)">
       <summary>
-        <para>Require a two components.</para>
+        <para>Require two components.</para>
       </summary>
       <param name="requiredComponent"></param>
       <param name="requiredComponent2"></param>
@@ -51930,9 +52279,19 @@ Returns NULL if there is no associated alpha texture for the source sprite. This
         <para>A 16 bit color texture format that only has a red channel.</para>
       </summary>
     </member>
+    <member name="F:UnityEngine.TextureFormat.R8">
+      <summary>
+        <para>Scalar (R) render texture format, 8 bit fixed point.</para>
+      </summary>
+    </member>
     <member name="F:UnityEngine.TextureFormat.RFloat">
       <summary>
         <para>Scalar (R) texture format, 32 bit floating point.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEngine.TextureFormat.RG16">
+      <summary>
+        <para>Two color (RG) texture format, 8-bits per channel.</para>
       </summary>
     </member>
     <member name="F:UnityEngine.TextureFormat.RGB24">
@@ -54269,7 +54628,7 @@ Rotation of the tree on X-Z plane (in radians).</para>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.canSetSkipOnDrop">
       <summary>
-        <para>Determines whether the player skips frames to catch up with current time. (Read Only)</para>
+        <para>Determines whether the VideoPlayer skips frames to catch up with current time. (Read Only)</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.canSetTime">
@@ -54279,17 +54638,17 @@ Rotation of the tree on X-Z plane (in radians).</para>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.canSetTimeSource">
       <summary>
-        <para>Whether the time source followed by the video player can be changed. (Read Only)</para>
+        <para>Whether the time source followed by the VideoPlayer can be changed. (Read Only)</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.canStep">
       <summary>
-        <para>Returns true if the player can step forwards into the video content. (Read Only)</para>
+        <para>Returns true if the VideoPlayer can step forward through the video content. (Read Only)</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.clip">
       <summary>
-        <para>The clip being played by the player.</para>
+        <para>The clip being played by the VideoPlayer.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.controlledAudioTrackCount">
@@ -54311,7 +54670,7 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.frame">
       <summary>
-        <para>The frame index currently being displayed by the player.</para>
+        <para>The frame index currently being displayed by the VideoPlayer.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.frameCount">
@@ -54321,7 +54680,7 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="?:UnityEngine.Video.VideoPlayer.frameDropped(UnityEngine.Video.VideoPlayer/EventHandler)">
       <summary>
-        <para>Invoked when playback detects it does not keep up with the time source.</para>
+        <para>[NOT YET IMPLEMENTED] Invoked when the video decoder does not produce a frame as per the time source during playback.</para>
       </summary>
       <param name="value"></param>
     </member>
@@ -54338,7 +54697,7 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.isLooping">
       <summary>
-        <para>Deterimes whether the player restarts from the beginning without when it reaches the end of the clip.</para>
+        <para>Determines whether the VideoPlayer restarts from the beginning when it reaches the end of the clip.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.isPlaying">
@@ -54348,12 +54707,12 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.isPrepared">
       <summary>
-        <para>Whether the player has successfully prepared the content to be played. (Read Only)</para>
+        <para>Whether the VideoPlayer has successfully prepared the content to be played. (Read Only)</para>
       </summary>
     </member>
     <member name="?:UnityEngine.Video.VideoPlayer.loopPointReached(UnityEngine.Video.VideoPlayer/EventHandler)">
       <summary>
-        <para>Invoked when the player reaches the end of the content to play.</para>
+        <para>Invoked when the VideoPlayer reaches the end of the content to play.</para>
       </summary>
       <param name="value"></param>
     </member>
@@ -54369,7 +54728,7 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="?:UnityEngine.Video.VideoPlayer.prepareCompleted(UnityEngine.Video.VideoPlayer/EventHandler)">
       <summary>
-        <para>Invoked when the player preparation is complete.</para>
+        <para>Invoked when the VideoPlayer preparation is complete.</para>
       </summary>
       <param name="value"></param>
     </member>
@@ -54391,12 +54750,12 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.skipOnDrop">
       <summary>
-        <para>Whether the player is allowed to skip frames to catch up with current time.</para>
+        <para>Whether the VideoPlayer is allowed to skip frames to catch up with current time.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.source">
       <summary>
-        <para>The source that the player uses for playback.</para>
+        <para>The source that the VideoPlayer uses for playback.</para>
       </summary>
     </member>
     <member name="?:UnityEngine.Video.VideoPlayer.started(UnityEngine.Video.VideoPlayer/EventHandler)">
@@ -54427,7 +54786,7 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.targetTexture">
       <summary>
-        <para>RenderTexture to draw to when Video.VideoPlayer.renderMode is set to Video.VideoTarget.RenderTexture.</para>
+        <para>RenderTexture to draw to when Video.VideoPlayer.renderMode is set to Video.VideoTarget.RenderTexture. For optimal performance, the dimensions of the RenderTexture should match those of the video media exactly.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.texture">
@@ -54437,22 +54796,22 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.time">
       <summary>
-        <para>The player current time in seconds.</para>
+        <para>The VideoPlayer current time in seconds.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.timeSource">
       <summary>
-        <para>The clock that the player follows to derive its current time.</para>
+        <para>[NOT YET IMPLEMENTED] The source used used by the VideoPlayer to derive its current time.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.url">
       <summary>
-        <para>The file or HTTP URL that the player will read content from.</para>
+        <para>The file or HTTP URL that the VideoPlayer will read content from.</para>
       </summary>
     </member>
     <member name="P:UnityEngine.Video.VideoPlayer.waitForFirstFrame">
       <summary>
-        <para>Determines whether the player will wait for the first frame to be loaded into the texture before starting playback when Video.VideoPlayer.playOnAwake is on.</para>
+        <para>Determines whether the VideoPlayer will wait for the first frame to be loaded into the texture before starting playback when Video.VideoPlayer.playOnAwake is on.</para>
       </summary>
     </member>
     <member name="M:UnityEngine.Video.VideoPlayer.EnableAudioTrack(System.UInt16,System.Boolean)">
@@ -54466,21 +54825,21 @@ The actual number of audio tracks cannot be known in advance when playing URLs, 
       <summary>
         <para>Delegate type for VideoPlayer events that contain an error message.</para>
       </summary>
-      <param name="source">The player that is emitting the event.</param>
+      <param name="source">The VideoPlayer that is emitting the event.</param>
       <param name="message">Message describing the error just encountered.</param>
     </member>
     <member name="T:UnityEngine.Video.VideoPlayer.EventHandler">
       <summary>
         <para>Delegate type for all parameter-less events emitted by VideoPlayers.</para>
       </summary>
-      <param name="source">The player that is emitting the event.</param>
+      <param name="source">The VideoPlayer that is emitting the event.</param>
     </member>
     <member name="T:UnityEngine.Video.VideoPlayer.FrameReadyEventHandler">
       <summary>
         <para>Delegate type for VideoPlayer events that carry a frame number.</para>
       </summary>
-      <param name="source">The player that is emitting the event.</param>
-      <param name="frameNum">The frame the player is now at.</param>
+      <param name="source">The VideoPlayer that is emitting the event.</param>
+      <param name="frameNum">The frame the VideoPlayer is now at.</param>
       <param name="frameIdx"></param>
     </member>
     <member name="M:UnityEngine.Video.VideoPlayer.GetAudioChannelCount(System.UInt16)">

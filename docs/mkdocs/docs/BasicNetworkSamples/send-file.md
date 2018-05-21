@@ -13,7 +13,7 @@ To get started we are going to need to setup our environment so that we can quic
 7) Open that script in your favorite editor
 8) Put the following code into the script
 
-![Deal With It!](/images/deal-with-it.jpg)
+![Deal With It!](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/deal-with-it.jpg)
 
 *Note that this code is not optimized but made simple for quick understanding*
 ```csharp

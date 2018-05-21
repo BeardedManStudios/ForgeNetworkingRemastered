@@ -335,6 +335,13 @@
     </li>
 
         
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../BasicNetworkSamples/send-file/">Send file</a>
+        
+    </li>
+
+        
     </ul>
 <li>
           
@@ -580,11 +587,11 @@
 </ol>
 <h2 id="network-contract-wizard">Network Contract Wizard</h2>
 <p>Now that we know that we need to sync the <strong>position</strong> and <strong>rotation</strong> of a cube, we can design our network contract for that object. We will first open the <strong>Network Contract Wizard</strong> which is a UI provided by the Bearded Man Studios team to make it easy to design your <strong>network contracts</strong> in a easy way. To open this menu, go into Unity and select "Window-&gt;Forge Networking-&gt;Network Contract Wizard".</p>
-<p><img alt="opening-the-ncw" src="../images/opening-ncw.jpg" title="How to open the NCW" /></p>
-<p>Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the <strong>Name</strong> fi elds, the <strong>Fields</strong> field, and the <strong>Remote Procedure Calls</strong> field.</p>
+<p><img alt="opening-the-ncw" src="https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg" title="How to open the NCW" /></p>
+<p>Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the Network Contract Wizard as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the <strong>Name</strong> fields, the <strong>Fields</strong> field, and the <strong>Remote Procedure Calls</strong> field.</p>
 <ol>
 <li>The <strong>Name</strong> field is where we create the name for our Network Object and behavior, this is a friendly name that should be written in "Pascal case" to follow the C# convention since it is going to be a part of the class names that are generated.</li>
-<li>The <strong>Fields</strong> section shows all of the various fields that our network should be aware of. In this case, we are going to want to make a <strong>positi on</strong> and <strong>rotation</strong> field which are <strong>Vector3</strong> and <strong>Quaternion</strong> respectively. <em>Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used</em></li>
+<li>The <strong>Fields</strong> section shows all of the various fields that our network should be aware of. In this case, we are going to want to make a <strong>position</strong> and <strong>rotation</strong> field which are <strong>Vector3</strong> and <strong>Quaternion</strong> respectively. <em>Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used</em></li>
 <li>The <strong>Remote Procedure Calls</strong> field is where you will design any Remote Procedure Call (RPC) function signatures. We are not going to go over this field in this tutorial as we do not need it for the goal we are attempting to accomplish.</li>
 </ol>
 <p>Let's begin by naming our Network Object:</p>
@@ -602,7 +609,7 @@
 <li>Set the interpolate time (the text field that pops up after clicking the <strong>Interpolate</strong> button) as <strong>0.15</strong></li>
 <li>Click the <strong>Save &amp; Compile</strong> button</li>
 </ol>
-<p><img alt="ncw-save-and-compile" src="../images/ncw-save-and-compile.jpg" title="Save &amp; Compile the NCW" /></p>
+<p><img alt="ncw-save-and-compile" src="https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/ncw-save-and-compile.jpg" title="Save &amp; Compile the NCW" /></p>
 <h2 id="extending-generated-classes">Extending Generated Classes</h2>
 <p>When we use the <strong>Network Contract Wizard (NCW)</strong> we are actually generating a lot of network code based on what has been input into the editor fields, this actually cuts out a lot of work that you would have to do by hand. There is one class in particular that we want to extend from, this class name will be <strong>BasicCubeBehavior</strong>. The naming convention for this generated class is _____Behavior where "_____" is the name we typed into the NCW. Let's now create a C# file in Unity and write our basic game logic, we will name this file <strong>BasicCube</strong>.</p>
 <ol>
@@ -635,7 +642,7 @@ public class BasicCube : BasicCubeBehavior
         }
 
         // Let the owner move the cube around with the arrow keys
-        transform.position += new Vector3(Input.GetAxis(&quot;Horizontal&quot;), Input.GetAxis(&quot;Vertical&quot;), 0.0f) * speed * Time.deltaTime;
+        transform.position += new Vector3(Input.GetAxis(&quot;Horizontal&quot;) 0, Input.GetAxis(&quot;Vertical&quot;)).normalized * speed * Time.deltaTime;
 
         // If we are the owner of the object we should send the new position
         // and rotation across the network for receivers to move to in the above code
@@ -694,7 +701,7 @@ The most common user errors with this part of the documentation are:
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
-<img alt="Common Error Getting Started" src="../images/common-error-getting-started.png" /></p>
+<img alt="Common Error Getting Started" src="https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/common-error-getting-started.png" /></p>
               
             </div>
           </div>

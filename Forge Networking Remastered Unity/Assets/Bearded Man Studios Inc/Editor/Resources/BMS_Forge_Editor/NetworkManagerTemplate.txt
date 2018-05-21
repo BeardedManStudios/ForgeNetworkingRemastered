@@ -14,14 +14,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public GameObject[] >:[i]:<NetworkObject = null;
 		>:ENDFOREACH:<
 
-		private void Start()
+		private void SetupObjectCreatedEvent()
 		{
-			NetworkObject.objectCreated += CaptureObjects;
+			Networker.objectCreated += CaptureObjects;
 		}
 
 		private void OnDestroy()
 		{
-			NetworkObject.objectCreated -= CaptureObjects;
+		    if (Networker != null)
+				Networker.objectCreated -= CaptureObjects;
 		}
 		
 		private void CaptureObjects(NetworkObject obj)
@@ -73,7 +74,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}
@@ -118,7 +119,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
-			FinializeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
 			return netBehavior;
 		}

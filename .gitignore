@@ -32,3 +32,17 @@ sysinfo.txt
 *.pdb
 *.exe
 *.cache
+
+# Build obj directories
+[mM]aster[sS]erver/bin/
+[mM]aster[sS]erver/obj/
+[nN]at[hH]ole[pP]unch/bin/
+[nN]at[hH]ole[pP]unch/obj/
+[wW]eb[sS]erver/bin/
+[wW]eb[sS]erver/obj/
+[mM][vV][cC][wW]eb[sS]erver/bin/
+[mM][vV][cC][wW]eb[sS]erver/obj/
+[uU]nit[tT]ests/bin/
+[uU]nit[tT]ests/obj/
+[cC]onsole[tT]est[pP]rogram/bin/
+[cC]onsole[tT]est[pP]rogram/obj/

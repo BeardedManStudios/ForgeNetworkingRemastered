@@ -44,13 +44,14 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 			// Go through and decode the bytes, if no mask is supplied then copy the remaining bytes after length
 			byte[] decoded = new byte[bytes.Length - indexFirstMask];
-			for (int i = indexFirstMask, j = 0; i < bytes.Length; i++, j++)
-			{
-				if (useMask)
+
+			if (useMask)
+				for (int i = indexFirstMask, j = 0; i < bytes.Length; i++, j++)
+				{
 					decoded[j] = (byte)(bytes[i] ^ keys.ElementAt(j % 4));
-				else
-					decoded[j] = bytes[i];
-			}
+				}
+			else
+				Buffer.BlockCopy(bytes, indexFirstMask, decoded, 0, decoded.Length);
 
 			return decoded;
 		}

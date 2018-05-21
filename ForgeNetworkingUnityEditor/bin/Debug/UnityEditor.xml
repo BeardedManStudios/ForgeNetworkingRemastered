@@ -2411,7 +2411,8 @@ Transitions with exit times greater than one will be evaluated only once, so the
     </member>
     <member name="M:UnityEditor.AssetDatabase.GetAssetPathsFromAssetBundleAndAssetName(System.String,System.String)">
       <summary>
-        <para>Get the asset paths from the given assetBundle name and asset name.</para>
+        <para>Get the Asset paths for all Assets tagged with assetBundleName and
+                named assetName.</para>
       </summary>
       <param name="assetBundleName"></param>
       <param name="assetName"></param>
@@ -4340,7 +4341,7 @@ See DecoratorDrawer for an example of how to use this.</para>
     </member>
     <member name="T:UnityEditor.DefaultAsset">
       <summary>
-        <para>DefaultAsset is used for assets that does not have a specific type (yet).</para>
+        <para>DefaultAsset is used for assets that do not have a specific type (yet).</para>
       </summary>
     </member>
     <member name="M:UnityEditor.DefaultAsset.#ctor">
@@ -12094,7 +12095,18 @@ More information - https:msdn.microsoft.comen-uslibrary/dn584397(v=vs.110).aspx.
       <summary>
         <para>Select a new build target to be active.</para>
       </summary>
-      <param name="target"></param>
+      <param name="target">Target build platform.</param>
+      <param name="targetGroup">Build target group.</param>
+      <returns>
+        <para>True if the build target was successfully switched, false otherwise (for example, if license checks fail, files are missing, or if the user has cancelled the operation via the UI).</para>
+      </returns>
+    </member>
+    <member name="M:UnityEditor.EditorUserBuildSettings.SwitchActiveBuildTarget(UnityEditor.BuildTargetGroup,UnityEditor.BuildTarget)">
+      <summary>
+        <para>Select a new build target to be active.</para>
+      </summary>
+      <param name="target">Target build platform.</param>
+      <param name="targetGroup">Build target group.</param>
       <returns>
         <para>True if the build target was successfully switched, false otherwise (for example, if license checks fail, files are missing, or if the user has cancelled the operation via the UI).</para>
       </returns>
@@ -12128,6 +12140,22 @@ More information - https:msdn.microsoft.comen-uslibrary/dn584397(v=vs.110).aspx.
         <para>Calculates and returns a list of all assets the assets listed in roots depend on.</para>
       </summary>
       <param name="roots"></param>
+    </member>
+    <member name="M:UnityEditor.EditorUtility.CompressCubemapTexture(UnityEngine.Cubemap,UnityEngine.TextureFormat,System.Int32)">
+      <summary>
+        <para>Compress a cubemap texture.</para>
+      </summary>
+      <param name="texture"></param>
+      <param name="format"></param>
+      <param name="quality"></param>
+    </member>
+    <member name="M:UnityEditor.EditorUtility.CompressCubemapTexture(UnityEngine.Cubemap,UnityEngine.TextureFormat,UnityEngine.TextureCompressionQuality)">
+      <summary>
+        <para>Compress a cubemap texture.</para>
+      </summary>
+      <param name="texture"></param>
+      <param name="format"></param>
+      <param name="quality"></param>
     </member>
     <member name="M:UnityEditor.EditorUtility.CompressTexture(UnityEngine.Texture2D,UnityEngine.TextureFormat,System.Int32)">
       <summary>
@@ -14457,6 +14485,36 @@ Note: Use HandleUtility.GetHandleSize where you might want to have constant scre
         <para>Highlights an entire editor control using its label text as identifier.</para>
       </summary>
     </member>
+    <member name="T:UnityEditor.IconKind">
+      <summary>
+        <para>Icon kind.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.IconKind.Any">
+      <summary>
+        <para>This icon can be used for any purpose in an application.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.IconKind.Application">
+      <summary>
+        <para>This icon is used for the main application icons.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.IconKind.Notification">
+      <summary>
+        <para>This icon is used for push notifications.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.IconKind.Settings">
+      <summary>
+        <para>This icon is used for settings.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.IconKind.Spotlight">
+      <summary>
+        <para>This icon is used for Spotlight searches. (iOS only).</para>
+      </summary>
+    </member>
     <member name="T:UnityEditor.IHVImageFormatImporter">
       <summary>
         <para>Use IHVImageFormatImporter to modify Texture2D import settings for Textures in IHV (Independent Hardware Vendor) formats such as .DDS and .PVR from Editor scripts.</para>
@@ -14928,7 +14986,7 @@ Note: Use HandleUtility.GetHandleSize where you might want to have constant scre
     </member>
     <member name="P:UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle.midpointHandleSizeFunction">
       <summary>
-        <para>An optional Handles.HandleSizeFunction to specify how large the control handles should be in the space of Handles.matrix. Defaults to a fixed screen-space size.</para>
+        <para>An optional Handles.SizeFunction to specify how large the control handles should be in the space of Handles.matrix. Defaults to a fixed screen-space size.</para>
       </summary>
     </member>
     <member name="P:UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle.wireframeColor">
@@ -16929,6 +16987,16 @@ GUILayout.MaxHeight, GUILayout.ExpandWidth, GUILayout.ExpandHeight.</param>
       <param name="label"></param>
       <param name="position"></param>
     </member>
+    <member name="M:UnityEditor.MaterialEditor.DoubleSidedGIField">
+      <summary>
+        <para>Display UI for editing a material's Double Sided Global Illumination setting.
+Returns true if the UI is indeed displayed i.e. the material supports the Double Sided Global Illumination setting.
++See Also: Material.doubleSidedGI.</para>
+      </summary>
+      <returns>
+        <para>True if the UI is displayed, false otherwise.</para>
+      </returns>
+    </member>
     <member name="M:UnityEditor.MaterialEditor.EmissionEnabledProperty">
       <summary>
         <para>This function will draw the UI for controlling whether emission is enabled or not on a material.</para>
@@ -17920,7 +17988,7 @@ See Also: MaterialLightmapFlags.</para>
     </member>
     <member name="T:UnityEditor.MenuCommand">
       <summary>
-        <para>Used to extract the context for a MenuItem. MenuCommand objects are passed to custom menu item functions defined using the MenuItem attribute.</para>
+        <para>Used to extract the context for a MenuItem.</para>
       </summary>
     </member>
     <member name="F:UnityEditor.MenuCommand.context">
@@ -19510,7 +19578,7 @@ See Also: PhysicsVisualizationSettings.</para>
     </member>
     <member name="P:UnityEditor.PlayerSettings.applicationIdentifier">
       <summary>
-        <para>Set the application identifier for the currently selected build target.</para>
+        <para>The application identifier for the currently selected build target.</para>
       </summary>
     </member>
     <member name="P:UnityEditor.PlayerSettings.bakeCollisionMeshes">
@@ -22225,7 +22293,7 @@ For more information - https:msdn.microsoft.comlibrarywindowsappshh779671https:m
     </member>
     <member name="T:UnityEditor.Rendering.PlatformShaderSettings">
       <summary>
-        <para>Used to set up shader settings, per-platorm and per-shader-hardware-tier.</para>
+        <para>Used to set up shader settings, per-platform and per-shader-hardware-tier.</para>
       </summary>
     </member>
     <member name="F:UnityEditor.Rendering.PlatformShaderSettings.cascadedShadowMaps">
@@ -22281,6 +22349,11 @@ For more information - https:msdn.microsoft.comlibrarywindowsappshh779671https:m
     <member name="F:UnityEditor.Rendering.TierSettings.detailNormalMap">
       <summary>
         <para>Allows you to specify whether Detail Normal Map should be sampled if assigned.</para>
+      </summary>
+    </member>
+    <member name="F:UnityEditor.Rendering.TierSettings.enableLPPV">
+      <summary>
+        <para>Allows you to specify whether Light Probe Proxy Volume should be used.</para>
       </summary>
     </member>
     <member name="F:UnityEditor.Rendering.TierSettings.hdr">
