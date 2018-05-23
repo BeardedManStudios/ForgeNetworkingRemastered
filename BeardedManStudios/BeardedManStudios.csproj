@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BeardedManStudios</RootNamespace>
     <AssemblyName>BeardedManStudios</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -43,6 +43,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\SteamworksDOTNet\Steamworks.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -53,8 +56,11 @@
     <Compile Include="Source\Forge\DataStore\Cache.cs" />
     <Compile Include="Source\Forge\Logging\BMSLog.cs" />
     <Compile Include="Source\Forge\Logging\IBMSLogger.cs" />
+    <Compile Include="Source\Forge\Networking\BasePacketComposer.cs" />
+    <Compile Include="Source\Forge\Networking\BaseSteamP2P.cs" />
     <Compile Include="Source\Forge\Networking\BaseTCP.cs" />
     <Compile Include="Source\Forge\Networking\BaseUDP.cs" />
+    <Compile Include="Source\Forge\Networking\CachedSteamP2PClient.cs" />
     <Compile Include="Source\Forge\Networking\CachedUdpClient.cs" />
     <Compile Include="Source\Forge\Networking\CommonServer.cs" />
     <Compile Include="Source\Forge\Networking\Filters\IConnectionFilter.cs" />
@@ -91,6 +97,10 @@
     <Compile Include="Source\Forge\Networking\Objects\NetworkObject.cs" />
     <Compile Include="Source\Forge\Networking\Objects\Rewind.cs" />
     <Compile Include="Source\Forge\Networking\Rpc.cs" />
+    <Compile Include="Source\Forge\Networking\SteamNetworkingPlayer.cs" />
+    <Compile Include="Source\Forge\Networking\SteamP2PClient.cs" />
+    <Compile Include="Source\Forge\Networking\SteamP2PPacketComposer.cs" />
+    <Compile Include="Source\Forge\Networking\SteamP2PServer.cs" />
     <Compile Include="Source\Forge\Networking\TCPClient.cs" />
     <Compile Include="Source\Forge\Networking\TCPClientBase.cs" />
     <Compile Include="Source\Forge\Networking\TCPClientWebsockets.cs" />

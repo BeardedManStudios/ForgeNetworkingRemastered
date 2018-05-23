@@ -241,7 +241,9 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 
 			Binary sendFrame = new Binary(Socket.Time.Timestep, Socket is TCPClient, data, Receivers.Server, MessageGroupIds.CACHE, Socket is BaseTCP);
 
-			if (Socket is BaseTCP)
+            if (Socket is SteamP2PClient)
+                ((SteamP2PClient)Socket).Send(sendFrame, true);
+            else if (Socket is BaseTCP)
 				((TCPClient)Socket).Send(sendFrame);
 			else
 				((UDPClient)Socket).Send(sendFrame, true);

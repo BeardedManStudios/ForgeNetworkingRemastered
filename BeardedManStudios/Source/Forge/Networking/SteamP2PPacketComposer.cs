@@ -20,18 +20,17 @@
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
-	public class UDPPacketComposer : BasePacketComposer
+    public class SteamP2PPacketComposer : BasePacketComposer
     {
 		/// <summary>
 		/// A base for any composer based events
 		/// </summary>
 		/// <param name="composer">The composer that fired off the event</param>
-		public delegate void ComposerEvent(UDPPacketComposer composer);
+		public delegate void ComposerEvent(SteamP2PPacketComposer composer);
 
 		/// <summary>
 		/// Occurs when this composer has completed all of its messaging tasks
@@ -46,7 +45,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A reference to the client worker that this composer belongs to
 		/// </summary>
-		public BaseUDP ClientWorker { get; private set; }
+		public BaseSteamP2P ClientWorker { get; private set; }
 
 		/// <summary>
 		/// The target player in question that will be receiving this data
@@ -64,9 +63,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public Dictionary<int, UDPPacket> PendingPackets { get; private set; }
 
-		public UDPPacketComposer() { }
+		public SteamP2PPacketComposer() { }
 
-		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
+		public SteamP2PPacketComposer(BaseSteamP2P clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
 #if DEEP_LOGGING
 			Logging.BMSLog.Log("---------------------------\n" + (new System.Diagnostics.StackTrace()).ToString() + "\nUNIQUE ID: " + frame.UniqueId.ToString() + "\n---------------------------");
@@ -75,7 +74,7 @@ namespace BeardedManStudios.Forge.Networking
 			Init(clientWorker, player, frame, reliable);
 		}
 
-		public void Init(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
+		public void Init(BaseSteamP2P clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
 			ClientWorker = clientWorker;
 			Player = player;
@@ -91,7 +90,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="data">The packet data that is to be sent</param>
 		private void Send(byte[] data)
 		{
-			ClientWorker.Client.Send(data, data.Length, Player.IPEndPointHandle);
+			ClientWorker.Client.Send(data, data.Length, Player.SteamID, Reliable ? Steamworks.EP2PSend.k_EP2PSendReliable : Steamworks.EP2PSend.k_EP2PSendUnreliable);
 		}
 
 		private void Initialize()
@@ -215,22 +214,22 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (PendingPackets)
 			{
-				foreach (var key in PendingPackets.Keys.ToArray())
+				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
 				{
-					if (PendingPackets[key].LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
+					if (kv.Value.LastSentTimestep + (ulong)Player.RoundTripLatency > timestep)
 						continue;
 
 					if (counter <= 0)
 					{
-						PendingPackets[key] = PendingPackets[key].UpdateTimestep(timestep);
+						kv.Value.UpdateTimestep(timestep);
 						continue;
 					}
 
-					counter -= PendingPackets[key].rawBytes.Length;
+					counter -= kv.Value.rawBytes.Length;
 
-					PendingPackets[key] = PendingPackets[key].DoingRetry(timestep);
-					Send(PendingPackets[key].rawBytes);
-					ClientWorker.BandwidthOut += (ulong)PendingPackets[key].rawBytes.Length;
+					kv.Value.DoingRetry(timestep);
+					Send(kv.Value.rawBytes);
+					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
 				}
 			}
 		}
