@@ -217,7 +217,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			registerData.Add("id", id);
 			registerData.Add("name", serverName);
 			registerData.Add("port", new JSONData(server.Port));
-			registerData.Add("playerCount", new JSONData(0));
+			registerData.Add("playerCount", new JSONData(server.Players.Count));
 			registerData.Add("maxPlayers", new JSONData(server.MaxConnections));
 			registerData.Add("comment", comment);
 			registerData.Add("type", type);
@@ -277,13 +277,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			JSONNode sendData = JSONNode.Parse("{}");
 			JSONClass registerData = new JSONClass();
-			registerData.Add("playerCount", new JSONData(server.ServerPlayerCounter));
-			registerData.Add("comment", comment);
-			registerData.Add("type", gameType);
-			registerData.Add("mode", mode);
+
+			registerData.Add("playerCount", new JSONData(server.Players.Count));
+			if (comment != null) registerData.Add("comment", comment);
+			if (gameType != null) registerData.Add("type", gameType);
+			if (mode != null) registerData.Add("mode", mode);
 			registerData.Add("port", new JSONData(server.Port));
+
 			sendData.Add("update", registerData);
-			
+
 			UpdateMasterServerListing(sendData);
 		}
 
@@ -293,31 +295,36 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
 			}
-			
+
 			if (MasterServerNetworker == null)
 			{
 				throw new System.Exception("Connection to master server is closed. Make sure to be connected to master server before update trial");
 			}
-			
+
 			// The Master Server communicates over TCP
-			TCPMasterClient client = (TCPMasterClient)MasterServerNetworker;
-			
-			try
+			TCPMasterClient client = new TCPMasterClient();
+
+			// Once this client has been accepted by the master server it should send it's update request
+			client.serverAccepted += (sender) =>
 			{
-				Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
-				
-				// Send the request to the server
-				client.Send(temp);
-			}
-			catch
-			{
-				// If anything fails, then this client needs to be disconnected
-				client.Disconnect(true);
-				client = null;
-			}
-			
+				try
+				{
+					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_UPDATE, true);
+
+					// Send the request to the server
+					client.Send(temp);
+				}
+				finally
+				{
+					// If anything fails, then this client needs to be disconnected
+					client.Disconnect(true);
+					client = null;
+				}
+			};
+
+			client.Connect(_masterServerHost, _masterServerPort);
 		}
-		
+
 		public void Disconnect()
 		{
 #if FN_WEBSERVER
@@ -510,32 +517,38 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				if (targetPlayer != null)
 				{
-                    if (networker is SteamP2PServer)
-                        ((SteamP2PServer)networker).Send(targetPlayer, frame, true);
-                    else if (networker is TCPServer)
-                        ((TCPServer)networker).SendToPlayer(frame, targetPlayer);
-                    else
-                        ((UDPServer)networker).Send(targetPlayer, frame, true);
-                }
+					if (networker is TCPServer)
+						((TCPServer)networker).SendToPlayer(frame, targetPlayer);
+#if STEAMWORKS
+					else if (networker is SteamP2PServer)
+						((SteamP2PServer)networker).Send(targetPlayer, frame, true);
+#endif
+					else
+						((UDPServer)networker).Send(targetPlayer, frame, true);
+				}
 				else
 				{
-                    if (networker is SteamP2PServer)
-                        ((SteamP2PServer)networker).Send(frame, true);
-                    else if (networker is TCPServer)
-                        ((TCPServer)networker).SendAll(frame);
-                    else
-                        ((UDPServer)networker).Send(frame, true);
-                }
+					if (networker is TCPServer)
+						((TCPServer)networker).SendAll(frame);
+#if STEAMWORKS
+					else if (networker is SteamP2PServer)
+						((SteamP2PServer)networker).Send(frame, true);
+#endif
+					else
+						((UDPServer)networker).Send(frame, true);
+				}
 			}
 			else
 			{
-                if (networker is SteamP2PClient)
-                    ((SteamP2PClient)networker).Send(frame, true);
-                else if (networker is TCPClientBase)
-                    ((TCPClientBase)networker).Send(frame);
-                else
-                    ((UDPClient)networker).Send(frame, true);
-            }
+				if (networker is TCPClientBase)
+					((TCPClientBase)networker).Send(frame);
+#if STEAMWORKS
+				else if (networker is SteamP2PClient)
+					((SteamP2PClient)networker).Send(frame, true);
+#endif
+				else
+					((UDPClient)networker).Send(frame, true);
+			}
 		}
 
 		private void SceneReady(Scene scene, LoadSceneMode mode)

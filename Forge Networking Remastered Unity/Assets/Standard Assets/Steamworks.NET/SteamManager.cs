@@ -5,6 +5,7 @@
 //
 // Version: 1.0.5
 
+#if STEAMWORKS
 using UnityEngine;
 using System.Collections;
 using Steamworks;
@@ -37,8 +38,8 @@ public class SteamManager : MonoBehaviour {
 		}
 	}
 
-    public static CSteamID Me { get; private set; }
-    public static string MyName { get; private set; }
+	public static CSteamID Me { get; private set; }
+	public static string MyName { get; private set; }
 
 	private SteamAPIWarningMessageHook_t m_SteamAPIWarningMessageHook;
 	private static void SteamAPIDebugTextHook(int nSeverity, System.Text.StringBuilder pchDebugText) {
@@ -46,8 +47,8 @@ public class SteamManager : MonoBehaviour {
 	}
 
 	private void Awake() {
-        // Only one instance of SteamManager at a time!
-        if (s_instance != null) {
+		// Only one instance of SteamManager at a time!
+		if (s_instance != null) {
 			Destroy(gameObject);
 			return;
 		}
@@ -73,14 +74,14 @@ public class SteamManager : MonoBehaviour {
 		}
 
 		try {
-            // If Steam is not running or the game wasn't started through Steam, SteamAPI_RestartAppIfNecessary starts the
-            // Steam client and also launches this game again if the User owns it. This can act as a rudimentary form of DRM.
+			// If Steam is not running or the game wasn't started through Steam, SteamAPI_RestartAppIfNecessary starts the
+			// Steam client and also launches this game again if the User owns it. This can act as a rudimentary form of DRM.
 
-            // Once you get a Steam AppID assigned by Valve, you need to replace AppId_t.Invalid with it and
-            // remove steam_appid.txt from the game depot. eg: "(AppId_t)480" or "new AppId_t(480)".
-            // See the Valve documentation for more information: https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
+			// Once you get a Steam AppID assigned by Valve, you need to replace AppId_t.Invalid with it and
+			// remove steam_appid.txt from the game depot. eg: "(AppId_t)480" or "new AppId_t(480)".
+			// See the Valve documentation for more information: https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
 
-            if (SteamAPI.RestartAppIfNecessary(new AppId_t(/*INSERT YOUR APP ID HERE*/))) {
+			if (SteamAPI.RestartAppIfNecessary(new AppId_t(/*INSERT YOUR APP ID HERE*/))) {
 				Application.Quit();
 				return;
 			}
@@ -102,20 +103,20 @@ public class SteamManager : MonoBehaviour {
 		// Valve's documentation for this is located here:
 		// https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
 		m_bInitialized = SteamAPI.Init();
-        if (!m_bInitialized)
-        {
-            Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed. Refer to Valve's documentation or the comment above this line for more information.", this);
+		if (!m_bInitialized)
+		{
+			Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed. Refer to Valve's documentation or the comment above this line for more information.", this);
 
-            return;
-        }
-        else
-        {
-            Me = SteamUser.GetSteamID();
-            MyName = SteamFriends.GetFriendPersonaName(Me);
-        }
+			return;
+		}
+		else
+		{
+			Me = SteamUser.GetSteamID();
+			MyName = SteamFriends.GetFriendPersonaName(Me);
+		}
 
 
-        s_EverInialized = true;
+		s_EverInialized = true;
 	}
 
 	// This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
@@ -136,10 +137,10 @@ public class SteamManager : MonoBehaviour {
 		}
 	}
 
-    // OnApplicationQuit gets called too early to shutdown the SteamAPI.
-    // Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
-    // Thus it is not recommended to perform any Steamworks work in other OnDestroy functions as the order of execution can not be garenteed upon Shutdown. Prefer OnDisable().
-    private void OnDestroy() {
+	// OnApplicationQuit gets called too early to shutdown the SteamAPI.
+	// Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
+	// Thus it is not recommended to perform any Steamworks work in other OnDestroy functions as the order of execution can not be garenteed upon Shutdown. Prefer OnDisable().
+	private void OnDestroy() {
 		if (s_instance != this) {
 			return;
 		}
@@ -162,3 +163,4 @@ public class SteamManager : MonoBehaviour {
 		SteamAPI.RunCallbacks();
 	}
 }
+#endif
