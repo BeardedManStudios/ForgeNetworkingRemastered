@@ -277,14 +277,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			JSONNode sendData = JSONNode.Parse("{}");
 			JSONClass registerData = new JSONClass();
+
 			registerData.Add("playerCount", new JSONData(server.Players.Count));
-		    if (comment != null)
-		        registerData.Add("comment", comment);
-		    if (gameType != null)
-		        registerData.Add("type", gameType);
-		    if (mode != null)
-		        registerData.Add("mode", mode);
-            registerData.Add("port", new JSONData(server.Port));
+			if (comment != null) registerData.Add("comment", comment);
+			if (gameType != null) registerData.Add("type", gameType);
+			if (mode != null) registerData.Add("mode", mode);
+			registerData.Add("port", new JSONData(server.Port));
+
 			sendData.Add("update", registerData);
 
 			UpdateMasterServerListing(sendData);
@@ -297,11 +296,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
 			}
 
+			if (MasterServerNetworker == null)
+			{
+				throw new System.Exception("Connection to master server is closed. Make sure to be connected to master server before update trial");
+			}
+
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
 
-            // Once this client has been accepted by the master server it should send it's update request
-            client.serverAccepted += (sender) =>
+			// Once this client has been accepted by the master server it should send it's update request
+			client.serverAccepted += (sender) =>
 			{
 				try
 				{
@@ -515,6 +519,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				{
 					if (networker is TCPServer)
 						((TCPServer)networker).SendToPlayer(frame, targetPlayer);
+#if STEAMWORKS
+					else if (networker is SteamP2PServer)
+						((SteamP2PServer)networker).Send(targetPlayer, frame, true);
+#endif
 					else
 						((UDPServer)networker).Send(targetPlayer, frame, true);
 				}
@@ -522,6 +530,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				{
 					if (networker is TCPServer)
 						((TCPServer)networker).SendAll(frame);
+#if STEAMWORKS
+					else if (networker is SteamP2PServer)
+						((SteamP2PServer)networker).Send(frame, true);
+#endif
 					else
 						((UDPServer)networker).Send(frame, true);
 				}
@@ -530,6 +542,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				if (networker is TCPClientBase)
 					((TCPClientBase)networker).Send(frame);
+#if STEAMWORKS
+				else if (networker is SteamP2PClient)
+					((SteamP2PClient)networker).Send(frame, true);
+#endif
 				else
 					((UDPClient)networker).Send(frame, true);
 			}

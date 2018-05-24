@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BeardedManStudios.Forge.MVCWebServer</RootNamespace>
     <AssemblyName>MVCWebServer</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -65,7 +65,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ForgeNetworkingRemastered\BeardedManStudios\BeardedManStudios.csproj">
+    <ProjectReference Include="..\BeardedManStudios\BeardedManStudios.csproj">
       <Project>{1dc34cdd-667a-40be-9447-45866bf4607d}</Project>
       <Name>BeardedManStudios</Name>
     </ProjectReference>

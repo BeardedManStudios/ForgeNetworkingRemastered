@@ -298,6 +298,7 @@ namespace BeardedManStudios.Forge.Networking
 			public NetworkingPlayer TargetPlayer;
 			public byte MethodId;
 			public Receivers Receivers;
+            public bool Reliable;
 			public object[] Args;
 
 			public override string ToString()
@@ -385,12 +386,14 @@ namespace BeardedManStudios.Forge.Networking
 
 				NetWorker.BaseNetworkEvent request = (NetWorker sender) =>
 				{
-					// Send the message to the server
-					if (sender is UDPClient)
-						((UDPClient)sender).Send(createRequest, true);
-					else
-						((TCPClient)sender).Send(createRequest);
-				};
+                    // Send the message to the server
+                    if (sender is SteamP2PClient)
+                        ((SteamP2PClient)sender).Send(createRequest, true);
+                    else if (sender is UDPClient)
+                        ((UDPClient)sender).Send(createRequest, true);
+                    else
+                        ((TCPClient)sender).Send(createRequest);
+                };
 
 				if (Networker.Me == null)
 					Networker.serverAccepted += request;
@@ -436,12 +439,14 @@ namespace BeardedManStudios.Forge.Networking
 				CreateObjectOnServer(frame.Sender);
 				Binary createObject = CreateObjectOnServer(frame.Sender, hash);
 
-				// Send the message back to the sending client so that it can finish setting up the network object
-				if (networker is UDPServer)
-					((UDPServer)networker).Send(frame.Sender, createObject, true);
-				else
-					((TCPServer)networker).Send(frame.Sender.TcpClientHandle, createObject);
-			}
+                // Send the message back to the sending client so that it can finish setting up the network object
+                if (networker is SteamP2PServer)
+                    ((SteamP2PServer)networker).Send(frame.Sender, createObject, true);
+                else if (networker is UDPServer)
+                    ((UDPServer)networker).Send(frame.Sender, createObject, true);
+                else
+                    ((TCPServer)networker).Send(frame.Sender.TcpClientHandle, createObject);
+            }
 			else
 			{
 				CreateCode = frame.StreamData.GetBasicType<int>();
@@ -534,8 +539,13 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void AssignOwnership(RpcArgs args)
 		{
-			IsOwner = args.GetNext<bool>();
+			//call the ownership changed event on old owner
 
+			if (!IsOwner)
+				OwnershipChanged();
+			
+			IsOwner = args.GetNext<bool>();
+          		 //call ownership event on new owner
 			if (!IsOwner)
 				OwnershipChanged();
 		}
@@ -629,13 +639,15 @@ namespace BeardedManStudios.Forge.Networking
 			if (targetHash != 0)
 				return createObject;
 
-			// If there is a target hash, we are just generating the create object frame
-			if (Networker is UDPServer)
-				((UDPServer)Networker).Send(createObject, true, skipPlayer);
-			else
-				((TCPServer)Networker).SendAll(createObject, skipPlayer);
+            // If there is a target hash, we are just generating the create object frame
+            if (Networker is SteamP2PServer)
+                ((SteamP2PServer)Networker).Send(createObject, true, skipPlayer);
+            else if (Networker is UDPServer)
+                ((UDPServer)Networker).Send(createObject, true, skipPlayer);
+            else
+                ((TCPServer)Networker).SendAll(createObject, skipPlayer);
 
-			return createObject;
+            return createObject;
 		}
 
 		public static void PlayerAccepted(NetworkingPlayer player, NetworkObject[] networkObjects)
@@ -683,7 +695,9 @@ namespace BeardedManStudios.Forge.Networking
 					{
 						Binary targetCreateObject = new Binary(timestep, false, targetData, Receivers.Target, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.ACCEPT_MULTI_ROUTER_ID);
 
-						if (networker is UDPServer)
+                        if(networker is SteamP2PServer)
+                            ((SteamP2PServer)networker).Send(player, targetCreateObject, true);
+                        else if (networker is UDPServer)
 							((UDPServer)networker).Send(player, targetCreateObject, true);
 						else
 							((TCPServer)networker).Send(player.TcpClientHandle, targetCreateObject);
@@ -859,8 +873,11 @@ namespace BeardedManStudios.Forge.Networking
 			foreach (PendingRpc rpc in pendingClientRegisterRpc)
 				InvokeRpc(rpc.sender, rpc.timestep, rpc.data, rpc.receivers);
 
-			foreach (PendingLocalRPC rpc in pendingLocalRpcs)
-				SendRpc(rpc.TargetPlayer, rpc.MethodId, rpc.Args);
+            foreach (PendingLocalRPC rpc in pendingLocalRpcs)
+                if (rpc.Reliable)
+                    SendRpc(rpc.TargetPlayer, rpc.MethodId, rpc.Args);
+                else
+                    SendRpcUnreliable(rpc.TargetPlayer, rpc.MethodId, rpc.Args);
 
 			pendingClientRegisterRpc.Clear();
 			pendingLocalRpcs.Clear();
@@ -911,7 +928,7 @@ namespace BeardedManStudios.Forge.Networking
 				// then replicate to the correct receivers
 				// Do not read or replicate if the server denies replication
 				if (ServerAllowRpc(methodId, receivers, rpcArgs))
-					SendRpc(null, methodId, overwriteExisting, receivers, sender, args);
+					SendRpc(null, methodId, overwriteExisting, true, receivers, sender, args);
 
 				return;
 			}
@@ -969,7 +986,7 @@ namespace BeardedManStudios.Forge.Networking
 			lock (rpcBuffer)
 			{
 				for (int i = 0; i < count; i++)
-					FinalizeSendRpc(rpcBuffer[i].data, rpcBuffer[i].receivers, rpcBuffer[i].methodId, rpcBuffer[i].timestep, player);
+					FinalizeSendRpc(rpcBuffer[i].data, rpcBuffer[i].receivers, rpcBuffer[i].methodId, rpcBuffer[i].timestep, true, player);
 			}
 		}
 
@@ -988,7 +1005,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (!rpcLookup.TryGetValue(methodName, out methodId))
 				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
 
-			SendRpc(null, methodId, false, receivers, Networker.Me, args);
+			SendRpc(null, methodId, false, true, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1000,18 +1017,30 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(byte methodId, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodId, false, receivers, Networker.Me, args);
+			SendRpc(null, methodId, false, true, receivers, Networker.Me, args);
 		}
 
-		/// <summary>
-		/// Build the network frame (message) data for this RPC call so that it is properly
-		/// delegated on the network
-		/// </summary>
-		/// <param name="methodName">The name of the RPC to be called</param>
-		/// <param name="receivers">The clients / server to receive the message</param>
-		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
-		/// <param name="args">The input arguments for the method call</param>
-		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+        /// <summary>
+        /// Build the network frame (message) data for this RPC call so that it is properly
+        /// delegated on the network
+        /// </summary>
+        /// <param name="methodId">The id of the RPC to be called</param>
+        /// <param name="receivers">The clients / server to receive the message</param>
+        /// <param name="args">The input arguments for the method call</param>
+        public void SendRpcUnreliable(byte methodId, Receivers receivers, params object[] args)
+        {
+            SendRpc(null, methodId, false, false, receivers, Networker.Me, args);
+        }
+
+        /// <summary>
+        /// Build the network frame (message) data for this RPC call so that it is properly
+        /// delegated on the network
+        /// </summary>
+        /// <param name="methodName">The name of the RPC to be called</param>
+        /// <param name="receivers">The clients / server to receive the message</param>
+        /// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
+        /// <param name="args">The input arguments for the method call</param>
+        [Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
 			byte methodId;
@@ -1019,7 +1048,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (!rpcLookup.TryGetValue(methodName, out methodId))
 				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
 
-			SendRpc(null, methodId, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(null, methodId, replacePrevious, true, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1032,7 +1061,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(byte methodId, bool replacePrevious, Receivers receivers, params object[] args)
 		{
-			SendRpc(null, methodId, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(null, methodId, replacePrevious, true, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1051,7 +1080,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (!rpcLookup.TryGetValue(methodName, out methodId))
 				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
 
-			SendRpc(targetPlayer, methodId, false, receivers, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, false, true, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1069,7 +1098,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (!rpcLookup.TryGetValue(methodName, out methodId))
 				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
 
-			SendRpc(targetPlayer, methodId, false, Receivers.Target, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, false, true, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1081,19 +1110,31 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, byte methodId, params object[] args)
 		{
-			SendRpc(targetPlayer, methodId, false, Receivers.Target, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, false, true, Receivers.Target, Networker.Me, args);
 		}
 
-		/// <summary>
-		/// Build the network frame (message) data for this RPC call so that it is properly
-		/// delegated on the network
-		/// </summary>
-		/// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
-		/// <param name="methodName">The name of the RPC to be called</param>
-		/// <param name="receivers">The clients / server to receive the message</param>
-		/// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
-		/// <param name="args">The input arguments for the method call</param>
-		[Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
+        /// <summary>
+        /// Build the network frame (message) data for this RPC call so that it is properly
+        /// delegated on the network
+        /// </summary>
+        /// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+        /// <param name="methodId">The id of the RPC to be called</param>
+        /// <param name="args">The input arguments for the method call</param>
+        public void SendRpcUnreliable(NetworkingPlayer targetPlayer, byte methodId, params object[] args)
+        {
+            SendRpc(targetPlayer, methodId, false, false, Receivers.Target, Networker.Me, args);
+        }
+
+        /// <summary>
+        /// Build the network frame (message) data for this RPC call so that it is properly
+        /// delegated on the network
+        /// </summary>
+        /// <param name="targetPlayer">The player that is being sent this RPC from the server</param>
+        /// <param name="methodName">The name of the RPC to be called</param>
+        /// <param name="receivers">The clients / server to receive the message</param>
+        /// <param name="replacePrevious">If <c>True</c> then the previous call to this method will be replaced with this one</param>
+        /// <param name="args">The input arguments for the method call</param>
+        [Obsolete("Please use the SendRpc that takes the byte id argument instead for better performance")]
 		public void SendRpc(NetworkingPlayer targetPlayer, string methodName, bool replacePrevious, Receivers receivers, params object[] args)
 		{
 			byte methodId;
@@ -1101,7 +1142,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (!rpcLookup.TryGetValue(methodName, out methodId))
 				throw new Exception("Invalid method name supplied, this method is also obsolete so maybe this is a good time to update to the new non-string based methods");
 
-			SendRpc(targetPlayer, methodId, replacePrevious, receivers, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, replacePrevious, true, receivers, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1115,7 +1156,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="args">The input arguments for the method call</param>
 		public void SendRpc(NetworkingPlayer targetPlayer, bool replacePrevious, byte methodId, params object[] args)
 		{
-			SendRpc(targetPlayer, methodId, replacePrevious, Receivers.Target, Networker.Me, args);
+			SendRpc(targetPlayer, methodId, replacePrevious, true, Receivers.Target, Networker.Me, args);
 		}
 
 		/// <summary>
@@ -1127,7 +1168,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="receivers">The clients / server to receive the message</param>
 		/// <param name="args">The input arguments for the method call</param>
 		/// <returns></returns>
-		public void SendRpc(NetworkingPlayer targetPlayer, byte methodId, bool replacePrevious, Receivers receivers, NetworkingPlayer sender, object[] args)
+		public void SendRpc(NetworkingPlayer targetPlayer, byte methodId, bool replacePrevious, bool reliable, Receivers receivers, NetworkingPlayer sender, object[] args)
 		{
 			if (receivers == Receivers.Target && !(Networker is IServer))
 				receivers = Receivers.Server;
@@ -1139,6 +1180,7 @@ namespace BeardedManStudios.Forge.Networking
 					TargetPlayer = targetPlayer,
 					MethodId = methodId,
 					Receivers = receivers,
+                    Reliable = reliable,
 					Args = args
 				});
 
@@ -1220,7 +1262,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			if (!Networker.IsServer || receivers != Receivers.Server)
-				FinalizeSendRpc(data, receivers, methodId, timestep, targetPlayer, sender);
+				FinalizeSendRpc(data, receivers, methodId, timestep, reliable, targetPlayer, sender);
 
 			if (Networker is IServer)
 			{
@@ -1243,7 +1285,7 @@ namespace BeardedManStudios.Forge.Networking
 			Rpcs[methodId].Invoke(new RpcArgs(args, new RPCInfo { SendingPlayer = sender, TimeStep = timestep }), sender == Networker.Me);
 		}
 
-		private void FinalizeSendRpc(BMSByte data, Receivers receivers, byte methodId, ulong timestep, NetworkingPlayer targetPlayer = null, NetworkingPlayer sender = null)
+		private void FinalizeSendRpc(BMSByte data, Receivers receivers, byte methodId, ulong timestep, bool reliable, NetworkingPlayer targetPlayer = null, NetworkingPlayer sender = null)
 		{
 			// Generate a binary frame with a router
 			Binary rpcFrame = new Binary(timestep, Networker is TCPClient, data, receivers, MessageGroupIds.GetId("NO_RPC_" + NetworkId + "_" + methodId), Networker is BaseTCP, RouterIds.RPC_ROUTER_ID);
@@ -1251,20 +1293,24 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (targetPlayer != null && Networker is IServer)
 			{
-				if (Networker is TCPServer)
-					((TCPServer)Networker).Send(targetPlayer.TcpClientHandle, rpcFrame);
-				else
-					((UDPServer)Networker).Send(targetPlayer, rpcFrame, true);
-			}
+                if (Networker is SteamP2PServer)
+                    ((SteamP2PServer)Networker).Send(targetPlayer, rpcFrame, reliable);
+                else if (Networker is TCPServer)
+                    ((TCPServer)Networker).Send(targetPlayer.TcpClientHandle, rpcFrame);
+                else
+                    ((UDPServer)Networker).Send(targetPlayer, rpcFrame, reliable);
+            }
 			else
 			{
-				if (Networker is TCPServer)
-					((TCPServer)Networker).SendAll(rpcFrame);
-				else if (Networker is TCPClient)
-					((TCPClient)Networker).Send(rpcFrame);
-				else if (Networker is BaseUDP)
-					((BaseUDP)Networker).Send(rpcFrame, true);
-			}
+                if (Networker is BaseSteamP2P)
+                    ((BaseSteamP2P)Networker).Send(rpcFrame, reliable);
+                else if (Networker is TCPServer)
+                    ((TCPServer)Networker).SendAll(rpcFrame);
+                else if (Networker is TCPClient)
+                    ((TCPClient)Networker).Send(rpcFrame);
+                else if (Networker is BaseUDP)
+                    ((BaseUDP)Networker).Send(rpcFrame, reliable);
+            }
 		}
 
 		/// <summary>
@@ -1296,15 +1342,19 @@ namespace BeardedManStudios.Forge.Networking
 				// Generate a binary frame with a router
 				Binary frame = new Binary(Networker.Time.Timestep, Networker is TCPClient, sendBinaryData, receivers, MessageGroupIds.GetId("NO_BIN_DATA_" + NetworkId), Networker is BaseTCP, RouterIds.BINARY_DATA_ROUTER_ID);
 
-				if (Networker is TCPServer)
-					((TCPServer)Networker).SendAll(frame, skipPlayer);
-				else if (Networker is TCPClient)
-					((TCPClient)Networker).Send(frame);
-				else if (Networker is UDPServer)
-					((UDPServer)Networker).Send(frame, reliable, skipPlayer);
-				else if (Networker is UDPClient)
-					((UDPClient)Networker).Send(frame, reliable);
-			}
+                if (Networker is SteamP2PServer)
+                    ((SteamP2PServer)Networker).Send(frame, reliable, skipPlayer);
+                else if (Networker is SteamP2PClient)
+                    ((SteamP2PClient)Networker).Send(frame, reliable);
+                else if (Networker is TCPServer)
+                    ((TCPServer)Networker).SendAll(frame, skipPlayer);
+                else if (Networker is TCPClient)
+                    ((TCPClient)Networker).Send(frame);
+                else if (Networker is UDPServer)
+                    ((UDPServer)Networker).Send(frame, reliable, skipPlayer);
+                else if (Networker is UDPClient)
+                    ((UDPClient)Networker).Send(frame, reliable);
+            }
 		}
 
 		/// <summary>

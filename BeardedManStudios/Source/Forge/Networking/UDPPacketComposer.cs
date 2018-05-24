@@ -25,8 +25,8 @@ using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
-	public class UDPPacketComposer
-	{
+	public class UDPPacketComposer : BasePacketComposer
+    {
 		/// <summary>
 		/// A base for any composer based events
 		/// </summary>
@@ -52,11 +52,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// The target player in question that will be receiving this data
 		/// </summary>
 		public NetworkingPlayer Player { get; private set; }
-
-		/// <summary>
-		/// The frame that is to be sent to the user
-		/// </summary>
-		public FrameStream Frame { get; private set; }
 
 		/// <summary>
 		/// If this message is reliable so that the object knows if it needs to attempt to resend packets
@@ -216,7 +211,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Go through all of the pending packets and resend them
 		/// </summary>
-		public void ResendPackets(ulong timestep, ref int counter)
+		public override void ResendPackets(ulong timestep, ref int counter)
 		{
 			lock (PendingPackets)
 			{

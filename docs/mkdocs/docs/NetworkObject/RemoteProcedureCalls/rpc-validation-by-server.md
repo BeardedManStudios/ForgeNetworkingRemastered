@@ -9,11 +9,17 @@ The one that we want to focus on in this example is the generated NetworkObject.
 ### ServerAllowRpc
 
 ```csharp
-protected override bool ServerAllowRpc(string methodName, Receivers receivers, RpcArgs args)
+namespace BeardedManStudios.Forge.Networking.Generated
 {
-	// The methodName is the name of the RPC that is trying to be called right now
-	// The receivers is who the client is trying to send the RPC to
-	// The args are the arguments that were sent as part of the RPC message and what the receivers will receive as arguments to the call
+    public partial class BallNetworkObject : NetworkObject
+    {
+        protected override bool ServerAllowRpc(byte methodId, Receivers receivers, RpcArgs args)
+        {
+            // The methodName is the name of the RPC that is trying to be called right now
+            // The receivers is who the client is trying to send the RPC to
+            // The args are the arguments that were sent as part of the RPC message and what the receivers will receive as arguments to the call
+        }
+    }
 }
 ```
 

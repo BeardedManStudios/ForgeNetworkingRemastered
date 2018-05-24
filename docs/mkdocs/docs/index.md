@@ -20,13 +20,13 @@ Of course you will find many things that you once knew such as [Network Instanti
 
 So, what are the difference highlights?
 
-* [Instantiation](network-instantiation) is done through **NetworkManager.Instance.Instantiate...**
-* [Remote procedure calls](remote-procedure-calls) are done through **networkObject.SendRpc**
+* [Instantiation](UnityIntegration/network-instantiation) is done through **NetworkManager.Instance.Instantiate...**
+* [Remote procedure calls](NetworkObject/RemoteProcedureCalls/remote-procedure-calls) are done through **networkObject.SendRpc**
 * NetSync has become **networkObject.[myVar]**
 * PrimarySocket has become **NetworkManager.Instance.Networker** (You can also get the networker from the **networkObject** )
 * WriteCustom has become **Binary** (Check out the VOIP module for how to use Binary) Networking and NetworkingManager have been replaced by **NetworkManager**
 * So what are some of the new highlights?
-* [Network Contract Wizard (NCW)](network-contract-wizard-ncw)
+* [Network Contract Wizard (NCW)](NetworkContractWizard/network-contract-wizard-ncw)
 * Support for [NAT hole punching](nat-hole-punching)
 * Master Server has Matchmaking
 * "Cherry picked" network variable updating

@@ -120,7 +120,7 @@ public void startGame (int Levelnum)
 
 ### Lobby Scene
 This Lobby can be used for your game or used as a reference for you to make your own Lobby. This is the Game-Scene.
-![Lobby Scene](https://github.com/NuclearRasberry/ForgeNetworkingRemastered/blob/master/docs/mkdocs/docs/images/(Lobby-Scene-View).png)
+![Lobby Scene](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/Lobby-Scene-View.png)
 
 
 
