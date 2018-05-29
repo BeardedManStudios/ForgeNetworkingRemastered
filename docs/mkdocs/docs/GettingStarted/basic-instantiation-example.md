@@ -169,19 +169,19 @@ Now that we have setup our scene and everything else, it is time to test the gam
 
 1. Open the **Build Settings**
 2. Click on **Player Settings...**
-1. Open the **Resolution and Presentation** section
-2. Turn on **Run In Background\***
-3. Go back to **Build Settings**
-4. Click on **Build And Run**
-5. Once the game is open, return to the Unity Editor
-6. Open the **MultiplayerMenu** scene
-7. Click the play button
-8. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
-9. Go back to the built game
-10. Make sure the host ip address is set to **127.0.0.1**
-11. Make sure the host port is set to **15937**
-12. Click the **Connect** button
-13. Select the server game instance (Unity Editor)
+3. Open the **Resolution and Presentation** section
+4. Turn on **Run In Background\***
+5. Go back to **Build Settings**
+6. Click on **Build And Run**
+7. Once the game is open, return to the Unity Editor
+8. Open the **MultiplayerMenu** scene
+9. Click the play button
+10. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
+11. Go back to the built game
+12. Make sure the host ip address is set to **127.0.0.1**
+13. Make sure the host port is set to **15937**
+14. Click the **Connect** button
+15. Select the server game instance (Unity Editor)
 
 Now if you move around the cube in the editor, you will see the movements replicated to the client(s). If you move the cube around in the client(s) you will see the cube moving on the server. Our code has the cube constantly rotating so you will see them doing that as well.
 
