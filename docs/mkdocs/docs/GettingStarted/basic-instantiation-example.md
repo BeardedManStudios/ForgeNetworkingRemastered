@@ -128,7 +128,7 @@ With this we are prepared to setup our **NetworkManager** to support the new ins
 
 ## Attaching the PlayerCube prefab for instantiation
 
-If you search the project directory you will find a prefab named **NetworkManager**. This is a default prefab we have created for you to get started. You **can** make your own prefab or alter this one if you wish to extend behavior. Now we will go through the process of attaching our created **Play erCube** prefab to this **NetworkManager**
+If you search the project directory you will find a prefab named **NetworkManager**. This is a default prefab we have created for you to get started. You **can** make your own prefab or alter this one if you wish to extend behavior. Now we will go through the process of attaching our created **PlayerCube** prefab to this **NetworkManager**
 
 1. Select the **NetworkManager** prefab in the project
 2. Locate the field named **Player Cube Network Object**
@@ -167,8 +167,8 @@ public class GameLogic : MonoBehaviour
 
 Now that we have setup our scene and everything else, it is time to test the game.
 
-1.  Open the **Build Settings** 2.  Click on **Player Settings...**
-
+1. Open the **Build Settings**
+2. Click on **Player Settings...**
 1. Open the **Resolution and Presentation** section
 2. Turn on **Run In Background\***
 3. Go back to **Build Settings**
@@ -186,8 +186,11 @@ Now that we have setup our scene and everything else, it is time to test the gam
 Now if you move around the cube in the editor, you will see the movements replicated to the client(s). If you move the cube around in the client(s) you will see the cube moving on the server. Our code has the cube constantly rotating so you will see them doing that as well.
 
 ## Troubleshooting
+
 **Getting a null reference exception?**
+
 The most common user errors with this part of the documentation are:
-- Forgot to turn on Run in Background*
-- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
-- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
+
+- Forgot to turn on **Run in Background\***
+- Tried pressing the play button in the scene and not loading the **MultiplayerMenu** scene first
+- Not setting up the **MultiplayerMenu** scene as index 0 and the demo scene as index 1

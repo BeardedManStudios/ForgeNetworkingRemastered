@@ -111,8 +111,8 @@ Now that we have done all the network programming required for our end goal, it 
 
 Now that we have setup our scene and everything else, it is time to test the game.
 
-1.  Open the **Build Settings** 2.  Click on **Player Settings...**
-
+1. Open the **Build Settings**
+2. Click on **Player Settings...**
 1. Open the **Resolution and Presentation** section
 2. Turn on **Run In Background\***
 3. Go back to **Build Settings**
@@ -130,8 +130,11 @@ Now that we have setup our scene and everything else, it is time to test the gam
 Now if you move around the cube in the editor, you will see the movements replicated to the clients.
 
 ## Troubleshooting
+
 **Getting a null reference exception?**
+
 The most common user errors with this part of the documentation are:
+
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
