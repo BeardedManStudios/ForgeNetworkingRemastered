@@ -22,7 +22,7 @@ public class NetCam : NetworkCameraBehavior
 ```
 
 ## networkStarted Event
-For your convenience, we've added a networkStarted event to `NetworkBehavior` so that you can do other operations on other objects that have a reference to the object in question. For example; if you instantitate the object (obviously from another script) and you want to do some special action on that object once it has been setup on the network, you can hook into this event.
+For your convenience, we've added a networkStarted event to `NetworkBehavior` so that you can do other operations on other objects that have a reference to the object in question. For example; if you instantiate the object (obviously from another script) and you want to do some special action on that object once it has been setup on the network, you can hook into this event.
 
 ```csharp
 var cameraPlayer = NetworkManager.Instance.InstantiateNetworkCamera();

@@ -9,7 +9,7 @@ Next you need to select **Inbound Rules** then select **New Rule...**
 
 ![windows-server-master-server-1](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/windows-server-master-server-2.png "Windows Server Master Server 2")
 
-Next you will need to selec **Port** and then click **Next**
+Next you will need to select **Port** and then click **Next**
 
 ![windows-server-master-server-1](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/windows-server-master-server-3.png "Windows Server Master Server 3")
 
@@ -21,7 +21,7 @@ Next you need to select **Allow the connection**. Click **Next**
 
 ![windows-server-master-server-1](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/windows-server-master-server-5.png "Windows Server Master Server 5")
 
-After that, just keep all the checkboxes at default (cheched). Click **Next**
+After that, just keep all the checkboxes at default (checked). Click **Next**
 
 ![windows-server-master-server-1](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/windows-server-master-server-6.png "Windows Server Master Server 6")
 

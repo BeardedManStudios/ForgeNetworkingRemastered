@@ -1,7 +1,7 @@
 # Network Instantiation
-Network instantiation is how you are able to create objects on the network so that all other clients are able to see that object. Then you can update this object or send [Remote Procedure Calls](basic-rpc-example) to the object to perform behaviors across the network or manage local behaviors.
+Network instantiation is how you are able to create objects on the network so that all other clients are able to see that object. Then you can update this object or send [Remote Procedure Calls](/GettingStarted/basic-rpc-example.md) to the object to perform behaviors across the network or manage local behaviors.
 
-When you use the [Network Contract Wizard](network-contract-wizard-ncw) you are able to generate what is known as a "Network Object". These objects can then be extended to have custom behavior and to implement network behaviors defined in the Network Contract Wizard (NCW). When you click the "Save & Compile" option in the NCW an instantiate method will be created for the object you just defined in the NCW. So if you created a Network Object in the NCW named **SuperBall** then you could call the following code in Unity to create an instance of that **SuperBall**:
+When you use the [Network Contract Wizard](/NetworkContractWizard/network-contract-wizard-ncw.md) you are able to generate what is known as a "Network Object". These objects can then be extended to have custom behavior and to implement network behaviors defined in the Network Contract Wizard (NCW). When you click the "Save & Compile" option in the NCW an instantiate method will be created for the object you just defined in the NCW. So if you created a Network Object in the NCW named **SuperBall** then you could call the following code in Unity to create an instance of that **SuperBall**:
 
 ```csharp
 NetworkManager.Instance.InstantiateSuperBall();
@@ -48,7 +48,7 @@ You can create a class that is dedicated to mapping objects to strings or intege
 You can create your own instantiate methods. You can wrap code around our code to spawn your objects. So imagine that you want to call the generated **NetworkManager.Instance.InstantiateSuperBall** method but you have some other stuff you always do before hand or that dynamically selects the proper index. In this case you can create a class that does all the helper logic before you call the instantiate method, then you would call the instantiate through this helper class.
 
 ### Manual Attachment Method
-You can create a NetworkObject without having to call this insantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the **Getting Started** examples about network insantiation.
+You can create a NetworkObject without having to call this instantiate method which is directly linked to a prefab. This obviously isn't a topic for this section but you can find out more about this in the **Getting Started** examples about network instantiation.
 
 ## Warnings
 If you are dynamically setting the array on the **NetworkManager.Instance** then you **MUST** make sure that the order being assigned is predictable on all clients. You can't exactly have the order of the array different on each client and expect it to still work properly can you?

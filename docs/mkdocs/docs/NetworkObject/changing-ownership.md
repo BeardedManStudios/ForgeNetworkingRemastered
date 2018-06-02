@@ -6,7 +6,7 @@ As for verifying an ownership change request, which if you don't do it will just
 
 When we use the Network Contract Wizard (NCW), it will create 2 generated classes; one for our MonoBehaviour and one for our NetworkObject.
 
-The one that we want to focus on in this example is the generated NetworkObject. So let's say that we opened up the Network Contract Wizard (NCW) and we created a contract named **Car** ; this will generate a NetworkObject class named **CarNetworkObject**. Now in another folder (not in the Generated folder) you will create a new C# script called **CarNetworkObject**. In here you will create your [partial class](https://msdn.microsoft.com/en-us/library/wa80x488.aspx) for the **CarNetworkObje ct** and you will override the **AllowOwnershipChange** method like so:
+The one that we want to focus on in this example is the generated NetworkObject. So let's say that we opened up the Network Contract Wizard (NCW) and we created a contract named **Car** ; this will generate a NetworkObject class named **CarNetworkObject**. Now in another folder (not in the Generated folder) you will create a new C# script called **CarNetworkObject**. In here you will create your [partial class](https://msdn.microsoft.com/en-us/library/wa80x488.aspx) for the **CarNetworkObject** and you will override the **AllowOwnershipChange** method like so:
 
 ### AllowOwnershipChange
 ```csharp

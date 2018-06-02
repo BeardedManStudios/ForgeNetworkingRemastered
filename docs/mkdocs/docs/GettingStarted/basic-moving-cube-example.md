@@ -75,7 +75,7 @@ public class BasicCube : BasicCubeBehavior
 		}
 
 		// Let the owner move the cube around with the arrow keys
-		transform.position += new Vector3(Input.GetAxis("Horizontal") 0, Input.GetAxis("Vertical")).normalized * speed * Time.deltaTime;
+		transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized * speed * Time.deltaTime;
 
 		// If we are the owner of the object we should send the new position
 		// and rotation across the network for receivers to move to in the above code

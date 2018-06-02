@@ -1,5 +1,5 @@
 # Connection Cycle Events
-Below are a quick explaination of the various events that happen during the connection and acceptance cycles on both the server and the client.
+Below are a quick explanation of the various events that happen during the connection and acceptance cycles on both the server and the client.
 
 ## Server & Client Events
 The below are events that are local-aware, that is to say that they are called without any need for an active connection.
@@ -26,10 +26,10 @@ This event is called once the server has gotten the unique guid for a player. Th
 Fired when the player has been officially accepted by the server and now is the time you are able to start sending your messages to this player.
 
 ### playerRejected
-Fired when a player has been rejected for any reason by the server. This event will be expanded later but currenlty is used for when a client has sent invalid connection headers.
+Fired when a player has been rejected for any reason by the server. This event will be expanded later but currently is used for when a client has sent invalid connection headers.
 
 ### playerTimeout
-Called when a player has timed out on the server. This happens after they have been accepted and if the server hasn't receieved any message (ping or otherwise) from the specified client. The timeout time (in milliseconds) for a player can be found/set in the `NetworkingPlayer::TimeoutMilliseconds` property.
+Called when a player has timed out on the server. This happens after they have been accepted and if the server hasn't received any message (ping or otherwise) from the specified client. The timeout time (in milliseconds) for a player can be found/set in the `NetworkingPlayer::TimeoutMilliseconds` property.
 
 ### playerDisconnected
 Called at any time that a player has disconnected on its own or by the server.
