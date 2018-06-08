@@ -10,7 +10,7 @@ NetworkManager.Instance.Networker.LatencySimulation = 900;	// 900 is the time in
 ```
 
 # Packet Loss Simulation
-The packet loss simulation lets you test how your code would behave if there were to be packet loss of a specific chance. This tool allows you to set a percentage of packet loss. What this does internally is generate a random number, if it is within the specified percantage then it will delete the packet and ignore reading it. This will allow you to test your code to see what would happen if you were to lose packets during gameplay. The packet loss simulation is **per NetWorker** so to test this out quickly you can use `NetworkManager.Instance.Networker`. Below is a sample of how to set the percentage to 0.1f (10% packet loss chance):
+The packet loss simulation lets you test how your code would behave if there were to be packet loss of a specific chance. This tool allows you to set a percentage of packet loss. What this does internally is generate a random number, if it is within the specified percentage then it will delete the packet and ignore reading it. This will allow you to test your code to see what would happen if you were to lose packets during gameplay. The packet loss simulation is **per NetWorker** so to test this out quickly you can use `NetworkManager.Instance.Networker`. Below is a sample of how to set the percentage to 0.1f (10% packet loss chance):
 
 ```csharp
 // Somewhere in code, even during runtime

@@ -61,7 +61,7 @@ Chances are that if the above are working perfectly, then there are one of two t
 
 1) The server machine's firewall is not opened for the application. Please see [the above](#The Local Machine) on how to fix this
 or
-2) The network firewlal settings are not allowing the port
+2) The network firewall settings are not allowing the port
 
 For #2 you will need to review with your cloud hosting provider on how to open the ports for your application/machine. This is done differently through each provider but should be an easy [Google Search](https://google.com/) away from finding out. Let's say that you are hosting through Microsoft Azure, you would search Google as follows:
 

@@ -1,6 +1,6 @@
 # Running Unity specific code on the main thread
 
-We have created a helper class for you to be able to offload any logic to the main thread from a separate thread. This helper class is called **MainT hreadManager** and there are 2 main ways that you can use this class. The entry point for both methods of use is the static method **Run** ; see the code snippets below for practical uses. The examples below emulate a RPC method's contents.
+We have created a helper class for you to be able to offload any logic to the main thread from a separate thread. This helper class is called **MainThreadManager** and there are 2 main ways that you can use this class. The entry point for both methods of use is the static method **Run** ; see the code snippets below for practical uses. The examples below emulate a RPC method's contents.
 
 ### MainThreadManager.Run Function Pointer
 ```csharp
