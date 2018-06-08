@@ -32,9 +32,9 @@ After opening the window you will be presented with this.
 2. 2)The type of variable this will be
 3. 3)There are many different types to select from (This is just an example of selecting int for this variable) Note: The trash bin next to this variable will delete it.
 
-**Adding a RPC**
+**Adding an RPC**
 
-![adding-a-rpc](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/ncw-5.jpg "Adding a RPC")
+![adding-a-rpc](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/ncw-5.jpg "Adding an RPC")
 
 1. 1)Name of the RPC
 2. 2)Arguments for this RPC that will be sent across the network.
