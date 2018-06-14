@@ -14,7 +14,7 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 ## Network Contract Wizard
 
-Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
+Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in an easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
 ![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 

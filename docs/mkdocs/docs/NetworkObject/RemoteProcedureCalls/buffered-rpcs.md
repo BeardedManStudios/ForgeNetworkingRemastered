@@ -3,7 +3,8 @@ So you've probably gone through the [Basic RPC Example](/GettingStarted/basic-rp
 
 What happens with buffered RPCs is that the RPC is stored on the server. The moment that a player has been accepted they will first receive all of the currently active network objects. Once the player has confirmed that they have received the network objects then the server will send down the buffered RPCs. Effectively calling the explode barrel RPC that was called a long time ago. Now of course this is a bad example of something to do gameplay-wise because then the player who just joined would have a bunch of barrels exploding out of nowhere, but you should be able to understand the purpose of buffered RPCs now.
 
-So to buffer an RPC all you have to do is select a `Receivers` which has a **Buffered** prefix as seen below:
+So to buffer an RPC all you have to do is select a `Receivers` which has a **Buffered** suffix as seen below:
+
 ```csharp
 float explosionVelocity = 99.98f;
 networkObject.SendRpc(RPC_BLOWUP_BARREL, Receivers.AllBuffered, explosionVelocity);

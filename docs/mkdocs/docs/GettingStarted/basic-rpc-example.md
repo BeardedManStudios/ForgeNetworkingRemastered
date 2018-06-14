@@ -14,7 +14,7 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 ## Network Contract Wizard
 
-Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
+Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in an easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
 ![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
@@ -26,7 +26,9 @@ Once you have opened this editor you will be presented with a list of all the Ne
 
 ### Setting up the contract option 1
 
-In this option, we will create 2 RPC methods with no arguments. One RPC is to move the cube up and the other is to move the cube down. **NOTE: Only pick option 1 or 2 to follow**
+In this option, we will create 2 RPC methods with no arguments. One RPC is to move the cube up and the other is to move the cube down.
+
+**NOTE: Only pick option 1 or 2 to follow**
 
 Let's begin by naming our Network Object:
 
@@ -118,7 +120,11 @@ public class MoveCube : MoveCubeBehavior
 }
 ```
 
-As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method and the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). **Note**: _In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved. **Note 2**: _Notice that we use **MainThreadManager** to run the move logic in this example, if you have not used the **MainThreadManager** before or would like more information about threading in Unity, please view [this page](/UnityIntegration/threading-in-unity.md)._
+As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method and the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client).
+
+**Note**: _In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved.
+
+**Note 2**: _Notice that we use **MainThreadManager** to run the move logic in this example, if you have not used the **MainThreadManager** before or would like more information about threading in Unity, please view [this page](/UnityIntegration/threading-in-unity.md)._
 
 ### Code if option 2 was selected
 #### MoveCube
@@ -158,7 +164,11 @@ public class MoveCube : MoveCubeBehavior {
 }
 ```
 	
-As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method, the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc, and the last argument(s) are the arguments for the method. The arguments are mapped to the **object[] args** of the method in the order that they were sent in. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client). **Note**: _In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved._ **Note 2**: _Notice that we use **MainThreadManager** to run the move logic in this example, if you have not used the **MainThreadManager** before or would like more information about threading in Unity, please view [this page](/UnityIntegration/threading-in-unity.md)._
+As you can see from the code snippet above an RPC is called using the **networkObject.SendRPC** method. The first argument is the name of the method, the second argument is the receivers of the object which could be set to things like AllBuffered, Others, etc, and the last argument(s) are the arguments for the method. The arguments are mapped to the **object[] args** of the method in the order that they were sent in. The moment the RPC method is called it is sent on the network to be replicated to the other clients (including server if called from a client).
+
+**Note**: _In this example, it doesn't use a buffered call and it does not actually synchronize the position, so the client should be connected before the cube is moved._ 
+
+**Note 2**: _Notice that we use **MainThreadManager** to run the move logic in this example, if you have not used the **MainThreadManager** before or would like more information about threading in Unity, please view [this page](/UnityIntegration/threading-in-unity.md)._
 
 #### Scene Setup
 
