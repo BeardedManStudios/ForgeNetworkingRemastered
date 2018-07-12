@@ -55,7 +55,7 @@ Git Source Code:
 
 [YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
 
-[Getting Started Docs](http://docs.forgepowered.com/getting-started/)
+[Getting Started Docs](http://docs.forgepowered.com/GettingStarted/getting-started/)
 
 ## Builds
 #### [Nightly Builds Thanks To @TiToMoskito On Discord / Rexima On GitHub](https://fnr.rumstein.eu/)
