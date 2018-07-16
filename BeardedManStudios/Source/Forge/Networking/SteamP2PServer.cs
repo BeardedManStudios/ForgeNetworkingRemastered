@@ -552,7 +552,8 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					currentPlayer.InstanceGuid = frame.ToString();
 
-					OnPlayerGuidAssigned(currentPlayer, out bool rejected);
+					bool rejected;
+					OnPlayerGuidAssigned(currentPlayer, out rejected);
 
 					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
 					if (rejected)
