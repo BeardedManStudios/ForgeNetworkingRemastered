@@ -552,7 +552,11 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					currentPlayer.InstanceGuid = frame.ToString();
 
-					OnPlayerGuidAssigned(currentPlayer);
+					OnPlayerGuidAssigned(currentPlayer, out bool rejected);
+
+					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+					if (rejected)
+						return;
 
 					// If so, just resend the player id
 					writeBuffer.Clear();

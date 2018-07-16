@@ -527,7 +527,11 @@ namespace BeardedManStudios.Forge.Networking
 										Text frame = (Text)Factory.DecodeMessage(GetNextBytes(playerStream, available, true), true, MessageGroupIds.TCP_FIND_GROUP_ID, Players[i]);
 										Players[i].InstanceGuid = frame.ToString();
 
-										OnPlayerGuidAssigned(Players[i]);
+										OnPlayerGuidAssigned(Players[i], out bool rejected);
+
+										// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+										if (rejected)
+											continue;
 
 										lock (writeBuffer)
 										{

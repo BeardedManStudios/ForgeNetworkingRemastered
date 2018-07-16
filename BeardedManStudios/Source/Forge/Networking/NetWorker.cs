@@ -940,6 +940,19 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
+		/// A wrapper around calling the playerGuidAssigned event from child classes
+		/// </summary>
+		/// <param name="player">The player which the guid was assigned to</param>
+		/// <param name="rejected">Returns whether the player was rejected during the handling of the event</param>
+		protected void OnPlayerGuidAssigned(NetworkingPlayer player, out bool rejected)
+		{
+			OnPlayerGuidAssigned(player);
+
+			// Return if the player was rejected during the handling of the event.
+			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
+		}
+
+		/// <summary>
 		/// Used to bind to a port then unbind to trigger any operating system firewall requests
 		/// </summary>
 		public static void PingForFirewall(ushort port = 0)
