@@ -445,9 +445,9 @@ namespace BeardedManStudios.Forge.Networking
 
                 // Send the message back to the sending client so that it can finish setting up the network object
 #if STEAMWORKS
-                    if (networker is SteamP2PServer)
-                        ((SteamP2PServer)networker).Send(frame.Sender, createObject, true);
-                    else if (networker is UDPServer)
+                if (networker is SteamP2PServer)
+                    ((SteamP2PServer)networker).Send(frame.Sender, createObject, true);
+                else if (networker is UDPServer)
 #else
                 if (networker is UDPServer)
 #endif
