@@ -630,7 +630,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			foreach (NetworkBehavior behavior in behaviors)
 				pendingObjects.Add(behavior.TempAttachCode, behavior);
 
-			if (pendingNetworkObjects.Count == 0)
+			if (pendingObjects.Count == 0)
 				Networker.objectCreated -= CreatePendingObjects;
 		}
 	}
