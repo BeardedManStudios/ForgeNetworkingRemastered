@@ -233,6 +233,7 @@ namespace BeardedManStudios.Forge.Networking
 		public static List<NetworkObject> NetworkObjects { get { return networkObjects; } }
 
 		private static List<NetworkObject> pendingCreates = new List<NetworkObject>();
+		public static readonly object PendingCreatesLock = new object();
 
 		public byte[] Metadata { get; private set; }
 
@@ -728,32 +729,40 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (Networker.PendCreates)
 			{
-				lock (pendingCreates)
+				lock (PendingCreatesLock)
 				{
-					pendingCreates.Add(this);
+                    if (Networker.PendCreates)
+                    {
+                        pendingCreates.Add(this);
+                        return;
+                    }
 				}
-
-				return;
 			}
 
 			if (onReady != null)
 				onReady(Networker);
 
-			if (pendingBehavior != null)
-			{
-				pendingBehavior.Initialize(this);
+            if (pendingBehavior != null)
+            {
+                pendingBehavior.Initialize(this);
 
-				if (pendingInitialized != null)
-					pendingInitialized(pendingBehavior, this);
-			}
-			else
-				Networker.OnObjectCreated(this);
+                if (pendingInitialized != null)
+                    pendingInitialized(pendingBehavior, this);
+            } else
+                lock (PendingCreatesLock)
+                {
+                    Networker.OnObjectCreated(this);
+                }
 		}
 
-		public static void Flush(NetWorker target)
+		public static void Flush(NetWorker target, List<int> remainingScenesToLoad = null, NetworkObjectEvent objectCreatedHandler = null)
 		{
-			lock (pendingCreates)
+			lock (PendingCreatesLock)
 			{
+                // Ensure the callback is enabled
+                if (objectCreatedHandler != null)
+                    target.objectCreated += objectCreatedHandler;
+
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
 					if (!target.ObjectCreatedRegistered)
@@ -765,9 +774,9 @@ namespace BeardedManStudios.Forge.Networking
 					target.OnObjectCreated(pendingCreates[i]);
 					pendingCreates.RemoveAt(i--);
 				}
-			}
-
-			target.PendCreates = false;
+                if (remainingScenesToLoad == null || remainingScenesToLoad.Count == 0)
+                    target.PendCreates = false;
+            }
 		}
 
 		/// <summary>
