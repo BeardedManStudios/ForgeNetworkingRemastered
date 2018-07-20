@@ -36,6 +36,7 @@
 
 #if !UNITY_WEBGL
 #if !NetFX_CORE
+#if STEAMWORKS
 
 using Steamworks;
 using System;
@@ -52,7 +53,7 @@ namespace BeardedManStudios.Forge.Networking
 		private bool active = false;
         private CSteamID steamEndPoint;
 
-        #region Instantiation
+#region Instantiation
         public CachedSteamP2PClient()
 		{
             //steamendpoint = self
@@ -64,14 +65,14 @@ namespace BeardedManStudios.Forge.Networking
             recBuffer.SetSize(65536);
         }
 
-        #endregion
-        #region Close
+#endregion
+#region Close
         public void Close()
 		{
 			((IDisposable)this).Dispose();
 		}
-		#endregion
-		#region Data I/O
+#endregion
+#region Data I/O
 		private BMSByte recBuffer = new BMSByte();
 		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
 		public BMSByte Receive(uint msgSize, out CSteamID from)
@@ -134,17 +135,17 @@ namespace BeardedManStudios.Forge.Networking
 
 			return newArray;
 		}
-		#endregion
+#endregion
 
-		#region Properties
+#region Properties
 		protected bool Active
 		{
 			get { return active; }
 			set { active = value; }
 		}
 
-		#endregion
-		#region Disposing
+#endregion
+#region Disposing
 		void IDisposable.Dispose()
 		{
 			Dispose(true);
@@ -177,7 +178,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (disposed)
 				throw new ObjectDisposedException(GetType().FullName);
 		}
-		#endregion
+#endregion
 
 #if Net_4_5
 
@@ -213,5 +214,6 @@ return d.Item5.BeginSend (d.Item1, d.Item2, d.Item3, d.Item4, callback, null);
 	}
 }
 
+#endif
 #endif
 #endif

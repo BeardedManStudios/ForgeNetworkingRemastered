@@ -17,6 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+#if STEAMWORKS
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
@@ -410,3 +411,4 @@ namespace BeardedManStudios.Forge.Networking
 		}
 	}
 }
+#endif

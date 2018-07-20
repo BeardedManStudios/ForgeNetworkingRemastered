@@ -17,6 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+#if STEAMWORKS
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 using System;
@@ -36,7 +37,7 @@ namespace BeardedManStudios.Forge.Networking
 
 		private SteamNetworkingPlayer currentReadingPlayer = null;
 
-        #region Steamworks API
+#region Steamworks API
         protected Callback<P2PSessionRequest_t> m_CallbackP2PSessionRequest;
         protected Callback<P2PSessionConnectFail_t> m_CallbackP2PSessionConnectFail;
         protected Callback<LobbyCreated_t> m_CallbackLobbyCreated;
@@ -84,7 +85,7 @@ namespace BeardedManStudios.Forge.Networking
                 }
             }
         }
-        #endregion
+#endregion
 
         SteamAPICall_t m_CreateLobbyResult;
 
@@ -552,7 +553,12 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					currentPlayer.InstanceGuid = frame.ToString();
 
-					OnPlayerGuidAssigned(currentPlayer);
+					bool rejected;
+					OnPlayerGuidAssigned(currentPlayer, out rejected);
+
+					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+					if (rejected)
+						return;
 
 					// If so, just resend the player id
 					writeBuffer.Clear();
@@ -626,3 +632,4 @@ namespace BeardedManStudios.Forge.Networking
 		}
 	}
 }
+#endif

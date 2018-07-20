@@ -233,10 +233,22 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event NetworkObject.CreateEvent objectCreateAttach;
 
+
+
 		/// <summary>
 		/// Occurs when a network object has been created on the network
 		/// </summary>
-		public event NetworkObject.NetworkObjectEvent objectCreated;
+		public event NetworkObject.NetworkObjectEvent objectCreated {
+			add {
+				if (_objectCreated == null || !_objectCreated.GetInvocationList().Contains(value))
+					_objectCreated += value;
+			}
+
+			remove {
+				_objectCreated -= value;
+			}
+		}
+		private NetworkObject.NetworkObjectEvent _objectCreated;
 
 		/// <summary>
 		/// TODO: COMMENT
@@ -316,7 +328,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public int LatencySimulation { get; set; }
 
-		internal bool ObjectCreatedRegistered { get { return objectCreated != null; } }
+		internal bool ObjectCreatedRegistered { get { return _objectCreated != null; } }
 
 		/// <summary>
 		/// A cached BMSByte to prevent large amounts of garbage collection on packet sequences
@@ -698,8 +710,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		internal void OnObjectCreated(NetworkObject target)
 		{
-			if (objectCreated != null)
-				objectCreated(target);
+			if (_objectCreated != null)
+                _objectCreated(target);
 		}
 
 		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
@@ -937,6 +949,19 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			if (playerGuidAssigned != null)
 				playerGuidAssigned(player, this);
+		}
+
+		/// <summary>
+		/// A wrapper around calling the playerGuidAssigned event from child classes
+		/// </summary>
+		/// <param name="player">The player which the guid was assigned to</param>
+		/// <param name="rejected">Returns whether the player was rejected during the handling of the event</param>
+		protected void OnPlayerGuidAssigned(NetworkingPlayer player, out bool rejected)
+		{
+			OnPlayerGuidAssigned(player);
+
+			// Return if the player was rejected during the handling of the event.
+			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
 		}
 
 		/// <summary>
