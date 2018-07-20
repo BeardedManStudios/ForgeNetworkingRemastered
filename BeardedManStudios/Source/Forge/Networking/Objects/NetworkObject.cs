@@ -731,7 +731,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				lock (PendingCreatesLock)
 				{
-                    if (Networker.PendCreates)
+                    if (Networker.PendCreates) // Check a second time in case Networker.PendCreates was changed while waiting for the lock
                     {
                         pendingCreates.Add(this);
                         return;
