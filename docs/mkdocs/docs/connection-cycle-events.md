@@ -39,3 +39,6 @@ The following events are called on the client only and deal with the various con
 
 ### serverAccepted
 Called whenever the server has accepted this client. At this point it is safe to start sending messages to the server and to know it is a live connection.
+
+###connectAttemptFailed
+Called if the client cannot connect to the server. The client will make 10 connect attempts, waiting 3 seconds between attempts, then call this event if none of the connection attempts were successful.

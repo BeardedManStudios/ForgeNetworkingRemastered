@@ -17,6 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+#if STEAMWORKS
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
 using System.Collections.Generic;
@@ -276,3 +277,4 @@ namespace BeardedManStudios.Forge.Networking
 		}
 	}
 }
+#endif

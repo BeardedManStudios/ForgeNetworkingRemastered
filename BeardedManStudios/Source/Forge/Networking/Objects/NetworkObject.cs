@@ -233,6 +233,7 @@ namespace BeardedManStudios.Forge.Networking
 		public static List<NetworkObject> NetworkObjects { get { return networkObjects; } }
 
 		private static List<NetworkObject> pendingCreates = new List<NetworkObject>();
+		public static readonly object PendingCreatesLock = new object();
 
 		public byte[] Metadata { get; private set; }
 
@@ -387,9 +388,13 @@ namespace BeardedManStudios.Forge.Networking
 				NetWorker.BaseNetworkEvent request = (NetWorker sender) =>
 				{
                     // Send the message to the server
+#if STEAMWORKS
                     if (sender is SteamP2PClient)
                         ((SteamP2PClient)sender).Send(createRequest, true);
                     else if (sender is UDPClient)
+#else
+                    if (sender is UDPClient)
+#endif
                         ((UDPClient)sender).Send(createRequest, true);
                     else
                         ((TCPClient)sender).Send(createRequest);
@@ -440,9 +445,13 @@ namespace BeardedManStudios.Forge.Networking
 				Binary createObject = CreateObjectOnServer(frame.Sender, hash);
 
                 // Send the message back to the sending client so that it can finish setting up the network object
+#if STEAMWORKS
                 if (networker is SteamP2PServer)
                     ((SteamP2PServer)networker).Send(frame.Sender, createObject, true);
                 else if (networker is UDPServer)
+#else
+                if (networker is UDPServer)
+#endif
                     ((UDPServer)networker).Send(frame.Sender, createObject, true);
                 else
                     ((TCPServer)networker).Send(frame.Sender.TcpClientHandle, createObject);
@@ -640,9 +649,13 @@ namespace BeardedManStudios.Forge.Networking
 				return createObject;
 
             // If there is a target hash, we are just generating the create object frame
+#if STEAMWORKS
             if (Networker is SteamP2PServer)
                 ((SteamP2PServer)Networker).Send(createObject, true, skipPlayer);
             else if (Networker is UDPServer)
+#else
+            if (Networker is UDPServer)
+#endif
                 ((UDPServer)Networker).Send(createObject, true, skipPlayer);
             else
                 ((TCPServer)Networker).SendAll(createObject, skipPlayer);
@@ -695,10 +708,14 @@ namespace BeardedManStudios.Forge.Networking
 					{
 						Binary targetCreateObject = new Binary(timestep, false, targetData, Receivers.Target, MessageGroupIds.CREATE_NETWORK_OBJECT_REQUEST, networker is BaseTCP, RouterIds.ACCEPT_MULTI_ROUTER_ID);
 
-                        if(networker is SteamP2PServer)
+#if STEAMWORKS
+                        if (networker is SteamP2PServer)
                             ((SteamP2PServer)networker).Send(player, targetCreateObject, true);
                         else if (networker is UDPServer)
-							((UDPServer)networker).Send(player, targetCreateObject, true);
+#else
+                        if (networker is UDPServer)
+#endif
+                            ((UDPServer)networker).Send(player, targetCreateObject, true);
 						else
 							((TCPServer)networker).Send(player.TcpClientHandle, targetCreateObject);
 					}
@@ -728,32 +745,40 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (Networker.PendCreates)
 			{
-				lock (pendingCreates)
+				lock (PendingCreatesLock)
 				{
-					pendingCreates.Add(this);
+                    if (Networker.PendCreates) // Check a second time in case Networker.PendCreates was changed while waiting for the lock
+                    {
+                        pendingCreates.Add(this);
+                        return;
+                    }
 				}
-
-				return;
 			}
 
 			if (onReady != null)
 				onReady(Networker);
 
-			if (pendingBehavior != null)
-			{
-				pendingBehavior.Initialize(this);
+            if (pendingBehavior != null)
+            {
+                pendingBehavior.Initialize(this);
 
-				if (pendingInitialized != null)
-					pendingInitialized(pendingBehavior, this);
-			}
-			else
-				Networker.OnObjectCreated(this);
+                if (pendingInitialized != null)
+                    pendingInitialized(pendingBehavior, this);
+            } else
+                lock (PendingCreatesLock)
+                {
+                    Networker.OnObjectCreated(this);
+                }
 		}
 
-		public static void Flush(NetWorker target)
+		public static void Flush(NetWorker target, List<int> remainingScenesToLoad = null, NetworkObjectEvent objectCreatedHandler = null)
 		{
-			lock (pendingCreates)
+			lock (PendingCreatesLock)
 			{
+                // Ensure the callback is enabled
+                if (objectCreatedHandler != null)
+                    target.objectCreated += objectCreatedHandler;
+
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
 					if (!target.ObjectCreatedRegistered)
@@ -765,9 +790,9 @@ namespace BeardedManStudios.Forge.Networking
 					target.OnObjectCreated(pendingCreates[i]);
 					pendingCreates.RemoveAt(i--);
 				}
-			}
-
-			target.PendCreates = false;
+                if (remainingScenesToLoad == null || remainingScenesToLoad.Count == 0)
+                    target.PendCreates = false;
+            }
 		}
 
 		/// <summary>
@@ -1293,18 +1318,26 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (targetPlayer != null && Networker is IServer)
 			{
+#if STEAMWORKS
                 if (Networker is SteamP2PServer)
                     ((SteamP2PServer)Networker).Send(targetPlayer, rpcFrame, reliable);
                 else if (Networker is TCPServer)
+#else
+                if (Networker is TCPServer)
+#endif
                     ((TCPServer)Networker).Send(targetPlayer.TcpClientHandle, rpcFrame);
                 else
                     ((UDPServer)Networker).Send(targetPlayer, rpcFrame, reliable);
             }
 			else
-			{
+            {
+#if STEAMWORKS
                 if (Networker is BaseSteamP2P)
                     ((BaseSteamP2P)Networker).Send(rpcFrame, reliable);
                 else if (Networker is TCPServer)
+#else
+                if (Networker is TCPServer)
+#endif
                     ((TCPServer)Networker).SendAll(rpcFrame);
                 else if (Networker is TCPClient)
                     ((TCPClient)Networker).Send(rpcFrame);
@@ -1342,11 +1375,15 @@ namespace BeardedManStudios.Forge.Networking
 				// Generate a binary frame with a router
 				Binary frame = new Binary(Networker.Time.Timestep, Networker is TCPClient, sendBinaryData, receivers, MessageGroupIds.GetId("NO_BIN_DATA_" + NetworkId), Networker is BaseTCP, RouterIds.BINARY_DATA_ROUTER_ID);
 
+#if STEAMWORKS
                 if (Networker is SteamP2PServer)
                     ((SteamP2PServer)Networker).Send(frame, reliable, skipPlayer);
                 else if (Networker is SteamP2PClient)
                     ((SteamP2PClient)Networker).Send(frame, reliable);
                 else if (Networker is TCPServer)
+#else
+                if (Networker is TCPServer)
+#endif
                     ((TCPServer)Networker).SendAll(frame, skipPlayer);
                 else if (Networker is TCPClient)
                     ((TCPClient)Networker).Send(frame);

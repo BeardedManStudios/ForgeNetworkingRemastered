@@ -19,7 +19,9 @@
 
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
+#if STEAMWORKS
 using Steamworks;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -175,18 +177,20 @@ namespace BeardedManStudios.Forge.Networking
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
+#if STEAMWORKS
         /// <summary>
         /// This is used for steam networking API calls;
         /// this is the steam ID of this networked player.
         /// </summary>
         public CSteamID SteamID { get; protected set; }
 
-        private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
-
         public void AssignOwnSteamId()
         {
             SteamID = SteamUser.GetSteamID();
         }
+#endif
+
+        private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
 
         /// <summary>
         /// Constructor for the NetworkingPlayer
@@ -244,6 +248,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+#if STEAMWORKS
         public NetworkingPlayer(uint networkId, CSteamID steamId, bool isHost, NetWorker networker)
         {
             SteamID = steamId;
@@ -254,6 +259,7 @@ namespace BeardedManStudios.Forge.Networking
             TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
             PingInterval = DEFAULT_PING_INTERVAL;
         }
+#endif
 
         public void AssignPort(ushort port)
 		{
