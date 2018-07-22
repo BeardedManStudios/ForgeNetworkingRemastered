@@ -107,13 +107,18 @@ namespace BeardedManStudios.Forge.Networking
 
 		public List<string> BannedAddresses { get; set; }
 
+        private readonly BufferManager bufferManager;
 
 		public ETCPServer(int maxConnections) : base(maxConnections)
 		{
 			AcceptingConnections = true;
 			BannedAddresses = new List<string>();
 			commonServerLogic = new CommonServerLogic(this);
-		}
+            if (maxConnections > 128)
+                bufferManager = new BufferManager(8192, 128, (maxConnections/128) + 1);
+            else
+                bufferManager = new BufferManager(8192, maxConnections, 2);
+        }
 
 #if WINDOWS_UWP
 		private void RawWrite(StreamSocket client, byte[] data)
@@ -338,7 +343,7 @@ namespace BeardedManStudios.Forge.Networking
 				OnBindSuccessful();
 
 				// Create the thread that will be listening for new data from connected clients and start its execution
-				Task.Queue(ReadClients);
+				//TODO: Task.Queue(ReadClients);
 
 				// Create the thread that will check for player timeouts
 				Task.Queue(() =>
@@ -414,22 +419,54 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-			// Clients will be looped through on other threads so be sure to lock it before adding
+            ArraySegment<byte> segment;
+            if(!bufferManager.TryTakeBuffer(out segment))
+            {
+                // Tell the client why they are being disconnected
+                Send(client, Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
+
+                // Send the close connection frame to the client
+                Send(client, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+
+                // Do disconnect logic for client
+                ClientRejected(client, false);
+                throw new OutOfMemoryException("Buffer manager has run out of allocated memory (possible memory leak).");
+            }
+
+            // Clients will be looped through on other threads so be sure to lock it before adding
+            ReceiveToken token;
 			lock (Players)
 			{
-				rawClients.Add(client);
+                rawClients.Add(client);
 
 				// Create the identity wrapper for this player
 				NetworkingPlayer player = new NetworkingPlayer(ServerPlayerCounter++, client.Client.RemoteEndPoint.ToString(), false, client, this);
 
 				// Generically add the player and fire off the events attached to player joining
 				OnPlayerConnected(player);
-			}
+
+                token = new ReceiveToken
+                {
+                    internalBuffer = segment,
+                    player = player,
+                    bytesReceived = 0,
+                    dataHolder = null,
+                    maxAllowedBytes = 8192
+                };
+            }
 
 			// Let all of the event listeners know that the client has successfully connected
 			if (rawClientConnected != null)
 				rawClientConnected(client);
-		}
+
+            SocketAsyncEventArgs e = new SocketAsyncEventArgs();
+            e.Completed += new EventHandler<SocketAsyncEventArgs>(ReceiveAsync_Completed);
+            e.UserToken = token;
+            e.BufferList = new List<ArraySegment<byte>> { token.internalBuffer };
+
+            client.Client.ReceiveAsync(e);
+
+        }
 
         private void DoRead(SocketAsyncEventArgs e)
         {
@@ -444,6 +481,7 @@ namespace BeardedManStudios.Forge.Networking
                 // Failed to get the stream for the client so forcefully disconnect it
                 //Console.WriteLine("Exception: Failed to get stream for client (Forcefully disconnecting)");
                 Disconnect(token.player, true);
+                ReturnBuffer(e);
                 return;
             }
 
@@ -451,15 +489,16 @@ namespace BeardedManStudios.Forge.Networking
             if (!token.player.TcpClientHandle.Connected)
             {
                 Disconnect(token.player, false);
+                ReturnBuffer(e);
                 return;
             }
 
             // False means operation was synchronous (usually error)
             if (!playerSocket.ReceiveAsync(e))
-                ReceiveAsync_Completed(e);
+                ReceiveAsync_Completed(this, e);
         }
 
-        private void ReceiveAsync_Completed(SocketAsyncEventArgs e)
+        private void ReceiveAsync_Completed(object sender, SocketAsyncEventArgs e)
         {
             if (e.BytesTransferred > 0 && e.SocketError != SocketError.Success)
             {
@@ -479,7 +518,8 @@ namespace BeardedManStudios.Forge.Networking
                     if (response == null)
                     {
                         OnPlayerRejected(token.player);
-                        Disconnect(token.player, false);
+                        Disconnect(token.player, true);
+                        ReturnBuffer(e);
                         return;
                     }
 
@@ -501,7 +541,12 @@ namespace BeardedManStudios.Forge.Networking
                     {
                         token.player.InstanceGuid = ((Text)frame).ToString();
 
-                        OnPlayerGuidAssigned(token.player);
+                        bool rejected;
+                        OnPlayerGuidAssigned(token.player, out rejected);
+
+                        // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+                        if (rejected)
+                            break;
 
                         lock (writeBuffer)
                         {
@@ -516,6 +561,7 @@ namespace BeardedManStudios.Forge.Networking
                         }
                     } else
                     {
+                        token.player.Ping();
                         FireRead(frame, token.player);
                     }
                 }
@@ -523,170 +569,23 @@ namespace BeardedManStudios.Forge.Networking
             } else
             {
                 Disconnect((NetworkingPlayer)e.UserToken, true);
+                ReturnBuffer(e);
             }
         }
 
-        /// <summary>
-        /// Infinite loop listening for new data from all connected clients on a separate thread.
-        /// This loop breaks when readThreadCancel is set to true
-        /// </summary>
-        private void ReadClients()
-		{
-			// Intentional infinite loop
-			while (IsBound && !NetWorker.EndingSession)
-			{
-				try
-				{
-					// If the read has been flagged to be canceled then break from this loop
-					if (readThreadCancel)
-						return;
-
-					// This will loop through all of the players, so make sure to set the lock to
-					// prevent any changes from other threads
-					lock (Players)
-					{
-						for (int i = 0; i < Players.Count; i++)
-						{
-							// If the read has been flagged to be canceled then break from this loop
-							if (readThreadCancel)
-								return;
-
-							NetworkStream playerStream = null;
-
-							if (Players[i].IsHost)
-								continue;
-
-							try
-							{
-								lock (Players[i].MutexLock)
-								{
-									// Try to get the client stream if it is still available
-									playerStream = Players[i].TcpClientHandle.GetStream();
-								}
-							}
-							catch
-							{
-								// Failed to get the stream for the client so forcefully disconnect it
-								//Console.WriteLine("Exception: Failed to get stream for client (Forcefully disconnecting)");
-								Disconnect(Players[i], true);
-								continue;
-							}
-
-							// If the player is no longer connected, then make sure to disconnect it properly
-							if (!Players[i].TcpClientHandle.Connected)
-							{
-								Disconnect(Players[i], false);
-								continue;
-							}
-
-							// Only continue to read for this client if there is any data available for it
-							if (!playerStream.DataAvailable)
-								continue;
-
-							int available = Players[i].TcpClientHandle.Available;
-
-							// Determine if the player is fully connected
-							if (!Players[i].Accepted)
-							{
-								// Determine if the player has been accepted by the server
-								if (!Players[i].Connected)
-								{
-									lock (Players[i].MutexLock)
-									{
-										// Read everything from the stream as the client hasn't been accepted yet
-										byte[] bytes = new byte[available];
-										playerStream.Read(bytes, 0, bytes.Length);
-
-										// Validate that the connection headers are properly formatted
-										byte[] response = Websockets.ValidateConnectionHeader(bytes);
-
-										// The response will be null if the header sent is invalid, if so then disconnect client as they are sending invalid headers
-										if (response == null)
-										{
-											OnPlayerRejected(Players[i]);
-											Disconnect(Players[i], false);
-											continue;
-										}
-
-										// If all is in order then send the validated response to the client
-										playerStream.Write(response, 0, response.Length);
-
-										// The player has successfully connected
-										Players[i].Connected = true;
-									}
-								}
-								else
-								{
-									lock (Players[i].MutexLock)
-									{
-										// Consume the message even though it is not being used so that it is removed from the buffer
-										Text frame = (Text)Factory.DecodeMessage(GetNextBytes(playerStream, available, true), true, MessageGroupIds.TCP_FIND_GROUP_ID, Players[i]);
-										Players[i].InstanceGuid = frame.ToString();
-
-										OnPlayerGuidAssigned(Players[i]);
-
-										lock (writeBuffer)
-										{
-											writeBuffer.Clear();
-											writeBuffer.Append(BitConverter.GetBytes(Players[i].NetworkId));
-											Send(Players[i].TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
-
-											SendBuffer(Players[i]);
-
-											// All systems go, the player has been accepted
-											OnPlayerAccepted(Players[i]);
-										}
-									}
-								}
-							}
-							else
-							{
-								try
-								{
-									lock (Players[i].MutexLock)
-									{
-										Players[i].Ping();
-
-										// Get the frame that was sent by the client, the client
-										// does send masked data
-										//TODO: THIS IS CAUSING ISSUES!!! WHY!?!?!!?
-										FrameStream frame = Factory.DecodeMessage(GetNextBytes(playerStream, available, true), true, MessageGroupIds.TCP_FIND_GROUP_ID, Players[i]);
-
-										// The client has told the server that it is disconnecting
-										if (frame is ConnectionClose)
-										{
-											// Confirm the connection close
-											Send(Players[i].TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
-
-											Disconnect(Players[i], false);
-											continue;
-										}
-
-										FireRead(frame, Players[i]);
-									}
-								}
-								catch
-								{
-									// The player is sending invalid data so disconnect them
-									Disconnect(Players[i], true);
-								}
-							}
-						}
-					}
-
-					// Go through all of the pending disconnections and clean them
-					// up and finalize the disconnection
-					CleanupDisconnections();
-
-					// Sleep so that we free up the CPU a bit from this thread
-					Thread.Sleep(10);
-				}
-				catch (Exception ex)
-				{
-					Logging.BMSLog.LogException(ex);
-				}
-			}
-		}
+        private void ReturnBuffer(SocketAsyncEventArgs e)
+        {
+            if (e.UserToken != null)
+            {
+                ReceiveToken token = (ReceiveToken)e.UserToken;
+                if (token.internalBuffer != null)
+                {
+                    bufferManager.ReturnBuffer(token.internalBuffer);
+                    token.internalBuffer = default(ArraySegment<byte>);
+                    e.BufferList = null;
+                }
+            }
+        }
 
 		/// <summary>
 		/// Disconnects this server and all of it's clients
@@ -829,9 +728,19 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
-			// A message has been successfully read from the network so relay that
-			// to all methods registered to the event
-			OnMessageReceived(currentPlayer, frame);
+            // The client has told the server that it is disconnecting
+            if (frame is ConnectionClose)
+            {
+                // Confirm the connection close
+                Send(currentPlayer.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+
+                Disconnect(currentPlayer, false);
+                return;
+            }
+
+            // A message has been successfully read from the network so relay that
+            // to all methods registered to the event
+            OnMessageReceived(currentPlayer, frame);
 		}
 	}
 }
