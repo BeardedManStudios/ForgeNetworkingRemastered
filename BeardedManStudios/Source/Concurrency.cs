@@ -14,7 +14,7 @@ namespace BeardedManStudios.Concurrency
                 throw new ArgumentException("Lock was already taken.");
             while (1 == Interlocked.CompareExchange(ref @lock, 1, 0))
             {
-                while (@lock == 0) ;
+                while (@lock == 1) ;
             }
             lockTaken = true;
         }
