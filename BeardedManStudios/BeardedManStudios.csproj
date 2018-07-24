@@ -65,6 +65,7 @@
     <Compile Include="Source\Forge\Networking\CachedSteamP2PClient.cs" />
     <Compile Include="Source\Forge\Networking\CachedUdpClient.cs" />
     <Compile Include="Source\Forge\Networking\CommonServer.cs" />
+    <Compile Include="Source\Forge\Networking\EBaseTCP.cs" />
     <Compile Include="Source\Forge\Networking\Filters\IConnectionFilter.cs" />
     <Compile Include="Source\Forge\Networking\IClientMockPlayer.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\ILobbyMaster.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Source\Forge\Networking\TCPClientBase.cs" />
     <Compile Include="Source\Forge\Networking\TCPClientWebsockets.cs" />
     <Compile Include="Source\Forge\Networking\TCPMasterClient.cs" />
+    <Compile Include="Source\Forge\Networking\ETCPServer.cs" />
     <Compile Include="Source\Forge\Networking\TCPServer.cs" />
     <Compile Include="Source\Forge\Networking\Time.cs" />
     <Compile Include="Source\Forge\Networking\UDPClient.cs" />
@@ -120,6 +122,8 @@
     <Compile Include="Source\Forge\Networking\UDPServer.cs" />
     <Compile Include="Source\Forge\Networking\Websockets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\BufferManager.cs" />
+    <Compile Include="Source\Concurrency.cs" />
     <Compile Include="Source\SimpleJSON.cs" />
     <Compile Include="Source\Threading\IThreadRunner.cs" />
     <Compile Include="Source\Threading\Task.cs" />
