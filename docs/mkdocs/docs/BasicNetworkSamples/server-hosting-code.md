@@ -15,7 +15,7 @@ TCPServer server = new TCPServer(maxAllowedClients);
 server.Connect();
 ```
 
-It is worth noting that both `UDPServer` and `TCPServer` implement the `IServer` interface and derive from the `NetWorker`. So there are many casting and generic options to choose from. There are arguments that go into the `Connect` methods of these types, but they are for the [Master Server](master-server-quick-start) and [Nat Server](nat-hole-punching).
+It is worth noting that both `UDPServer` and `TCPServer` implement the `IServer` interface and derive from the `NetWorker`. So there are many casting and generic options to choose from. There are arguments that go into the `Connect` methods of these types, but they are for the [Master Server](/MasterServer/quick-start.md) and [Nat Server](/nat-hole-punching.md).
 
 ## Assigning to Network Manager
 **Hard to believe?**, Yes that is all the code you need to start up a server, now there is one more important piece of business we must complete. Since this server is most likely going to be the main communication `NetWorker` with the clients and the game, you are probably going to want to set it up as the default `NetWorker` for the `NetworkManager` to use. You can do this with the following:

@@ -1,5 +1,5 @@
 # Getting Host List From Master Server
-_If you have not already, we would suggest reviewing the [Master Server Quick Start](master-server-quick-start) documentation to get familiar with the Master Server and to setup the stand alone executable and then reviewing [Connecting to Master Server](connecting-to-master-server) to learn how to register your game server on the master server._
+_If you have not already, we would suggest reviewing the [Master Server Quick Start](quick-start) documentation to get familiar with the Master Server and to setup the stand alone executable and then reviewing [Connecting to Master Server](connecting-to-master-server) to learn how to register your game server on the master server._
 
 ## Request stages
 There are a few stages when requesting the list of servers from the master server:
@@ -92,7 +92,7 @@ foreach (MasterServerResponse.Server server in response.serverResponse)
 
 ## Refresh Complete Sample
 
-Below is a compelte example of how to:
+Below is a complete example of how to:
 
 - Connect to master server
 - Request the games list from the master server

@@ -135,7 +135,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		protected override byte[] GetBytesArray(object o, Type type)
 		{
 			byte[] data;
-			byte[] buffer;
 			if (type == typeof(Vector2))
 			{
 				data = new byte[sizeof(float) * 2];

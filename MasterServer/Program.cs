@@ -1,6 +1,8 @@
 ﻿using BeardedManStudios;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 namespace MasterServer
 {
@@ -29,10 +31,10 @@ namespace MasterServer
 			else
 			{
 				Console.WriteLine("Entering nothing will choose defaults.");
-				Console.WriteLine("Enter Host IP (Default: 0.0.0.0):");
+				Console.WriteLine("Enter Host IP (Default: "+ GetLocalIPAddress() + "):");
 				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
-					host = "0.0.0.0";
+					host = GetLocalIPAddress();
 				else
 					host = read;
 
@@ -120,9 +122,26 @@ namespace MasterServer
 			Console.WriteLine(@"Commands Available
 (s)top - Stops hosting
 (r)estart - Restarts the hosting service even when stopped
-(l)og - Toggles logging (starts off)
+(l)og - Toggles logging (starts enabled)
 (q)uit - Quits the application
-(h)elp - Get a full list of comands");
+(h)elp - Get a full list of commands");
 		}
-	}
+
+	    /// <summary>
+	    /// Return the Local IP-Address
+	    /// </summary>
+	    /// <returns></returns>
+	    private static string GetLocalIPAddress()
+	    {
+	        var host = Dns.GetHostEntry(Dns.GetHostName());
+	        foreach (var ip in host.AddressList)
+	        {
+	            if (ip.AddressFamily == AddressFamily.InterNetwork)
+	            {
+	                return ip.ToString();
+	            }
+	        }
+	        throw new Exception("No network adapters with an IPv4 address in the system!");
+	    }
+    }
 }

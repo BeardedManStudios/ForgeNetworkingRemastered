@@ -215,48 +215,49 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 			if (isStream)
 				length += 21;  // Group id (4), receivers (1), time step (8), unique id (8)
+            else
+                length += 16; // time step (8), unique id (8)
 
-			if (frame[0] == Binary.CONTROL_BYTE)
+            if (frame[0] == Binary.CONTROL_BYTE)
 				length += 1;
 
 			// Determine the length of the payload
 			int dataStartIndex = 0;
 			if (length <= 125)
 			{
-				frame[1] = (byte)length;
+				frame[1] = (byte)(useMask ? length | 128 : length);
 				dataStartIndex = 2;
 			}
 			else if (length >= 126 && length <= 65535)
 			{
 				dataStartIndex = 4;
-				frame[1] = 126;
+				frame[1] = (byte)(useMask ? 254 : 126);
 			}
 			else
 			{
 				dataStartIndex = 10;
-				frame[1] = 127;
+				frame[1] = (byte)(useMask ? 255 : 127);
 			}
 
 			// If the payload is greater than a byte (255) then set the order of the bytes for the length
 			if (dataStartIndex > 2)
 			{
-				int i = 0, j = 2, largestBitIndex = (dataStartIndex - 3) * 8;
+                int i = 0, j = 2, largestBitIndex = (dataStartIndex - 3) * 8;
 
-				// Little endian / Big endian reversal based on mask
-				if (mask.Length == 0)
-				{
-					for (i = largestBitIndex; i >= 0; i -= 8)
-						frame[j++] = (byte)((payload.Length >> i) & 255);
-				}
-				else
-				{
-					for (i = 0; i <= largestBitIndex; i += 8)
-						frame[j++] = (byte)((payload.Length >> i) & 255);
-				}
-			}
+                // Little endian / Big endian reversal based on mask
+                //if (mask.Length == 0)
+                //{
+                for (i = largestBitIndex; i >= 0; i -= 8)
+                    frame[j++] = (byte)((length >> i) & 255);
+                //} else
+                //{
+                //    for (i = 0; i <= largestBitIndex; i += 8)
+                //        frame[j++] = (byte)((payload.Length >> i) & 255);
+                //}
+            }
 
 			// Prepare the stream data with the size so that it doesn't have to keep resizing
-			StreamData.SetSize(dataStartIndex + mask.Length + payload.Length);
+			StreamData.SetSize(dataStartIndex + mask.Length + length);
 			StreamData.Clear();
 
 			// Add the frame bytes
