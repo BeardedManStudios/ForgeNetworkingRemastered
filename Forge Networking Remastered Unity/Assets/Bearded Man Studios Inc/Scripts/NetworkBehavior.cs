@@ -88,7 +88,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		protected abstract void InitializedTransform();
 
-		protected void ProcessOthers(Transform obj, uint idOffset)
+		protected void ProcessOthers(Transform obj, ref uint idOffset)
 		{
 			int i;
 
@@ -104,7 +104,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			for (i = 0; i < obj.childCount; i++)
-				ProcessOthers(obj.GetChild(i), idOffset);
+				ProcessOthers(obj.GetChild(i), ref idOffset);
 		}
 	}
 }
