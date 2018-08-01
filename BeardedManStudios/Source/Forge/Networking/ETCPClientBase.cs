@@ -17,14 +17,11 @@ namespace BeardedManStudios.Source.Forge.Networking
 #endif
         // save the hash for upgrade validation
         private string headerHash;
-        private BufferManager bufferManager;
         public event BaseNetworkEvent ConnectAttemptFailed;
+        byte[] buffer;
         public ETCPClientBase(int maxConnections) : base(maxConnections)
         {
-            if (maxConnections > 128)
-                bufferManager = new BufferManager(8192, 128, (maxConnections / 128) + 1);
-            else
-                bufferManager = new BufferManager(8192, maxConnections, 2);
+            buffer = new byte[1024];
         }
 
         /// <summary>
@@ -63,35 +60,17 @@ namespace BeardedManStudios.Source.Forge.Networking
             // Send the upgrade request to the server
             RawWrite(connectionHeader);
 
-            ArraySegment<byte> segment;
-            if(!bufferManager.TryTakeBuffer(out segment))  {
-                // should probably do something more here //eriknielsen
-                throw new OutOfMemoryException("Buffer manager has run out of allocated memory (possible memory leak).");
-            }
-
-            ReceiveToken token = new ReceiveToken
-            {
-                internalBuffer = segment,
-                player = server,
-                bytesReceived = 0,
-                dataHolder = null,
-                maxAllowedBytes = 8192
-            };
 
             // Read from the server async
-
-
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += new EventHandler<SocketAsyncEventArgs>(ReceiveAsync_Completed);
-            e.UserToken = token;
-            e.BufferList = new List<ArraySegment<byte>> { token.internalBuffer };
 
             client.Client.ReceiveAsync(e);
         }
         // Should validate the handshake response from the server
         private void ReceiveAsync_Completed(object sender, SocketAsyncEventArgs e)
         {
-            
+            // use this.buffer here
         }
         private void RawWrite(byte[] data)
         {
