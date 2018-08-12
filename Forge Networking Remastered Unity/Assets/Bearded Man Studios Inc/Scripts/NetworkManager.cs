@@ -370,7 +370,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SceneReady(scene, mode);
 		}
 
-		private void ProcessOthers(Transform obj, NetworkObject createTarget, uint idOffset, NetworkBehavior netBehavior = null)
+		private void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
 		{
 			int i;
 
@@ -392,7 +392,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			for (i = 0; i < obj.transform.childCount; i++)
-				ProcessOthers(obj.transform.GetChild(i), createTarget, idOffset);
+				ProcessOthers(obj.transform.GetChild(i), createTarget, ref idOffset);
 		}
 
 		private void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
@@ -420,7 +420,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				// Go through all associated network behaviors in the hierarchy (including self) and
 				// Assign their TempAttachCode for lookup later. Should use an incrementor or something
-				ProcessOthers(go.transform, obj, 1, (NetworkBehavior)netBehavior);
+				uint idOffset = 1;
+				ProcessOthers(go.transform, obj, ref idOffset, (NetworkBehavior)netBehavior);
 			}
 		}
 
