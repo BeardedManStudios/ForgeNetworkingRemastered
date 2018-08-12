@@ -241,24 +241,29 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 
 			Binary sendFrame = new Binary(Socket.Time.Timestep, Socket is TCPClient, data, Receivers.Server, MessageGroupIds.CACHE, Socket is BaseTCP);
 
+#if STEAMWORKS
             if (Socket is SteamP2PClient)
                 ((SteamP2PClient)Socket).Send(sendFrame, true);
             else if (Socket is BaseTCP)
-				((TCPClient)Socket).Send(sendFrame);
+#else
+            if (Socket is BaseTCP)
+#endif
+                ((TCPClient)Socket).Send(sendFrame);
 			else
 				((UDPClient)Socket).Send(sendFrame, true);
 
 			responseHookIncrementer++;
 		}
 
-		/// <summary>
-		/// Inserts a NEW key/value into cache
-		/// </summary>
-		/// <typeparam name="T">The serializable type of object</typeparam>
-		/// <param name="key">The name variable used for storing the specified object</param>
-		/// <param name="value">The object that is to be stored into cache</param>
-		/// <returns>True if successful insert or False if the key already exists</returns>
-		public bool Insert<T>(string key, T value)
+
+        /// <summary>
+        /// Inserts a NEW key/value into cache
+        /// </summary>
+        /// <typeparam name="T">The serializable type of object</typeparam>
+        /// <param name="key">The name variable used for storing the specified object</param>
+        /// <param name="value">The object that is to be stored into cache</param>
+        /// <returns>True if successful insert or False if the key already exists</returns>
+        public bool Insert<T>(string key, T value)
 		{
 			return Insert(key, value, maxDateTime);
 		}

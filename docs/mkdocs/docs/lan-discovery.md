@@ -1,5 +1,5 @@
 # UDP LAN Discovery
-LAN Discovery is a way for you to quickly find other game servers on the local area network. This is done by sending out a broadcast message on the local network that gets picked up by the game servers that are currently running. When they receive the lan discovery request they respond to the sender to let the sender know the IP addresses and port numbers that are available. There is only 1 method that needs to be called to use LAN Discovery in Forge Netwroking:
+LAN Discovery is a way for you to quickly find other game servers on the local area network. This is done by sending out a broadcast message on the local network that gets picked up by the game servers that are currently running. When they receive the lan discovery request they respond to the sender to let the sender know the IP addresses and port numbers that are available. There is only 1 method that needs to be called to use LAN Discovery in Forge Networking:
 
 ```csharp
 NetWorker.RefreshLocalUdpListings();

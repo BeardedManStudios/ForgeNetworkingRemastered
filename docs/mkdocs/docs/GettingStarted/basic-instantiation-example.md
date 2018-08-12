@@ -16,14 +16,14 @@ So one of the first things we want to think about is our **Network Contract**. T
 
 ## Network Contract Wizard
 
-Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
+Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in an easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
 ![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
-Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the [Network Contract Wizard](network-contract-wizard-ncw) as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fi elds, the **Fields** field, and the **Remote Procedure Calls** field.
+Once you have opened this editor you will be presented with a list of all the Network Objects currently available, to learn more about this please see the document on the [Network Contract Wizard](/NetworkContractWizard/network-contract-wizard-ncw.md) as we will just be going over how to create a network object through the contract wizard. To start, click on the "Create" button near the top and you will be presented with the create UI. In here, we have 3 major fields of interest, the **Name** fields, the **Fields** field, and the **Remote Procedure Calls** field.
 
 1. The **Name** field is where we create the name for our Network Object and behavior, this is a friendly name that should be written in "Pascal case" to follow the C# convention since it is going to be a part of the class names that are generated.
-2. The **Fields** section shows all of the various fields that our network should be aware of. In this case we are going to want to make a **positi on** and **rotation** field which are **Vector3** and **Quaternion** respectively. _Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used_
+2. The **Fields** section shows all of the various fields that our network should be aware of. In this case we are going to want to make a **position** and **rotation** field which are **Vector3** and **Quaternion** respectively. _Note, you can name these fields whatever you like, these are just friendly variable names for you (and your team) to know what they are for when used_
 3. The **Remote Procedure Calls** field is where you will design any Remote Procedure Call (RPC) function signatures. We are not going to go over this field in this tutorial as we do not need it for the goal we are attempting to accomplish.
 
 Lets begin by naming our Network Object:
@@ -128,7 +128,7 @@ With this we are prepared to setup our **NetworkManager** to support the new ins
 
 ## Attaching the PlayerCube prefab for instantiation
 
-If you search the project directory you will find a prefab named **NetworkManager**. This is a default prefab we have created for you to get started. You **can** make your own prefab or alter this one if you wish to extend behavior. Now we will go through the process of attaching our created **Play erCube** prefab to this **NetworkManager**
+If you search the project directory you will find a prefab named **NetworkManager**. This is a default prefab we have created for you to get started. You **can** make your own prefab or alter this one if you wish to extend behavior. Now we will go through the process of attaching our created **PlayerCube** prefab to this **NetworkManager**
 
 1. Select the **NetworkManager** prefab in the project
 2. Locate the field named **Player Cube Network Object**
@@ -167,27 +167,30 @@ public class GameLogic : MonoBehaviour
 
 Now that we have setup our scene and everything else, it is time to test the game.
 
-1.  Open the **Build Settings** 2.  Click on **Player Settings...**
-
-1. Open the **Resolution and Presentation** section
-2. Turn on **Run In Background\***
-3. Go back to **Build Settings**
-4. Click on **Build And Run**
-5. Once the game is open, return to the Unity Editor
-6. Open the **MultiplayerMenu** scene
-7. Click the play button
-8. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
-9. Go back to the built game
-10. Make sure the host ip address is set to **127.0.0.1**
-11. Make sure the host port is set to **15937**
-12. Click the **Connect** button
-13. Select the server game instance (Unity Editor)
+1. Open the **Build Settings**
+2. Click on **Player Settings...**
+3. Open the **Resolution and Presentation** section
+4. Turn on **Run In Background\***
+5. Go back to **Build Settings**
+6. Click on **Build And Run**
+7. Once the game is open, return to the Unity Editor
+8. Open the **MultiplayerMenu** scene
+9. Click the play button
+10. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
+11. Go back to the built game
+12. Make sure the host ip address is set to **127.0.0.1**
+13. Make sure the host port is set to **15937**
+14. Click the **Connect** button
+15. Select the server game instance (Unity Editor)
 
 Now if you move around the cube in the editor, you will see the movements replicated to the client(s). If you move the cube around in the client(s) you will see the cube moving on the server. Our code has the cube constantly rotating so you will see them doing that as well.
 
 ## Troubleshooting
+
 **Getting a null reference exception?**
+
 The most common user errors with this part of the documentation are:
-- Forgot to turn on Run in Background*
-- Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
-- Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1
+
+- Forgot to turn on **Run in Background\***
+- Tried pressing the play button in the scene and not loading the **MultiplayerMenu** scene first
+- Not setting up the **MultiplayerMenu** scene as index 0 and the demo scene as index 1

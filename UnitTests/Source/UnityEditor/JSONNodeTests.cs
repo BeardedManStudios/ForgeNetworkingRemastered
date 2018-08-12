@@ -1,12 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleJSONEditor;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SimpleJSONEditor.Tests
 {
@@ -24,7 +20,7 @@ namespace SimpleJSONEditor.Tests
             {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
                 var jsonString = String.Format("{{ floatTest: {0} }}", expected.ToString(CultureInfo.InvariantCulture));
-                jsonNode = SimpleJSONEditor.JSON.Parse(jsonString);
+                jsonNode = JSON.Parse(jsonString);
                 actual = jsonNode.Children.FirstOrDefault().AsFloat;
             }
             finally
@@ -45,7 +41,7 @@ namespace SimpleJSONEditor.Tests
             {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fi-FI");
                 var jsonString = String.Format("{{ floatTest: {0} }}", expected.ToString(CultureInfo.InvariantCulture));
-                jsonNode = SimpleJSONEditor.JSON.Parse(jsonString);
+                jsonNode = JSON.Parse(jsonString);
                 actual = jsonNode.Children.FirstOrDefault().AsFloat;
             }
             finally

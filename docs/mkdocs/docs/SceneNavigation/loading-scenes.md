@@ -1,5 +1,5 @@
 # Loading Scenes
-One of the things that you may be worring about is how you can load into new scenes on the network. Some issues you may worry about are:
+One of the things that you may be worrying about is how you can load into new scenes on the network. Some issues you may worry about are:
 
 - How do clients know when to change scenes?
 - How do I clean up all the network objects?
@@ -7,7 +7,7 @@ One of the things that you may be worring about is how you can load into new sce
 - How do newly connected clients know what scene is currently active?
 - How do I handle additive scenes?
 
-These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's `SceneManager.sceneLoaded` event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an addative scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.
+These are all good questions and also all questions that you don't have to worry about in Forge Networking. We hook into Unity's `SceneManager.sceneLoaded` event so that we can detect when the scene changes or new scenes are additively loaded on the server. Once the server detects this scene change it will tell all the connected clients to change to the new scene that the server has loaded. If an additional scene was loaded on the server, the server then tells the clients to also additively load the scene. Also the server keeps track of the scenes that are currently active so that it can send them down to the newly accepted client who just connected.
 
 There are a few important notes about scenes with Forge Networking:
 
@@ -31,14 +31,14 @@ if (Networker.IsServer)
 	SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
 ```
 
-#### Loading an addative scene on the server
+#### Loading an additional scene on the server
 ```csharp
 // This will load scene at build index 1 only if this is the server's code
 if (Networker.IsServer)
 	SceneManager.LoadScene(1, LoadSceneMode.Additive);
 ```
 
-#### Async loading an additive scene on the server
+#### Async loading an additional scene on the server
 ```csharp
 // This will load scene at build index 1 only if this is the server's code
 if (Networker.IsServer)

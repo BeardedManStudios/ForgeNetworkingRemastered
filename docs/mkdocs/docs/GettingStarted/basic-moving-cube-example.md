@@ -14,7 +14,7 @@ So, one of the first things we want to think about is our **Network Contract**. 
 
 ## Network Contract Wizard
 
-Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in a easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
+Now that we know that we need to sync the **position** and **rotation** of a cube, we can design our network contract for that object. We will first open the **Network Contract Wizard** which is a UI provided by the Bearded Man Studios team to make it easy to design your **network contracts** in an easy way. To open this menu, go into Unity and select "Window->Forge Networking->Network Contract Wizard".
 
 ![opening-the-ncw](https://raw.githubusercontent.com/BeardedManStudios/ForgeNetworkingRemastered/develop/docs/mkdocs/docs/images/opening-ncw.jpg "How to open the NCW")
 
@@ -75,7 +75,7 @@ public class BasicCube : BasicCubeBehavior
 		}
 
 		// Let the owner move the cube around with the arrow keys
-		transform.position += new Vector3(Input.GetAxis("Horizontal") 0, Input.GetAxis("Vertical")).normalized * speed * Time.deltaTime;
+		transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized * speed * Time.deltaTime;
 
 		// If we are the owner of the object we should send the new position
 		// and rotation across the network for receivers to move to in the above code
@@ -111,27 +111,30 @@ Now that we have done all the network programming required for our end goal, it 
 
 Now that we have setup our scene and everything else, it is time to test the game.
 
-1.  Open the **Build Settings** 2.  Click on **Player Settings...**
-
-1. Open the **Resolution and Presentation** section
-2. Turn on **Run In Background\***
-3. Go back to **Build Settings**
-4. Click on **Build And Run**
-5. Once the game is open, return to the Unity Editor
-6. Open the **MultiplayerMenu** scene
-7. Click the play button
-8. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
-9. Go back to the built game
-10. Make sure the host ip address is set to **127.0.0.1**
-11. Make sure the host port is set to **15937**
-12. Click the **Connect** button
-13. Select the server game instance (Unity Editor)
+1. Open the **Build Settings**
+2. Click on **Player Settings...**
+3. Open the **Resolution and Presentation** section
+4. Turn on **Run In Background\***
+5. Go back to **Build Settings**
+6. Click on **Build And Run**
+7. Once the game is open, return to the Unity Editor
+8. Open the **MultiplayerMenu** scene
+9. Click the play button
+10. Click the **Host (127.0.0.1:15937)** button on the bottom of the game view
+11. Go back to the built game
+12. Make sure the host ip address is set to **127.0.0.1**
+13. Make sure the host port is set to **15937**
+14. Click the **Connect** button
+15. Select the server game instance (Unity Editor)
 
 Now if you move around the cube in the editor, you will see the movements replicated to the clients.
 
 ## Troubleshooting
+
 **Getting a null reference exception?**
+
 The most common user errors with this part of the documentation are:
+
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1

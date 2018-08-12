@@ -25,4 +25,4 @@ private void PlayerAcceptedSetup(NetworkingPlayer newPlayer, Networker sender)
 ```
 
 ## Notes
-This player targeting with RPCs are done on the server. Clients do not have direct access to each other since all network traffic goes through the server (which makes it [authoritative](authoritative-design)). You can use Receivers.Owner to target the owning player of the network object from any client though.
+This player targeting with RPCs are done on the server. Clients do not have direct access to each other since all network traffic goes through the server (which makes it [authoritative](/authoritative-design.md)). You can use Receivers.Owner to target the owning player of the network object from any client though.
