@@ -33,7 +33,7 @@ NetworkManager.Instance.Networker.binaryMessageReceived += ReadBinary;
 
 // ...
 
-private void ReadBinary(NetworkingPlayer player, Binary frame)
+private void ReadBinary(NetworkingPlayer player, Binary frame, Networker sender)
 {
     if (frame.GroupId != MY_GROUP_ID)
         return;
