@@ -10,7 +10,7 @@ Next you need to create the frame, since you want to send it to a specific playe
 ```csharp
 const MY_GROUP_ID = MessageGroupIds .START_OF_GENERIC_IDS + 1; // Just a random message group id that is not being used anywhere else
 // …
-ulong timestep = NetworkManager.Instance.Time.Timestep;
+ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
 bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
 bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, MY_GROUP_ID, isTcp);
@@ -33,7 +33,7 @@ NetworkManager.Instance.Networker.binaryMessageReceived += ReadBinary;
 
 // ...
 
-private void ReadBinary(NetworkingPlayer player, Binary frame)
+private void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
 {
     if (frame.GroupId != MY_GROUP_ID)
         return;
