@@ -66,6 +66,7 @@
     <Compile Include="Source\Forge\Networking\CachedUdpClient.cs" />
     <Compile Include="Source\Forge\Networking\CommonServer.cs" />
     <Compile Include="Source\Forge\Networking\EBaseTCP.cs" />
+    <Compile Include="Source\Forge\Networking\ETCPClientBase.cs" />
     <Compile Include="Source\Forge\Networking\Filters\IConnectionFilter.cs" />
     <Compile Include="Source\Forge\Networking\IClientMockPlayer.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\ILobbyMaster.cs" />
