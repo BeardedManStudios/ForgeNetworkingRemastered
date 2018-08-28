@@ -464,7 +464,9 @@ namespace BeardedManStudios.Forge.Networking
             e.UserToken = token;
             e.BufferList = new List<ArraySegment<byte>> { token.internalBuffer };
 
-            client.Client.ReceiveAsync(e);
+            if(!client.Client.ReceiveAsync(e))
+                Task.Queue(() => ReceiveAsync_Completed(this, e));
+            
 
         }
 
@@ -500,7 +502,7 @@ namespace BeardedManStudios.Forge.Networking
 
         private void ReceiveAsync_Completed(object sender, SocketAsyncEventArgs e)
         {
-            if (e.BytesTransferred > 0 && e.SocketError != SocketError.Success)
+            if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
             {
                 int bytesAlreadyProcessed = 0;
                 ReceiveToken token = (ReceiveToken) e.UserToken;
@@ -555,6 +557,7 @@ namespace BeardedManStudios.Forge.Networking
                             Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
 
                             SendBuffer(token.player);
+                            token.maxAllowedBytes = int.MaxValue;
 
                             // All systems go, the player has been accepted
                             OnPlayerAccepted(token.player);
