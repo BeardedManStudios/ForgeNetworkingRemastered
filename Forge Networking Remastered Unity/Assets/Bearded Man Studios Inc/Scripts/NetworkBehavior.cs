@@ -88,7 +88,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		protected abstract void InitializedTransform();
 
+		[Obsolete("[Forge Networking] Please recompile your scripts in the Network Contract Wizard, your generated code is using a depricated method")]
 		protected void ProcessOthers(Transform obj, uint idOffset)
+		{
+			Debug.LogError("[Forge Networking] Please recompile your scripts in the Network Contract Wizard, your generated code is using a depricated method");
+			ProcessOthers(obj, ref idOffset);
+		}
+
+		protected void ProcessOthers(Transform obj, ref uint idOffset)
 		{
 			int i;
 
@@ -104,7 +111,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			for (i = 0; i < obj.childCount; i++)
-				ProcessOthers(obj.GetChild(i), idOffset);
+				ProcessOthers(obj.GetChild(i), ref idOffset);
 		}
 	}
 }

@@ -2,12 +2,10 @@
 The Master Server is a stand alone server that allows for games to be publicly (or privately with password) listed for the world to join. If you've ever played an online game with friends, chances are that you have had to get their IP address in order to join their hosted games. The Master Server gives your game the ability to have these fancy server listings.
 
 ## Getting the Master Server
-To start with your Master Server adventures you must first purchase the Independent Master Server. **AHH!!** another purchase? Well yes, Forge Networking sells addons to help support the team to continue developing for Forge Networking. We've been around since 2014 so something has to be working with this model :). Speaking of which, **THANK YOU** sooooo much for supporting Forge Networking, it means a lot to us and the community!
-
-Alright, where were we, ah yes; downloading the Master Server. The first thing you need to do is head over to your [Forge Networking developer profile](http://developers.forgepowered.com/Profile) and scroll down towards the bottom. You will see the addon section with **Unity Independent Master Server** listed right. Once you purchase this addon through PayPal you will immediately have it in your account for download.
+The Master Server can either be built from source in the project repo, or downloaded from the [nightly builds](https://fnr.rumstein.eu/).
 
 ## Running the Master Server
-At this point we are assuming that you have already purchased the Master Server addon and you are looking to get it up and running. The very first thing you do on any operating system is to head over to your [developer profile](http://developers.forgepowered.com/Profile) and locate the download for the **Unity Independent Master Server**. Upon downloading this file (a .zip file) you will find that within the contents is a README file to get you started and the .exe file to be run.
+Upon downloading this file (a .zip file) you will find that within the contents is a README file to get you started and the .exe file to be run.
 
 ### Windows
 In windows it is very simple to host a Master Server. Just double click the `MasterServer.exe` and you are up and running!
