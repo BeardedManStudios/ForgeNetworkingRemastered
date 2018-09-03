@@ -1,6 +1,10 @@
 # NAT Hole Punching
 
-Nat hole punching is a way for users behind a firewall to be able to connect to each other without requireing them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.
+## Downloading NAT Hole Punch Server
+The NAT Hole Punch Server can either be built from source in the project repo, or downloaded from the [nightly builds](https://fnr.rumstein.eu/).
+
+## Running NAT Hole Punch Server
+Nat hole punching is a way for users behind a firewall to be able to connect to each other without requiring them to open their firewall ports on their router. To do this, it requires a special server that is dedicated to registering hosts and keeping an open communication with that game host. When a client requests to join a host that is behind a NAT they will communicate with the NAT service host. This NAT service host will then act as a delegate to request that the game host begin communications with the requesting client.
 
 When you look at the **Connect** method of the **ServerUDP** and **ClientUDP** classes you will notice that there are 2 optional parameters related to nat traversal. One is the NAT host address and the other is the NAT server port. When you provide a NAT host address to the **Connect** method on a **ServerUDP** object, you will be telling the server where it needs to register itself and you will be opening communication with the NAT server for it to forward client connection requests. When you provide a NAT host address to the **Connect** method on a **ClientUDP** object, you will be telling the client to communicate with that specific NAT host to open communications with the desired server.
 

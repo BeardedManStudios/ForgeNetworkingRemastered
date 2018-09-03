@@ -37,7 +37,8 @@ namespace BeardedManStudios.Forge.Networking
 				"Upgrade: websocket\r\n" +
 				"Connection: Upgrade\r\n" +
 				"Sec-WebSocket-Key: " + headerHash + "\r\n" +
-				"Sec-WebSocket-Version: 13\r\n");
+				"Sec-WebSocket-Version: 13\r\n" +
+				"\r\n"); // HTTP/1.1 end of header fields
 
 			return connectHeader;
 		}
@@ -82,12 +83,13 @@ namespace BeardedManStudios.Forge.Networking
 			if (new Regex("^GET").IsMatch(data))
 			{
 				// Generate a response by hasing the provided random string key
-				byte[] response = Encoding.UTF8.GetBytes("HTTP/1.1 101 Switching Protocols" + Environment.NewLine
-					+ "Connection: Upgrade" + Environment.NewLine
-					+ "Upgrade: websocket" + Environment.NewLine
+				byte[] response = Encoding.UTF8.GetBytes("HTTP/1.1 101 Switching Protocols\r\n"
+					+ "Connection: Upgrade\r\n"
+					+ "Upgrade: websocket\r\n"
 					+ "Sec-WebSocket-Accept: " + Convert.ToBase64String((new SHA1CryptoServiceProvider()).ComputeHash(Encoding.UTF8.GetBytes(
 						new Regex("Sec-WebSocket-Key: (.*)").Match(data).Groups[1].Value.Trim() + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-					))) + Environment.NewLine + Environment.NewLine);
+					))) + "\r\n"
+					+ "\r\n"); // HTTP/1.1 end of header fields
 
 				return response;
 			}

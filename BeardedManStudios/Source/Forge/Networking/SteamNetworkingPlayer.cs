@@ -17,6 +17,7 @@
 |                                                              |
 \------------------------------+------------------------------*/
 
+#if STEAMWORKS
 using Steamworks;
 
 namespace BeardedManStudios.Forge.Networking
@@ -32,3 +33,4 @@ namespace BeardedManStudios.Forge.Networking
         }
     }
 }
+#endif

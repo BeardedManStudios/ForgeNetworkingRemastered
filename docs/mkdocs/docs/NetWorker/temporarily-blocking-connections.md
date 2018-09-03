@@ -11,7 +11,7 @@ server.Connect();
 ((IServer)server).StopAcceptingConnections();
 ```
 
-Obviosuly we needed to give you a way to be able to start accepting connections again otherwise that would be kinda rude. So we wen't ahead and made the following function for you to begin accepting connections again. *Note that this is a continuation of the above example*
+Obviously we needed to give you a way to be able to start accepting connections again otherwise that would be kinda rude. So we wen't ahead and made the following function for you to begin accepting connections again. *Note that this is a continuation of the above example*
 
 ```csharp
 // Start allowing for connections to this server again

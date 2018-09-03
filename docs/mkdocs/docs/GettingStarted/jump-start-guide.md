@@ -140,7 +140,8 @@ Now all that is left to do is setup our **Player** prefab and then we will be re
     1. Set **Y** to 0.5
     2. Set **Radius** to 0.5
 13. Drag the **Player** GameObject from the **Hierarchy** into the **Prefabs** folder that we made in the beginning
-14. Delete the **Player** Game Object from the scene 15.  Save the project
+14. Delete the **Player** Game Object from the scene 
+15. Save the project
 
 The reason we are adding 2 sphere Colliders is because (at the time of this writing) the Character Controller is not reliable for detecting collisions. You have to "rub" up on the object a bit before it is detected. By adding the sphere colliders to our character, this issue will be resolved.
 
@@ -177,7 +178,8 @@ What this will do is create and modify some classes in the **Generated** folder 
 4. Click **Add Component**
 5. Add the **Player** script to the prefab
 6. Select the **Scripts** folder
-7. Open the **Player.cs** script you just created 8.  Insert the following code
+7. Open the **Player.cs** script you just created 
+8. Insert the following code
 
 ### Player.cs**
 ```csharp
@@ -285,7 +287,8 @@ What this will do is create and modify some classes in the **Generated** folder 
 4. Click **Add Component**
 5. Add the **GameLogic** script to the Game Object
 6. Select the **Scripts** folder
-7. Open the **GameLogic.cs** script you just created 8.  Insert the following code
+7. Open the **GameLogic.cs** script you just created
+8. Insert the following code
 
 ### GameManager.cs
 ```csharp
@@ -344,7 +347,8 @@ What this will do is create and modify some classes in the **Generated** folder 
 4. Click **Add Component**
 5. Add the **GameBall** script to the prefab
 6. Select the **Scripts** folder
-7. Open the **GameBall.cs** script you just created 8.  Insert the following code
+7. Open the **GameBall.cs** script you just created
+8. Insert the following code
 
 ### GameBall.cs
 ```csharp
@@ -439,7 +443,8 @@ With the ball complete, we are finally ready to move onto the last script that w
 4. Click **Add Component**
 5. Add the **GameTrigger** script to the Game Object
 6. Select the **Scripts** folder
-7. Open the **GameTrigger.cs** script you just created 8.  Insert the following code
+7. Open the **GameTrigger.cs** script you just created
+8. Insert the following code
 
 ### GameTrigger.cs
 ```csharp
@@ -491,7 +496,7 @@ public class GameTrigger : MonoBehaviour
 
 **Finalization of our game!**
 
-Now that we have finished all of the network code, we need to tell Forge what prefabs are suppose to be instantiated when we make those **Netwo rkManager.Instance.Instantiat...** calls.
+Now that we have finished all of the network code, we need to tell Forge what prefabs are suppose to be instantiated when we make those **NetworkManager.Instance.Instantiat...** calls.
 
 1. Open **Bearded Man Studios Inc>Prefabs**
 2. Select the prefab named **NetworkManager**
@@ -510,8 +515,11 @@ You have completed the steps for this tutorial. All that is left is to build, ru
 5. You may be prompted to allow access to the application on the firewall, which you will need to accept
 
 ## Troubleshooting
+
 **Getting a null reference exception?**
+
 The most common user errors with this part of the documentation are:
+
 - Forgot to turn on Run in Background*
 - Tried pressing the play button in the scene and not loading the Multiplayer Menu scene first
 - Not setting up the multiplayer menu scene as index 0 and the demo scene as index 1

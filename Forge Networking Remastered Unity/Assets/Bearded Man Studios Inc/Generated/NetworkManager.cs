@@ -232,7 +232,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				if (position == null && rotation == null)
 				{
-					metadata.Clear();
 					byte transformFlags = 0x1 | 0x2;
 					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
 					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
@@ -274,7 +273,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				if (position == null && rotation == null)
 				{
-					metadata.Clear();
 					byte transformFlags = 0x1 | 0x2;
 					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
 					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
@@ -316,7 +314,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				if (position == null && rotation == null)
 				{
-					metadata.Clear();
 					byte transformFlags = 0x1 | 0x2;
 					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
 					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
@@ -358,7 +355,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				if (position == null && rotation == null)
 				{
-					metadata.Clear();
 					byte transformFlags = 0x1 | 0x2;
 					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
 					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
@@ -400,7 +396,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				if (position == null && rotation == null)
 				{
-					metadata.Clear();
 					byte transformFlags = 0x1 | 0x2;
 					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
 					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);

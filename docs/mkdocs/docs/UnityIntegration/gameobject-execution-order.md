@@ -2,7 +2,7 @@
 You may be use to the standard method execution order in Unity and this can cause some confusion when it comes to when you are able to access the network object on a client. You see, when you create a network object **on the client** it takes some time to get to the server, validate, and return back to the client. Because of this, the `networkObject` you are use to using may be null during the `Start` and `Awake` methods of your MonoBehaviour.
 
 ## NetworkStart
-To resolve the issue with starting things once the networkObject has been setup, we have created a `protected` method you can `override` that will be called once the networkObject has been setup. You should do any initialization logic that is required for the network object in this method **don't forget to call the `base.NetworkStart()` method**.
+To resolve the issue with starting things once the networkObject has been setup, we have created a `protected` method you can `override` that will be called once the networkObject has been setup. You should do any initialization logic that is required for the network object in this method. **Don't forget to call the `base.NetworkStart()` method**.
 
 ```csharp
 protected override void NetworkStart()

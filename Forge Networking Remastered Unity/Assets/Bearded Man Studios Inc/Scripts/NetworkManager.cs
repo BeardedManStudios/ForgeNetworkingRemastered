@@ -25,6 +25,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		private ushort _masterServerPort;
 
 		private List<int> loadedScenes = new List<int>();
+        private List<int> loadingScenes = new List<int>();
 
 		public bool IsServer { get { return Networker.IsServer; } }
 
@@ -114,7 +115,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			behavior.Initialize(obj);
 			pendingObjects.Remove(obj.CreateCode);
 
-			if (pendingObjects.Count == 0)
+			if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
 				Networker.objectCreated -= CreatePendingObjects;
 		}
 
@@ -369,7 +370,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SceneReady(scene, mode);
 		}
 
-		private void ProcessOthers(Transform obj, NetworkObject createTarget, uint idOffset, NetworkBehavior netBehavior = null)
+		private void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
 		{
 			int i;
 
@@ -391,7 +392,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			for (i = 0; i < obj.transform.childCount; i++)
-				ProcessOthers(obj.transform.GetChild(i), createTarget, idOffset);
+				ProcessOthers(obj.transform.GetChild(i), createTarget, ref idOffset);
 		}
 
 		private void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
@@ -419,7 +420,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			{
 				// Go through all associated network behaviors in the hierarchy (including self) and
 				// Assign their TempAttachCode for lookup later. Should use an incrementor or something
-				ProcessOthers(go.transform, obj, 1, (NetworkBehavior)netBehavior);
+				uint idOffset = 1;
+				ProcessOthers(go.transform, obj, ref idOffset, (NetworkBehavior)netBehavior);
 			}
 		}
 
@@ -450,19 +452,20 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				int count = frame.StreamData.GetBasicType<int>();
 
-				loadedScenes.Clear();
+                loadingScenes.Clear();
 				for (int i = 0; i < count; i++)
-					loadedScenes.Add(frame.StreamData.GetBasicType<int>());
+                    loadingScenes.Add(frame.StreamData.GetBasicType<int>());
 
+                int[] scenesToLoad = loadingScenes.ToArray();
 				MainThreadManager.Run(() =>
 				{
-					if (loadedScenes.Count == 0)
+					if (scenesToLoad.Length == 0)
 						return;
 
-					SceneManager.LoadScene(loadedScenes[0], LoadSceneMode.Single);
+					SceneManager.LoadScene(scenesToLoad[0], LoadSceneMode.Single);
 
-					for (int i = 1; i < loadedScenes.Count; i++)
-						SceneManager.LoadSceneAsync(loadedScenes[i], LoadSceneMode.Additive);
+					for (int i = 1; i < scenesToLoad.Length; i++)
+						SceneManager.LoadSceneAsync(scenesToLoad[i], LoadSceneMode.Additive);
 				});
 
 				return;
@@ -480,17 +483,27 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				return;
 			}
 
-			// We need to halt the creation of network objects until we load the scene
-			Networker.PendCreates = true;
+            int sceneIndex;
+            LoadSceneMode mode;
+            lock (NetworkObject.PendingCreatesLock)
+            {
+                // We need to halt the creation of network objects until we load the scene
+                Networker.PendCreates = true;
 
-			// Get the scene index that the server loaded
-			int sceneIndex = frame.StreamData.GetBasicType<int>();
+                // Get the scene index that the server loaded
+                sceneIndex = frame.StreamData.GetBasicType<int>();
 
-			// Get the mode in which the server loaded the scene
-			int modeIndex = frame.StreamData.GetBasicType<int>();
+                // Get the mode in which the server loaded the scene
+                int modeIndex = frame.StreamData.GetBasicType<int>();
 
-			// Convert the int mode to the enum mode
-			LoadSceneMode mode = (LoadSceneMode)modeIndex;
+                // Convert the int mode to the enum mode
+                mode = (LoadSceneMode)modeIndex;
+
+                if (mode == LoadSceneMode.Single)
+                    loadingScenes.Clear();
+
+                loadingScenes.Add(sceneIndex);
+            }
 
 			if (networkSceneChanging != null)
 				networkSceneChanging(sceneIndex, mode);
@@ -562,8 +575,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				pendingNetworkObjects.Clear();
 				loadedScenes.Clear();
 			}
-
+            lock(NetworkObject.PendingCreatesLock)
+            {
+                loadingScenes.Remove(scene.buildIndex);
+            }
 			loadedScenes.Add(scene.buildIndex);
+
 
 			if (networkSceneLoaded != null)
 				networkSceneLoaded(scene, mode);
@@ -586,8 +603,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (behaviors.Count == 0)
 			{
-				if (Networker is IClient)
-					NetworkObject.Flush(Networker);
+                if (Networker is IClient)
+                {
+                    if (loadingScenes.Count > 0)
+                        NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
+                    else
+                    {
+                        NetworkObject.Flush(Networker, loadingScenes);
+                        if(pendingObjects.Count == 0)
+                            Networker.objectCreated -= CreatePendingObjects;
+                    }
+                }
+                    
 
 				return;
 			}
@@ -601,37 +628,37 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IClient)
 			{
-				NetworkObject.Flush(Networker);
+                // This would occur if objects in the additive scene arrives at the same time as the
+                // "single" scene and were flushed.
+                if (mode == LoadSceneMode.Additive && pendingNetworkObjects.Count > 0)
+                {
+                    NetworkObject foundNetworkObject;
+                    for (int i = 0; i < behaviors.Count; i++)
+                    {
+                        if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
+                        {
+                            behaviors[i].Initialize(foundNetworkObject);
+                            pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
+                            behaviors.RemoveAt(i--);
+                        }
+                    }
+                }
 
-				NetworkObject foundNetworkObject;
-				for (int i = 0; i < behaviors.Count; i++)
-				{
-					if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
-					{
-						behaviors[i].Initialize(foundNetworkObject);
-						pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
-						behaviors.RemoveAt(i--);
-					}
-				}
+                foreach (NetworkBehavior behavior in behaviors)
+                    pendingObjects.Add(behavior.TempAttachCode, behavior);
 
-				if (behaviors.Count == 0)
-					return;
-			}
+                NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
 
-			if (Networker is IServer)
+                if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
+                    Networker.objectCreated -= CreatePendingObjects;
+
+            } else
 			{
 				// Go through all of the pending NetworkBehavior objects and initialize them on the network
 				foreach (INetworkBehavior behavior in behaviors)
 					behavior.Initialize(Networker);
 
-				return;
 			}
-
-			foreach (NetworkBehavior behavior in behaviors)
-				pendingObjects.Add(behavior.TempAttachCode, behavior);
-
-			if (pendingNetworkObjects.Count == 0)
-				Networker.objectCreated -= CreatePendingObjects;
 		}
 	}
 }
