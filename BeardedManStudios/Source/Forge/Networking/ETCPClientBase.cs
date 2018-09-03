@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 
-namespace BeardedManStudios.Source.Forge.Networking
+namespace BeardedManStudios.Forge.Networking
 {
     public abstract class  ETCPClientBase : EBaseTCP, IClient
     {
@@ -32,11 +31,7 @@ namespace BeardedManStudios.Source.Forge.Networking
         private bool disconnectedSelf = false;
 
         public event BaseNetworkEvent ConnectAttemptFailed;
-        byte[] buffer;
-        public ETCPClientBase(int maxConnections) : base(maxConnections)
-        {
-            buffer = new byte[1024];
-        }
+        byte[] buffer = new byte[8192];
 
         /// <summary>
 		/// The identity of the server as a networking player
@@ -60,9 +55,9 @@ namespace BeardedManStudios.Source.Forge.Networking
             }
             // If we got this far then the bind was successful
             OnBindSuccessful();
-            InitializeConnection(host, port);
+            Initialize(host, port);
         }
-        protected virtual void InitializeConnection(string host, ushort port)
+        protected virtual void Initialize(string host, ushort port)
         {
             // Get a random hash key that needs to be used for validating that the server was connected to
             headerHash = Websockets.HeaderHashKey();
@@ -75,10 +70,14 @@ namespace BeardedManStudios.Source.Forge.Networking
             // Send the upgrade request to the server
             RawWrite(connectionHeader);
 
+            //Let myself know I connected successfully
+            OnPlayerConnected(server);
+            // Set myself as a connected client
+            server.Connected = true;
 
             ReceiveToken token = new ReceiveToken
             {
-                internalBuffer = new ArraySegment<byte>(buffer, 0, 1024),
+                internalBuffer = new ArraySegment<byte>(buffer, 0, buffer.Length),
                 player = server,
                 bytesReceived = 0,
                 dataHolder = null,
@@ -89,7 +88,7 @@ namespace BeardedManStudios.Source.Forge.Networking
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += new EventHandler<SocketAsyncEventArgs>(ReceiveAsync_Completed);
             e.UserToken = token;
-            e.BufferList = new List<ArraySegment<byte>> { token.internalBuffer };
+            e.SetBuffer(token.internalBuffer.Array, token.internalBuffer.Offset, token.internalBuffer.Count);
 
             if (!client.Client.ReceiveAsync(e))
                 Task.Queue(() => ReceiveAsync_Completed(this, e));
@@ -106,11 +105,12 @@ namespace BeardedManStudios.Source.Forge.Networking
         {
             if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
             {
-                int bytesAlreadyProcessed = 0;
+                int bytesAlreadyProcessed = 0; // Count of the total freshly transferred bytes processed so far
                 ReceiveToken token = (ReceiveToken)e.UserToken;
                 if (!headerExchanged)
                 {
                     byte[] header = HandleHttpHeader(e, ref bytesAlreadyProcessed);
+                    token = (ReceiveToken)e.UserToken;
                     if (header == null)
                     {
                         DoRead(e);
@@ -119,6 +119,7 @@ namespace BeardedManStudios.Source.Forge.Networking
                     {
                         headerExchanged = true;
                         token.maxAllowedBytes = int.MaxValue;
+                        e.UserToken = token;
 
                         // Ping the server to finalize the player's connection
                         Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), true, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, true));
@@ -137,9 +138,9 @@ namespace BeardedManStudios.Source.Forge.Networking
                     {
                         break;
                     }
-                    FrameStream frame = Factory.DecodeMessage(data, false, MessageGroupIds.TCP_FIND_GROUP_ID, token.player);
+                    FrameStream frame = Factory.DecodeMessage(data, false, MessageGroupIds.TCP_FIND_GROUP_ID, Server);
 
-                    FireRead(frame, token.player);
+                    FireRead(frame, Server);
                     
                 }
                 DoRead(e);
