@@ -42,7 +42,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (ChatManagerNetworkObject.Length > 0 && ChatManagerNetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(ChatManagerNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<ChatManagerBehavior>();
 						}
 					}
 
@@ -65,7 +65,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (CubeForgeGameNetworkObject.Length > 0 && CubeForgeGameNetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(CubeForgeGameNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<CubeForgeGameBehavior>();
 						}
 					}
 
@@ -88,7 +88,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (ExampleProximityPlayerNetworkObject.Length > 0 && ExampleProximityPlayerNetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(ExampleProximityPlayerNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<ExampleProximityPlayerBehavior>();
 						}
 					}
 
@@ -111,7 +111,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (NetworkCameraNetworkObject.Length > 0 && NetworkCameraNetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(NetworkCameraNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<NetworkCameraBehavior>();
 						}
 					}
 
@@ -134,7 +134,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (TestNetworkObject.Length > 0 && TestNetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(TestNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<TestBehavior>();
 						}
 					}
 
