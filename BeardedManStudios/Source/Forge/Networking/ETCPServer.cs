@@ -440,7 +440,7 @@ namespace BeardedManStudios.Forge.Networking
                 rawClients.Add(client);
 
 				// Create the identity wrapper for this player
-				NetworkingPlayer player = new NetworkingPlayer(ServerPlayerCounter++, client.Client.RemoteEndPoint.ToString(), false, client, this);
+				NetworkingPlayer player = new NetworkingPlayer(ServerPlayerCounter++, ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), false, client, this);
 
 				// Generically add the player and fire off the events attached to player joining
 				OnPlayerConnected(player);
@@ -462,9 +462,11 @@ namespace BeardedManStudios.Forge.Networking
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += new EventHandler<SocketAsyncEventArgs>(ReceiveAsync_Completed);
             e.UserToken = token;
-            e.BufferList = new List<ArraySegment<byte>> { token.internalBuffer };
+            e.SetBuffer(token.internalBuffer.Array, token.internalBuffer.Offset, token.internalBuffer.Count);
 
-            client.Client.ReceiveAsync(e);
+            if (!client.Client.ReceiveAsync(e))
+                Task.Queue(() => ReceiveAsync_Completed(this, e));
+            
 
         }
 
@@ -500,11 +502,11 @@ namespace BeardedManStudios.Forge.Networking
 
         private void ReceiveAsync_Completed(object sender, SocketAsyncEventArgs e)
         {
-            if (e.BytesTransferred > 0 && e.SocketError != SocketError.Success)
+            if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
             {
                 int bytesAlreadyProcessed = 0;
                 ReceiveToken token = (ReceiveToken) e.UserToken;
-                if (!token.player.Accepted && token.player.Connected)
+                if (!token.player.Accepted && !token.player.Connected)
                 {
                     byte[] header = HandleHttpHeader(e, ref bytesAlreadyProcessed);
                     if (header == null)
@@ -555,6 +557,7 @@ namespace BeardedManStudios.Forge.Networking
                             Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
 
                             SendBuffer(token.player);
+                            token.maxAllowedBytes = int.MaxValue;
 
                             // All systems go, the player has been accepted
                             OnPlayerAccepted(token.player);
@@ -582,7 +585,7 @@ namespace BeardedManStudios.Forge.Networking
                 {
                     bufferManager.ReturnBuffer(token.internalBuffer);
                     token.internalBuffer = default(ArraySegment<byte>);
-                    e.BufferList = null;
+                    e.SetBuffer(new byte[0], 0, 0);
                 }
             }
         }

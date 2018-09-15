@@ -33,7 +33,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (!obj.IsOwner)
 			{
 				if (!skipAttachIds.ContainsKey(obj.NetworkId))
-					ProcessOthers(gameObject.transform, obj.NetworkId + 1);
+				{
+					uint newId = obj.NetworkId + 1;
+					ProcessOthers(gameObject.transform, ref newId);
+				}
 				else
 					skipAttachIds.Remove(obj.NetworkId);
 			}

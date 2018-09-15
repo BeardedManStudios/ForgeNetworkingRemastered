@@ -139,7 +139,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 				// TODO:  Throw frame exception
 				throw new BaseNetworkException("The payload for the frame is not allowed to be null, otherwise use other constructor");
 
-			CreateFrame(useMask, timestep, payload.byteArr, receivers, groupId, routerId, isStream);
+			CreateFrame(useMask, timestep, payload.CompressBytes(), receivers, groupId, routerId, isStream);
 		}
 
 		/// <summary>
@@ -164,11 +164,13 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		{
 			// The end of the frame payload is just before the unique id
 			int end = frame.Length - (sizeof(ulong) * 2);
+            bool isStream = receivers == 255;
 
-			// If the receivers is invalid, pull it from the data
-			if (receivers == 255)
+            // If the receivers is invalid, pull it from the data
+            if (isStream)
 			{
-				Receivers = (Receivers)frame[end - 1];
+                end -= 1;
+				Receivers = (Receivers)frame[end];
 				//end--;
 			}
 			else
@@ -177,6 +179,9 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			// If an empty frame was sent, do not copy it to data as data is already empty
 			if (frame.Length - payloadStart > end)
 				StreamData.BlockCopy(frame, payloadStart, end - payloadStart);
+
+            if (isStream)
+                end += 1;
 
 			// Pull the time step for this frame
 			TimeStep = BitConverter.ToUInt64(frame, end);
@@ -248,7 +253,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
                 //if (mask.Length == 0)
                 //{
                 for (i = largestBitIndex; i >= 0; i -= 8)
-                    frame[j++] = (byte)((length >> i) & 255);
+                    frame[j++] = (byte)((((long) length) >> i) & 255);
                 //} else
                 //{
                 //    for (i = 0; i <= largestBitIndex; i += 8)
@@ -287,7 +292,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			StreamData.BlockCopy(payload, 0, payload.Length);
 
 			if (isStream)
-				StreamData.Append(new byte[] { (byte)Receivers });
+				StreamData.BlockCopy(new byte[1] { (byte)Receivers }, 0, sizeof(byte));
 
 			// Add the time step to the end of the frame
 			StreamData.BlockCopy<ulong>(TimeStep, sizeof(ulong));
