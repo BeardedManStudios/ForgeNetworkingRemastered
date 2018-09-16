@@ -779,6 +779,8 @@ namespace BeardedManStudios.Forge.Networking
                 if (objectCreatedHandler != null)
                     target.objectCreated += objectCreatedHandler;
 
+                pendingCreates = pendingCreates.OrderBy(obj => obj.NetworkId).ToList();
+
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
 					if (!target.ObjectCreatedRegistered)
