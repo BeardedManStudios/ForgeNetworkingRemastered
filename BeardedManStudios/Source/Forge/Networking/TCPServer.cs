@@ -353,8 +353,10 @@ namespace BeardedManStudios.Forge.Networking
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(Me);
-				// Set myself as a connected client
-				Me.Connected = true;
+                //Let myself know I been accepted
+                OnPlayerAccepted(Me);
+                // Set myself as a connected client
+                Me.Connected = true;
 
 				//Set the port
 				SetPort((ushort)((IPEndPoint)listener.LocalEndpoint).Port);

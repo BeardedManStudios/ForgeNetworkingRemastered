@@ -222,6 +222,8 @@ namespace BeardedManStudios.Forge.Networking
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(Me);
+				//Let myself know I been accepted
+				OnPlayerAccepted(Me);
 				// Set myself as a connected client
 				Me.Connected = true;
                 StartAcceptingConnections();
