@@ -1386,11 +1386,11 @@ namespace BeardedManStudios.Forge.Networking
 #else
                 if (Networker is TCPServer)
 #endif
-                    ((TCPServer)Networker).SendAll(frame, skipPlayer);
+                    ((TCPServer)Networker).SendAll(frame, Owner, skipPlayer);
                 else if (Networker is TCPClient)
                     ((TCPClient)Networker).Send(frame);
                 else if (Networker is UDPServer)
-                    ((UDPServer)Networker).Send(frame, reliable, skipPlayer);
+                    ((UDPServer)Networker).Send(frame, Owner, reliable, skipPlayer);
                 else if (Networker is UDPClient)
                     ((UDPClient)Networker).Send(frame, reliable);
             }

@@ -27,16 +27,20 @@ namespace BeardedManStudios.Forge.Networking
 					return false;
 			}
 
-			// Check to see if the request is based on proximity
-			if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
-			{
-				// If the target player is not in the same proximity zone as the sender
-				// then it should not be sent to that player
-				if (player.ProximityLocation.DistanceSquared(frame.Sender.ProximityLocation) > proximityDistance*proximityDistance)
-				{
-					return false;
-				}
-			}
+            // check if sender is null as it doesn't get sent in certain cases
+            if (frame.Sender != null)
+            {
+                // Check to see if the request is based on proximity
+                if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
+                {
+                    // If the target player is not in the same proximity zone as the sender
+                    // then it should not be sent to that player
+                    if (player.ProximityLocation.DistanceSquared(frame.Sender.ProximityLocation) > proximityDistance * proximityDistance)
+                    {
+                        return false;
+                    }
+                }
+            }
 			return true;
 		}
 

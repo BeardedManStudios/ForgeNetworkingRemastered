@@ -274,14 +274,48 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		/// <summary>
-		/// Goes through all of the currently connected players and send them the frame
-		/// </summary>
-		/// <param name="receivers">The clients / server to receive the message</param>
-		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
-		/// <param name="playerToIgnore">The client to ignore</param>
-		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
-		public void SendAll(Receivers receivers = Receivers.All, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, NetworkingPlayer playerToIgnore = null, params object[] objectsToSend)
+        public void SendAll(FrameStream frame, NetworkingPlayer sender, NetworkingPlayer skipPlayer = null)
+        {
+            if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
+                bufferedMessages.Add(frame);
+
+            lock (Players)
+            {
+                foreach (NetworkingPlayer player in Players)
+                {
+                    // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
+                    if (sender != null && (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity))
+                    {
+                        // If the target player is not in the same proximity zone as the sender
+                        // then it should not be sent to that player
+                        if (player.ProximityLocation.DistanceSquared(sender.ProximityLocation) > ProximityDistance * ProximityDistance)
+                            continue;
+                    }
+
+                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
+                        continue;
+
+                    try
+                    {
+                        Send(player.TcpClientHandle, frame);
+                    }
+                    catch
+                    {
+                        Disconnect(player, true);
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Goes through all of the currently connected players and send them the frame
+        /// </summary>
+        /// <param name="receivers">The clients / server to receive the message</param>
+        /// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+        /// <param name="playerToIgnore">The client to ignore</param>
+        /// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+        public void SendAll(Receivers receivers = Receivers.All, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, NetworkingPlayer playerToIgnore = null, params object[] objectsToSend)
 		{
 			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
 			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, true);
