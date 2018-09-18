@@ -32,12 +32,11 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				// If the target player is not in the same proximity zone as the sender
 				// then it should not be sent to that player
-				if (player.ProximityLocation.Distance(frame.Sender.ProximityLocation) > proximityDistance)
+				if (player.ProximityLocation.DistanceSquared(frame.Sender.ProximityLocation) > proximityDistance*proximityDistance)
 				{
 					return false;
 				}
 			}
-
 			return true;
 		}
 

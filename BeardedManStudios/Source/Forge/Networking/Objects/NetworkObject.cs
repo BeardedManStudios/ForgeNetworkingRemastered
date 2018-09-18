@@ -1470,14 +1470,15 @@ namespace BeardedManStudios.Forge.Networking
 				lastUpdateTimestep = timeStep;
 			}
 		}
+        
 
-		/// <summary>
-		/// Called when data comes in for this network object that is needed to be read
-		/// in order to update any values contained within it
-		/// </summary>
-		/// <param name="payload">The data from the network for this object</param>
-		/// <param name="timestep">The timestep for this particular change</param>
-		protected abstract void ReadPayload(BMSByte payload, ulong timestep);
+        /// <summary>
+        /// Called when data comes in for this network object that is needed to be read
+        /// in order to update any values contained within it
+        /// </summary>
+        /// <param name="payload">The data from the network for this object</param>
+        /// <param name="timestep">The timestep for this particular change</param>
+        protected abstract void ReadPayload(BMSByte payload, ulong timestep);
 
 		/// <summary>
 		/// Used to write any data on the network for this object to keep it up to date

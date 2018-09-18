@@ -342,6 +342,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public float ProximityDistance { get; set; }
 
+
+
 		/// <summary>
 		/// Allows the newly created network object to be queued for the flush call
 		/// </summary>

@@ -220,7 +220,7 @@ namespace BeardedManStudios.Forge.Networking
 						}
 					}
 
-					try
+                    try
 					{
 						Send(player.TcpClientHandle, frame);
 					}

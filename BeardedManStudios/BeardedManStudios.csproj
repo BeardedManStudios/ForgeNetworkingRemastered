@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Client|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug Client\</OutputPath>
+    <OutputPath>..\..\..\..\PERSONAL\Anchored\Assets\Bearded Man Studios Inc\Plugins\</OutputPath>
     <DefineConstants>TRACE;DEBUG;UNITY_INDEPENDENT;</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

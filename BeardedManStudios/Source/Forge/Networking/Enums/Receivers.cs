@@ -35,5 +35,5 @@ namespace BeardedManStudios.Forge.Networking
 		Owner = 8,
 		MessageGroup = 9,
 		ServerAndOwner = 10
-	}
+    }
 }
