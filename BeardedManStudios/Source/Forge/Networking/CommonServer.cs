@@ -14,7 +14,7 @@ namespace BeardedManStudios.Forge.Networking
 			this.server = server;
 		}
 
-		public bool PlayerIsReceiver(NetworkingPlayer player, FrameStream frame, float proximityDistance, NetworkingPlayer skipPlayer = null)
+		public bool PlayerIsReceiver(NetworkingPlayer player, FrameStream frame, float proximityDistance, NetworkingPlayer skipPlayer = null, int proximityModeUpdateFrequency = 0)
 		{
 			// Don't send messages to a player who has not been accepted by the server yet
 			if ((!player.Accepted && !player.PendingAccepted) || player == skipPlayer)
@@ -23,23 +23,14 @@ namespace BeardedManStudios.Forge.Networking
 			if (player == frame.Sender)
 			{
 				// Don't send a message to the sending player if it was meant for others
-				if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity)
+				if (frame.Receivers == Receivers.Others || frame.Receivers == Receivers.OthersBuffered || frame.Receivers == Receivers.OthersProximity || frame.Receivers == Receivers.OthersProximityGrid)
 					return false;
 			}
 
             // check if sender is null as it doesn't get sent in certain cases
             if (frame.Sender != null)
             {
-                // Check to see if the request is based on proximity
-                if (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity)
-                {
-                    // If the target player is not in the same proximity zone as the sender
-                    // then it should not be sent to that player
-                    if (player.ProximityLocation.DistanceSquared(frame.Sender.ProximityLocation) > proximityDistance * proximityDistance)
-                    {
-                        return false;
-                    }
-                }
+                PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
             }
 			return true;
 		}
@@ -80,9 +71,7 @@ namespace BeardedManStudios.Forge.Networking
         {
             // If the target player is not in the same proximity grid zone as the sender
             // then it should not be sent to that player
-            GridLocation senderLocation = new GridLocation(sender.ProximityLocation.x, sender.ProximityLocation.y, proximityDistance);
-            GridLocation playerLocation = new GridLocation(player.ProximityLocation.x, player.ProximityLocation.y, proximityDistance);
-            if (!senderLocation.CheckIfNeigbors(playerLocation))
+            if (!sender.gridPosition.IsSameOrNeighbourCell(player.gridPosition))
             {
                 // if update frequency is 0, it shouldn't ever get updated while too far
                 if (proximityModeUpdateFrequency == 0)
@@ -102,6 +91,7 @@ namespace BeardedManStudios.Forge.Networking
             {
                 if (sender.PlayersProximityUpdateCounters[key] < proximityModeUpdateFrequency)
                 {
+                    // increment update counter until it reaches the limit
                     sender.PlayersProximityUpdateCounters[key]++;
                     return false;
                 }

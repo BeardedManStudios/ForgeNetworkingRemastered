@@ -86,7 +86,7 @@ namespace BeardedManStudios.Forge.Networking
 				foreach (NetworkingPlayer player in Players)
 				{
                  
-                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
+                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
 
 					try
@@ -116,7 +116,7 @@ namespace BeardedManStudios.Forge.Networking
                     if (!commonServerLogic.PlayerIsDistanceReceiver(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
                         continue;
 
-                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
+                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
                         continue;
 
                     try

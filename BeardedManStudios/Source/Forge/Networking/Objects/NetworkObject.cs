@@ -1301,7 +1301,7 @@ namespace BeardedManStudios.Forge.Networking
 				// that don't include itself
 				else if (receivers != Receivers.Owner && ((sender != Networker.Me && sender != null) ||
 					(receivers != Receivers.Others && receivers != Receivers.OthersBuffered &&
-					receivers != Receivers.OthersProximity && receivers != Receivers.Target)))
+					receivers != Receivers.OthersProximity && receivers != Receivers.Target && receivers != Receivers.OthersProximityGrid)))
 				{
 					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}

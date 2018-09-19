@@ -16,7 +16,7 @@ namespace BeardedManStudios
             y = (int)(Y / cellSize);
         }
 
-        public bool CheckIfNeigbors(GridLocation otherLocation)
+        public bool IsSameOrNeighbourCell(GridLocation otherLocation)
         {
             if (otherLocation.x == x && otherLocation.y == y || 
                 otherLocation.x == x - 1 && otherLocation.y == y - 1 ||
