@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Client|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug Client\</OutputPath>
+    <OutputPath>..\..\..\..\PERSONAL\Anchored\Assets\Bearded Man Studios Inc\Plugins\</OutputPath>
     <DefineConstants>TRACE;DEBUG;UNITY_INDEPENDENT;</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,6 +55,7 @@
     <Compile Include="Source\BeardedMath.cs" />
     <Compile Include="Source\BMSByte.cs" />
     <Compile Include="Source\BMSExtensions.cs" />
+    <Compile Include="Source\GridLocation.cs" />
     <Compile Include="Source\Forge\DataStore\Cache.cs" />
     <Compile Include="Source\Forge\Logging\BMSLog.cs" />
     <Compile Include="Source\Forge\Logging\IBMSLogger.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Source\Forge\Networking\CachedSteamP2PClient.cs" />
     <Compile Include="Source\Forge\Networking\CachedUdpClient.cs" />
     <Compile Include="Source\Forge\Networking\CommonServer.cs" />
+    <Compile Include="Source\Forge\Networking\Enums\Receivers.cs" />
     <Compile Include="Source\Forge\Networking\Filters\IConnectionFilter.cs" />
     <Compile Include="Source\Forge\Networking\IClientMockPlayer.cs" />
     <Compile Include="Source\Forge\Networking\Lobby\ILobbyMaster.cs" />
@@ -72,7 +74,6 @@
     <Compile Include="Source\Forge\Networking\RouterIds.cs" />
     <Compile Include="Source\Forge\Networking\RpcArgs.cs" />
     <Compile Include="Source\Forge\Networking\RPCInfo.cs" />
-    <Compile Include="Source\Forge\Networking\Enums\Receivers.cs" />
     <Compile Include="Source\Forge\Networking\Exceptions.cs" />
     <Compile Include="Source\Forge\Networking\Frame\Binary.cs" />
     <Compile Include="Source\Forge\Networking\Frame\ConnectionClose.cs" />

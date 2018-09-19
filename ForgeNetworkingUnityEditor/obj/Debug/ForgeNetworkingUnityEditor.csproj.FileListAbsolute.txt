@@ -38,3 +38,4 @@ C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetwo
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csproj.CoreCompileInputs.cache
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.dll
 C:\git\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.pdb
+D:\Docs\projects\UNITY3D\RESOURCES\ForgeSource\ForgeNetworkingRemastered\ForgeNetworkingUnityEditor\obj\Debug\ForgeNetworkingUnityEditor.csprojResolveAssemblyReference.cache

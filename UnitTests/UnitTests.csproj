@@ -97,10 +97,6 @@
       <Project>{9c3af9d0-b19f-44a6-9068-84b636892bde}</Project>
       <Name>ForgeNetworkingCommon</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj">
-      <Project>{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}</Project>
-      <Name>ForgeNetworkingUnityEditor</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
