@@ -44,6 +44,39 @@ namespace BeardedManStudios.Forge.Networking
 			return true;
 		}
 
+        public bool PlayerIsTooFar(NetworkingPlayer sender, NetworkingPlayer player, FrameStream frame, float proximityDistance, float proximityModeUpdateFrequency)
+        {
+            // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
+            if (sender != null && (frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity))
+            {
+                // If the target player is not in the same proximity zone as the sender
+                // then it should not be sent to that player
+                if (player.ProximityLocation.DistanceSquared(sender.ProximityLocation) > proximityDistance * proximityDistance)
+                {
+                    // if update frequency is 0, it shouldn't ever get updated while too far
+                    if (proximityModeUpdateFrequency == 0)
+                        return true;
+
+                    // if player update counts are stored, increment or update and reset them, if not, store them starting with 0
+                    if (sender.PlayersProximityUpdateCounters.ContainsKey(player.Ip))
+                    {
+                        if (sender.PlayersProximityUpdateCounters[player.Ip] < proximityModeUpdateFrequency)
+                        {
+                            sender.PlayersProximityUpdateCounters[player.Ip]++;
+                            return true;
+                        }
+                        else
+                            sender.PlayersProximityUpdateCounters[player.Ip] = 0;
+                    }
+                    else
+                        sender.PlayersProximityUpdateCounters.Add(player.Ip, 0);
+                }
+            }
+
+            return false;
+        }
+
+
 		/// <summary>
 		/// Checks all of the clients to see if any of them are timed out
 		/// </summary>
