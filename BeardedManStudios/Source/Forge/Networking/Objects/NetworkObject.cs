@@ -154,11 +154,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// via proximity all; this value can be changed at runtime
 		/// </summary>
 		public bool ProximityBasedFields { get; set; }
+        public Receivers ProximityBasedFieldsMode { get; set; }
 
-		/// <summary>
-		/// A lookup table for all of the RPC's that are available to this network object
-		/// </summary>
-		public Dictionary<byte, Rpc> Rpcs { get; private set; }
+        /// <summary>
+        /// A lookup table for all of the RPC's that are available to this network object
+        /// </summary>
+        public Dictionary<byte, Rpc> Rpcs { get; private set; }
 
 		/// <summary>
 		/// This is a mapping from the method name to the id that it is within the Rpcs dictionary
@@ -1421,7 +1422,7 @@ namespace BeardedManStudios.Forge.Networking
 							BMSByte data = new BMSByte().Clone(frame.StreamData);
 
 							if (data != null)
-								SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximityGrid : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+								SendBinaryData(data, ProximityBasedFields ? ProximityBasedFieldsMode : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
 						}
 
 						ReadDirtyFields(frame.StreamData, frame.TimeStep);
@@ -1466,7 +1467,7 @@ namespace BeardedManStudios.Forge.Networking
 
                 if (data != null)
                 {
-                    SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximityGrid : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+                    SendBinaryData(data, ProximityBasedFields ? ProximityBasedFieldsMode : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
                 }
 
 				hasDirtyFields = false;
@@ -1474,6 +1475,12 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
         
+
+        public void setProximityFields(bool useProximity, Receivers mode = Receivers.AllProximity)
+        {
+            ProximityBasedFields = useProximity;
+            ProximityBasedFieldsMode = mode;
+        }
 
         /// <summary>
         /// Called when data comes in for this network object that is needed to be read
