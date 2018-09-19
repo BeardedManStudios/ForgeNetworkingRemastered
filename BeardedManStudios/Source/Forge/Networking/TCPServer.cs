@@ -289,7 +289,26 @@ namespace BeardedManStudios.Forge.Networking
                         // If the target player is not in the same proximity zone as the sender
                         // then it should not be sent to that player
                         if (player.ProximityLocation.DistanceSquared(sender.ProximityLocation) > ProximityDistance * ProximityDistance)
-                            continue;
+                        {
+                            // if update frequency is 0, it shouldn't ever get updated while too far
+                            if (ProximityModeUpdateFrequency == 0)
+                                continue;
+
+                            // if player update counts are stored, increment or update and reset them, if not, store them starting with 0
+                            if (sender.PlayersProximityUpdateCounters.ContainsKey(player.Ip))
+                            {
+                                if (sender.PlayersProximityUpdateCounters[player.Ip] < ProximityModeUpdateFrequency)
+                                {
+                                    sender.PlayersProximityUpdateCounters[player.Ip]++;
+                                    continue;
+                                }
+                                else
+                                    sender.PlayersProximityUpdateCounters[player.Ip] = 0;
+
+                            }
+                            else
+                                sender.PlayersProximityUpdateCounters.Add(player.Ip, 0);
+                        }
                     }
 
                     if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
