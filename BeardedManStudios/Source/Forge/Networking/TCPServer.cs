@@ -274,6 +274,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+        // overload for ncw field distance check case
         public void SendAll(FrameStream frame, NetworkingPlayer sender, NetworkingPlayer skipPlayer = null)
         {
             if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
@@ -284,7 +285,7 @@ namespace BeardedManStudios.Forge.Networking
                 foreach (NetworkingPlayer player in Players)
                 {
                     // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
-                    if (commonServerLogic.PlayerIsTooFar(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
+                    if (!commonServerLogic.PlayerIsDistanceReceiver(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
                         continue;
 
                     if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))

@@ -22,6 +22,7 @@ using BeardedManStudios.Source.Forge.Networking;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace BeardedManStudios.Forge.Networking
@@ -1420,7 +1421,7 @@ namespace BeardedManStudios.Forge.Networking
 							BMSByte data = new BMSByte().Clone(frame.StreamData);
 
 							if (data != null)
-								SendBinaryData(data, Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+								SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximityGrid : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
 						}
 
 						ReadDirtyFields(frame.StreamData, frame.TimeStep);
@@ -1463,8 +1464,10 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				BMSByte data = SerializeDirtyFields();
 
-				if (data != null)
-					SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximity : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+                if (data != null)
+                {
+                    SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximityGrid : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+                }
 
 				hasDirtyFields = false;
 				lastUpdateTimestep = timeStep;

@@ -34,6 +34,8 @@ namespace BeardedManStudios.Forge.Networking
 		OthersProximity = 7,
 		Owner = 8,
 		MessageGroup = 9,
-		ServerAndOwner = 10
+		ServerAndOwner = 10,
+        AllProximityGrid = 11,
+        OthersProximityGrid = 12
     }
 }
