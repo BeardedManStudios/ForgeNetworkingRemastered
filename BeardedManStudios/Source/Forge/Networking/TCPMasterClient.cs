@@ -27,9 +27,9 @@ namespace BeardedManStudios.Forge.Networking
 	/// </summary>
 	public class TCPMasterClient : TCPClient
 	{
-		protected override void Initialize(string host, ushort port)
+		protected override void Initialize(string host, ushort port, bool pendCreates = false)
 		{
-            //base.InitializeMasterClient(host, port); // removed because it does the same thing as InitializeTCPClient
+            base.Initialize(host, port, pendCreates);
             base.InitializeTCPClient(host, port);
 		}
 	}

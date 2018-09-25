@@ -63,8 +63,13 @@ namespace BeardedManStudios.Forge.Networking
             OnBindSuccessful();
             Initialize(host, port);
         }
-        protected virtual void Initialize(string host, ushort port)
+        protected virtual void Initialize(string host, ushort port, bool pendCreates = true)
         {
+
+            // By default pending creates should be true and flushed when ready
+            if(pendCreates)
+                PendCreates = true;
+
             // Get a random hash key that needs to be used for validating that the server was connected to
             headerHash = Websockets.HeaderHashKey();
 
