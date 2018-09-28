@@ -19,10 +19,15 @@ namespace BeardedManStudios
 			get { return (float)Math.Sqrt((x * x) + (y * y) + (z * z)); }
 		}
 
-		/// <summary>
-		/// This will return a new normalized $js.Vector3 of this vector
-		/// </summary>
-		public Vector Normalized
+        public float SqrMagnitude
+        {
+            get { return (float)((x * x) + (y * y) + (z * z)); }
+        }
+
+        /// <summary>
+        /// This will return a new normalized $js.Vector3 of this vector
+        /// </summary>
+        public Vector Normalized
 		{
 			get
 			{
@@ -84,7 +89,12 @@ namespace BeardedManStudios
 			return (float)Math.Sqrt(((vector.x - x) * (vector.x - x)) + ((y - vector.y) * (y - vector.y)) + ((z - vector.z) * (z - vector.z)));
 		}
 
-		public override bool Equals(object obj)
+        public float DistanceSquared(Vector vector)
+        {
+            return new Vector(x - vector.x, y - vector.y, z - vector.z).SqrMagnitude;
+        }
+
+        public override bool Equals(object obj)
 		{
 			if (!(obj is Vector))
 				return false;
