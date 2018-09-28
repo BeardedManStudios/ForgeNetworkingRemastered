@@ -333,6 +333,8 @@ namespace BeardedManStudios.Forge.Networking
         /// </summary>
         private void CleanupDisconnections() { DisconnectPending(RemovePlayer); }
 
+        private bool PendingCommitDisconnects = false;
+
         /// <summary>
         /// Commits the disconnects
         /// </summary>
@@ -509,7 +511,11 @@ namespace BeardedManStudios.Forge.Networking
         private void DoRead(SocketAsyncEventArgs e)
         {
             if (!IsBound)
+            {
+                ReturnBuffer(e);
                 return;
+            }
+
             ReceiveToken token = (ReceiveToken)e.UserToken;
             Socket playerSocket = null;
             try
@@ -647,7 +653,7 @@ namespace BeardedManStudios.Forge.Networking
 
                 // Go through all of the players and disconnect them
                 foreach (NetworkingPlayer player in Players)
-                    Disconnect(player, forced);
+                    Disconnect(player, true);
 
                 // Send signals to the methods registered to the disconnec events
                 if (!forced)
@@ -655,6 +661,8 @@ namespace BeardedManStudios.Forge.Networking
                 else
                     OnForcedDisconnect();
             }
+
+            CommitDisconnects();
         }
 
         /// <summary>
@@ -664,6 +672,14 @@ namespace BeardedManStudios.Forge.Networking
         public void Disconnect(NetworkingPlayer player, bool forced)
         {
             commonServerLogic.Disconnect(player, forced, DisconnectingPlayers, ForcedDisconnectingPlayers);
+            if (!PendingCommitDisconnects)
+            {
+                PendingCommitDisconnects = true;
+                Task.Queue(() => {
+                    PendingCommitDisconnects = false;
+                    CommitDisconnects();
+                }, 30000);
+            }
         }
 
         /// <summary>
@@ -682,7 +698,7 @@ namespace BeardedManStudios.Forge.Networking
             }
 
             // Tell the player that he is getting disconnected
-            if(player.TcpClientHandle.Connected)
+            if(player.TcpClientHandle != null && player.TcpClientHandle.Connected)
                 Send(player.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
             if (!forced)
@@ -699,7 +715,8 @@ namespace BeardedManStudios.Forge.Networking
         private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
         {
             OnPlayerDisconnected(player);
-            player.TcpClientHandle.Close();
+            if(player.TcpClientHandle != null)
+                player.TcpClientHandle.Close();
             rawClients.Remove(player.TcpClientHandle);
 
             if (!forced)
@@ -780,6 +797,7 @@ namespace BeardedManStudios.Forge.Networking
                 Send(currentPlayer.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
                 Disconnect(currentPlayer, false);
+                CommitDisconnects();
                 return;
             }
 
