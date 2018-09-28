@@ -139,7 +139,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 				// TODO:  Throw frame exception
 				throw new BaseNetworkException("The payload for the frame is not allowed to be null, otherwise use other constructor");
 
-			CreateFrame(useMask, timestep, payload.byteArr, receivers, groupId, routerId, isStream);
+			CreateFrame(useMask, timestep, payload.CompressBytes(), receivers, groupId, routerId, isStream);
 		}
 
 		/// <summary>
@@ -164,11 +164,13 @@ namespace BeardedManStudios.Forge.Networking.Frame
 		{
 			// The end of the frame payload is just before the unique id
 			int end = frame.Length - (sizeof(ulong) * 2);
+            bool isStream = receivers == 255;
 
-			// If the receivers is invalid, pull it from the data
-			if (receivers == 255)
+            // If the receivers is invalid, pull it from the data
+            if (isStream)
 			{
-				Receivers = (Receivers)frame[end - 1];
+                end -= 1;
+				Receivers = (Receivers)frame[end];
 				//end--;
 			}
 			else
@@ -177,6 +179,9 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			// If an empty frame was sent, do not copy it to data as data is already empty
 			if (frame.Length - payloadStart > end)
 				StreamData.BlockCopy(frame, payloadStart, end - payloadStart);
+
+            if (isStream)
+                end += 1;
 
 			// Pull the time step for this frame
 			TimeStep = BitConverter.ToUInt64(frame, end);
@@ -215,48 +220,49 @@ namespace BeardedManStudios.Forge.Networking.Frame
 
 			if (isStream)
 				length += 21;  // Group id (4), receivers (1), time step (8), unique id (8)
+            else
+                length += 16; // time step (8), unique id (8)
 
-			if (frame[0] == Binary.CONTROL_BYTE)
+            if (frame[0] == Binary.CONTROL_BYTE)
 				length += 1;
 
 			// Determine the length of the payload
 			int dataStartIndex = 0;
 			if (length <= 125)
 			{
-				frame[1] = (byte)length;
+				frame[1] = (byte)(useMask ? length | 128 : length);
 				dataStartIndex = 2;
 			}
 			else if (length >= 126 && length <= 65535)
 			{
 				dataStartIndex = 4;
-				frame[1] = 126;
+				frame[1] = (byte)(useMask ? 254 : 126);
 			}
 			else
 			{
 				dataStartIndex = 10;
-				frame[1] = 127;
+				frame[1] = (byte)(useMask ? 255 : 127);
 			}
 
 			// If the payload is greater than a byte (255) then set the order of the bytes for the length
 			if (dataStartIndex > 2)
 			{
-				int i = 0, j = 2, largestBitIndex = (dataStartIndex - 3) * 8;
+                int i = 0, j = 2, largestBitIndex = (dataStartIndex - 3) * 8;
 
-				// Little endian / Big endian reversal based on mask
-				if (mask.Length == 0)
-				{
-					for (i = largestBitIndex; i >= 0; i -= 8)
-						frame[j++] = (byte)((payload.Length >> i) & 255);
-				}
-				else
-				{
-					for (i = 0; i <= largestBitIndex; i += 8)
-						frame[j++] = (byte)((payload.Length >> i) & 255);
-				}
-			}
+                // Little endian / Big endian reversal based on mask
+                //if (mask.Length == 0)
+                //{
+                for (i = largestBitIndex; i >= 0; i -= 8)
+                    frame[j++] = (byte)((((long) length) >> i) & 255);
+                //} else
+                //{
+                //    for (i = 0; i <= largestBitIndex; i += 8)
+                //        frame[j++] = (byte)((payload.Length >> i) & 255);
+                //}
+            }
 
 			// Prepare the stream data with the size so that it doesn't have to keep resizing
-			StreamData.SetSize(dataStartIndex + mask.Length + payload.Length);
+			StreamData.SetSize(dataStartIndex + mask.Length + length);
 			StreamData.Clear();
 
 			// Add the frame bytes
@@ -286,7 +292,7 @@ namespace BeardedManStudios.Forge.Networking.Frame
 			StreamData.BlockCopy(payload, 0, payload.Length);
 
 			if (isStream)
-				StreamData.Append(new byte[] { (byte)Receivers });
+				StreamData.BlockCopy(new byte[1] { (byte)Receivers }, 0, sizeof(byte));
 
 			// Add the time step to the end of the frame
 			StreamData.BlockCopy<ulong>(TimeStep, sizeof(ulong));
