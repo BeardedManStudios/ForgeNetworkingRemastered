@@ -380,16 +380,17 @@ namespace BeardedManStudios.Forge.Networking
                 // Create the thread that will be listening for new data from connected clients and start its execution
                 //TODO: Task.Queue(ReadClients);
 
-                // Create the thread that will check for player timeouts
-                Task.Queue(() =>
-                {
-                    commonServerLogic.CheckClientTimeout((player) =>
-                    {
-                        Disconnect(player, true);
-                        OnPlayerTimeout(player);
-                        CleanupDisconnections();
-                    });
-                });
+                // Remove client timeouts since TCP knows when the connection has been closed.
+                //// Create the thread that will check for player timeouts
+                //Task.Queue(() =>
+                //{
+                //    commonServerLogic.CheckClientTimeout((player) =>
+                //    {
+                //        Disconnect(player, true);
+                //        OnPlayerTimeout(player);
+                //        CleanupDisconnections();
+                //    });
+                //});
 
                 //Let myself know I connected successfully
                 OnPlayerConnected(Me);
