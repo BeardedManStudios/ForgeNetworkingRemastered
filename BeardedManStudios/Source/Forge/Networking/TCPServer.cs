@@ -508,6 +508,8 @@ namespace BeardedManStudios.Forge.Networking
 
         private void DoRead(SocketAsyncEventArgs e)
         {
+            if (!IsBound)
+                return;
             ReceiveToken token = (ReceiveToken)e.UserToken;
             Socket playerSocket = null;
             try
@@ -680,7 +682,8 @@ namespace BeardedManStudios.Forge.Networking
             }
 
             // Tell the player that he is getting disconnected
-            Send(player.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
+            if(player.TcpClientHandle.Connected)
+                Send(player.TcpClientHandle, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, true));
 
             if (!forced)
             {

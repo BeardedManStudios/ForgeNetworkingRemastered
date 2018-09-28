@@ -47,6 +47,8 @@ namespace BeardedManStudios.Forge.Networking
 
         public virtual void Connect(string host, ushort port = DEFAULT_PORT)
         {
+            if (Disposed)
+                throw new ObjectDisposedException("TCPClient", "This object has been disposed and can not be used to connect, please use a new TCPClient");
             try
             {
                 client = new TcpClient(host, port); // constructor runs connect
@@ -107,6 +109,13 @@ namespace BeardedManStudios.Forge.Networking
 
         private void DoRead(SocketAsyncEventArgs e)
         {
+            if (!client.Connected)
+            {
+                Disconnect(true);
+                return;
+            }
+            if (!IsBound)
+                return;
             if (!client.Client.ReceiveAsync(e))
                 ReceiveAsync_Completed(this, e);
         }
@@ -220,7 +229,7 @@ namespace BeardedManStudios.Forge.Networking
                     // Close our TcpClient so that it can no longer be used
                     if (forced)
                         client.Close();
-                    else
+                    else if (client.Connected)
                         Send(new ConnectionClose(Time.Timestep, true, Receivers.Server, MessageGroupIds.DISCONNECT, true));
 
                     // Send signals to the methods registered to the disconnec events
