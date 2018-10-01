@@ -29,33 +29,9 @@ Forge Networking is a networking solution built with the Unity game engine in mi
 [Original Unity Forum Thread](https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/)
 
 ## Getting Started
-### Installation
-Nightly Builds (recommended):
-1) Download the nightly build unitypackage from the [builds](#builds) section below
-2) Open the package in Unity
-3) Done, you are ready to start working with doc examples
-
-Unity Package:
-1) Download the unitypackage
-2) Open the package in Unity
-3) Done, you are ready to start working with doc examples
-
-Git Source Code:
-1) Clone the source
-2) Open the `BeardedManStudios/BeardedManStudios.sln`
-3) Build it (See note below if you get errors)
-4) Open `Forge Networking Remastered Unity` in Unity
-5) Right click on `Bearded Man Studios Inc` and export a unity package
-6) Follow the steps above listed under `Unity Package:` starting with step #2
-
-**Note** Sometimes when you try to build from GitHub you will get an error about missing references. To fix this you need to open the Unity project for Forge Networking. Then open any script inside your IDE by double click it. This will force Unity to update the `.csproj` file for the Unity project. After this you can close that instance of the IDE and return to the `BeardedManStudios.sln` and continue back at step 3 above.
-
-## Next Steps
 Use the links below to learn how to create your first project with Forge Remastered, and be sure to join our active Discord server to talk with others Forge users.
 
-[Official Documentation](http://docs.forgepowered.com/)
-
-[Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
+[Official Documentation](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
 
 [Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
 
@@ -63,7 +39,6 @@ Use the links below to learn how to create your first project with Forge Remaste
 
 [YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
 
-[Getting Started Docs](http://docs.forgepowered.com/GettingStarted/getting-started/)
 
 ## Builds
 #### [Nightly Builds Thanks To @TiToMoskito On Discord / Rexima On GitHub](https://fnr.rumstein.eu/)
