@@ -618,7 +618,7 @@ namespace BeardedManStudios.Forge.Networking
             }
             else
             {
-                Disconnect((NetworkingPlayer)e.UserToken, true);
+                Disconnect(((ReceiveToken)e.UserToken).player, true);
                 ReturnBuffer(e);
             }
         }
