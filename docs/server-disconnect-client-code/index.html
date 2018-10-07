@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Server Disconnect Client Code - Forge Networking Remastered</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Server Disconnect Client Code";
+    var mkdocs_page_input_path = "server-disconnect-client-code.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Forge Networking Remastered</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Home</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="..">User Manual (Forge Networking Remastered)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../authoritative-design/">Authoritative Design</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Getting Started</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../GettingStarted/getting-started/">Getting Started</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../GettingStarted/basic-moving-cube-example/">Basic Moving Cube Example</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../GettingStarted/basic-rpc-example/">Basic RPC Example</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../GettingStarted/basic-instantiation-example/">Basic Instantiation Example</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../GettingStarted/jump-start-guide/">Jump Start Guide</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Network Contract Wizard (NCW)</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../NetworkContractWizard/network-contract-wizard-ncw/">Network Contract Wizard (NCW)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../NetworkContractWizard/extending-generated-classes/">Extending Generated Classes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../NetworkContractWizard/name-collision-issues/">Name Collision Issues</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Network Object</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../NetworkObject/changing-ownership/">Changing Ownership</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../NetworkObject/destroying-the-network-object/">Destroying the Network Object</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../NetworkObject/fields/">Fields</a>
+                </li>
+                <li class="">
+                    
+    <span class="caption-text">Remote Procedure Calls (RPCs)</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/remote-procedure-calls/">Remote Procedure Calls</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/buffered-rpcs/">Buffered RPCs</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/sending-rpc-to-a-single-player/">Sending RPC to a Single Player</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/rpcargs-and-rpcinfo-structs/">RpcArgs and RpcInfo Structs</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/rpc-validation-by-server/">RPC Validation by Server</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/replacing-previous-buffered-rpcs/">Replacing Previous Buffered RPCs</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../NetworkObject/RemoteProcedureCalls/clearing-buffered-rpcs/">Clearing Buffered RPCs</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Unity Integration</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/gameobject-execution-order/">GameObject Execution Order</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/network-instantiation/">Network Instantiation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/threading-in-unity/">Threading in Unity</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/main-threading-rpcs/">Main Threading RPCs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/running-unity-specific-code-on-the-main-thread/">Running Unity specific code on the main thread</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../UnityIntegration/network-start/">Unity Integration Network Start</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Basic Network Samples</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/server-hosting-code/">Server Hosting Code</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/client-connecting-code/">Client Connecting Code</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/server-disconnect-client-code/">Server Disconnect Client Code</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/ban-client-code/">Ban Client Code</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/send-binary-frame/">Send Binary Frame</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../BasicNetworkSamples/send-file/">Send File</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Scene Navigation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../SceneNavigation/loading-scenes/">Loading Scenes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../SceneNavigation/scene-events/">Scene Events</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">NetWorker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../NetWorker/temporarily-blocking-connections/">Temporarily Blocking Connections</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../NetWorker/thread-safe-player-iteration/">Thread Safe Player Iteration</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Master Server</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../MasterServer/quick-start/">Master Server Quick Start</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../MasterServer/connecting-to-master-server/">Connecting to Master Server</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../MasterServer/getting-host-list/">Getting Host List From Master Server</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../MasterServer/windows-server-firewall-setup/">Windows Server Firewall Setup</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Server</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../WebServer/jumpstart/">Web Server Jumpstart</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../WebServer/extending-with-mvc/">Web Server Extending With MVC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../WebServer/command-plugins/">Web Server Command Plugins</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Troubleshooting</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../Troubleshooting/troubleshooting/">Troubleshooting</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../Troubleshooting/throttling-network-internal/">Throttling Network Internal</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../connection-cycle-events/">Events</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rewinding/">Rewinding</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../network-logging/">Debugging</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../working-with-multiple-sockets/">Working With Multiple Sockets</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../nat-hole-punching/">NAT Hole Punching</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../lan-discovery/">LAN Discovery</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../offline-mode/">Offline Mode</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../lobby/">Lobby System</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../adding-and-updating-docs/">Contributing</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Forge Networking Remastered</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Server Disconnect Client Code</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="server-disconnect-client-code">Server Disconnect Client Code</h1>
+<p>Sometimes it is necessary to manually disconnect a player from the server (on the server). First you will need to find out which NetworkingPlayer you are wishing to kick on the server. Once you have a reference to that player, you are going to want to call the disconnect on them. To do this you need to use the reference to your server's <code>NetWorker</code>.</p>
+<pre><code class="csharp">// We are going to force the disconnect of the client
+bool forcefully = true;
+
+// Consider the player you want to disconnect is the targetPlayer object
+// Also consider that serverNetworker is the server's networker (this can be NetworkManager.Instance.Networker)
+((IServer)serverNetworker).Disconnect(targetPlayer, forcefully);
+</code></pre>
+
+<p>That is it, you are ready to start kicking all of the players! :D</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

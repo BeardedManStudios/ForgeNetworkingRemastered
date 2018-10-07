@@ -342,10 +342,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public float ProximityDistance { get; set; }
 
-		/// <summary>
-		/// Allows the newly created network object to be queued for the flush call
-		/// </summary>
-		public bool PendCreates { get; set; }
+        /// <summary>
+        /// The distance from the proximity location in order to receive proximity
+        /// messages from other players
+        /// </summary>
+        public int ProximityModeUpdateFrequency { get; set; }
+
+        /// <summary>
+        /// Allows the newly created network object to be queued for the flush call
+        /// </summary>
+        public bool PendCreates { get; set; }
 
 		/// <summary>
 		/// A boolean to tell the read thread to stop reading and close

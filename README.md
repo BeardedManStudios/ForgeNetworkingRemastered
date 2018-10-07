@@ -24,30 +24,14 @@ Welcome to the most innovative networking solution (which works with the Unity g
 If you can name it, Forge most likely can do it :), it is built on some basic principles which makes any idea a possibility.
 
 ## TLDR
-Forge Networking is a networking solution built with the Unity game engine in mind. However, this is actually the 2nd version of Forge so it has some interesting properties. The first original Forge (classic) was built directly inside of Unity and was very tightly integrated with Unity. Once we learned everything we could from that version we opened up a blank Visual Studio project and began work on Forge Networking remastered. Forge Networking Remastered was completely developed independently of Unity, it was tested and debugged in a C# project. Once it was working, we made it so that Unity could use it. This means that you can easily create native C# applications which run on Forge to support your games and applications such as Relay servers, NAT hole punching servers, chat servers, master servers, cache servers, websocket servers, you name it! Forge was developed in a way that makes it easy for you to do serialization of data in any way that you want. This allows you to make the security of your project as secure as you want or as fast as you need.
+Forge Networking is a networking solution built with the Unity game engine in mind. However, this is actually the 2nd version of Forge so it has some interesting properties. The first original Forge (classic) was built directly inside of Unity and was very tightly integrated with Unity. Once we learned everything we could from that version we opened up a blank Visual Studio project and began work on Forge Networking Remastered. Forge Networking Remastered was completely developed independently of Unity, it was tested and debugged in a C# project. Once it was working, we made it so that Unity could use it. This means that you can easily create native C# applications which run on Forge to support your games and applications such as Relay servers, NAT hole punching servers, chat servers, master servers, cache servers, websocket servers, you name it! Forge was developed in a way that makes it easy for you to do serialization of data in any way that you want. This allows you to make the security of your project as secure as you want or as fast as you need.
 
 [Original Unity Forum Thread](https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/)
 
-## Installation
-Unity Package:
-1) Download the unitypackage
-2) Open the package in Unity
-3) Done, you are ready to start working with doc examples
+## Getting Started
+Use the links below to learn how to create your first project with Forge Remastered, and be sure to join our active Discord server to talk with others Forge users.
 
-Git Source Code:
-1) Clone the source
-2) Open the `BeardedManStudios/BeardedManStudios.sln`
-3) Build it (See note below if you get errors)
-4) Open `Forge Networking Remastered Unity` in Unity
-5) Right click on `Bearded Man Studios Inc` and export a unity package
-6) Follow the steps above listed under `Unity Package:` starting with step #2
-
-**Note** Sometimes when you try to build from GitHub you will get an error about missing references. To fix this you need to open the Unity project for Forge Networking. Then open any script inside your IDE by double click it. This will force Unity to update the `.csproj` file for the Unity project. After this you can close that instance of the IDE and return to the `BeardedManStudios.sln` and continue back at step 3 above.
-
-## Community
-[Official Documentation](http://docs.forgepowered.com/)
-
-[Wiki](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
+[Official Documentation](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
 
 [Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
 
@@ -55,7 +39,6 @@ Git Source Code:
 
 [YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
 
-[Getting Started Docs](http://docs.forgepowered.com/GettingStarted/getting-started/)
 
 ## Builds
 #### [Nightly Builds Thanks To @TiToMoskito On Discord / Rexima On GitHub](https://fnr.rumstein.eu/)

@@ -85,7 +85,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				foreach (NetworkingPlayer player in Players)
 				{
-					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer))
+                 
+                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
 
 					try
@@ -100,14 +101,44 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		/// <summary>
-		/// Sends binary message to the specified receiver(s)
-		/// </summary>
-		/// <param name="receivers">The client to receive the message</param>
-		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
-		/// <param name="reliable">True if message must be delivered</param>
-		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
-		public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+        
+        // overload for ncw field distance check case
+        public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false, NetworkingPlayer skipPlayer = null)
+        {
+            if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
+                bufferedMessages.Add(frame);
+
+            lock (Players)
+            {
+                foreach (NetworkingPlayer player in Players)
+                {
+                    // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
+                    if (!commonServerLogic.PlayerIsDistanceReceiver(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
+                        continue;
+
+                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
+                        continue;
+
+                    try
+                    {
+                        Send(player, frame, reliable);
+                    }
+                    catch
+                    {
+                        Disconnect(player, true);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends binary message to the specified receiver(s)
+        /// </summary>
+        /// <param name="receivers">The client to receive the message</param>
+        /// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+        /// <param name="reliable">True if message must be delivered</param>
+        /// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+        public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
 		{
 			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
 			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);

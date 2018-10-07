@@ -22,6 +22,7 @@ using BeardedManStudios.Source.Forge.Networking;
 using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace BeardedManStudios.Forge.Networking
@@ -153,11 +154,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// via proximity all; this value can be changed at runtime
 		/// </summary>
 		public bool ProximityBasedFields { get; set; }
+        public Receivers ProximityBasedFieldsMode { get; set; }
 
-		/// <summary>
-		/// A lookup table for all of the RPC's that are available to this network object
-		/// </summary>
-		public Dictionary<byte, Rpc> Rpcs { get; private set; }
+        /// <summary>
+        /// A lookup table for all of the RPC's that are available to this network object
+        /// </summary>
+        public Dictionary<byte, Rpc> Rpcs { get; private set; }
 
 		/// <summary>
 		/// This is a mapping from the method name to the id that it is within the Rpcs dictionary
@@ -779,6 +781,8 @@ namespace BeardedManStudios.Forge.Networking
                 if (objectCreatedHandler != null)
                     target.objectCreated += objectCreatedHandler;
 
+                pendingCreates = pendingCreates.OrderBy(obj => obj.NetworkId).ToList();
+
 				for (int i = 0; i < pendingCreates.Count; i++)
 				{
 					if (!target.ObjectCreatedRegistered)
@@ -1298,7 +1302,7 @@ namespace BeardedManStudios.Forge.Networking
 				// that don't include itself
 				else if (receivers != Receivers.Owner && ((sender != Networker.Me && sender != null) ||
 					(receivers != Receivers.Others && receivers != Receivers.OthersBuffered &&
-					receivers != Receivers.OthersProximity && receivers != Receivers.Target)))
+					receivers != Receivers.OthersProximity && receivers != Receivers.Target && receivers != Receivers.OthersProximityGrid)))
 				{
 					InvokeRpcOnSelfServer(methodId, sender, timestep, args);
 				}
@@ -1384,11 +1388,11 @@ namespace BeardedManStudios.Forge.Networking
 #else
                 if (Networker is TCPServer)
 #endif
-                    ((TCPServer)Networker).SendAll(frame, skipPlayer);
+                    ((TCPServer)Networker).SendAll(frame, Owner, skipPlayer);
                 else if (Networker is TCPClient)
                     ((TCPClient)Networker).Send(frame);
                 else if (Networker is UDPServer)
-                    ((UDPServer)Networker).Send(frame, reliable, skipPlayer);
+                    ((UDPServer)Networker).Send(frame, Owner, reliable, skipPlayer);
                 else if (Networker is UDPClient)
                     ((UDPClient)Networker).Send(frame, reliable);
             }
@@ -1418,7 +1422,7 @@ namespace BeardedManStudios.Forge.Networking
 							BMSByte data = new BMSByte().Clone(frame.StreamData);
 
 							if (data != null)
-								SendBinaryData(data, Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+								SendBinaryData(data, ProximityBasedFields ? ProximityBasedFieldsMode : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
 						}
 
 						ReadDirtyFields(frame.StreamData, frame.TimeStep);
@@ -1461,21 +1465,30 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				BMSByte data = SerializeDirtyFields();
 
-				if (data != null)
-					SendBinaryData(data, ProximityBasedFields ? Receivers.AllProximity : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+                if (data != null)
+                {
+                    SendBinaryData(data, ProximityBasedFields ? ProximityBasedFieldsMode : Receivers.All, DIRTY_FIELD_SUB_ROUTER_ID, false, true);
+                }
 
 				hasDirtyFields = false;
 				lastUpdateTimestep = timeStep;
 			}
 		}
+        
 
-		/// <summary>
-		/// Called when data comes in for this network object that is needed to be read
-		/// in order to update any values contained within it
-		/// </summary>
-		/// <param name="payload">The data from the network for this object</param>
-		/// <param name="timestep">The timestep for this particular change</param>
-		protected abstract void ReadPayload(BMSByte payload, ulong timestep);
+        public void setProximityFields(bool useProximity, Receivers mode = Receivers.AllProximity)
+        {
+            ProximityBasedFields = useProximity;
+            ProximityBasedFieldsMode = mode;
+        }
+
+        /// <summary>
+        /// Called when data comes in for this network object that is needed to be read
+        /// in order to update any values contained within it
+        /// </summary>
+        /// <param name="payload">The data from the network for this object</param>
+        /// <param name="timestep">The timestep for this particular change</param>
+        protected abstract void ReadPayload(BMSByte payload, ulong timestep);
 
 		/// <summary>
 		/// Used to write any data on the network for this object to keep it up to date

@@ -172,7 +172,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public Vector ProximityLocation { get; set; }
 
-		private ulong currentReliableId = 0;
+        public GridLocation gridPosition { get; set; }
+
+        /// <summary>
+        /// Used to match players proximity status against each player, to know how many times
+        ///  updating him has been skipped - used with the NetWorker::ProximityDistance
+        /// </summary>
+        public Dictionary<string, int> PlayersProximityUpdateCounters = new Dictionary<string, int>();
+
+
+        private ulong currentReliableId = 0;
 		public Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }

@@ -41,7 +41,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						if (>:[i]:<NetworkObject.Length > 0 && >:[i]:<NetworkObject[obj.CreateCode] != null)
 						{
 							var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<NetworkBehavior>();
+							newObj = go.GetComponent<>:[i]:<Behavior>();
 						}
 					}
 
