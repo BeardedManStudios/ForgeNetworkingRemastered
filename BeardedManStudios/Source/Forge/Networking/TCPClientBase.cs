@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 #if WINDOWS_UWP
 using Windows.Networking.Sockets;
@@ -6,7 +7,6 @@ using Windows.Networking;
 using System.IO;
 #else
 using System.Net.Sockets;
-using System.Threading;
 #endif
 
 using BeardedManStudios.Forge.Networking.Frame;
