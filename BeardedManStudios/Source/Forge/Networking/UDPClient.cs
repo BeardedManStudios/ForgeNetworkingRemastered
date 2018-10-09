@@ -58,8 +58,10 @@ namespace BeardedManStudios.Forge.Networking
 		public event BaseNetworkEvent connectAttemptFailed;
 
 		public override void Send(FrameStream frame, bool reliable = false)
-		{
-			UDPPacketComposer composer = new UDPPacketComposer();
+        {
+            if(LatencySimulation > 0)
+                Thread.Sleep(LatencySimulation);
+            UDPPacketComposer composer = new UDPPacketComposer();
 
 			// If this message is reliable then make sure to keep a reference to the composer
 			// so that there are not any run-away threads
@@ -315,9 +317,20 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 						}
 
-						// Add the packet to the manager so that it can be tracked and executed on complete
-						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
-					}
+                        // Add the packet to the manager so that it can be tracked and executed on complete
+                        if (LatencySimulation == 0)
+                            packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+                        else
+                        {
+                            //Delay the call to simulate latency
+                            Task.Queue(() =>
+                            {
+                                Thread.Sleep(LatencySimulation);
+                                lock (packetManager)
+                                    packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+                            });
+                        }
+                    }
 				}
 			}
 			catch (Exception ex)

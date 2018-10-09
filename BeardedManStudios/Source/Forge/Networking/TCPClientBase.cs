@@ -6,6 +6,7 @@ using Windows.Networking;
 using System.IO;
 #else
 using System.Net.Sockets;
+using System.Threading;
 #endif
 
 using BeardedManStudios.Forge.Networking.Frame;
@@ -162,8 +163,14 @@ namespace BeardedManStudios.Forge.Networking
                     }
                     FrameStream frame = Factory.DecodeMessage(data, false, MessageGroupIds.TCP_FIND_GROUP_ID, Server);
 
-                    FireRead(frame, Server);
-
+                    if (LatencySimulation == 0)
+                        FireRead(frame, Server);
+                    else
+                        Task.Queue(() =>
+                        {
+                            Thread.Sleep(LatencySimulation);
+                            FireRead(frame, server);
+                        });
                 }
                 DoRead(e);
             }
@@ -197,7 +204,15 @@ namespace BeardedManStudios.Forge.Networking
             {
                 // Get the raw bytes from the frame and send them
                 byte[] data = frame.GetData();
-                RawWrite(data);
+
+                if (LatencySimulation == 0)
+                    RawWrite(data);
+                else
+                    Task.Queue(() =>
+                    {
+                        Thread.Sleep(LatencySimulation);
+                        RawWrite(data);
+                    });
             }
         }
 

@@ -56,6 +56,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void Send(NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
+            if (LatencySimulation > 0)
+                Thread.Sleep(LatencySimulation);
 			UDPPacketComposer composer = new UDPPacketComposer(this, player, frame, reliable);
 
 			// If this message is reliable then make sure to keep a reference to the composer
@@ -486,7 +488,16 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+                if(LatencySimulation == 0)
+    				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+                else
+                {
+                    Task.Queue(() =>
+                    {
+                        Thread.Sleep(LatencySimulation);
+                        currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+                    });
+                }
 			}
 			catch (Exception ex)
 			{

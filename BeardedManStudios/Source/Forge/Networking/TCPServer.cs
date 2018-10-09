@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
+using System.Threading;
 
 #if WINDOWS_UWP
 using Windows.Networking.Sockets;
@@ -159,7 +160,14 @@ namespace BeardedManStudios.Forge.Networking
                     // Get the raw bytes from the frame and send them
                     byte[] data = frame.GetData();
 
-                    RawWrite(client, data);
+                    if (LatencySimulation == 0)
+                        RawWrite(client, data);
+                    else
+                        Task.Queue(() =>
+                        {
+                            Thread.Sleep(LatencySimulation);
+                            RawWrite(client, data);
+                        });
                     return true;
                 }
                 catch
@@ -611,7 +619,14 @@ namespace BeardedManStudios.Forge.Networking
                     else
                     {
                         token.player.Ping();
-                        FireRead(frame, token.player);
+                        if (LatencySimulation == 0)
+                            FireRead(frame, token.player);
+                        else
+                            Task.Queue(() =>
+                            {
+                                Thread.Sleep(LatencySimulation);
+                                FireRead(frame, token.player);
+                            });
                     }
                 }
                 DoRead(e);
