@@ -524,7 +524,10 @@ namespace BeardedManStudios.Forge.Networking
 				action(networkObject);
 		}
 
-		public void IteratePlayers(Action<NetworkingPlayer> expression)
+        /// <summary>
+        /// Iterate over all NetworkingPlayers in a thread-safe manner
+        /// </summary>
+        public void IteratePlayers(Action<NetworkingPlayer> expression)
 		{
 			lock (Players)
 			{
@@ -533,16 +536,26 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		public void IterateNetworkObjects(Action<NetworkObject> expression)
+        /// <summary>
+        /// Iterate over all NetworkObjects in a thread-safe manner
+        /// </summary>
+        public void IterateNetworkObjects(Action<NetworkObject> expression)
 		{
-			lock (Players)
+			lock (NetworkObjectList)
 			{
 				for (int i = 0; i < NetworkObjectList.Count; i++)
 					expression(NetworkObjectList[i]);
 			}
 		}
 
-		public NetworkingPlayer GetPlayerById(uint id)
+        /// <summary>
+        /// Retrieve a NetworkingPlayer by NetworkId
+        /// </summary>
+        /// <returns>
+        /// The NetworkingPlayer with NetworkId equal to id
+        /// </returns>
+        /// <param name="id">The NetworkId of the NetworkingPlayer</param>
+        public NetworkingPlayer GetPlayerById(uint id)
 		{
 			lock (Players)
 			{
@@ -556,7 +569,14 @@ namespace BeardedManStudios.Forge.Networking
 			return null;
 		}
 
-		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
+        /// <summary>
+        /// Retrieve a NetworkingPlayer based on an expression
+        /// </summary>
+        /// <returns>
+        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+        /// </returns>
+        /// <param name="expression">The expression on which to match</param>
+        public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
 		{
 			lock (Players)
 			{
@@ -564,7 +584,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
+        /// <summary>
+        /// Retrieve a NetworkingPlayer which matches the provided NetworkingPlayer by Ip and InstanceGuid
+        /// </summary>
+        /// <returns>
+        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+        /// </returns>
+        /// <param name="expression">The expression on which to match</param>
+        public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
 		{
 			if (other.Networker == this)
 				return other;
