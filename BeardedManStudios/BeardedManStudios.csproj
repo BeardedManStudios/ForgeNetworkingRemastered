@@ -46,7 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Steamworks.NET" Condition="$(DefineConstants.Contains('STEAMWORKS'))">
-      <HintPath>..\SteamworksDOTNet\Steamworks.NET.dll</HintPath>
+      <HintPath>..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Plugins\Steamworks.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>

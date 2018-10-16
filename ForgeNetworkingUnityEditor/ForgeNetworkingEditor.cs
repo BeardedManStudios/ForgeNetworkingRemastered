@@ -3,6 +3,7 @@
 using BeardedManStudios.Templating;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -753,9 +754,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				};
 
 				if (i + 1 < btn.ClassVariables.Count)
-					interpolateValues += btn.ClassVariables[i].InterpolateValue.ToString() + ",";
+					interpolateValues += btn.ClassVariables[i].InterpolateValue.ToString(CultureInfo.InvariantCulture) + ",";
 				else
-					interpolateValues += btn.ClassVariables[i].InterpolateValue.ToString();
+					interpolateValues += btn.ClassVariables[i].InterpolateValue.ToString(CultureInfo.InvariantCulture);
 
 				variables.Add(fieldData);
 			}
