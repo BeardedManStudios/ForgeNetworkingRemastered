@@ -550,15 +550,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void AssignOwnership(RpcArgs args)
 		{
-			//call the ownership changed event on old owner
-
-			if (!IsOwner)
-				OwnershipChanged();
-			
-			IsOwner = args.GetNext<bool>();
-          		 //call ownership event on new owner
-			if (!IsOwner)
-				OwnershipChanged();
+		    IsOwner = args.GetNext<bool>();
+		    OwnershipChanged();
 		}
 
 		protected virtual void OwnershipChanged()
