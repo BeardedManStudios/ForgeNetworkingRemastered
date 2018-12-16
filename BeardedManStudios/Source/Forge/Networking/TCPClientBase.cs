@@ -36,7 +36,9 @@ namespace BeardedManStudios.Forge.Networking
         /// </summary>
         private bool disconnectedSelf = false;
 
-        public event BaseNetworkEvent connectAttemptFailed;
+        [Obsolete("This event is obsolete. Use connectAttemptFailed instead.")]
+	public event BaseNetworkEvent ConnectAttemptFailed;
+	public event BaseNetworkEvent connectAttemptFailed;
         byte[] buffer = new byte[8192];
 
         /// <summary>
@@ -55,6 +57,11 @@ namespace BeardedManStudios.Forge.Networking
             }
             catch
             {
+                if (ConnectAttemptFailed != null)
+                {
+                    ConnectAttemptFailed(this);
+                }
+		
                 if (connectAttemptFailed != null)
                 {
                     connectAttemptFailed(this);
