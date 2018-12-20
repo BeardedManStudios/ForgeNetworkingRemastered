@@ -98,7 +98,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 								string address = server.Address;
 								ushort port = server.Port;
 								string name = server.Name;
-
+								string currentplayers = server.Players;
+                            					
+								//Example for currentplayers(usernames)
+								if (!(string.IsNullOrEmpty(currentplayers)))
+								{
+									string[] currentplayerstolist = currentplayers.Split(',');
+									currentplayerslist = new List<string>(currentplayerstolist);
+								}
 								// name, address, port, comment, type, mode, players, maxPlayers, protocol
 								CreateServerOption(name, () =>
 								{
