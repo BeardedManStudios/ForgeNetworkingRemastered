@@ -1,4 +1,4 @@
-﻿using BeardedManStudios;
+using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
@@ -18,6 +18,7 @@ namespace MasterServer
 		public bool IsRunning { get; private set; }
 		private TCPServer server;
 		private List<Host> hosts = new List<Host>();
+        
 		private Dictionary<string, int> _playerRequests = new Dictionary<string, int>();
 		private bool _eloRangeSet;
 		private int _eloRange;
@@ -119,7 +120,7 @@ namespace MasterServer
 			int elo = data["elo"].AsInt;
 			bool useElo = data["useElo"].AsBool;
 
-			Host host = new Host()
+        Host host = new Host()
 			{
 				Name = name,
 				Address = address,
@@ -133,21 +134,24 @@ namespace MasterServer
 				Protocol = protocol,
 				Player = player,
 				Elo = elo,
-				UseElo = useElo
-			};
+				UseElo = useElo,
+                Players = new List<string>()
+        };
 
 			hosts.Add(host);
 			Log(string.Format($"Host [{address}] registered on port [{port}] with name [{name}]"));
 		}
 
-		private void Update(NetworkingPlayer player, JSONNode data)
-		{
-			int playerCount = data["playerCount"].AsInt;
-			string comment = data["comment"];
-			string gameType = data["type"];
-			string mode = data["mode"];
-			ushort port = data["port"].AsUShort;
-
+        private void Update(NetworkingPlayer player, JSONNode data)
+        {
+            int playerCount = data["playerCount"].AsInt;
+            string comment = data["comment"];
+            string gameType = data["type"];
+            string mode = data["mode"];
+            ushort port = data["port"].AsUShort;
+            string newplayer = data["players"];
+            bool removeplayer = data["removeplayer"].AsBool;
+            
 			string address = ((IPEndPoint)player.TcpClientHandle.Client.RemoteEndPoint).Address.ToString();
 			for (int i = 0; i < hosts.Count; i++)
 			{
@@ -158,12 +162,26 @@ namespace MasterServer
                         host.Comment = comment;
 					if(gameType != null)
                         host.Type = gameType;
-					if (mode != null)
+                    if (mode != null)
                         host.Mode = mode;
-					host.PlayerCount = playerCount;
+                    
+                    if (newplayer != null)
+                    {
+                        if (removeplayer)
+                        {
+                            host.Players.Remove(newplayer);
+                        }
+                        else
+                        {
+                            host.Players.Add(newplayer);
+                        }
+                    }
+                    
+
+                    host.PlayerCount = playerCount;
 
 					hosts[i] = host;
-					break;
+                    break;
 				}
 			}
 		}
@@ -222,6 +240,7 @@ namespace MasterServer
 				hostData.Add("elo", new JSONData(host.Elo));
 				hostData.Add("useElo", new JSONData(host.UseElo));
 				hostData.Add("eloDelta", new JSONData(delta));
+                hostData.Add("currentplayers", string.Join(",", host.Players.ToArray()));
 				filterHosts.Add(hostData);
 			}
 
