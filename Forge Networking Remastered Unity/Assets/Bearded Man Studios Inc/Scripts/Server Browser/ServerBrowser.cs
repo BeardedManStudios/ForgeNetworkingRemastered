@@ -22,6 +22,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public GameObject networkManager = null;
 		TCPClient client = null;
 
+		public List<string> currentplayerslist;
 		private void Awake()
 		{
 			MainThreadManager.Create();
