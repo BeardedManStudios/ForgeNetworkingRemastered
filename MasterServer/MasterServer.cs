@@ -159,9 +159,9 @@ namespace MasterServer
 				{
 					Host host = hosts[i];
 					if(comment != null)
-					host.Comment = comment;
+						host.Comment = comment;
 					if(gameType != null)
-					host.Type = gameType;
+						host.Type = gameType;
 					if (mode != null)
 						host.Mode = mode;
 
