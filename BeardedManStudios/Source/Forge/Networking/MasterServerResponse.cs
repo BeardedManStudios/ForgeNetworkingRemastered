@@ -41,7 +41,7 @@ namespace BeardedManStudios.Forge.Networking
 			public int EloDelta;
 			public string Players;
 
-		public Server(string addr, ushort port)
+			public Server(string addr, ushort port)
 			{
 				Name = string.Empty;
 				Address = addr;
@@ -73,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking
 				UseElo = data["useElo"].AsBool;
 				EloDelta = data["eloDelta"].AsInt;
 				Players = data["currentplayers"];
-            }
+			}
 
 			public JSONClass ToJSON
 			{
