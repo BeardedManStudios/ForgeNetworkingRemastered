@@ -1,4 +1,4 @@
-﻿/*-----------------------------+-------------------------------\
+/*-----------------------------+-------------------------------\
 |                                                              |
 |                         !!!NOTICE!!!                         |
 |                                                              |
@@ -39,8 +39,9 @@ namespace BeardedManStudios.Forge.Networking
 			public int Elo;
 			public bool UseElo;
 			public int EloDelta;
+			public string Players;
 
-			public Server(string addr, ushort port)
+		public Server(string addr, ushort port)
 			{
 				Name = string.Empty;
 				Address = addr;
@@ -54,6 +55,7 @@ namespace BeardedManStudios.Forge.Networking
 				Elo = 0;
 				UseElo = false;
 				EloDelta = 0;
+				Players = string.Empty;
 			}
 
 			public Server(JSONClass data)
@@ -70,7 +72,8 @@ namespace BeardedManStudios.Forge.Networking
 				Elo = data["elo"].AsInt;
 				UseElo = data["useElo"].AsBool;
 				EloDelta = data["eloDelta"].AsInt;
-			}
+				Players = data["currentplayers"];
+            }
 
 			public JSONClass ToJSON
 			{
@@ -90,6 +93,7 @@ namespace BeardedManStudios.Forge.Networking
 					returnValue.Add("elo", new JSONData(Elo));
 					returnValue.Add("useElo", new JSONData(UseElo));
 					returnValue.Add("eloDelta", new JSONData(EloDelta));
+					returnValue.Add("currentplayers", Players);
 
 					return returnValue;
 				}
