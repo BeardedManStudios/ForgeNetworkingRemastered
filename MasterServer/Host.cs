@@ -17,5 +17,6 @@ namespace MasterServer
 		public int Elo;
 		public bool UseElo;
 		public NetworkingPlayer Player;
+		public List<string> Players;
 	}
 }
