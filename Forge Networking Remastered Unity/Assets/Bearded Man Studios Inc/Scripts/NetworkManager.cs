@@ -1,4 +1,4 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
@@ -274,7 +274,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			MasterServerNetworker = null;
 		}
 
-		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
+		public void UpdateMasterServerListing(NetWorker server, string player = null,bool removeplayer = false, string comment = null, string gameType = null, string mode = null)
 		{
 			JSONNode sendData = JSONNode.Parse("{}");
 			JSONClass registerData = new JSONClass();
@@ -283,7 +283,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (comment != null) registerData.Add("comment", comment);
 			if (gameType != null) registerData.Add("type", gameType);
 			if (mode != null) registerData.Add("mode", mode);
-			registerData.Add("port", new JSONData(server.Port));
+			if (player != null) registerData.Add("players", player);
+			
+            
+            		registerData.Add("removeplayer", removeplayer.ToString());
+            		registerData.Add("port", new JSONData(server.Port));
 
 			sendData.Add("update", registerData);
 
