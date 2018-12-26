@@ -343,8 +343,9 @@ namespace BeardedManStudios.Forge.Networking
 		public float ProximityDistance { get; set; }
 
         /// <summary>
-        /// The distance from the proximity location in order to receive proximity
-        /// messages from other players
+        /// How often a client gets updates if it is outside the proximity range.
+		/// 
+		/// If set to 0 clients that are too far will never get updated.
         /// </summary>
         public int ProximityModeUpdateFrequency { get; set; }
 
