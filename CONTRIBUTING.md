@@ -4,6 +4,9 @@
 ## Code standards
 We have a worldwide community and respect everyones backgrounds and languages, however Forge Networking is primarily developed by English (US) speakers. Because of this the variable names and comments for this code base should be exclusively in English (US).
 
+### .editorconfig
+We use .editorconfig to help with conforming to our coding conventions. Please make sure your chosen editor has this enabled. Check [editorconfig.org](https://editorconfig.org/#download) to see if you need to install a plugin or your IDE has this built in.
+
 **Anything not listed here should follow the [C# standard](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/naming-guidelines)**
 
 ### Tabs vs Spaces?
