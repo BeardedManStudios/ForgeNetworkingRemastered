@@ -92,7 +92,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 			MethodInfo[] methods = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType.FullName == "BeardedManStudios.Forge.Networking.RpcArgs").ToArray();
 			PropertyInfo[] properties = currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-			FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+			FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).Where(attr => attr.IsDefined(typeof(ForgeGeneratedFieldAttribute), false)).ToArray();
 
 			uniqueMethods.AddRange(methods);
 			uniqueProperties.AddRange(properties);
@@ -191,20 +191,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 						uniqueFields.RemoveAt(i--);
 						//TODO: Store the types for re-use
 						continue;
-				}
-
-				if (uniqueFields[i].Name.EndsWith("Changed"))
-				{
-					uniqueFields.RemoveAt(i--);
-					continue;
-				}
-
-				if (uniqueFields[i].Name.EndsWith("Interpolation"))
-				{
-					uniqueFields.RemoveAt(i--);
-
-					//TODO: Store the types for re-use
-					continue;
 				}
 			}
 
@@ -383,7 +369,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public static bool HasExactFilename(List<ForgeClassObject> collection, string filename)
 		{
 			bool returnValue = false;
-
+			
 			foreach (ForgeClassObject fo in collection)
 			{
 				if (fo.ExactFilename.ToLower() == filename.ToLower())
@@ -392,7 +378,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					break;
 				}
 			}
-
+			
 			return returnValue;
 		}
 

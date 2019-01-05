@@ -964,6 +964,38 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 
 		/// <summary>
+		/// Validates Fields to ensure no conflicts on compilation
+		/// </summary>
+		public ValidationResult Validate(ForgeEditorButton btn)
+		{
+			ValidationResult result = new ValidationResult();
+			Dictionary<string, ForgeEditorField> classVariables = btn.ClassVariables.ToDictionary(x => x.FieldName, y => y);
+			foreach (var field in btn.ClassVariables)
+			{
+				string fieldName = field.FieldName;
+				string duplicate = string.Empty;
+
+				if (fieldName.EndsWith("Changed"))
+				{
+					duplicate = fieldName.Substring(0, fieldName.LastIndexOf("Changed"));
+					if (classVariables.ContainsKey(duplicate))
+					{
+						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Changed event of {1}", fieldName, duplicate));
+					}
+				}
+				if (fieldName.EndsWith("Interpolation"))
+				{
+					duplicate = fieldName.Substring(0, fieldName.LastIndexOf("Interpolation"));
+					if (classVariables.ContainsKey(duplicate))
+					{
+						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Interpolation field of {1}", fieldName, duplicate));
+					}
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// Compiles our generated code for the user
 		/// </summary>
 		public void Compile()
@@ -985,6 +1017,17 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			int identity = 1;
 			for (int i = 0; i < _editorButtons.Count; ++i)
 			{
+				ForgeEditorButton btn = _editorButtons[i];
+				ValidationResult validation = Validate(_editorButtons[i]);
+
+				if (validation.errorMessages.Count > 0)
+				{
+					foreach (string message in validation.errorMessages)
+						Debug.Log(message);
+					Debug.LogException(new ArgumentException(String.Format("{0} failed to compile. Please check compilation output and try again", _editorButtons[i].ButtonName)));
+					throw new Exception("Compilation Failed.");
+				}
+
 				if (_editorButtons[i].IsCreated)
 				{
 					//Brand new class being added!

@@ -272,7 +272,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
 
 				if (TiedObject != null)
-					EditorGUILayout.HelpBox("Re-arranging the RPC Arguments will require you to manually update your derriving code to use the new logic, please be aware of this.", MessageType.Warning);
+					EditorGUILayout.HelpBox("Re-arranging the RPC Arguments will require you to manually update your deriving code to use the new logic, please be aware of this.", MessageType.Warning);
 
 				_rpcOrderList.DoLayoutList();
 
