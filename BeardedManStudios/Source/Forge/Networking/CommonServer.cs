@@ -27,11 +27,11 @@ namespace BeardedManStudios.Forge.Networking
 					return false;
 			}
 
-            // check if sender is null as it doesn't get sent in certain cases
-            if (frame.Sender != null)
-            {
-                return PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
-            }
+			// check if sender is null as it doesn't get sent in certain cases
+			if (frame.Sender != null)
+			{
+				return PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
+			}
 			return true;
 		}
 
