@@ -295,6 +295,10 @@ namespace BeardedManStudios.Forge.Networking
 								Logging.BMSLog.LogWarning("Max Players Reached On Server");
 							}
 
+							if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS) {
+								Logging.BMSLog.LogWarning("The server is busy and not accepting connections");
+							}
+
 							if (formattedPacket.groupId == MessageGroupIds.DISCONNECT) {
 								CloseConnection();
 								return;
