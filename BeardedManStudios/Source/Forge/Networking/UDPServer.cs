@@ -425,7 +425,7 @@ namespace BeardedManStudios.Forge.Networking
 			else if (!AcceptingConnections)
 			{
 				// Tell the client why they are being disconnected
-				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true);
+				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.NOT_ACCEPT_CONNECTIONS, true);
 				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
 				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 

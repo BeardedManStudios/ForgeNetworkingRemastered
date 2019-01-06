@@ -36,6 +36,11 @@ namespace BeardedManStudios.Forge.Networking
 		public const int CONNECT_TRIES = 10;
 
 		/// <summary>
+		/// The minimum size of a frame
+		/// </summary>
+		private const int MINIMUM_FRAME_SIZE = 17;
+
+		/// <summary>
 		/// The hash that is / was validated by the server
 		/// </summary>
 		private string headerHash = string.Empty;
@@ -285,7 +290,7 @@ namespace BeardedManStudios.Forge.Networking
 							// Ping the server to finalize the player's connection
 							Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
 						}
-						else if (packet.Size > 17)
+						else if (packet.Size >= MINIMUM_FRAME_SIZE)
 						{
 							// The server sent us a message before sending a responseheader to validate
 							// This happens if the server is not accepting connections or the max connection count has been reached
@@ -324,7 +329,7 @@ namespace BeardedManStudios.Forge.Networking
 					}
 					else
 					{
-						if (packet.Size < 17)
+						if (packet.Size < MINIMUM_FRAME_SIZE)
 							continue;
 
 						// Format the byte data into a UDPPacket struct
