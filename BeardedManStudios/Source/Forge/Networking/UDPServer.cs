@@ -413,26 +413,26 @@ namespace BeardedManStudios.Forge.Networking
 			if (Players.Count == MaxConnections)
 			{
 				// Tell the client why they are being disconnected
-                var frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true);
-                var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
-                var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
+				var frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
-                // Send the close connection frame to the client
-                composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
+				// Send the close connection frame to the client
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
-                return;
+				return;
 			}
 			else if (!AcceptingConnections)
 			{
 				// Tell the client why they are being disconnected
-                var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true);
-                var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
-                var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
+				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
-                // Send the close connection frame to the client
-                composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
+				// Send the close connection frame to the client
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
-                return;
+				return;
 			}
 
 			// Validate that the connection headers are properly formatted
