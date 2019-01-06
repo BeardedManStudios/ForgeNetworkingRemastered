@@ -30,7 +30,7 @@ namespace BeardedManStudios.Forge.Networking
             // check if sender is null as it doesn't get sent in certain cases
             if (frame.Sender != null)
             {
-                PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
+                return PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
             }
 			return true;
 		}
