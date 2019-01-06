@@ -289,20 +289,30 @@ namespace BeardedManStudios.Forge.Networking
 						{
 							// The server sent us a message before sending a responseheader to validate
 							// This happens if the server is not accepting connections or the max connection count has been reached
+							// We will get two messages. The first one is either a MAX_CONNECTIONS or NOT_ACCEPT_CONNECTIONS group message.
+							// The second one will be the DISCONNECT message
 							UDPPacket formattedPacket = TranscodePacket(Server, packet);
 
 							if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS) {
 								Logging.BMSLog.LogWarning("Max Players Reached On Server");
+								// Wait for the second message (Disconnect)
+								continue;
 							}
 
 							if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS) {
 								Logging.BMSLog.LogWarning("The server is busy and not accepting connections");
+								// Wait for the second message (Disconnect)
+								continue;
 							}
 
 							if (formattedPacket.groupId == MessageGroupIds.DISCONNECT) {
 								CloseConnection();
 								return;
 							}
+
+							// Received something unexpected so do the same thing as the if below
+							Disconnect(true);
+							break;
 						}
 						else if (packet.Size != 1 || packet[0] != 0)
 						{
