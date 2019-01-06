@@ -2,6 +2,7 @@
 
 using BeardedManStudios.Templating;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -23,10 +24,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// This is the editor directory to pull any extra files from
 		/// </summary>
 		public const string EDITOR_RESOURCES_DIR = "BMS_Forge_Editor";
-		/// <summary>
-		/// REGEX for matching words on so that the user doesn't type invalid characters
-		/// </summary>
-		public const string REGEX_MATCH = @"^[a-zA-Z]+"; //Must be either lowercase or uppercase characters
 		#endregion
 
 		#region Private Variables
@@ -107,9 +104,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// </summary>
 		private ForgeEditorActiveMenu _currentMenu = ForgeEditorActiveMenu.Main;
 
-		//COLORS!
-		//Reference to all the cool colors we use!
-		public static Color Gold = new Color(1, 0.8f, 0.6f);
+        private static CodeDomProvider _provider = CodeDomProvider.CreateProvider("C#");
+
+        //COLORS!
+        //Reference to all the cool colors we use!
+        public static Color Gold = new Color(1, 0.8f, 0.6f);
 		public static Color TealBlue = new Color(0.5f, 0.87f, 1f);
 		public static Color CoolBlue = new Color(0.4f, 0.7f, 1);
 		public static Color LightBlue = new Color(0.6f, 0.8f, 1);
@@ -327,8 +326,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					ChangeMenu(ForgeEditorActiveMenu.Main);
 				}
 			};
-
-			AssetDatabase.Refresh();
+            AssetDatabase.Refresh();
 		}
 
 		private Texture2D FlipTexture(Texture2D asset)
@@ -601,15 +599,20 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				if (ActiveButton.IsSetupCorrectly())
-				{
-					_editorButtons.Add(ActiveButton);
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-					Debug.LogError("Duplicate variable/rpc names found, please correct before compiling");
-			}
+                ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
+                if (isSetupCorrectly.Result)
+                {
+                    _editorButtons.Add(ActiveButton);
+                    Compile();
+                    ChangeMenu(ForgeEditorActiveMenu.Main);
+                }
+                else
+                {
+                    foreach (string error in isSetupCorrectly.errorMessages)
+                        Debug.LogError(error);
+                    Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
+                }
+            }
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
 			GUILayout.BeginHorizontal();
@@ -675,14 +678,21 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				if (ActiveButton.IsSetupCorrectly())
-				{
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-					Debug.LogError("Duplicate variable/rpc names found, please correct before compiling");
-			}
+                ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
+                if (isSetupCorrectly.Result)
+                {
+                    _editorButtons.Add(ActiveButton);
+                    Compile();
+                    ChangeMenu(ForgeEditorActiveMenu.Main);
+                }
+                else
+                {
+                    foreach (string error in isSetupCorrectly.errorMessages)
+                        Debug.LogError(error);
+                    Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
+                }
+
+            }
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
 			GUILayout.BeginHorizontal();
@@ -964,38 +974,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 
 		/// <summary>
-		/// Validates Fields to ensure no conflicts on compilation
-		/// </summary>
-		public ValidationResult Validate(ForgeEditorButton btn)
-		{
-			ValidationResult result = new ValidationResult();
-			Dictionary<string, ForgeEditorField> classVariables = btn.ClassVariables.ToDictionary(x => x.FieldName, y => y);
-			foreach (var field in btn.ClassVariables)
-			{
-				string fieldName = field.FieldName;
-				string duplicate = string.Empty;
-
-				if (fieldName.EndsWith("Changed"))
-				{
-					duplicate = fieldName.Substring(0, fieldName.LastIndexOf("Changed"));
-					if (classVariables.ContainsKey(duplicate))
-					{
-						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Changed event of {1}", fieldName, duplicate));
-					}
-				}
-				if (fieldName.EndsWith("Interpolation"))
-				{
-					duplicate = fieldName.Substring(0, fieldName.LastIndexOf("Interpolation"));
-					if (classVariables.ContainsKey(duplicate))
-					{
-						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Interpolation field of {1}", fieldName, duplicate));
-					}
-				}
-			}
-			return result;
-		}
-
-		/// <summary>
 		/// Compiles our generated code for the user
 		/// </summary>
 		public void Compile()
@@ -1018,14 +996,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			for (int i = 0; i < _editorButtons.Count; ++i)
 			{
 				ForgeEditorButton btn = _editorButtons[i];
-				ValidationResult validation = Validate(_editorButtons[i]);
-
-				if (!validation.Result)
-				{
-					foreach (string message in validation.errorMessages)
-						Debug.LogException(new ArgumentException(message));
-					throw new Exception(String.Format("{0} failed to compile. Please check compilation output and try again", _editorButtons[i].ButtonName));
-				}
 
 				if (_editorButtons[i].IsCreated)
 				{
@@ -1106,13 +1076,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		#region Checks
 		/// <summary>
-		/// REGEX check for whether there is any invalid characters in the name provided
+		/// Check whether a given identifier is a valid C# identifier
 		/// </summary>
-		/// <param name="expression">The name to check</param>
-		/// <returns>Whether it is invalid or not</returns>
-		public static bool IsValidName(string expression)
+		/// <param name="identifier">The string to validate</param>
+		/// <returns>Whether or not the input is a valid C# identifier</returns>
+		public static bool IsValidName(string identifier)
 		{
-			return (System.Text.RegularExpressions.Regex.IsMatch(expression, REGEX_MATCH, System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+            return _provider.IsValidIdentifier(identifier);
 		}
 
 		#endregion
