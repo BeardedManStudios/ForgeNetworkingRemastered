@@ -1020,12 +1020,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				ForgeEditorButton btn = _editorButtons[i];
 				ValidationResult validation = Validate(_editorButtons[i]);
 
-				if (validation.errorMessages.Count > 0)
+				if (!validation.Result)
 				{
 					foreach (string message in validation.errorMessages)
-						Debug.Log(message);
-					Debug.LogException(new ArgumentException(String.Format("{0} failed to compile. Please check compilation output and try again", _editorButtons[i].ButtonName)));
-					throw new Exception("Compilation Failed.");
+						Debug.LogException(new ArgumentException(message));
+					throw new Exception(String.Format("{0} failed to compile. Please check compilation output and try again", _editorButtons[i].ButtonName));
 				}
 
 				if (_editorButtons[i].IsCreated)
