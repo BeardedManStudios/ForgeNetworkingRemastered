@@ -285,6 +285,21 @@ namespace BeardedManStudios.Forge.Networking
 							// Ping the server to finalize the player's connection
 							Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
 						}
+                        else if (packet.Size > 17) 
+                        {
+                            // The server sent us a message before sending a responseheader to validate
+                            // This happens if the server is not accepting connections or the max connection count has been reached
+                            UDPPacket formattedPacket = TranscodePacket(Server, packet);
+
+                            if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS) {
+                                Logging.BMSLog.LogWarning("Max Players Reached On Server");
+                            }
+
+                            if (formattedPacket.groupId == MessageGroupIds.DISCONNECT) {
+                                CloseConnection();
+                                return;
+                            }
+                        }
 						else if (packet.Size != 1 || packet[0] != 0)
 						{
 							Disconnect(true);
