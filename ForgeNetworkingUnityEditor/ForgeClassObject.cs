@@ -216,41 +216,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				}
 			}
 
-			#region IGNORES
-			for (int i = 0; i < uniqueFields.Count; ++i)
-			{
-				switch (uniqueFields[i].Name)
-				{
-					case "IDENTITY":
-					case "networkObject":
-					case "fieldAltered":
-					case "_dirtyFields":
-					case "dirtyFields":
-						uniqueFields.RemoveAt(i--);
-						//TODO: Store the types for re-use
-						continue;
-				}
-			}
-
-			for (int i = 0; i < uniqueMethods.Count; ++i)
-			{
-				switch (uniqueMethods[i].Name.ToLower())
-				{
-					case "initialize":
-					case "networkcreateobject":
-						uniqueMethods.RemoveAt(i--);
-						continue;
-				}
-
-				if (uniqueMethods[i].Name.StartsWith("get_") ||
-					uniqueMethods[i].Name.StartsWith("set_"))
-				{
-					uniqueMethods.RemoveAt(i--);
-					continue;
-				}
-			}
-			#endregion
-
 #if FORGE_EDITOR_DEBUGGING
 			forgeClassDebug += "Properties:\n";
 			foreach (PropertyInfo a in uniqueProperties)

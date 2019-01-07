@@ -333,48 +333,76 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					result.ReportValidationError(String.Format("Duplicate element \"{0}\" found in \"{1}\"", checkedName, ButtonName));
 				}
 
-                string duplicate = string.Empty;
-                if (checkedName.EndsWith("Changed"))
-                {
-                    duplicate = checkedName.Substring(0, checkedName.LastIndexOf("Changed"));
-                    if (variableNames.Contains(duplicate))
-                    {
-                        result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Changed event of {1}", checkedName, duplicate));
-                    }
-                }
+				switch (ClassVariables[i].FieldName)
+				{
+					case "IDENTITY":
+					case "networkObject":
+					case "fieldAltered":
+					case "_dirtyFields":
+					case "dirtyFields":
+						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with a field name reserved for Forge Networking Remastered", checkedName));
+						break;
+				}
 
-                if (checkedName.EndsWith("Interpolation"))
-                {
-                    duplicate = checkedName.Substring(0, checkedName.LastIndexOf("Interpolation"));
-                    if (variableNames.Contains(duplicate))
-                    {
-                        result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Interpolation field of {1}", checkedName, duplicate));
-                    }
-                }
+				string duplicate = string.Empty;
+				if (checkedName.EndsWith("Changed"))
+				{
+					duplicate = checkedName.Substring(0, checkedName.LastIndexOf("Changed"));
+					if (variableNames.Contains(duplicate))
+					{
+						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Changed event of {1}", checkedName, duplicate));
+					}
+				}
 
-                //Check if the field name is a valid identifier
-                if (ForgeNetworkingEditor.IsValidName(checkedName))
+				if (checkedName.EndsWith("Interpolation"))
+				{
+					duplicate = checkedName.Substring(0, checkedName.LastIndexOf("Interpolation"));
+					if (variableNames.Contains(duplicate))
+					{
+						result.ReportValidationError(String.Format("Field \"{0}\" conflicts with Interpolation field of {1}", checkedName, duplicate));
+					}
+				}
+
+				//Check if the field name is a valid identifier
+				if (ForgeNetworkingEditor.IsValidName(checkedName))
 					variableNames.Add(checkedName);
 				else
 				{
 					result.ReportValidationError(String.Format("Invalid identifier for Field \"{0}\" in \"{1}\"", checkedName, ButtonName));
 				}
 			}
+
 			//Validate RPCs
 			for (int i = 0; i < RPCVariables.Count; ++i)
 			{
+
 				checkedName = RPCVariables[i].FieldName;
 				if (variableNames.Contains(checkedName))
 				{
 					result.ReportValidationError(String.Format("Duplicate element \"{0}\" found in \"{1}\"", checkedName, ButtonName));
 				}
 
-                //Check if RPC name is a valid identifier
-                if (ForgeNetworkingEditor.IsValidName(checkedName))
-                    variableNames.Add(checkedName);
+				//Check if RPC name is a valid identifier
+				if (ForgeNetworkingEditor.IsValidName(checkedName))
+					variableNames.Add(checkedName);
 				else
 				{
 					result.ReportValidationError(String.Format("Invalid identifier for RPC \"{0}\" in \"{1}\"", checkedName, ButtonName));
+				}
+
+				switch (RPCVariables[i].FieldName.ToLower())
+				{
+					case "initialize":
+					case "networkcreateobject":
+						result.ReportValidationError(String.Format("RPC \"{0}\" conflicts with a method name reserved for Forge Networking Remastered", checkedName));
+						break;
+				}
+
+				if (RPCVariables[i].FieldName.StartsWith("get_") ||
+					RPCVariables[i].FieldName.StartsWith("set_"))
+				{
+					result.ReportValidationError(String.Format("RPC \"{0}\" cannot start with \"get_\" or \"set_\"", checkedName));
+					break;
 				}
 			}
 
@@ -386,9 +414,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				{
 					result.ReportValidationError(String.Format("Duplicate element \"{0}\" found in \"{1}\"", checkedName, ButtonName));
 				}
-                //Check if Rewind name is a valid identifier
-                if (ForgeNetworkingEditor.IsValidName(checkedName))
-                    variableNames.Add(checkedName);
+				//Check if Rewind name is a valid identifier
+				if (ForgeNetworkingEditor.IsValidName(checkedName))
+					variableNames.Add(checkedName);
 				else
 				{
 					result.ReportValidationError(String.Format("Invalid identifier for Rewind \"{0}\" in \"{1}\"", checkedName, ButtonName));
