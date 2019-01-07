@@ -104,11 +104,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// </summary>
 		private ForgeEditorActiveMenu _currentMenu = ForgeEditorActiveMenu.Main;
 
-        private static CodeDomProvider _provider = CodeDomProvider.CreateProvider("C#");
+		private static CodeDomProvider _provider = CodeDomProvider.CreateProvider("C#");
 
-        //COLORS!
-        //Reference to all the cool colors we use!
-        public static Color Gold = new Color(1, 0.8f, 0.6f);
+		//COLORS!
+		//Reference to all the cool colors we use!
+		public static Color Gold = new Color(1, 0.8f, 0.6f);
 		public static Color TealBlue = new Color(0.5f, 0.87f, 1f);
 		public static Color CoolBlue = new Color(0.4f, 0.7f, 1);
 		public static Color LightBlue = new Color(0.6f, 0.8f, 1);
@@ -326,7 +326,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					ChangeMenu(ForgeEditorActiveMenu.Main);
 				}
 			};
-            AssetDatabase.Refresh();
+			AssetDatabase.Refresh();
 		}
 
 		private Texture2D FlipTexture(Texture2D asset)
@@ -599,20 +599,20 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-                ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
-                if (isSetupCorrectly.Result)
-                {
-                    _editorButtons.Add(ActiveButton);
-                    Compile();
-                    ChangeMenu(ForgeEditorActiveMenu.Main);
-                }
-                else
-                {
-                    foreach (string error in isSetupCorrectly.errorMessages)
-                        Debug.LogError(error);
-                    Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
-                }
-            }
+				ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
+				if (isSetupCorrectly.Result)
+				{
+					_editorButtons.Add(ActiveButton);
+					Compile();
+					ChangeMenu(ForgeEditorActiveMenu.Main);
+				}
+				else
+				{
+					foreach (string error in isSetupCorrectly.errorMessages)
+						Debug.LogError(error);
+					Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
+				}
+			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
 			GUILayout.BeginHorizontal();
@@ -678,21 +678,21 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-                ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
-                if (isSetupCorrectly.Result)
-                {
-                    _editorButtons.Add(ActiveButton);
-                    Compile();
-                    ChangeMenu(ForgeEditorActiveMenu.Main);
-                }
-                else
-                {
-                    foreach (string error in isSetupCorrectly.errorMessages)
-                        Debug.LogError(error);
-                    Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
-                }
+				ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
+				if (isSetupCorrectly.Result)
+				{
+					_editorButtons.Add(ActiveButton);
+					Compile();
+					ChangeMenu(ForgeEditorActiveMenu.Main);
+				}
+				else
+				{
+					foreach (string error in isSetupCorrectly.errorMessages)
+						Debug.LogError(error);
+					Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
+				}
 
-            }
+			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
 			GUILayout.BeginHorizontal();
@@ -948,7 +948,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private void ReloadScripts(string[] files, string[] userFiles)
 		{
 			List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
-
 			for (int i = 0; i < files.Length; ++i)
 			{
 				if (!files[i].EndsWith(".meta")) //Ignore all meta files
@@ -1082,7 +1081,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// <returns>Whether or not the input is a valid C# identifier</returns>
 		public static bool IsValidName(string identifier)
 		{
-            return _provider.IsValidIdentifier(identifier);
+			return _provider.IsValidIdentifier(identifier);
 		}
 
 		#endregion
