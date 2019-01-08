@@ -20,5 +20,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			Result = false;
 			errorMessages.Add(s);
 		}
+
+        ///<summary>
+        ///Package a ValidationResult inside this validation result
+        ///</summary>
+        public void Capture(ValidationResult v)
+        {
+            Result = v.Result && Result;
+            errorMessages.AddRange(v.errorMessages);
+        }
 	}
 }

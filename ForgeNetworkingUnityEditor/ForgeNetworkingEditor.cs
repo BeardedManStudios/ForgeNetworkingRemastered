@@ -599,19 +599,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
-				if (isSetupCorrectly.Result)
-				{
-					_editorButtons.Add(ActiveButton);
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-				{
-					foreach (string error in isSetupCorrectly.errorMessages)
-						Debug.LogError(error);
-					Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
-				}
+				_editorButtons.Add(ActiveButton);
+				Compile();
+				ChangeMenu(ForgeEditorActiveMenu.Main);
 			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
@@ -678,20 +668,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				ValidationResult isSetupCorrectly = ActiveButton.ValidateSetup();
-				if (isSetupCorrectly.Result)
-				{
-					_editorButtons.Add(ActiveButton);
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-				{
-					foreach (string error in isSetupCorrectly.errorMessages)
-						Debug.LogError(error);
-					Debug.LogError("Compilation Failed. Please resolve any outputted errors and try again.");
-				}
-
+				_editorButtons.Add(ActiveButton);
+				Compile();
+				ChangeMenu(ForgeEditorActiveMenu.Main);
 			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
@@ -995,6 +974,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			for (int i = 0; i < _editorButtons.Count; ++i)
 			{
 				ForgeEditorButton btn = _editorButtons[i];
+				ValidationResult validate = btn.ValidateSetup();
+				if(!validate.Result)
+				{
+					foreach (string error in validate.errorMessages)
+						Debug.LogError(error);
+					Debug.LogError(String.Format("Compilation of {0} failed. Please resolve any outputted errors and try again.", btn.ButtonName));
+					break;
+				}
 
 				if (_editorButtons[i].IsCreated)
 				{
