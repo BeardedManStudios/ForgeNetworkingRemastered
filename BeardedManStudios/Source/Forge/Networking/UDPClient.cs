@@ -147,8 +147,18 @@ namespace BeardedManStudios.Forge.Networking
 				// This is a typical Websockets accept header to be validated
 				byte[] connectHeader = Websockets.ConnectionHeader(headerHash, port);
 
-				// Setup the identity of the server as a player
-				server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
+				try
+				{
+					// Setup the identity of the server as a player
+					server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
+				}
+				catch (ArgumentException)
+				{
+					if (connectAttemptFailed != null)
+						connectAttemptFailed(this);
+
+					throw;
+				}
 
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadNetwork);
