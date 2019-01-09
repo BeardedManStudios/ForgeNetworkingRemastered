@@ -413,20 +413,24 @@ namespace BeardedManStudios.Forge.Networking
 			if (Players.Count == MaxConnections)
 			{
 				// Tell the client why they are being disconnected
-				Send(Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true));
+				var frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
 				// Send the close connection frame to the client
-				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
 				return;
 			}
 			else if (!AcceptingConnections)
 			{
 				// Tell the client why they are being disconnected
-				Send(Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
+				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.NOT_ACCEPT_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
 				// Send the close connection frame to the client
-				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
 				return;
 			}
