@@ -568,12 +568,25 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="port">The port number to communicate with the client on</param>
 		private void NatClientConnectAttempt(string host, ushort port)
 		{
-			var x = ResolveHost(host, port);
+			IPEndPoint clientIPEndPoint;
+
 			Logging.BMSLog.LogFormat("ATTEMPTING CONNECT ON {0} AND PORT IS {1}", host, port);
-			Logging.BMSLog.LogFormat("RESOLVED IS {0} AND {1}", x.Address.ToString(), x.Port);
+
+			try
+			{
+				clientIPEndPoint = ResolveHost(host, port);
+			}
+			catch (ArgumentException)
+			{
+				Logging.BMSLog.LogExceptionFormat("Unable to resolve client host {0}", host);
+				// Do nothing as the client's host cannot be resolved.
+				return;
+			}
+
+			Logging.BMSLog.LogFormat("RESOLVED IS {0} AND {1}", clientIPEndPoint.Address.ToString(), clientIPEndPoint.Port);
 
 			// Punch a hole in the nat for this client
-			Client.Send(new byte[1] { 0 }, 1, ResolveHost(host, port));
+			Client.Send(new byte[1] { 0 }, 1, clientIPEndPoint);
 		}
 
 		private void SendBuffer(NetworkingPlayer player)
