@@ -90,13 +90,51 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			if (currentType == null)
 				throw new NullReferenceException("CANNOT PUT SOURCE CODE IN GENERATED FOLDER! PLEASE REMOVE NON GENERATED CODE!");
 
-			MethodInfo[] methods = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType.FullName == "BeardedManStudios.Forge.Networking.RpcArgs").ToArray();
+			MethodInfo[] methods = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+				.Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType.FullName == "BeardedManStudios.Forge.Networking.RpcArgs").ToArray();
 			PropertyInfo[] properties = currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-			FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+			FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+				.Where(attr => attr.IsDefined(typeof(ForgeGeneratedFieldAttribute), false)).ToArray();
 
 			uniqueMethods.AddRange(methods);
 			uniqueProperties.AddRange(properties);
 			uniqueFields.AddRange(fields);
+
+			//If we don't find any fields containing the attribute, the class is either empty, or using the old format. Try parsing old format
+			if (fields.Length == 0)
+			{
+				FieldInfo[] legacyFields = currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+				uniqueFields.AddRange(legacyFields);
+
+				for (int i = 0; i < uniqueFields.Count; ++i)
+				{
+					switch (uniqueFields[i].Name)
+					{
+						case "IDENTITY":
+						case "networkObject":
+						case "fieldAltered":
+						case "_dirtyFields":
+						case "dirtyFields":
+							uniqueFields.RemoveAt(i--);
+							//TODO: Store the types for re-use
+							continue;
+					}
+
+					if (uniqueFields[i].Name.EndsWith("Changed"))
+					{
+						uniqueFields.RemoveAt(i--);
+						continue;
+					}
+
+					if (uniqueFields[i].Name.EndsWith("Interpolation"))
+					{
+						uniqueFields.RemoveAt(i--);
+
+						//TODO: Store the types for re-use
+						continue;
+					}
+				}
+			}
 
 			if (currentType.BaseType != null)
 			{
@@ -177,61 +215,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					}
 				}
 			}
-
-			#region IGNORES
-			for (int i = 0; i < uniqueFields.Count; ++i)
-			{
-				switch (uniqueFields[i].Name)
-				{
-					case "IDENTITY":
-					case "networkObject":
-					case "fieldAltered":
-					case "_dirtyFields":
-					case "dirtyFields":
-						uniqueFields.RemoveAt(i--);
-						//TODO: Store the types for re-use
-						continue;
-				}
-
-				if (uniqueFields[i].Name.EndsWith("Changed"))
-				{
-					uniqueFields.RemoveAt(i--);
-					continue;
-				}
-
-				if (uniqueFields[i].Name.EndsWith("Interpolation"))
-				{
-					uniqueFields.RemoveAt(i--);
-
-					//TODO: Store the types for re-use
-					continue;
-				}
-			}
-
-			for (int i = 0; i < uniqueMethods.Count; ++i)
-			{
-				switch (uniqueMethods[i].Name.ToLower())
-				{
-					case "initialize":
-					case "networkcreateobject":
-						uniqueMethods.RemoveAt(i--);
-						continue;
-				}
-
-				if (uniqueMethods[i].Name.EndsWith("Changed"))
-				{
-					uniqueMethods.RemoveAt(i--);
-					continue;
-				}
-
-				if (uniqueMethods[i].Name.StartsWith("get_") ||
-					uniqueMethods[i].Name.StartsWith("set_"))
-				{
-					uniqueMethods.RemoveAt(i--);
-					continue;
-				}
-			}
-			#endregion
 
 #if FORGE_EDITOR_DEBUGGING
 			forgeClassDebug += "Properties:\n";
@@ -383,7 +366,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		public static bool HasExactFilename(List<ForgeClassObject> collection, string filename)
 		{
 			bool returnValue = false;
-
+			
 			foreach (ForgeClassObject fo in collection)
 			{
 				if (fo.ExactFilename.ToLower() == filename.ToLower())
@@ -392,7 +375,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					break;
 				}
 			}
-
+			
 			return returnValue;
 		}
 

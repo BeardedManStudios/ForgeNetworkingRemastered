@@ -2,6 +2,7 @@
 
 using BeardedManStudios.Templating;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -23,10 +24,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// This is the editor directory to pull any extra files from
 		/// </summary>
 		public const string EDITOR_RESOURCES_DIR = "BMS_Forge_Editor";
-		/// <summary>
-		/// REGEX for matching words on so that the user doesn't type invalid characters
-		/// </summary>
-		public const string REGEX_MATCH = @"^[a-zA-Z]+"; //Must be either lowercase or uppercase characters
 		#endregion
 
 		#region Private Variables
@@ -106,6 +103,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// The current menu we are looking at
 		/// </summary>
 		private ForgeEditorActiveMenu _currentMenu = ForgeEditorActiveMenu.Main;
+
+		private static CodeDomProvider _provider = CodeDomProvider.CreateProvider("C#");
 
 		//COLORS!
 		//Reference to all the cool colors we use!
@@ -327,7 +326,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					ChangeMenu(ForgeEditorActiveMenu.Main);
 				}
 			};
-
 			AssetDatabase.Refresh();
 		}
 
@@ -601,14 +599,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				if (ActiveButton.IsSetupCorrectly())
-				{
-					_editorButtons.Add(ActiveButton);
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-					Debug.LogError("Duplicate variable/rpc names found, please correct before compiling");
+				_editorButtons.Add(ActiveButton);
+				Compile();
+				ChangeMenu(ForgeEditorActiveMenu.Main);
 			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
@@ -675,13 +668,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				GUI.color = TealBlue;
 			if (GUI.Button(verticleButton, GUIContent.none))
 			{
-				if (ActiveButton.IsSetupCorrectly())
-				{
-					Compile();
-					ChangeMenu(ForgeEditorActiveMenu.Main);
-				}
-				else
-					Debug.LogError("Duplicate variable/rpc names found, please correct before compiling");
+				_editorButtons.Add(ActiveButton);
+				Compile();
+				ChangeMenu(ForgeEditorActiveMenu.Main);
 			}
 			GUI.color = Color.white;
 			EditorGUILayout.Space();
@@ -938,7 +927,6 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private void ReloadScripts(string[] files, string[] userFiles)
 		{
 			List<ForgeClassObject> correctFiles = new List<ForgeClassObject>();
-
 			for (int i = 0; i < files.Length; ++i)
 			{
 				if (!files[i].EndsWith(".meta")) //Ignore all meta files
@@ -985,6 +973,16 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			int identity = 1;
 			for (int i = 0; i < _editorButtons.Count; ++i)
 			{
+				ForgeEditorButton btn = _editorButtons[i];
+				ValidationResult validate = btn.ValidateSetup();
+				if(!validate.Result)
+				{
+					foreach (string error in validate.errorMessages)
+						Debug.LogError(error);
+					Debug.LogError(String.Format("Compilation of {0} failed. Please resolve any outputted errors and try again.", btn.ButtonName));
+					break;
+				}
+
 				if (_editorButtons[i].IsCreated)
 				{
 					//Brand new class being added!
@@ -1064,13 +1062,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 
 		#region Checks
 		/// <summary>
-		/// REGEX check for whether there is any invalid characters in the name provided
+		/// Check whether a given identifier is a valid C# identifier
 		/// </summary>
-		/// <param name="expression">The name to check</param>
-		/// <returns>Whether it is invalid or not</returns>
-		public static bool IsValidName(string expression)
+		/// <param name="identifier">The string to validate</param>
+		/// <returns>Whether or not the input is a valid C# identifier</returns>
+		public static bool IsValidName(string identifier)
 		{
-			return (System.Text.RegularExpressions.Regex.IsMatch(expression, REGEX_MATCH, System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+			return _provider.IsValidIdentifier(identifier);
 		}
 
 		#endregion
