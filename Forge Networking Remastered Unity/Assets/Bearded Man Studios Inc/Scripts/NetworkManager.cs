@@ -356,7 +356,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			NetWorker.EndSession();
 		}
 
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (Networker != null)
 			{
