@@ -102,7 +102,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// Add a function to the list of functions to call on the main thread via the Update function
 		/// </summary>
 		/// <param name="action">The method that is to be run on the main thread</param>
-		public static void Run(Action action, UpdateType updateType = UpdateType.Update)
+		public static void Run(Action action, UpdateType updateType = UpdateType.FixedUpdate)
 		{
 			// Only create this object on the main thread
 #if UNITY_WEBGL
