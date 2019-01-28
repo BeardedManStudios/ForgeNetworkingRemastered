@@ -16,6 +16,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public event FieldChangedEvent fieldAltered;
 		#pragma warning restore 0067
 		>:FOREVERY variables:<
+		[ForgeGeneratedField]
 		private >:[0]:< _>:[1]:<;
 		public event FieldEvent<>:[0]:<> >:[1]:<Changed;
 		public >:[3]:< >:[1]:<Interpolation = new >:[3]:<() { LerpT = >:[4]:<, Enabled = >:[2]:< };

@@ -73,6 +73,7 @@ namespace BeardedManStudios.Forge.Networking
 				catch
 				{
 					Logging.BMSLog.Log("Failed to find host");
+					throw new ArgumentException("Unable to resolve host");
 				}
 			}
 
