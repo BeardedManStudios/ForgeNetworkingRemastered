@@ -27,9 +27,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 {
 	public class MainThreadManager : MonoBehaviour, IThreadRunner
 	{
+		public enum UpdateType
+		{
+			FixedUpdate,
+			Update,
+			LateUpdate,
+		}
+
 		public delegate void UpdateEvent();
-		public static UpdateEvent unityUpdate = null;
 		public static UpdateEvent unityFixedUpdate = null;
+		public static UpdateEvent unityUpdate = null;
+		public static UpdateEvent unityLateUpdate = null;
 
 		/// <summary>
 		/// The singleton instance of the Main Thread Manager
@@ -63,10 +71,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		/// <summary>
-		/// A list of functions to run
+		/// A dictionary of action queues for different updates.
 		/// </summary>
-		private static Queue<Action> mainThreadActions = new Queue<Action>();
-		private static Queue<Action> mainThreadActionsRunner = new Queue<Action>();
+		private static Dictionary<UpdateType, Queue<Action>> actionQueueDict = new Dictionary<UpdateType, Queue<Action>>();
+		private static Dictionary<UpdateType, Queue<Action>> actionRunnerDict = new Dictionary<UpdateType, Queue<Action>>();
 
 		// Setup the singleton in the Awake
 		private void Awake()
@@ -94,7 +102,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// Add a function to the list of functions to call on the main thread via the Update function
 		/// </summary>
 		/// <param name="action">The method that is to be run on the main thread</param>
-		public static void Run(Action action)
+		public static void Run(Action action, UpdateType updateType = UpdateType.FixedUpdate)
 		{
 			// Only create this object on the main thread
 #if UNITY_WEBGL
@@ -106,6 +114,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				Create();
 			}
 
+			// Allocate new action queue by update type if there's no one exists.
+			if (!actionQueueDict.ContainsKey(updateType))
+			{
+				actionQueueDict.Add(updateType, new Queue<Action>());
+
+				// Since an action runner depends on the action queue, allocate new one here.
+				actionRunnerDict.Add(updateType, new Queue<Action>());
+			}
+
+			Queue<Action> mainThreadActions = actionQueueDict[updateType];
+
 			// Make sure to lock the mutex so that we don't override
 			// other threads actions
 			lock (mainThreadActions)
@@ -114,8 +133,20 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		private void HandleActions()
+		private void HandleActions(UpdateType updateType)
 		{
+			// Allocate new action queue by update type if there's no one exists.
+			if (!actionQueueDict.ContainsKey(updateType))
+			{
+				actionQueueDict.Add(updateType, new Queue<Action>());
+
+				// Since an action runner depends on the action queue, allocate new one here.
+				actionRunnerDict.Add(updateType, new Queue<Action>());
+
+			}
+			Queue<Action> mainThreadActions = actionQueueDict[updateType];
+			Queue<Action> mainThreadActionsRunner = actionRunnerDict[updateType];
+
 			lock (mainThreadActions)
 			{
 				// Flush the list to unlock the thread as fast as possible
@@ -137,10 +168,26 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		private void FixedUpdate()
 		{
-			HandleActions();
+			HandleActions(UpdateType.FixedUpdate);
 
 			if (unityFixedUpdate != null)
 				unityFixedUpdate();
+		}
+
+		private void Update()
+		{
+			HandleActions(UpdateType.Update);
+
+			if (unityUpdate != null)
+				unityUpdate();
+		}
+
+		private void LateUpdate()
+		{
+			HandleActions(UpdateType.LateUpdate);
+
+			if (unityLateUpdate != null)
+				unityLateUpdate();
 		}
 
 #if WINDOWS_UWP
