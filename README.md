@@ -42,7 +42,7 @@ Use the links below to learn how to create your first project with Forge Remaste
 
 
 ## Builds
-#### [Nightly Builds Thanks To @TiToMoskito On Discord / Rexima On GitHub](https://fnr.rumstein.eu/)
+#### [Nightly Builds Thanks To @TiToMoskito On Discord / Rexima On GitHub](http://www.titomoskito.com/forgenetworking/)
 [Alternative (older) Unity Package Download V24.3](https://e71dac46a75cac973b88-8a2ab8f09d41afeb61265f61aa50339b.ssl.cf1.rackcdn.com/Forge-Networking-Remastered-%2024.%203.unitypackage)
 
 ## Ways to support the project
