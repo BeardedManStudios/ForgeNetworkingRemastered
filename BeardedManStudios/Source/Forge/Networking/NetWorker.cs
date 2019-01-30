@@ -1093,12 +1093,7 @@ namespace BeardedManStudios.Forge.Networking
 						continue;
 				}
 
-				switch (nic.OperationalStatus) {
-					case OperationalStatus.Up:
-						break;
-					default:
-						continue;
-				}
+				if (nic.OperationalStatus != OperationalStatus.Up) continue;
 
 				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
 					if (ip.Address.AddressFamily == AddressFamily.InterNetwork) {
