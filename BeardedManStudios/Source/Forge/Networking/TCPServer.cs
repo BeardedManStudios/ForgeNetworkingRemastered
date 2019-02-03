@@ -586,26 +586,70 @@ namespace BeardedManStudios.Forge.Networking
                     FrameStream frame = Factory.DecodeMessage(data, true, MessageGroupIds.TCP_FIND_GROUP_ID, token.player);
                     if (!token.player.Accepted)
                     {
-                        token.player.InstanceGuid = ((Text)frame).ToString();
-
-                        bool rejected;
-                        OnPlayerGuidAssigned(token.player, out rejected);
-
-                        // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-                        if (rejected)
-                            break;
-
-                        lock (writeBuffer)
+                        if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
                         {
-                            writeBuffer.Clear();
-                            writeBuffer.Append(BitConverter.GetBytes(token.player.NetworkId));
-                            Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
+                            token.player.InstanceGuid = ((Text)frame).ToString();
 
-                            SendBuffer(token.player);
-                            token.maxAllowedBytes = int.MaxValue;
+                            bool rejected;
+                            OnPlayerGuidAssigned(token.player, out rejected);
 
-                            // All systems go, the player has been accepted
-                            OnPlayerAccepted(token.player);
+                            // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+                            if (rejected)
+                                break;
+
+                            lock (writeBuffer)
+                            {
+                                writeBuffer.Clear();
+                                if (authenticator != null && authenticator.IssueChallenge(this, token.player, ref writeBuffer))
+                                {
+                                    Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, true));
+                                } else
+                                {
+                                    OnPlayerAuthenticated(token.player);
+                                    writeBuffer.Append(BitConverter.GetBytes(token.player.NetworkId));
+                                    Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
+
+                                    SendBuffer(token.player);
+                                    token.maxAllowedBytes = int.MaxValue;
+
+                                    // All systems go, the player has been accepted
+                                    OnPlayerAccepted(token.player);
+                                }
+                            }
+                        } else if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
+                        {
+                            // Authenticate user response
+                            if (authenticator == null)
+                                return;
+
+                            if (!authenticator.VerifyResponse(this, token.player, frame.StreamData))
+                            {
+                                OnPlayerRejected(token.player);
+                                Send(token.player.TcpClientHandle, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, true));
+                                SendBuffer(token.player);
+                                Disconnect(token.player, true);
+                                ReturnBuffer(e);
+                                return;
+                            }
+
+                            OnPlayerAuthenticated(token.player);
+
+                            lock(writeBuffer)
+                            {
+                                writeBuffer.Clear();
+                                writeBuffer.Append(BitConverter.GetBytes(token.player.NetworkId));
+                                Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
+
+                                SendBuffer(token.player);
+                                token.maxAllowedBytes = int.MaxValue;
+
+                                // All systems go, the player has been accepted
+                                OnPlayerAccepted(token.player);
+                            }
+                        } else
+                        {
+                            Disconnect(token.player, true);
+                            ReturnBuffer(e);
                         }
                     }
                     else

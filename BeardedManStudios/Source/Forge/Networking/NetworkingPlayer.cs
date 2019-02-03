@@ -103,10 +103,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public bool PendingAccepted { get; set; }
 
-		/// <summary>
-		/// Determines if the player is currently connected
-		/// </summary>
-		public bool Connected { get; set; }
+        /// <summary>
+        /// Determines if the player has been authenticated by the server
+        /// </summary>
+        public bool Authenticated { get; set; }
+
+        /// <summary>
+        /// Determines if the player is currently connected
+        /// </summary>
+        public bool Connected { get; set; }
 
 		/// <summary>
 		/// Is set once a disconnection happens

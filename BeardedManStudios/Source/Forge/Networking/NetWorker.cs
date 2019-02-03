@@ -200,10 +200,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event PlayerEvent playerRejected;
 
-		/// <summary>
-		/// Occurs when a message is received over the network from a remote machine
-		/// </summary>
-		public event FrameEvent messageReceived;
+        /// <summary>
+        /// Occurs when the player has connected and been succesfully authenticated
+        /// </summary>
+        public event PlayerEvent playerAuthenticated;
+
+        /// <summary>
+        /// Occurs when a message is received over the network from a remote machine
+        /// </summary>
+        public event FrameEvent messageReceived;
 
 		/// <summary>
 		/// Occurs when a binary message is received over the network from a remote machine
@@ -426,11 +431,16 @@ namespace BeardedManStudios.Forge.Networking
 		public static Guid InstanceGuid { get; private set; }
 		private static bool setupInstanceGuid = false;
 
-		/// <summary>
-		/// This is the base constructor which is normally used for clients and not classes
-		/// acting as hosts
-		/// </summary>
-		public NetWorker()
+        /// <summary>
+        /// Used to authenticate the client/server connection. If null, does not perform authentication.
+        /// </summary>
+        protected IUserAuthenticator authenticator = null;
+
+        /// <summary>
+        /// This is the base constructor which is normally used for clients and not classes
+        /// acting as hosts
+        /// </summary>
+        public NetWorker()
 		{
 			Initialize();
 		}
@@ -819,10 +829,22 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerRejected(NetworkingPlayer player)
 		{
 			player.Accepted = false;
+            player.Authenticated = false;
 
 			if (playerRejected != null)
 				playerRejected(player, this);
 		}
+
+        /// <summary>
+        /// If the player is authenticated, 
+        /// </summary>
+        protected void OnPlayerAuthenticated(NetworkingPlayer player)
+        {
+            player.Authenticated = true;
+
+            if (playerAuthenticated != null)
+                playerAuthenticated(player, this);
+        }
 
 		/// <summary>
 		/// Set the port for the networker
@@ -1001,10 +1023,21 @@ namespace BeardedManStudios.Forge.Networking
 			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
 		}
 
-		/// <summary>
-		/// Used to bind to a port then unbind to trigger any operating system firewall requests
-		/// </summary>
-		public static void PingForFirewall(ushort port = 0)
+        /// <summary>
+        /// Used to set the user authenticator. NetWorker must not already be connected.
+        /// </summary>
+        public void SetUserAuthenticator(IUserAuthenticator authenticator)
+        {
+            if (IsConnected)
+                throw new BaseNetworkException("The NetWorker is already connected");
+
+            this.authenticator = authenticator;
+        }
+
+        /// <summary>
+        /// Used to bind to a port then unbind to trigger any operating system firewall requests
+        /// </summary>
+        public static void PingForFirewall(ushort port = 0)
 		{
 			if (port < 1)
 			{

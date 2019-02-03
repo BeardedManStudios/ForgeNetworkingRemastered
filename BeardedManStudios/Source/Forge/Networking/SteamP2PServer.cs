@@ -503,7 +503,7 @@ namespace BeardedManStudios.Forge.Networking
 				if (formattedPacket.isConfirmation)
 				{
 					// Called once the player has confirmed that it has been accepted
-					if (formattedPacket.groupId == MessageGroupIds.NETWORK_ID_REQUEST && !currentReadingPlayer.Accepted)
+					if (formattedPacket.groupId == MessageGroupIds.NETWORK_ID_REQUEST && !currentReadingPlayer.Accepted && currentReadingPlayer.Authenticated)
 					{
 						System.Diagnostics.Debug.WriteLine(string.Format("[{0}] REQUESTED ID RECEIVED", DateTime.Now.Millisecond));
 						// The player has been accepted
@@ -560,17 +560,53 @@ namespace BeardedManStudios.Forge.Networking
 					if (rejected)
 						return;
 
-					// If so, just resend the player id
-					writeBuffer.Clear();
-					writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
-					Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+                    writeBuffer.Clear();
+                    // If so, check if there's a user authenticator
+                    if (authenticator != null && authenticator.IssueChallenge(this, currentPlayer, ref writeBuffer))
+                    {
+                        Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
+                    } else
+                    {
+                        // If not, just send the player their network id and accept them
+                        OnPlayerAuthenticated(currentPlayer);
+                        writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
+                        Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+                    }
 
-					SendBuffer(currentPlayer);
-					return;
-				}
-			}
+                    SendBuffer(currentPlayer);
+                    return;
+                }
+            } else if (frame is Binary)
+            {
+                if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
+                {
+                    // Authenticate user response
+                    if (currentPlayer.Authenticated || authenticator == null)
+                        return;
 
-			if (frame is ConnectionClose)
+                    if (!authenticator.VerifyResponse(this, currentPlayer, frame.StreamData))
+                    {
+                        OnPlayerRejected(currentPlayer);
+                        Send(currentPlayer, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
+                        SendBuffer(currentPlayer);
+                        Disconnect(currentPlayer, true);
+                        CommitDisconnects();
+                        return;
+                    }
+
+                    OnPlayerAuthenticated(currentPlayer);
+
+                    // If authenticated, send the player their network id and accept them
+                    writeBuffer.Clear();
+                    writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
+                    Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+
+                    SendBuffer(currentPlayer);
+                    return;
+                }
+            }
+
+            if (frame is ConnectionClose)
 			{
 				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 
