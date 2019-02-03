@@ -337,6 +337,13 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 						}
 
+                        if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+                        {
+                            Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+                            // Wait for the second message (Disconnect)
+                            continue;
+                        }
+
 						// Add the packet to the manager so that it can be tracked and executed on complete
 						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 					}
@@ -406,8 +413,26 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-			// Send an event off that a packet has been read
-			OnMessageReceived(currentPlayer, frame);
+            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
+            {
+                if ((Me != null && Me.Connected) || authenticator == null)
+                    return;
+
+                var payload = new BMSByte();
+                if (!authenticator.AcceptChallenge(this, frame.StreamData, ref payload))
+                {
+                    Logging.BMSLog.LogWarning("The server authentication challenge failed");
+                    Disconnect(true);
+                    return;
+                }
+
+                Send(new Binary(Time.Timestep, false, payload, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, false));
+
+                return;
+            }
+
+            // Send an event off that a packet has been read
+            OnMessageReceived(currentPlayer, frame);
 		}
 	}
 }

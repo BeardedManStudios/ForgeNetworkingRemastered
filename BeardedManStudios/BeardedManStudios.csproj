@@ -55,6 +55,7 @@
     <Compile Include="Source\BeardedMath.cs" />
     <Compile Include="Source\BMSByte.cs" />
     <Compile Include="Source\BMSExtensions.cs" />
+    <Compile Include="Source\Forge\Networking\IUserAuthenticator.cs" />
     <Compile Include="Source\GridLocation.cs" />
     <Compile Include="Source\Forge\DataStore\Cache.cs" />
     <Compile Include="Source\Forge\Logging\BMSLog.cs" />

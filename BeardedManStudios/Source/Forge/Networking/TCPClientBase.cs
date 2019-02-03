@@ -246,6 +246,31 @@ namespace BeardedManStudios.Forge.Networking
 
         public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
         {
+            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
+            {
+                if ((Me != null && Me.Connected) || authenticator == null)
+                    return;
+
+                var payload = new BMSByte();
+                if (!authenticator.AcceptChallenge(this, frame.StreamData, ref payload))
+                {
+                    Logging.BMSLog.LogWarning("The server authentication challenge failed");
+                    Disconnect(true);
+                    return;
+                }
+
+                Send(new Binary(Time.Timestep, true, payload, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, true));
+
+                return;
+            }
+
+            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+            {
+                Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+                // Wait for the second message (Disconnect)
+                return;
+            }
+
             // A message has been successfully read from the network so relay that
             // to all methods registered to the event
             OnMessageReceived(currentPlayer, frame);
