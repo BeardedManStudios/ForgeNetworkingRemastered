@@ -27,87 +27,87 @@ namespace BeardedManStudios.Forge.Networking
 					return false;
 			}
 
-            // check if sender is null as it doesn't get sent in certain cases
-            if (frame.Sender != null)
-            {
-                PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
-            }
+			// check if sender is null as it doesn't get sent in certain cases
+			if (frame.Sender != null)
+			{
+				return PlayerIsDistanceReceiver(frame.Sender, player, frame, proximityDistance, proximityModeUpdateFrequency);
+			}
 			return true;
 		}
 
-        public bool PlayerIsDistanceReceiver(NetworkingPlayer sender, NetworkingPlayer player, FrameStream frame, float proximityDistance, float proximityModeUpdateFrequency)
-        {
-            // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
-            if (sender != null)
-            {
-                if ((frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity))
-                {
-                    return proximityDistanceCheck(sender, player, proximityDistance, proximityModeUpdateFrequency);
-                }
-                else if((frame.Receivers == Receivers.AllProximityGrid || frame.Receivers == Receivers.OthersProximityGrid))
-                {
-                    return proximityGridCheck(sender, player, proximityDistance, proximityModeUpdateFrequency);
-                }
-            }
-            return true;
-        }
+		public bool PlayerIsDistanceReceiver(NetworkingPlayer sender, NetworkingPlayer player, FrameStream frame, float proximityDistance, float proximityModeUpdateFrequency)
+		{
+			// check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
+			if (sender != null)
+			{
+				if ((frame.Receivers == Receivers.AllProximity || frame.Receivers == Receivers.OthersProximity))
+				{
+					return proximityDistanceCheck(sender, player, proximityDistance, proximityModeUpdateFrequency);
+				}
+				else if((frame.Receivers == Receivers.AllProximityGrid || frame.Receivers == Receivers.OthersProximityGrid))
+				{
+					return proximityGridCheck(sender, player, proximityDistance, proximityModeUpdateFrequency);
+				}
+			}
+			return true;
+		}
 
-        private bool proximityDistanceCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityDistance, float proximityModeUpdateFrequency)
-        {
-            // If the target player is not in the same proximity zone as the sender
-            // then it should not be sent to that player
-            if (player.ProximityLocation.DistanceSquared(sender.ProximityLocation) > proximityDistance * proximityDistance)
-            {
-                // if update frequency is 0, it shouldn't ever get updated while too far
-                if (proximityModeUpdateFrequency == 0)
-                    return false;
+		private bool proximityDistanceCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityDistance, float proximityModeUpdateFrequency)
+		{
+			// If the target player is not in the same proximity zone as the sender
+			// then it should not be sent to that player
+			if (player.ProximityLocation.DistanceSquared(sender.ProximityLocation) > proximityDistance * proximityDistance)
+			{
+				// if update frequency is 0, it shouldn't ever get updated while too far
+				if (proximityModeUpdateFrequency == 0)
+					return false;
 
-                return updateCountCheck(sender, player, proximityModeUpdateFrequency);
-            }
-            return true;
-        }
+				return updateCountCheck(sender, player, proximityModeUpdateFrequency);
+			}
+			return true;
+		}
 
-        private bool proximityGridCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityDistance, float proximityModeUpdateFrequency)
-        {
-            // If the target player is not in the same proximity grid zone as the sender
-            // then it should not be sent to that player
-            if (!sender.gridPosition.IsSameOrNeighbourCell(player.gridPosition))
-            {
-                // if update frequency is 0, it shouldn't ever get updated while too far
-                if (proximityModeUpdateFrequency == 0)
-                    return false;
+		private bool proximityGridCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityDistance, float proximityModeUpdateFrequency)
+		{
+			// If the target player is not in the same proximity grid zone as the sender
+			// then it should not be sent to that player
+			if (!sender.gridPosition.IsSameOrNeighbourCell(player.gridPosition))
+			{
+				// if update frequency is 0, it shouldn't ever get updated while too far
+				if (proximityModeUpdateFrequency == 0)
+					return false;
 
-                return updateCountCheck(sender, player, proximityModeUpdateFrequency);
+				return updateCountCheck(sender, player, proximityModeUpdateFrequency);
 
-            }
-            return true;
-        }
+			}
+			return true;
+		}
 
-        private bool updateCountCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityModeUpdateFrequency)
-        {
-            // if player update counts are stored, increment or update and reset them, if not, store them starting with 0
-            string key = player.Ip + player.NetworkId.ToString();
-            if (sender.PlayersProximityUpdateCounters.ContainsKey(key))
-            {
-                if (sender.PlayersProximityUpdateCounters[key] < proximityModeUpdateFrequency)
-                {
-                    // increment update counter until it reaches the limit
-                    sender.PlayersProximityUpdateCounters[key]++;
-                    return false;
-                }
-                else
-                    sender.PlayersProximityUpdateCounters[key] = 0;
-            }
-            else
-                sender.PlayersProximityUpdateCounters.Add(key, 0);
+		private bool updateCountCheck(NetworkingPlayer sender, NetworkingPlayer player, float proximityModeUpdateFrequency)
+		{
+			// if player update counts are stored, increment or update and reset them, if not, store them starting with 0
+			string key = player.Ip + player.NetworkId.ToString();
+			if (sender.PlayersProximityUpdateCounters.ContainsKey(key))
+			{
+				if (sender.PlayersProximityUpdateCounters[key] < proximityModeUpdateFrequency)
+				{
+					// increment update counter until it reaches the limit
+					sender.PlayersProximityUpdateCounters[key]++;
+					return false;
+				}
+				else
+					sender.PlayersProximityUpdateCounters[key] = 0;
+			}
+			else
+				sender.PlayersProximityUpdateCounters.Add(key, 0);
 
-            return true;
-        }
+			return true;
+		}
 
-        /// <summary>
-        /// Checks all of the clients to see if any of them are timed out
-        /// </summary>
-        public void CheckClientTimeout(Action<NetworkingPlayer> timeoutDisconnect)
+		/// <summary>
+		/// Checks all of the clients to see if any of them are timed out
+		/// </summary>
+		public void CheckClientTimeout(Action<NetworkingPlayer> timeoutDisconnect)
 		{
 			List<NetworkingPlayer> timedoutPlayers = new List<NetworkingPlayer>();
 			while (server.IsBound)

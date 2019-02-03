@@ -39,7 +39,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 			return;
 
 #if !WINDOWS_UWP && !UNITY_IOS
-		string directory = Application.dataPath + SAVE_FILE_DIRECTORY_NAME;
+		string directory = Application.dataPath + "/" + SAVE_FILE_DIRECTORY_NAME;
 		filepath = directory + SAVE_FILE_NAME;
 		if (!System.IO.Directory.Exists(directory))
 			System.IO.Directory.CreateDirectory(directory);

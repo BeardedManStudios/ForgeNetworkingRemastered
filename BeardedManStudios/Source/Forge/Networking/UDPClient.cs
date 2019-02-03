@@ -36,6 +36,11 @@ namespace BeardedManStudios.Forge.Networking
 		public const int CONNECT_TRIES = 10;
 
 		/// <summary>
+		/// The minimum size of a frame
+		/// </summary>
+		private const int MINIMUM_FRAME_SIZE = 17;
+
+		/// <summary>
 		/// The hash that is / was validated by the server
 		/// </summary>
 		private string headerHash = string.Empty;
@@ -142,8 +147,18 @@ namespace BeardedManStudios.Forge.Networking
 				// This is a typical Websockets accept header to be validated
 				byte[] connectHeader = Websockets.ConnectionHeader(headerHash, port);
 
-				// Setup the identity of the server as a player
-				server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
+				try
+				{
+					// Setup the identity of the server as a player
+					server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
+				}
+				catch (ArgumentException)
+				{
+					if (connectAttemptFailed != null)
+						connectAttemptFailed(this);
+
+					throw;
+				}
 
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadNetwork);
@@ -285,6 +300,35 @@ namespace BeardedManStudios.Forge.Networking
 							// Ping the server to finalize the player's connection
 							Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
 						}
+						else if (packet.Size >= MINIMUM_FRAME_SIZE)
+						{
+							// The server sent us a message before sending a responseheader to validate
+							// This happens if the server is not accepting connections or the max connection count has been reached
+							// We will get two messages. The first one is either a MAX_CONNECTIONS or NOT_ACCEPT_CONNECTIONS group message.
+							// The second one will be the DISCONNECT message
+							UDPPacket formattedPacket = TranscodePacket(Server, packet);
+
+							if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS) {
+								Logging.BMSLog.LogWarning("Max Players Reached On Server");
+								// Wait for the second message (Disconnect)
+								continue;
+							}
+
+							if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS) {
+								Logging.BMSLog.LogWarning("The server is busy and not accepting connections");
+								// Wait for the second message (Disconnect)
+								continue;
+							}
+
+							if (formattedPacket.groupId == MessageGroupIds.DISCONNECT) {
+								CloseConnection();
+								return;
+							}
+
+							// Received something unexpected so do the same thing as the if below
+							Disconnect(true);
+							break;
+						}
 						else if (packet.Size != 1 || packet[0] != 0)
 						{
 							Disconnect(true);
@@ -295,7 +339,7 @@ namespace BeardedManStudios.Forge.Networking
 					}
 					else
 					{
-						if (packet.Size < 17)
+						if (packet.Size < MINIMUM_FRAME_SIZE)
 							continue;
 
 						// Format the byte data into a UDPPacket struct

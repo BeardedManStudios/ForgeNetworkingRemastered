@@ -85,8 +85,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				foreach (NetworkingPlayer player in Players)
 				{
-                 
-                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
+
+					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
 
 					try
@@ -101,44 +101,44 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        
-        // overload for ncw field distance check case
-        public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false, NetworkingPlayer skipPlayer = null)
-        {
-            if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
-                bufferedMessages.Add(frame);
 
-            lock (Players)
-            {
-                foreach (NetworkingPlayer player in Players)
-                {
-                    // check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
-                    if (!commonServerLogic.PlayerIsDistanceReceiver(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
-                        continue;
+		// overload for ncw field distance check case
+		public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false, NetworkingPlayer skipPlayer = null)
+		{
+			if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
+				bufferedMessages.Add(frame);
 
-                    if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
-                        continue;
+			lock (Players)
+			{
+				foreach (NetworkingPlayer player in Players)
+				{
+					// check for distance here so the owner doesn't need to be sent in stream, used for NCW field proximity check
+					if (!commonServerLogic.PlayerIsDistanceReceiver(sender, player, frame, ProximityDistance, ProximityModeUpdateFrequency))
+						continue;
 
-                    try
-                    {
-                        Send(player, frame, reliable);
-                    }
-                    catch
-                    {
-                        Disconnect(player, true);
-                    }
-                }
-            }
-        }
+					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
+						continue;
 
-        /// <summary>
-        /// Sends binary message to the specified receiver(s)
-        /// </summary>
-        /// <param name="receivers">The client to receive the message</param>
-        /// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
-        /// <param name="reliable">True if message must be delivered</param>
-        /// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
-        public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
+					try
+					{
+						Send(player, frame, reliable);
+					}
+					catch
+					{
+						Disconnect(player, true);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sends binary message to the specified receiver(s)
+		/// </summary>
+		/// <param name="receivers">The client to receive the message</param>
+		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
+		/// <param name="reliable">True if message must be delivered</param>
+		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+		public virtual void Send(NetworkingPlayer player, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
 		{
 			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
 			Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
@@ -389,15 +389,6 @@ namespace BeardedManStudios.Forge.Networking
 					}
 					else
 					{
-						// Due to the Forge Networking protocol, the only time that packet 1
-						// will be 71 and the second packet be 69 is a forced disconnect reconnect
-						if (packet[0] == 71 && packet[1] == 69)
-						{
-							udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
-							FinalizeRemovePlayer(currentReadingPlayer, true);
-							continue;
-						}
-
 						currentReadingPlayer.Ping();
 						ReadPacket(packet);
 					}
@@ -422,20 +413,24 @@ namespace BeardedManStudios.Forge.Networking
 			if (Players.Count == MaxConnections)
 			{
 				// Tell the client why they are being disconnected
-				Send(Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true));
+				var frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
 				// Send the close connection frame to the client
-				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
 				return;
 			}
 			else if (!AcceptingConnections)
 			{
 				// Tell the client why they are being disconnected
-				Send(Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
+				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.NOT_ACCEPT_CONNECTIONS, true);
+				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+				var composer = new UDPPacketComposer(this, playerToDisconnect, frame, false);
 
 				// Send the close connection frame to the client
-				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				composer = new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
 
 				return;
 			}
@@ -468,6 +463,18 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				// Format the byte data into a UDPPacket struct
 				UDPPacket formattedPacket = TranscodePacket(currentReadingPlayer, packet);
+
+				if (formattedPacket.endPacket && !formattedPacket.isConfirmation)
+				{
+					// Due to the Forge Networking protocol, the only time that packet 1
+					// will be 71 and the second packet be 69 is a forced disconnect reconnect
+					if (packet[0] == 71 && packet[1] == 69)
+					{
+						udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
+						FinalizeRemovePlayer(currentReadingPlayer, true);
+						return;
+					}
+				}
 
 				// Check to see if this is a confirmation packet, which is just
 				// a packet to say that the reliable packet has been read
@@ -561,12 +568,25 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="port">The port number to communicate with the client on</param>
 		private void NatClientConnectAttempt(string host, ushort port)
 		{
-			var x = ResolveHost(host, port);
+			IPEndPoint clientIPEndPoint;
+
 			Logging.BMSLog.LogFormat("ATTEMPTING CONNECT ON {0} AND PORT IS {1}", host, port);
-			Logging.BMSLog.LogFormat("RESOLVED IS {0} AND {1}", x.Address.ToString(), x.Port);
+
+			try
+			{
+				clientIPEndPoint = ResolveHost(host, port);
+			}
+			catch (ArgumentException)
+			{
+				Logging.BMSLog.LogExceptionFormat("Unable to resolve client host {0}", host);
+				// Do nothing as the client's host cannot be resolved.
+				return;
+			}
+
+			Logging.BMSLog.LogFormat("RESOLVED IS {0} AND {1}", clientIPEndPoint.Address.ToString(), clientIPEndPoint.Port);
 
 			// Punch a hole in the nat for this client
-			Client.Send(new byte[1] { 0 }, 1, ResolveHost(host, port));
+			Client.Send(new byte[1] { 0 }, 1, clientIPEndPoint);
 		}
 
 		private void SendBuffer(NetworkingPlayer player)

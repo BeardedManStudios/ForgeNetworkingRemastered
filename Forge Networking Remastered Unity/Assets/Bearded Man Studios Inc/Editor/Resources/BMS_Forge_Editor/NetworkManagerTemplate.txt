@@ -81,6 +81,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		>:ENDFOREACH:<
 
 		>:FOREACH networkObjects:<
+		/// <summary>
+		/// Instantiate an instance of >:[i]:<
+		/// </summary>
+		/// <returns>
+		/// A local instance of >:[i]:<Behavior
+		/// </returns>
+		/// <param name="index">The index of the >:[i]:< prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public >:[i]:<Behavior Instantiate>:[i]:<(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(>:[i]:<NetworkObject[index]);

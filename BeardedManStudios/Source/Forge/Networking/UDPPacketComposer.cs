@@ -18,6 +18,7 @@
 \------------------------------+------------------------------*/
 
 using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,20 +111,24 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			else
 			{
-				// TODO:  Probably should run this off the main thread
 				// Go through all of the packets that were created and send them out immediately
-				foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+				Task.Queue(() =>
 				{
-					Send(kv.Value.rawBytes);
+					lock (PendingPackets)
+					{
+						foreach (KeyValuePair<int, UDPPacket> kv in PendingPackets)
+						{
+							Send(kv.Value.rawBytes);
 
-					ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
+							ClientWorker.BandwidthOut += (ulong)kv.Value.rawBytes.Length;
 
-					// Spread the packets apart by 1 ms to prevent any clobbering that may happen
-					// on the socket layer for sending too much data
-					Thread.Sleep(1);
-				}
-
-				Cleanup();
+							// Spread the packets apart by 1 ms to prevent any clobbering that may happen
+							// on the socket layer for sending too much data
+							Thread.Sleep(1);
+						}
+					}
+					Cleanup();
+				});
 			}
 		}
 

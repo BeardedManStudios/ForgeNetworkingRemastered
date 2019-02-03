@@ -22,6 +22,14 @@ ExportedObj/
 *.exe
 *.bin
 *.bin.meta
+.vs
+
+# Visual Studio Code
+.vscode
+
+# Jetbrains
+.idea
+/.leu 
 
 # Unity3D generated meta files
 *.pidb.meta

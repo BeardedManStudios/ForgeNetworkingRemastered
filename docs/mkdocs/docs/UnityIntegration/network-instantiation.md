@@ -52,3 +52,28 @@ You can create a NetworkObject without having to call this instantiate method wh
 
 ## Warnings
 If you are dynamically setting the array on the **NetworkManager.Instance** then you **MUST** make sure that the order being assigned is predictable on all clients. You can't exactly have the order of the array different on each client and expect it to still work properly can you?
+
+## Server-side validation of object instantiation requests
+The default in Forge is to never validate requests for creating new objects on the server. This means any connected client is able to request the instantiation of new networked objects without limitation.
+If you need more fine-grained control you can implement your own validation logic by overriding `NetworkObjectFactoryBase::ValidateCreateRequest`.
+
+```csharp
+namespace BeardedManStudios.Forge.Networking.Generated {
+    public partial class NetworkObjectFactory {
+
+        protected override bool ValidateCreateRequest(NetWorker networker, int identity, uint id, FrameStream frame) {
+            switch (identity) {
+                case MyPlayerNetworkObject.IDENTITY:
+                    // Always deny instantiation requests by clients.
+                	return false;
+
+                default:
+                    // Allow any other NetworkObject by clients to be instantiated
+                    return true;
+            }
+        }
+
+    }
+}
+```
+Note that the method **ValidateCreateRequest** will only be called on the server-side and only if the sender of the request came from a client.

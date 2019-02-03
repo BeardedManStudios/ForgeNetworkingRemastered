@@ -213,7 +213,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 		WriteLabel(new Rect(14, 28, 100, 25), "Time: " + NetworkManager.Instance.Networker.Time.Timestep);
 		WriteLabel(new Rect(14, 42, 256, 25), "Bandwidth In: " + NetworkManager.Instance.Networker.BandwidthIn);
 		WriteLabel(new Rect(14, 56, 256, 25), "Bandwidth Out: " + NetworkManager.Instance.Networker.BandwidthOut);
-		WriteLabel(new Rect(14, 56, 256, 25), "Round Trip Latency (ms): " + RoundTripLatency);
+		WriteLabel(new Rect(14, 70, 256, 25), "Round Trip Latency (ms): " + RoundTripLatency);
 	}
 
 	/// <summary>
