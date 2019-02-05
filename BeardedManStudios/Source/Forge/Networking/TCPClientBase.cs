@@ -251,16 +251,7 @@ namespace BeardedManStudios.Forge.Networking
                 if ((Me != null && Me.Connected) || authenticator == null)
                     return;
 
-                var payload = new BMSByte();
-                if (!authenticator.AcceptChallenge(this, frame.StreamData, ref payload))
-                {
-                    Logging.BMSLog.LogWarning("The server authentication challenge failed");
-                    Disconnect(true);
-                    return;
-                }
-
-                Send(new Binary(Time.Timestep, true, payload, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, true));
-
+                authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
                 return;
             }
 
@@ -292,6 +283,22 @@ namespace BeardedManStudios.Forge.Networking
         protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
         {
             Send(GeneratePong(time));
+        }
+
+        /// <summary>
+        /// Callback for user auth. Sends an authentication response to the server.
+        /// </summary>
+        private void AuthServer(BMSByte buffer)
+        {
+            Send(new Binary(Time.Timestep, true, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, true));
+        }
+
+        /// <summary>
+        /// Callback for user auth. Disconnects the user from an invalid server.
+        /// </summary>
+        private void RejectServer()
+        {
+            Disconnect(true);
         }
     }
 }

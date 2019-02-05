@@ -548,32 +548,26 @@ namespace BeardedManStudios.Forge.Networking
 			// Check for default messages
 			if (frame is Text)
 			{
-				// This packet is sent if the player did not receive it's network id
-				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
-				{
-					currentPlayer.InstanceGuid = frame.ToString();
+                // This packet is sent if the player did not receive it's network id
+                if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
+                {
+                    currentPlayer.InstanceGuid = frame.ToString();
 
-					bool rejected;
-					OnPlayerGuidAssigned(currentPlayer, out rejected);
+                    bool rejected;
+                    OnPlayerGuidAssigned(currentPlayer, out rejected);
 
-					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-					if (rejected)
-						return;
+                    // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+                    if (rejected)
+                        return;
 
-                    writeBuffer.Clear();
                     // If so, check if there's a user authenticator
-                    if (authenticator != null && authenticator.IssueChallenge(this, currentPlayer, ref writeBuffer))
+                    if (authenticator != null)
                     {
-                        Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
+                        authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
                     } else
                     {
-                        // If not, just send the player their network id and accept them
-                        OnPlayerAuthenticated(currentPlayer);
-                        writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
-                        Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+                        AuthUser(currentPlayer);
                     }
-
-                    SendBuffer(currentPlayer);
                     return;
                 }
             } else if (frame is Binary)
@@ -584,24 +578,7 @@ namespace BeardedManStudios.Forge.Networking
                     if (currentPlayer.Authenticated || authenticator == null)
                         return;
 
-                    if (!authenticator.VerifyResponse(this, currentPlayer, frame.StreamData))
-                    {
-                        OnPlayerRejected(currentPlayer);
-                        Send(currentPlayer, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
-                        SendBuffer(currentPlayer);
-                        Disconnect(currentPlayer, true);
-                        CommitDisconnects();
-                        return;
-                    }
-
-                    OnPlayerAuthenticated(currentPlayer);
-
-                    // If authenticated, send the player their network id and accept them
-                    writeBuffer.Clear();
-                    writeBuffer.Append(BitConverter.GetBytes(currentPlayer.NetworkId));
-                    Send(currentPlayer, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
-
-                    SendBuffer(currentPlayer);
+                    authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
                     return;
                 }
             }
@@ -619,7 +596,41 @@ namespace BeardedManStudios.Forge.Networking
 			OnMessageReceived(currentReadingPlayer, frame);
 		}
 
-		private void SendBuffer(NetworkingPlayer player)
+        /// <summary>
+        /// Callback for user auth. Sends an auth challenge to the user.
+        /// </summary>
+        private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
+        {
+            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
+        }
+
+        /// <summary>
+        /// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
+        /// </summary>
+        private void AuthUser(NetworkingPlayer player)
+        {
+            OnPlayerAuthenticated(player);
+
+            // If authenticated, send the player their network id and accept them
+            var buffer = new BMSByte();
+            buffer.Append(BitConverter.GetBytes(player.NetworkId));
+            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+            SendBuffer(player);
+        }
+
+        /// <summary>
+        /// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
+        /// </summary>
+        private void RejectUser(NetworkingPlayer player)
+        {
+            OnPlayerRejected(player);
+            Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
+            SendBuffer(player);
+            Disconnect(player, true);
+            CommitDisconnects();
+        }
+
+        private void SendBuffer(NetworkingPlayer player)
 		{
 			foreach (FrameStream frame in bufferedMessages)
 				Send(player, frame, true);

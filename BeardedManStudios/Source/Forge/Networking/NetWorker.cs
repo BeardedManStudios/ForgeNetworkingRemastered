@@ -389,12 +389,6 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// A cached dynamically resizing byte buffer to aid in holding byte memory for a long period of time,
-		/// the max size will be the size of the largest message sent
-		/// </summary>
-		protected BMSByte writeBuffer = new BMSByte();
-
-		/// <summary>
 		/// A dictionary of all of the network objects indexed by it's id
 		/// </summary>
 		public Dictionary<uint, NetworkObject> NetworkObjects { get; private set; }
