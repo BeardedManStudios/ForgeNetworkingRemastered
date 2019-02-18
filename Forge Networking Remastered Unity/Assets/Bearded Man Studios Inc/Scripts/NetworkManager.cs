@@ -56,13 +56,13 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		protected virtual void OnEnable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded += OnLevelFinishedLoading;
+				SceneManager.sceneLoaded += SceneReady;
 		}
 
 		protected virtual void OnDisable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+				SceneManager.sceneLoaded -= SceneReady;
 		}
 
 		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
@@ -365,11 +365,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		public virtual void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-		{
-			SceneReady(scene, mode);
-		}
-
 		protected virtual void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
 		{
 			int i;
@@ -565,7 +560,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		protected virtual void SceneReady(Scene scene, LoadSceneMode mode)
+		public virtual void SceneReady(Scene scene, LoadSceneMode mode)
 		{
 			// If we are loading a completely new scene then we will need
 			// to clear out all the old objects that were stored as they
