@@ -17,8 +17,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public UnityAction<Scene, LoadSceneMode> networkSceneLoaded;
 		public event NetWorker.PlayerEvent playerLoadedScene;
 
-		public NetWorker Networker { get; private set; }
-		public NetWorker MasterServerNetworker { get; private set; }
+		public NetWorker Networker { get; protected set; }
+		public NetWorker MasterServerNetworker { get; protected set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
 		protected string _masterServerHost;
