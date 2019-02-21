@@ -35,7 +35,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (!Enabled) return target;
 
-			current = Vector3.Lerp(current, target, LerpT);
+			current = Vector4.Lerp(current, target, LerpT);
 			return current;
 		}
 	}
