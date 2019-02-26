@@ -586,26 +586,38 @@ namespace BeardedManStudios.Forge.Networking
                     FrameStream frame = Factory.DecodeMessage(data, true, MessageGroupIds.TCP_FIND_GROUP_ID, token.player);
                     if (!token.player.Accepted)
                     {
-                        token.player.InstanceGuid = ((Text)frame).ToString();
-
-                        bool rejected;
-                        OnPlayerGuidAssigned(token.player, out rejected);
-
-                        // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-                        if (rejected)
-                            break;
-
-                        lock (writeBuffer)
+                        if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
                         {
-                            writeBuffer.Clear();
-                            writeBuffer.Append(BitConverter.GetBytes(token.player.NetworkId));
-                            Send(token.player.TcpClientHandle, new Binary(Time.Timestep, false, writeBuffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
+                            token.player.InstanceGuid = ((Text)frame).ToString();
 
-                            SendBuffer(token.player);
+                            bool rejected;
+                            OnPlayerGuidAssigned(token.player, out rejected);
+
+                            // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+                            if (rejected)
+                                break;
+
                             token.maxAllowedBytes = int.MaxValue;
 
-                            // All systems go, the player has been accepted
-                            OnPlayerAccepted(token.player);
+                            if (authenticator != null)
+                            {
+                                authenticator.IssueChallenge(this, token.player, IssueChallenge, AuthUser);
+                            } else
+                            {
+                                AuthUser(token.player);
+                            }
+                        } else if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
+                        {
+                            // Authenticate user response
+                            if (authenticator == null)
+                                return;
+
+                            authenticator.VerifyResponse(this, token.player, frame.StreamData, AuthUser, RejectUser);
+
+                        } else
+                        {
+                            Disconnect(token.player, true);
+                            ReturnBuffer(e);
                         }
                     }
                     else
@@ -635,6 +647,42 @@ namespace BeardedManStudios.Forge.Networking
                     e.SetBuffer(new byte[0], 0, 0);
                 }
             }
+        }
+
+        /// <summary>
+        /// Callback for user auth. Sends an auth challenge to the user.
+        /// </summary>
+        private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
+        {
+            Send(player.TcpClientHandle, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, true));
+        }
+
+        /// <summary>
+        /// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
+        /// </summary>
+        private void AuthUser(NetworkingPlayer player)
+        {
+            OnPlayerAuthenticated(player);
+
+            // If authenticated, send the player their network id and accept them
+            var buffer = new BMSByte();
+            buffer.Append(BitConverter.GetBytes(player.NetworkId));
+            Send(player.TcpClientHandle, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, true));
+            SendBuffer(player);
+
+            OnPlayerAccepted(player);
+        }
+
+        /// <summary>
+        /// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
+        /// </summary>
+        private void RejectUser(NetworkingPlayer player)
+        {
+            OnPlayerRejected(player);
+            Send(player.TcpClientHandle, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, true));
+            SendBuffer(player);
+            Disconnect(player, true);
+            CommitDisconnects();
         }
 
         /// <summary>

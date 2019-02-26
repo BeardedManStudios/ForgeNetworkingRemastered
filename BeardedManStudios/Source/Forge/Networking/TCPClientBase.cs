@@ -246,6 +246,22 @@ namespace BeardedManStudios.Forge.Networking
 
         public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
         {
+            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
+            {
+                if ((Me != null && Me.Connected) || authenticator == null)
+                    return;
+
+                authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
+                return;
+            }
+
+            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+            {
+                Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+                // Wait for the second message (Disconnect)
+                return;
+            }
+
             // A message has been successfully read from the network so relay that
             // to all methods registered to the event
             OnMessageReceived(currentPlayer, frame);
@@ -267,6 +283,22 @@ namespace BeardedManStudios.Forge.Networking
         protected override void Pong(NetworkingPlayer playerRequesting, DateTime time)
         {
             Send(GeneratePong(time));
+        }
+
+        /// <summary>
+        /// Callback for user auth. Sends an authentication response to the server.
+        /// </summary>
+        private void AuthServer(BMSByte buffer)
+        {
+            Send(new Binary(Time.Timestep, true, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, true));
+        }
+
+        /// <summary>
+        /// Callback for user auth. Disconnects the user from an invalid server.
+        /// </summary>
+        private void RejectServer()
+        {
+            Disconnect(true);
         }
     }
 }

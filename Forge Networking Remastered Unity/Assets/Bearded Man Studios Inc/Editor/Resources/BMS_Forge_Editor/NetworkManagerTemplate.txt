@@ -8,18 +8,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public delegate void InstantiateEvent(INetworkBehavior unityGameObject, NetworkObject obj);
 		public event InstantiateEvent objectInitialized;
-		private BMSByte metadata = new BMSByte();
+		protected BMSByte metadata = new BMSByte();
 
 		>:FOREACH networkObjects:<
 		public GameObject[] >:[i]:<NetworkObject = null;
 		>:ENDFOREACH:<
 
-		private void SetupObjectCreatedEvent()
+		protected virtual void SetupObjectCreatedEvent()
 		{
 			Networker.objectCreated += CaptureObjects;
 		}
 
-		private void OnDestroy()
+		protected virtual void OnDestroy()
 		{
 		    if (Networker != null)
 				Networker.objectCreated -= CaptureObjects;
@@ -57,7 +57,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			>:ENDFOREACH:<
 		}
 
-		private void InitializedObject(INetworkBehavior behavior, NetworkObject obj)
+		protected virtual void InitializedObject(INetworkBehavior behavior, NetworkObject obj)
 		{
 			if (objectInitialized != null)
 				objectInitialized(behavior, obj);

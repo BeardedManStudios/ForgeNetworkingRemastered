@@ -25,8 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
+using Ping = BeardedManStudios.Forge.Networking.Frame.Ping;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -41,7 +43,7 @@ namespace BeardedManStudios.Forge.Networking
 
 		public const ushort DEFAULT_PORT = 15937;
 
-		private static CachedUdpClient localListingsClient;
+		private static List<CachedUdpClient> localListingsClientList = new List<CachedUdpClient>();
 
 		public static IPEndPoint ResolveHost(string host, ushort port)
 		{
@@ -198,10 +200,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event PlayerEvent playerRejected;
 
-		/// <summary>
-		/// Occurs when a message is received over the network from a remote machine
-		/// </summary>
-		public event FrameEvent messageReceived;
+        /// <summary>
+        /// Occurs when the player has connected and been succesfully authenticated
+        /// </summary>
+        public event PlayerEvent playerAuthenticated;
+
+        /// <summary>
+        /// Occurs when a message is received over the network from a remote machine
+        /// </summary>
+        public event FrameEvent messageReceived;
 
 		/// <summary>
 		/// Occurs when a binary message is received over the network from a remote machine
@@ -382,12 +389,6 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// A cached dynamically resizing byte buffer to aid in holding byte memory for a long period of time,
-		/// the max size will be the size of the largest message sent
-		/// </summary>
-		protected BMSByte writeBuffer = new BMSByte();
-
-		/// <summary>
 		/// A dictionary of all of the network objects indexed by it's id
 		/// </summary>
 		public Dictionary<uint, NetworkObject> NetworkObjects { get; private set; }
@@ -424,11 +425,16 @@ namespace BeardedManStudios.Forge.Networking
 		public static Guid InstanceGuid { get; private set; }
 		private static bool setupInstanceGuid = false;
 
-		/// <summary>
-		/// This is the base constructor which is normally used for clients and not classes
-		/// acting as hosts
-		/// </summary>
-		public NetWorker()
+        /// <summary>
+        /// Used to authenticate the client/server connection. If null, does not perform authentication.
+        /// </summary>
+        protected IUserAuthenticator authenticator = null;
+
+        /// <summary>
+        /// This is the base constructor which is normally used for clients and not classes
+        /// acting as hosts
+        /// </summary>
+        public NetWorker()
 		{
 			Initialize();
 		}
@@ -817,10 +823,22 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerRejected(NetworkingPlayer player)
 		{
 			player.Accepted = false;
+            player.Authenticated = false;
 
 			if (playerRejected != null)
 				playerRejected(player, this);
 		}
+
+        /// <summary>
+        /// If the player is authenticated, 
+        /// </summary>
+        protected void OnPlayerAuthenticated(NetworkingPlayer player)
+        {
+            player.Authenticated = true;
+
+            if (playerAuthenticated != null)
+                playerAuthenticated(player, this);
+        }
 
 		/// <summary>
 		/// Set the port for the networker
@@ -999,10 +1017,21 @@ namespace BeardedManStudios.Forge.Networking
 			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
 		}
 
-		/// <summary>
-		/// Used to bind to a port then unbind to trigger any operating system firewall requests
-		/// </summary>
-		public static void PingForFirewall(ushort port = 0)
+        /// <summary>
+        /// Used to set the user authenticator. NetWorker must not already be connected.
+        /// </summary>
+        public void SetUserAuthenticator(IUserAuthenticator authenticator)
+        {
+            if (IsConnected)
+                throw new BaseNetworkException("The NetWorker is already connected");
+
+            this.authenticator = authenticator;
+        }
+
+        /// <summary>
+        /// Used to bind to a port then unbind to trigger any operating system firewall requests
+        /// </summary>
+        public static void PingForFirewall(ushort port = 0)
 		{
 			if (port < 1)
 			{
@@ -1066,11 +1095,41 @@ namespace BeardedManStudios.Forge.Networking
 
 		private static void CloseLocalListingsClient()
 		{
-			if (localListingsClient != null)
-			{
-				localListingsClient.Close();
-				localListingsClient = null;
+			lock (localListingsClientList) {
+				foreach (CachedUdpClient cachedUdpClient in localListingsClientList) {
+					cachedUdpClient.Client.Close();
+				}
+				localListingsClientList.Clear();
 			}
+		}
+
+		/// <summary>
+		/// Collects all local IPs of every NIC that is currently in operational status <c>Up</c> (active).
+		/// Note: Only NICs of type <c>Wireless80211</c> and <c>Ethernet</c> are considered.
+		/// </summary>
+		/// <returns>An array of local IPs for every active NIC</returns>
+		private static IPAddress[] GetLocalIPs() {
+			List<IPAddress> ipList = new List<IPAddress>();
+
+			foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
+				switch (nic.NetworkInterfaceType) {
+					case NetworkInterfaceType.Wireless80211:
+					case NetworkInterfaceType.Ethernet:
+						break;
+					default:
+						continue;
+				}
+
+				if (nic.OperationalStatus != OperationalStatus.Up) continue;
+
+				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
+					if (ip.Address.AddressFamily == AddressFamily.InterNetwork) {
+						ipList.Add(ip.Address);
+					}
+				}
+			}
+
+			return ipList.ToArray();
 		}
 
 		/// <summary>
@@ -1078,10 +1137,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
-			if (localListingsClient != null)
-			{
-				localListingsClient.Client.Close();
-				localListingsClient = null;
+			lock (localListingsClientList) {
+				foreach (CachedUdpClient cachedUdpClient in localListingsClientList) {
+					cachedUdpClient.Client.Close();
+				}
+				localListingsClientList.Clear();
 			}
 
 			// Initialize the list to hold all of the local network endpoints that respond to the request
@@ -1094,44 +1154,50 @@ namespace BeardedManStudios.Forge.Networking
 				LocalEndpoints.Clear();
 			}
 
-			// Create a client to write on the network and discover other clients and servers
-			localListingsClient = new CachedUdpClient(19375);
-			localListingsClient.EnableBroadcast = true;
-			Task.Queue(() => { CloseLocalListingsClient(); }, responseBuffer);
-
-			Task.Queue(() =>
+			foreach (IPAddress ipAddress in GetLocalIPs())
 			{
-				IPEndPoint groupEp = default(IPEndPoint);
-				string endpoint = string.Empty;
-
-				localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3, new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
-
-				try
-				{
-					while (localListingsClient != null && !EndingSession)
-					{
-						var data = localListingsClient.Receive(ref groupEp, ref endpoint);
-
-						if (data.Size != 1)
-							continue;
-
-						string[] parts = endpoint.Split('+');
-						string address = parts[0];
-						ushort port = ushort.Parse(parts[1]);
-						if (data[0] == SERVER_BROADCAST_CODE)
-						{
-							var ep = new BroadcastEndpoints(address, port, true);
-							LocalEndpoints.Add(ep);
-
-							if (localServerLocated != null)
-								localServerLocated(ep, null);
-						}
-						else if (data[0] == CLIENT_BROADCAST_CODE)
-							LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
-					}
+				// Create a client to write on the network and discover other clients and servers
+				CachedUdpClient localListingsClient = new CachedUdpClient(new IPEndPoint(ipAddress, 19375));
+				localListingsClient.EnableBroadcast = true;
+				lock (localListingsClientList) {
+					localListingsClientList.Add(localListingsClient);
 				}
-				catch { }
-			});
+				Task.Queue(() => { CloseLocalListingsClient(); }, responseBuffer);
+
+				Task.Queue(() =>
+				{
+					IPEndPoint groupEp = default(IPEndPoint);
+					string endpoint = string.Empty;
+
+					localListingsClient.Send(new byte[] {BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3}, 3,
+						new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
+
+					try
+					{
+						while (localListingsClient != null && !EndingSession)
+						{
+							var data = localListingsClient.Receive(ref groupEp, ref endpoint);
+
+							if (data.Size != 1)
+								continue;
+
+							string[] parts = endpoint.Split('+');
+							string address = parts[0];
+							ushort port = ushort.Parse(parts[1]);
+							if (data[0] == SERVER_BROADCAST_CODE)
+							{
+								var ep = new BroadcastEndpoints(address, port, true);
+								LocalEndpoints.Add(ep);
+
+								if (localServerLocated != null)
+									localServerLocated(ep, null);
+							} else if (data[0] == CLIENT_BROADCAST_CODE)
+								LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
+						}
+					} catch
+					{ }
+				});
+			}
 		}
 	}
 }

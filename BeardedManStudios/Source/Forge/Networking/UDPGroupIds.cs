@@ -53,7 +53,10 @@ namespace BeardedManStudios.Forge.Networking
 		public const int VIEW_INITIALIZE = 16;
 		public const int VIEW_CHANGE = 17;
 		public const int NOT_ACCEPT_CONNECTIONS = 18;
+        public const int AUTHENTICATION_CHALLENGE = 19;
+        public const int AUTHENTICATION_RESPONSE = 20;
+        public const int AUTHENTICATION_FAILURE = 21;
 
-		public const int START_OF_GENERIC_IDS = 10000;
+        public const int START_OF_GENERIC_IDS = 10000;
 	}
 }
