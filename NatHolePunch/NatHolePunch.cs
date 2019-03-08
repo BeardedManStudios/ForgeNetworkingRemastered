@@ -1,6 +1,7 @@
 ﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.SimpleJSON;
+using System;
 using System.Collections.Generic;
 
 namespace NatHolePunchServer
@@ -43,21 +44,10 @@ namespace NatHolePunchServer
 					if (!hosts.ContainsKey(address))
 						hosts.Add(address, new List<Host>());
 
-					foreach (Host host in hosts[address])
-					{
-						// This host is already registered
-						if (host.port == port)
-							return;
-					}
+					if (CheckAndUpdateRegisteredHost(player, address, port))
+						return;
 
-					System.Console.Write("Hosted Server received: ");
-					System.Console.Write(address);
-					System.Console.Write(":");
-					System.Console.Write(port);
-					System.Console.Write(" received");
-					System.Console.Write(System.Environment.NewLine);
-
-					hosts[address].Add(new Host(player, address, port));
+					RegisterNewHost(player, address, port);
 				}
 				else if (json["host"] != null && json["port"] != null)
 				{
@@ -102,6 +92,50 @@ namespace NatHolePunchServer
 			{
 				server.Disconnect(player, true);
 			}
+		}
+
+		private static void RegisterNewHost(NetworkingPlayer player, string address, ushort port)
+		{
+			System.Console.Write("Hosted Server received: ");
+			System.Console.Write(address);
+			System.Console.Write(":");
+			System.Console.Write(port);
+			System.Console.Write(" received");
+			System.Console.Write(System.Environment.NewLine);
+
+			hosts[address].Add(new Host(player, address, port));
+		}
+
+		/// <summary>
+		/// Check if a host has already been registered with this address and port and update it if it is.
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="address">The address of the hoting machine</param>
+		/// <param name="port">The port for the hosting machine</param>
+		/// <returns>True if the host was found and details updated, otherwise false</returns>
+		private static bool CheckAndUpdateRegisteredHost(NetworkingPlayer player, string address, ushort port)
+		{
+			for (var i = 0; i < hosts[address].Count; i++)
+			{
+				var host = hosts[address][i];
+
+				// This host is already registered probably reconnecting so let's refresh the entry.
+				if (host.port == port)
+				{
+					System.Console.Write("Hosted Server updated: ");
+					System.Console.Write(address);
+					System.Console.Write(":");
+					System.Console.Write(port);
+					System.Console.Write(" received");
+					System.Console.Write(System.Environment.NewLine);
+
+					hosts[address][i] = new Host(player, address, port);
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
