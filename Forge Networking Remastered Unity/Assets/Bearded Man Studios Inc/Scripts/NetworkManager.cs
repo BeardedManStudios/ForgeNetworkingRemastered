@@ -34,6 +34,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		public bool automaticScenes = true;
 
+		/// <summary>
+		/// Internal flag to indicate that the Initialize method has been called.
+		/// </summary>
+		protected bool initialized;
+
 #if FN_WEBSERVER
 		MVCWebServer.ForgeWebServer webserver = null;
 #endif
@@ -98,6 +103,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				webserver.Start();
 #endif
 			}
+
+			initialized = true;
 		}
 
 		protected virtual void CreatePendingObjects(NetworkObject obj)
@@ -562,6 +569,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public virtual void SceneReady(Scene scene, LoadSceneMode mode)
 		{
+			// The NetworkManager has not yet been initialized with a Networker.
+			if (!initialized)
+				return;
+
 			// If we are loading a completely new scene then we will need
 			// to clear out all the old objects that were stored as they
 			// are no longer needed
