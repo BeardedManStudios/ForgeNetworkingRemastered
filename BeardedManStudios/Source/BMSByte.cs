@@ -694,7 +694,7 @@ namespace BeardedManStudios
 				MoveStartIndex(length);
 
 			byte[] data = new byte[length];
-			Buffer.BlockCopy(byteArr, start, data, 0, length);
+			Buffer.BlockCopy(byteArr, start + sizeof(int), data, 0, length);
 			return data;
 		}
 
