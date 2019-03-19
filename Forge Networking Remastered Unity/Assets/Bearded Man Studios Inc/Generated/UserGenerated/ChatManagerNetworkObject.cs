@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedInterpol("{\"inter\":[]")]
 	public partial class ChatManagerNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 1;
+		public const int IDENTITY = 6;
 
 		private byte[] _dirtyFields = new byte[0];
 
@@ -43,6 +43,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			dirtyFieldsData.Clear();
 			dirtyFieldsData.Append(_dirtyFields);
 
+
+			// Reset all the dirty fields
+			for (int i = 0; i < _dirtyFields.Length; i++)
+				_dirtyFields[i] = 0;
 
 			return dirtyFieldsData;
 		}
