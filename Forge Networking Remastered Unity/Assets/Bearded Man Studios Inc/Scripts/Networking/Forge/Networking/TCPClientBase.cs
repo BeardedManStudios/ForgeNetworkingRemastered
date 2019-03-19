@@ -31,12 +31,12 @@ namespace BeardedManStudios.Forge.Networking
         /// </summary>
         private bool headerExchanged = false;
 
-        /// <summary>
-        /// Whether we are disconnected or not
-        /// </summary>
-        //private bool disconnectedSelf = false;
+		/// <summary>
+		/// Whether we are disconnected or not
+		/// </summary>
+		//private bool disconnectedSelf = false;
 
-        [Obsolete("This event is obsolete. Use connectAttemptFailed instead.")]
+		[Obsolete("This event is obsolete. Use connectAttemptFailed instead.")]
 	    public event BaseNetworkEvent ConnectAttemptFailed;
 	    public event BaseNetworkEvent connectAttemptFailed;
         byte[] buffer = new byte[8192];
@@ -57,12 +57,14 @@ namespace BeardedManStudios.Forge.Networking
             }
             catch
             {
+#pragma warning disable 0618
                 if (ConnectAttemptFailed != null)
-                {
+				{
                     ConnectAttemptFailed(this);
                 }
-		
-                if (connectAttemptFailed != null)
+#pragma warning restore 0618
+
+				if (connectAttemptFailed != null)
                 {
                     connectAttemptFailed(this);
                 }
