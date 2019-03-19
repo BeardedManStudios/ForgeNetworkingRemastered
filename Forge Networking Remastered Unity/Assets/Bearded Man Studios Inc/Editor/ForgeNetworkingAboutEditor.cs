@@ -20,12 +20,10 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		private static ForgeNetworkingAboutEditor _instance;
 		private const string EDITOR_PREF_DATE = "FNR_CHECK_DATE";
 		private const string EDITOR_PREF_IGNORE = "FNR_IGNORE";
-		private const string EDITOR_ASSET_STORE_LINK = "http://u3d.as/gGT";
-		private const string EDITOR_DEVELOPER_PORTAL_LINK = "http://developers.forgepowered.com";
+		private const string EDITOR_ASSET_STORE_LINK = "https://assetstore.unity.com/packages/slug/38344";
 		private const string EDITOR_GITHUB_LINK = "https://github.com/BeardedManStudios/ForgeNetworkingRemastered";
 		private const string EDITOR_DISCORD_LINK = "https://discord.gg/yzZwEYm";
 		private const string EDITOR_FORUM_LINK = "https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/";
-		private const string EDITOR_EMAIL_LINK = "support@beardedmangames.com";
 		private string Version { get { return Resources.Load<TextAsset>(ForgeNetworkingEditor.EDITOR_RESOURCES_DIR + "/version").text; } }
 
 		//private static bool ProVersion = false;
@@ -92,14 +90,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			GUILayout.FlexibleSpace();
 			EditorGUILayout.EndHorizontal();
 
-			EditorGUILayout.LabelField("Support Email: " + EDITOR_EMAIL_LINK);
 
 			_scroll = EditorGUILayout.BeginScrollView(_scroll);
-			if (GUILayout.Button("Developer Portal", GUILayout.Height(50)))
-			{
-				Application.OpenURL(EDITOR_DEVELOPER_PORTAL_LINK);
-			}
-
 			if (GUILayout.Button("GitHub", GUILayout.Height(50)))
 			{
 				Application.OpenURL(EDITOR_GITHUB_LINK);
@@ -131,7 +123,8 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				IgnoreEditorStartup = currentSetup;
 				EditorPrefs.SetBool(EDITOR_PREF_IGNORE, IgnoreEditorStartup);
 			}
-			EditorGUILayout.LabelField("Version " + Version, EditorStyles.boldLabel);
+			GUILayout.FlexibleSpace();
+			GUILayout.Label(string.Format("Version {0}", Version), EditorStyles.boldLabel);
 			GUILayout.EndHorizontal();
 		}
 	}
