@@ -17,15 +17,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public UnityAction<Scene, LoadSceneMode> networkSceneLoaded;
 		public event NetWorker.PlayerEvent playerLoadedScene;
 
-		public NetWorker Networker { get; private set; }
-		public NetWorker MasterServerNetworker { get; private set; }
+		public NetWorker Networker { get; protected set; }
+		public NetWorker MasterServerNetworker { get; protected set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
-		private string _masterServerHost;
-		private ushort _masterServerPort;
+		protected string _masterServerHost;
+		protected ushort _masterServerPort;
 
-		private List<int> loadedScenes = new List<int>();
-        private List<int> loadingScenes = new List<int>();
+		protected List<int> loadedScenes = new List<int>();
+        protected List<int> loadingScenes = new List<int>();
 
 		public bool IsServer { get { return Networker.IsServer; } }
 
@@ -34,11 +34,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		public bool automaticScenes = true;
 
+		/// <summary>
+		/// Internal flag to indicate that the Initialize method has been called.
+		/// </summary>
+		protected bool initialized;
+
 #if FN_WEBSERVER
 		MVCWebServer.ForgeWebServer webserver = null;
 #endif
 
-		private void Awake()
+		protected virtual void Awake()
 		{
 			if (Instance != null)
 			{
@@ -53,19 +58,19 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			DontDestroyOnLoad(gameObject);
 		}
 
-		private void OnEnable()
+		protected virtual void OnEnable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded += OnLevelFinishedLoading;
+				SceneManager.sceneLoaded += SceneReady;
 		}
 
-		private void OnDisable()
+		protected virtual void OnDisable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+				SceneManager.sceneLoaded -= SceneReady;
 		}
 
-		public void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
+		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			Networker = networker;
 			networker.objectCreated += CreatePendingObjects;
@@ -98,9 +103,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				webserver.Start();
 #endif
 			}
+
+			initialized = true;
 		}
 
-		private void CreatePendingObjects(NetworkObject obj)
+		protected virtual void CreatePendingObjects(NetworkObject obj)
 		{
 			INetworkBehavior behavior;
 
@@ -119,7 +126,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				Networker.objectCreated -= CreatePendingObjects;
 		}
 
-		public void MatchmakingServersFromMasterServer(string masterServerHost,
+		public virtual void MatchmakingServersFromMasterServer(string masterServerHost,
 			ushort masterServerPort,
 			int elo,
 			System.Action<MasterServerResponse> callback = null,
@@ -210,7 +217,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		public JSONNode MasterServerRegisterData(NetWorker server, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
+		public virtual JSONNode MasterServerRegisterData(NetWorker server, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
 		{
 			// Create the get request with the desired filters
 			JSONNode sendData = JSONNode.Parse("{}");
@@ -231,7 +238,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return sendData;
 		}
 
-		private void RegisterOnMasterServer(JSONNode masterServerData)
+		protected virtual void RegisterOnMasterServer(JSONNode masterServerData)
 		{
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
@@ -267,14 +274,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			MasterServerNetworker = client;
 		}
 
-		private void NetworkerDisconnected(NetWorker sender)
+		protected virtual void NetworkerDisconnected(NetWorker sender)
 		{
 			Networker.disconnected -= NetworkerDisconnected;
 			MasterServerNetworker.Disconnect(false);
 			MasterServerNetworker = null;
 		}
 
-		public void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
+		public virtual void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
 		{
 			JSONNode sendData = JSONNode.Parse("{}");
 			JSONClass registerData = new JSONClass();
@@ -290,7 +297,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			UpdateMasterServerListing(sendData);
 		}
 
-		private void UpdateMasterServerListing(JSONNode masterServerData)
+		protected virtual void UpdateMasterServerListing(JSONNode masterServerData)
 		{
 			if (string.IsNullOrEmpty(_masterServerHost))
 			{
@@ -326,7 +333,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			client.Connect(_masterServerHost, _masterServerPort);
 		}
 
-		public void Disconnect()
+		public virtual void Disconnect()
 		{
 #if FN_WEBSERVER
 			webserver.Stop();
@@ -348,7 +355,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Destroy(gameObject);
 		}
 
-		private void OnApplicationQuit()
+		protected virtual void OnApplicationQuit()
 		{
 			if (Networker != null)
 				Networker.Disconnect(false);
@@ -356,7 +363,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			NetWorker.EndSession();
 		}
 
-		private void Update()
+		protected virtual void Update()
 		{
 			if (Networker != null)
 			{
@@ -365,12 +372,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-		{
-			SceneReady(scene, mode);
-		}
-
-		private void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
+		protected virtual void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
 		{
 			int i;
 
@@ -395,7 +397,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				ProcessOthers(obj.transform.GetChild(i), createTarget, ref idOffset);
 		}
 
-		private void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
+		protected virtual void FinalizeInitialization(GameObject go, INetworkBehavior netBehavior, NetworkObject obj, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true, bool skipOthers = false)
 		{
 			if (Networker is IServer)
 				InitializedObject(netBehavior, obj);
@@ -430,7 +432,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// the currently loaded scene indexes for the client to load
 		/// </summary>
 		/// <param name="player">The player that was just accepted</param>
-		private void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
+		/// <param name="sender">The sending <see cref="NetWorker"/></param>
+		protected virtual void PlayerAcceptedSceneSetup(NetworkingPlayer player, NetWorker sender)
 		{
 			BMSByte data = ObjectMapper.BMSByte(loadedScenes.Count);
 
@@ -443,7 +446,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SendFrame(sender, frame, player);
 		}
 
-		private void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
+		protected virtual void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
 		{
 			if (frame.GroupId == MessageGroupIds.VIEW_INITIALIZE)
 			{
@@ -564,8 +567,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		private void SceneReady(Scene scene, LoadSceneMode mode)
+		public virtual void SceneReady(Scene scene, LoadSceneMode mode)
 		{
+			// The NetworkManager has not yet been initialized with a Networker.
+			if (!initialized)
+				return;
+
 			// If we are loading a completely new scene then we will need
 			// to clear out all the old objects that were stored as they
 			// are no longer needed

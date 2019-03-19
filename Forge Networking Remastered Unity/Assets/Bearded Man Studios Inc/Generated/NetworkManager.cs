@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	{
 		public delegate void InstantiateEvent(INetworkBehavior unityGameObject, NetworkObject obj);
 		public event InstantiateEvent objectInitialized;
-		private BMSByte metadata = new BMSByte();
+		protected BMSByte metadata = new BMSByte();
 
 		public GameObject[] ChatManagerNetworkObject = null;
 		public GameObject[] CubeForgeGameNetworkObject = null;
@@ -16,12 +16,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public GameObject[] NetworkCameraNetworkObject = null;
 		public GameObject[] TestNetworkObject = null;
 
-		private void SetupObjectCreatedEvent()
+		protected virtual void SetupObjectCreatedEvent()
 		{
 			Networker.objectCreated += CaptureObjects;
 		}
 
-		private void OnDestroy()
+		protected virtual void OnDestroy()
 		{
 		    if (Networker != null)
 				Networker.objectCreated -= CaptureObjects;
@@ -149,7 +149,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		private void InitializedObject(INetworkBehavior behavior, NetworkObject obj)
+		protected virtual void InitializedObject(INetworkBehavior behavior, NetworkObject obj)
 		{
 			if (objectInitialized != null)
 				objectInitialized(behavior, obj);
@@ -218,6 +218,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 
+		/// <summary>
+		/// Instantiate an instance of ChatManager
+		/// </summary>
+		/// <returns>
+		/// A local instance of ChatManagerBehavior
+		/// </returns>
+		/// <param name="index">The index of the ChatManager prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public ChatManagerBehavior InstantiateChatManager(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ChatManagerNetworkObject[index]);
@@ -259,6 +269,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		/// <summary>
+		/// Instantiate an instance of CubeForgeGame
+		/// </summary>
+		/// <returns>
+		/// A local instance of CubeForgeGameBehavior
+		/// </returns>
+		/// <param name="index">The index of the CubeForgeGame prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public CubeForgeGameBehavior InstantiateCubeForgeGame(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(CubeForgeGameNetworkObject[index]);
@@ -300,6 +320,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		/// <summary>
+		/// Instantiate an instance of ExampleProximityPlayer
+		/// </summary>
+		/// <returns>
+		/// A local instance of ExampleProximityPlayerBehavior
+		/// </returns>
+		/// <param name="index">The index of the ExampleProximityPlayer prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public ExampleProximityPlayerBehavior InstantiateExampleProximityPlayer(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(ExampleProximityPlayerNetworkObject[index]);
@@ -341,6 +371,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		/// <summary>
+		/// Instantiate an instance of NetworkCamera
+		/// </summary>
+		/// <returns>
+		/// A local instance of NetworkCameraBehavior
+		/// </returns>
+		/// <param name="index">The index of the NetworkCamera prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public NetworkCameraBehavior InstantiateNetworkCamera(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(NetworkCameraNetworkObject[index]);
@@ -382,6 +422,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		/// <summary>
+		/// Instantiate an instance of Test
+		/// </summary>
+		/// <returns>
+		/// A local instance of TestBehavior
+		/// </returns>
+		/// <param name="index">The index of the Test prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public TestBehavior InstantiateTest(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(TestNetworkObject[index]);
