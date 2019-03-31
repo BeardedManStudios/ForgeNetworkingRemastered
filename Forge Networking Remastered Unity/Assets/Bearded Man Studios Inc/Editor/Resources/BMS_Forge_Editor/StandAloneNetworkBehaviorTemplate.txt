@@ -29,9 +29,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegistrationComplete();
 		}
 
-		public void Initialize(NetWorker networker)
+		public void Initialize(NetWorker networker, byte[] metadata  = null)
 		{
-			Initialize(new >:networkObject:<(networker));
+			Initialize(new >:networkObject:<(networker, metadata: metadata));
 		}
 
 		>:FOREVERY rpcs:<
