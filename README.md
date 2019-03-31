@@ -8,7 +8,7 @@
 
 In short, Forge Networking is a free and open source multiplayer game (multi-user) networking system that has a very good integration with the Unity game engine. You wanna make a multiplayer game or real time multi-user application? This is the library for you.
 
-Welcome to the most innovative networking solution (which works with the Unity game engine). Forge's network bandwidth is un-beatable, it's performance out classes other solutions, its flexibility is in a league of its own and of course, as always, no CCU limits ever. Forge Networking is an open source networking solution built in C#. It is completely multi-threaded and was designed to work both inside and outside of the Unity Game Engine but mainly in conjunction with Unity. To get started, check out the links listed below in this readme.
+Welcome to the most innovative networking solution (which works with the Unity game engine). Forge's network bandwidth is unbeatable, its performance outclasses other solutions, its flexibility is in a league of its own, and, as always, it has no CCU limits whatsoever. Forge Networking is an open source networking solution built in C#. It is completely multi-threaded and was designed to work both inside and outside of the Unity Game Engine but mainly in conjunction with Unity. To get started, check out the links listed below in this readme.
 
 ## Possibilities
 - Unity multiplayer games/applications
@@ -25,12 +25,12 @@ Welcome to the most innovative networking solution (which works with the Unity g
 If you can name it, Forge most likely can do it :), it is built on some basic principles which makes any idea a possibility.
 
 ## TLDR
-Forge Networking is a networking solution built with the Unity game engine in mind. However, this is actually the 2nd version of Forge so it has some interesting properties. The first original Forge (classic) was built directly inside of Unity and was very tightly integrated with Unity. Once we learned everything we could from that version we opened up a blank Visual Studio project and began work on Forge Networking Remastered. Forge Networking Remastered was completely developed independently of Unity, it was tested and debugged in a C# project. Once it was working, we made it so that Unity could use it. This means that you can easily create native C# applications which run on Forge to support your games and applications such as Relay servers, NAT hole punching servers, chat servers, master servers, cache servers, websocket servers, you name it! Forge was developed in a way that makes it easy for you to do serialization of data in any way that you want. This allows you to make the security of your project as secure as you want or as fast as you need.
+Forge Networking is a networking solution built with the Unity game engine in mind. However, this is actually the 2nd version of Forge so it has some interesting properties. The first original Forge (classic) was built directly inside of Unity and was very tightly integrated with Unity. Once we learned everything we could from that version we opened up a blank Visual Studio project and began work on Forge Networking Remastered. Forge Networking Remastered was completely developed independently of Unity, it was tested and debugged in a C# project. Once it was working, we added Unity integration. This means that you can easily create native C# applications which run on Forge to support your games and applications such as Relay servers, NAT hole punching servers, chat servers, master servers, cache servers, websocket servers, you name it! Forge was developed in a way that makes it easy for you to serialize data in any way that you want. This allows you to make your project as secure as you want or as fast as you need.
 
 [Original Unity Forum Thread](https://forum.unity3d.com/threads/no-ccu-limit-forge-networking-superpowered-fully-cross-platform.286900/)
 
 ## Getting Started
-Use the links below to learn how to create your first project with Forge Remastered, and be sure to join our active Discord server to talk with others Forge users.
+Use the links below to learn how to create your first project with Forge Remastered, and be sure to join our active Discord server to talk with other Forge users.
 
 [Official Documentation](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/wiki)
 
