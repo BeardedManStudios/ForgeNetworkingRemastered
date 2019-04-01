@@ -837,7 +837,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					if (constRpc.Length > 0 && caps.Contains(btn.RPCVariables[i].FieldName[j]))
 						constRpc += "_";
 
-					constRpc += btn.RPCVariables[i].FieldName[j].ToString().ToUpper();
+					constRpc += btn.RPCVariables[i].FieldName[j].ToString().ToUpperInvariant();
 				}
 				constRpc = constRpc.Replace("R_P_C_", "");
 
