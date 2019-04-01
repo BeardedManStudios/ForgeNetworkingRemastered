@@ -9,7 +9,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	public abstract partial class >:className:< : INetworkBehavior
 	{
 		>:FOREVERY constRpcs:<
-		public const byte RPC_>:[0]:< = >:[idx]:< + 5;
+		public const byte RPC_>:[0]:< = >:[idx]:< + 4;
 		>:ENDFOREVERY:<
 		
 		public >:networkObject:< networkObject = null;
