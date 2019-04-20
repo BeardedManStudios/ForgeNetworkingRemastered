@@ -4,7 +4,6 @@ using BeardedManStudios.Threading;
 using Steamworks;
 #endif
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 #if WINDOWS_UWP
@@ -84,15 +83,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public bool PendingAccepted { get; set; }
 
-        /// <summary>
-        /// Determines if the player has been authenticated by the server
-        /// </summary>
-        public bool Authenticated { get; set; }
+		/// <summary>
+		/// Determines if the player has been authenticated by the server
+		/// </summary>
+		public bool Authenticated { get; set; }
 
-        /// <summary>
-        /// Determines if the player is currently connected
-        /// </summary>
-        public bool Connected { get; set; }
+		/// <summary>
+		/// Determines if the player is currently connected
+		/// </summary>
+		public bool Connected { get; set; }
 
 		/// <summary>
 		/// Is set once a disconnection happens
@@ -158,43 +157,43 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public Vector ProximityLocation { get; set; }
 
-        public GridLocation gridPosition { get; set; }
+		public GridLocation gridPosition { get; set; }
 
-        /// <summary>
-        /// Used to match players proximity status against each player, to know how many times
-        ///  updating him has been skipped - used with the NetWorker::ProximityDistance
-        /// </summary>
-        public Dictionary<string, int> PlayersProximityUpdateCounters = new Dictionary<string, int>();
+		/// <summary>
+		/// Used to match players proximity status against each player, to know how many times
+		///  updating him has been skipped - used with the NetWorker::ProximityDistance
+		/// </summary>
+		public Dictionary<string, int> PlayersProximityUpdateCounters = new Dictionary<string, int>();
 
 
-        private ulong currentReliableId = 0;
+		private ulong currentReliableId = 0;
 		public Dictionary<ulong, FrameStream> reliablePending = new Dictionary<ulong, FrameStream>();
 
 		public ulong UniqueReliableMessageIdCounter { get; private set; }
 
 #if STEAMWORKS
-        /// <summary>
-        /// This is used for steam networking API calls;
-        /// this is the steam ID of this networked player.
-        /// </summary>
-        public CSteamID SteamID { get; protected set; }
+		/// <summary>
+		/// This is used for steam networking API calls;
+		/// this is the steam ID of this networked player.
+		/// </summary>
+		public CSteamID SteamID { get; protected set; }
 
-        public void AssignOwnSteamId()
-        {
-            SteamID = SteamUser.GetSteamID();
-        }
+		public void AssignOwnSteamId()
+		{
+			SteamID = SteamUser.GetSteamID();
+		}
 #endif
 
-        private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
+		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
 
-        /// <summary>
-        /// Constructor for the NetworkingPlayer
-        /// </summary>
-        /// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
-        /// <param name="ip">IP address of the NetworkingPlayer</param>
-        /// <param name="socketEndpoint">The socket to the Networking player</param>
-        /// <param name="name">Name of the NetworkingPlayer</param>
-        public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
+		/// <summary>
+		/// Constructor for the NetworkingPlayer
+		/// </summary>
+		/// <param name="networkId">NetworkId set for the NetworkingPlayer</param>
+		/// <param name="ip">IP address of the NetworkingPlayer</param>
+		/// <param name="socketEndpoint">The socket to the Networking player</param>
+		/// <param name="name">Name of the NetworkingPlayer</param>
+		public NetworkingPlayer(uint networkId, string ip, bool isHost, object socketEndpoint, NetWorker networker)
 		{
 			Networker = networker;
 			NetworkId = networkId;
@@ -244,19 +243,19 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 #if STEAMWORKS
-        public NetworkingPlayer(uint networkId, CSteamID steamId, bool isHost, NetWorker networker)
-        {
-            SteamID = steamId;
-            Networker = networker;
-            NetworkId = networkId;
-            IsHost = isHost;
-            LastPing = networker.Time.Timestep;
-            TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
-            PingInterval = DEFAULT_PING_INTERVAL;
-        }
+		public NetworkingPlayer(uint networkId, CSteamID steamId, bool isHost, NetWorker networker)
+		{
+			SteamID = steamId;
+			Networker = networker;
+			NetworkId = networkId;
+			IsHost = isHost;
+			LastPing = networker.Time.Timestep;
+			TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
+			PingInterval = DEFAULT_PING_INTERVAL;
+		}
 #endif
 
-        public void AssignPort(ushort port)
+		public void AssignPort(ushort port)
 		{
 			// Only allow to be assigned once
 			if (Port != 0)
@@ -302,8 +301,8 @@ namespace BeardedManStudios.Forge.Networking
 				disconnected(Networker);
 		}
 
-        public void QueueComposer(BasePacketComposer composer)
-        {
+		public void QueueComposer(BasePacketComposer composer)
+		{
 			if (Disconnected)
 				return;
 
@@ -378,7 +377,15 @@ namespace BeardedManStudios.Forge.Networking
 									lock (reliableComposers)
 									{
 										ulong id = reliableComposersToRemove.Dequeue();
-										reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == id));
+
+										for (int i = 0; i < reliableComposers.Count; i++)
+										{
+											if (reliableComposers[i].Frame.UniqueId == id)
+											{
+												reliableComposers.RemoveAt(i);
+												break;
+											}
+										}
 									}
 								}
 							}
@@ -401,7 +408,14 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			lock (reliableComposers)
 			{
-				reliableComposers.Remove(reliableComposers.First(r => r.Frame.UniqueId == uniqueId));
+				for (int i = 0; i < reliableComposers.Count; i++)
+				{
+					if (reliableComposers[i].Frame.UniqueId == uniqueId)
+					{
+						reliableComposers.RemoveAt(i);
+						break;
+					}
+				}
 			}
 		}
 
