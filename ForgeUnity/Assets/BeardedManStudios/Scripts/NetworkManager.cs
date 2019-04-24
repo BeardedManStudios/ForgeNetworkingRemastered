@@ -3,6 +3,7 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
+using BeardedManStudios.Forge.Networking.SQP;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -34,10 +35,21 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		public bool automaticScenes = true;
 
+		[Header("Server Query Protocol settings")]
+		[Tooltip("Enabled/disable ServerQueryProtocol. Only the server takes this setting into account.")]
+		public bool enableSQP = true;
+
+		public ushort SQPPort = 15900;
+
 		/// <summary>
 		/// Internal flag to indicate that the Initialize method has been called.
 		/// </summary>
 		protected bool initialized;
+
+		/// <summary>
+		/// The service that handles Server Query Protocol requests
+		/// </summary>
+		protected SQPServer sqpServer;
 
 #if FN_WEBSERVER
 		MVCWebServer.ForgeWebServer webserver = null;
@@ -82,6 +94,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IServer)
 			{
+				if (enableSQP)
+				{
+					sqpServer = new SQPServer(SQPPort);
+				}
+
 				if (!string.IsNullOrEmpty(masterServerHost))
 				{
 					_masterServerHost = masterServerHost;
@@ -370,6 +387,25 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				for (int i = 0; i < Networker.NetworkObjectList.Count; i++)
 					Networker.NetworkObjectList[i].InterpolateUpdate();
 			}
+
+			if (sqpServer != null)
+			{
+				UpdateSQPServer();
+			}
+		}
+
+		protected virtual void UpdateSQPServer()
+		{
+			// Update SQP data with current values
+			var sid = sqpServer.ServerInfoData;
+
+			sid.Port = (ushort)Networker.Port;
+			// This count will include the host, for dedicated server setups it needs to be -1
+			sid.CurrentPlayers = (ushort)(Networker.Players.Count);
+			sid.MaxPlayers = (ushort)Networker.MaxConnections;
+			sid.ServerName = serverServerName.Value;
+
+			sqpServer.Update();
 		}
 
 		protected virtual void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
