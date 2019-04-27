@@ -15,13 +15,12 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			Header.Type = (byte)MessageType.QueryRequest;
 
 			Header.Serialize(ref buffer);
-			ObjectMapper.Instance.MapBytes(buffer, (ushort) System.Net.IPAddress.HostToNetworkOrder((short) Version));
-			ObjectMapper.Instance.MapBytes(buffer, RequestedChunks);
+			ObjectMapper.Instance.MapBytes(buffer, (ushort) System.Net.IPAddress.HostToNetworkOrder((short) Version), RequestedChunks);
 		}
 
-		public void Deserialize(ref BMSByte buffer)
+		public void Deserialize(BMSByte buffer)
 		{
-			Header.Deserialize(ref buffer);
+			Header.Deserialize(buffer);
 			Version = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
 			RequestedChunks = buffer.GetBasicType<byte>();
 		}

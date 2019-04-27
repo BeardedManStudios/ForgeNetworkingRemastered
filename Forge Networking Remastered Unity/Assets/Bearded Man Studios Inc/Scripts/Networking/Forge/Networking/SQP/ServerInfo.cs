@@ -1,3 +1,6 @@
+using System;
+using System.Text;
+
 namespace BeardedManStudios.Forge.Networking.SQP
 {
 	public class ServerInfo
@@ -11,16 +14,16 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			ServerInfoData = new Data();
 		}
 
-
-
 		public void Serialize(ref BMSByte buffer)
 		{
 			QueryHeader.Serialize(ref buffer);
+			ServerInfoData.Serialize(buffer);
 		}
 
-		public void Deserialize(ref BMSByte buffer)
+		public void Deserialize(BMSByte buffer)
 		{
-			QueryHeader.Deserialize(ref buffer);
+			QueryHeader.Deserialize(buffer);
+			ServerInfoData.Desrialize(buffer);
 		}
 
 		public class Data
@@ -31,23 +34,18 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			public string ServerType = "";
 			public ushort Port;
 
-			public void Serialize(ref BMSByte buffer)
+			public void Serialize(BMSByte buffer)
 			{
-				var currPlayers = (ushort) System.Net.IPAddress.HostToNetworkOrder((short) CurrentPlayers);
-				var maxPlayers = (ushort) System.Net.IPAddress.HostToNetworkOrder((short) MaxPlayers);
-				var port = (ushort) System.Net.IPAddress.HostToNetworkOrder((short) Port);
-
-				ObjectMapper.Instance.MapBytes(buffer, currPlayers, maxPlayers, ServerName, ServerType, port);
+				ObjectMapper.Instance.MapBytes(buffer, CurrentPlayers, MaxPlayers, ServerName, ServerType, Port);
 			}
 
-			public void Desrialize(ref BMSByte buffer)
+			public void Desrialize(BMSByte buffer)
 			{
-				CurrentPlayers = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
-				MaxPlayers = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
-
+				CurrentPlayers = buffer.GetBasicType<ushort>();
+				MaxPlayers = buffer.GetBasicType<ushort>();
 				ServerName = buffer.GetBasicType<string>();
 				ServerType = buffer.GetBasicType<string>();
-				Port = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
+				Port = buffer.GetBasicType<ushort>();
 			}
 		}
 	}

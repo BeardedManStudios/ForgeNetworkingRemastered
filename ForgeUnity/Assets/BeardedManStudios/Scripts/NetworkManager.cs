@@ -1,4 +1,5 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
+﻿using System;
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
@@ -368,6 +369,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker != null)
 				Networker.Disconnect(false);
 
+			if (sqpServer != null)
+				sqpServer.ShutDown();
+
 			NetWorker.EndSession();
 
 			NetworkObject.ClearNetworkObjects(Networker);
@@ -383,6 +387,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (Networker != null)
 				Networker.Disconnect(false);
+
+			if (sqpServer != null)
+				sqpServer.ShutDown();
 
 			NetWorker.EndSession();
 		}
@@ -406,11 +413,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			// Update SQP data with current values
 			var sid = sqpServer.ServerInfoData;
 
-			sid.Port = (ushort)Networker.Port;
-			// This count will include the host, for dedicated server setups it needs to be -1
-			sid.CurrentPlayers = (ushort)(Networker.Players.Count);
-			sid.MaxPlayers = (ushort)Networker.MaxConnections;
-			sid.ServerName = serverServerName.Value;
+			sid.Port = Networker.Port;
+			// This count will include the host, for dedicated server setups it needs to be count-1
+			sid.CurrentPlayers = Convert.ToUInt16(Networker.Players.Count);
+			sid.MaxPlayers = Convert.ToUInt16(Networker.MaxConnections);
+			sid.ServerName = Settings.serverName;
+			sid.ServerType = Settings.type;
 
 			sqpServer.Update();
 		}

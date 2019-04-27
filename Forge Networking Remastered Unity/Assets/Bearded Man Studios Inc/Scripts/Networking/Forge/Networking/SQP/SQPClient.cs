@@ -11,22 +11,16 @@ namespace BeardedManStudios.Forge.Networking.SQP
 		WaitingForResponse,
 	}
 
-	public class SQPClient
+	public class SQPClient : BaseSQP
 	{
-		protected const int QUERY_TIMEOUT = 3000;
 		public static System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-		private Socket socket;
-		private BMSByte buffer = new BMSByte();
-		private EndPoint endpoint = new IPEndPoint(0, 0);
 		private List<Query> Queries = new List<Query>();
 
 		public SQPClient()
 		{
 			IPEndPoint localEP = new IPEndPoint(IPAddress.Any, 0);
 			InitSocket(localEP);
-
-			buffer.SetSize(1472);
 		}
 
 		/// <summary>
@@ -61,12 +55,28 @@ namespace BeardedManStudios.Forge.Networking.SQP
 		{
 			if (socket.Poll(0, SelectMode.SelectRead))
 			{
-				int read = socket.ReceiveFrom(buffer.byteArr, buffer.Size, SocketFlags.None, ref endpoint);
+				int read = 0;
+				buffer.SetSize(MAX_PACKET_SIZE); // This should just reset the internal size to MAX_PACKET_SIZE
+				buffer.ResetPointer();
+				try
+				{
+					read = socket.ReceiveFrom(buffer.byteArr, buffer.byteArr.Length, SocketFlags.None,
+						ref endpoint);
+				}
+				catch (SocketException e)
+				{
+					// If the exception was a connection reset then ignore it otherwise rethrow it.
+					if (e.SocketErrorCode != SocketError.ConnectionReset) {
+						throw;
+					}
+				}
+
 				if (read > 0)
 				{
 					var header = new QueryHeader();
-					header.Deserialize(ref buffer);
+					header.Deserialize(buffer);
 
+					buffer.ResetPointer();
 					foreach (var query in Queries)
 					{
 						if (query.Server == null || !endpoint.Equals(query.Server))
@@ -88,8 +98,7 @@ namespace BeardedManStudios.Forge.Networking.SQP
 							case ClientState.WaitingForResponse:
 								if ((MessageType) header.Type == MessageType.QueryResponse)
 								{
-									buffer.ResetPointer();
-									query.ServerInfo.Deserialize(ref buffer);
+									query.ServerInfo.Deserialize(buffer);
 
 									query.RTT =
 										(query.RTT + (SQPClient.stopwatch.ElapsedMilliseconds - query.StartTime)) / 2;
@@ -111,14 +120,21 @@ namespace BeardedManStudios.Forge.Networking.SQP
 				if (query.State != ClientState.Idle)
 				{
 					var now = SQPClient.stopwatch.ElapsedMilliseconds;
+
+					// If we have not receiced anything from a server then let's reset it's state to Idle
 					if (now - query.StartTime > QUERY_TIMEOUT)
 					{
 						query.State = ClientState.Idle;
+						query.ValidResult = false;
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// Sends a request for a challenge token to the server.
+		/// </summary>
+		/// <param name="query"></param>
 		public void SendChallengeRequest(Query query)
 		{
 			if (query.State != ClientState.Idle)
@@ -130,7 +146,8 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			var request = new ChallengeRequest();
 			request.Serialize(ref buffer);
 
-			socket.SendTo(buffer.CompressBytes(), buffer.Size, SocketFlags.None, query.Server);
+			var data = buffer.CompressBytes();
+			socket.SendTo(data, data.Length, SocketFlags.None, query.Server);
 			query.State = ClientState.WaitingForChallange;
 		}
 
@@ -140,33 +157,17 @@ namespace BeardedManStudios.Forge.Networking.SQP
 		/// <param name="query">The <see cref="Query"/> to send</param>
 		private void SendServerInfoQuery(Query query)
 		{
+			buffer.Clear();
 			var request = new QueryRequest();
 			request.Header.ChallengeId = query.ChallengeId;
 			request.RequestedChunks = (byte) ChunkType.ServerInfo;
 
-			buffer.Clear();
 			request.Serialize(ref buffer);
 
 			query.State = ClientState.WaitingForResponse;
-			socket.SendTo(buffer.CompressBytes(), buffer.Size, SocketFlags.None, query.Server);
-		}
 
-		/// <summary>
-		/// Initialize the socket
-		/// </summary>
-		/// <param name="ep"></param>
-		private void InitSocket(EndPoint ep)
-		{
-			if (socket != null)
-			{
-				socket.Close();
-				socket = null;
-			}
-
-			socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			socket.Blocking = false;
-
-			socket.Bind(ep);
+			var data = buffer.CompressBytes();
+			socket.SendTo(data, data.Length, SocketFlags.None, query.Server);
 		}
 	}
 }

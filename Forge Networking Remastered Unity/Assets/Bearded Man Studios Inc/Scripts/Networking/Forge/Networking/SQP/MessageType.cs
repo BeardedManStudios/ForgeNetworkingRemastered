@@ -3,8 +3,8 @@ namespace BeardedManStudios.Forge.Networking.SQP
 	public enum MessageType
 	{
 		ChallengeRequest = 0,
-		ChallengeResponse = 0,
-		QueryRequest = 1,
-		QueryResponse = 1
+		ChallengeResponse = 1,
+		QueryRequest = 2,
+		QueryResponse = 3
 	}
 }

@@ -1,6 +1,6 @@
 namespace BeardedManStudios.Forge.Networking.SQP
 {
-	public struct QueryResponseHeader
+	public struct QueryResponseHeader : ISQPMessage
 	{
 		public QueryHeader Header;
 		public ushort Version;
@@ -17,9 +17,9 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			ObjectMapper.Instance.MapBytes(buffer, v, l);
 		}
 
-		public void Deserialize(ref BMSByte buffer)
+		public void Deserialize(BMSByte buffer)
 		{
-			Header.Deserialize(ref buffer);
+			Header.Deserialize(buffer);
 			Version = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
 			Length = (ushort) System.Net.IPAddress.NetworkToHostOrder((short) buffer.GetBasicType<ushort>());
 		}

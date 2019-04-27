@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.SQP
 {
-	public class SQPServer
+	public class SQPServer : BaseSQP
 	{
 		public ServerInfo.Data ServerInfoData
 		{
@@ -13,10 +14,7 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			set { serverInfo.ServerInfoData = value; }
 		}
 
-		private Socket socket;
 		private System.Random random;
-		private BMSByte buffer = new BMSByte();
-		private EndPoint endpoint = new IPEndPoint(0, 0);
 		private ServerInfo serverInfo = new ServerInfo();
 
 		/// <summary>
@@ -32,7 +30,6 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			IPEndPoint localEP = new IPEndPoint(IPAddress.Any, port);
 			InitSocket(localEP);
 
-			buffer.SetSize(1472);
 			random = new System.Random();
 		}
 
@@ -40,12 +37,13 @@ namespace BeardedManStudios.Forge.Networking.SQP
 		{
 			if (socket.Poll(0, SelectMode.SelectRead))
 			{
-				buffer.Clear();
+				buffer.SetSize(MAX_PACKET_SIZE);
+				buffer.ResetPointer();
 				int read = socket.ReceiveFrom(buffer.byteArr, buffer.byteArr.Length, SocketFlags.None, ref endpoint);
 				if (read > 0)
 				{
 					var header = new QueryHeader();
-					header.Deserialize(ref buffer);
+					header.Deserialize(buffer);
 
 					var type = (MessageType) header.Type;
 
@@ -55,15 +53,16 @@ namespace BeardedManStudios.Forge.Networking.SQP
 							{
 								if (!outstandingTokens.ContainsKey(endpoint))
 								{
+									buffer.Clear();
 									// Issue a challenge token to this endpoint
 									uint token = GetNextToken();
 
-									buffer.Clear();
 									var response = new ChallengeResponse();
 									response.Header.ChallengeId = token;
 									response.Serialize(ref buffer);
 
-									socket.SendTo(buffer.CompressBytes(), buffer.Size, SocketFlags.None, endpoint);
+									var data = buffer.CompressBytes();
+									socket.SendTo(data, data.Length, SocketFlags.None, endpoint);
 
 									outstandingTokens.Add(endpoint, token);
 								}
@@ -79,16 +78,20 @@ namespace BeardedManStudios.Forge.Networking.SQP
 
 								buffer.ResetPointer();
 								var request = new QueryRequest();
-								request.Deserialize(ref buffer);
+								request.Deserialize(buffer);
+
+								if (request.Header.ChallengeId != token)
+									return;
 
 								if ((ChunkType)request.RequestedChunks == ChunkType.ServerInfo)
 								{
-									buffer.Clear();
 									var response = serverInfo;
 									response.QueryHeader.Header.ChallengeId = token;
 
+									buffer.Clear();
 									response.Serialize(ref buffer);
-									socket.SendTo(buffer.CompressBytes(), buffer.Size, SocketFlags.None, endpoint);
+									var data = buffer.CompressBytes();
+									socket.SendTo(data, data.Length, SocketFlags.None, endpoint);
 								}
 							}
 							break;
@@ -97,24 +100,6 @@ namespace BeardedManStudios.Forge.Networking.SQP
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Initialize the socket
-		/// </summary>
-		/// <param name="ep"></param>
-		private void InitSocket(EndPoint ep)
-		{
-			if (socket != null)
-			{
-				socket.Close();
-				socket = null;
-			}
-
-			socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			socket.Blocking = false;
-
-			socket.Bind(ep);
 		}
 
 		/// <summary>

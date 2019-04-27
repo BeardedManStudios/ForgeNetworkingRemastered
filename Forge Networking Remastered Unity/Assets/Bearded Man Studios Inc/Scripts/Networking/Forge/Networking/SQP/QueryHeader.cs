@@ -7,10 +7,10 @@ namespace BeardedManStudios.Forge.Networking.SQP
 
 		public void Serialize(ref BMSByte buffer)
 		{
-			buffer = ObjectMapper.BMSByte(Type, ChallengeId);
+			ObjectMapper.Instance.MapBytes(buffer, Type, ChallengeId);
 		}
 
-		public void Deserialize(ref BMSByte buffer)
+		public void Deserialize(BMSByte buffer)
 		{
 			Type = buffer.GetBasicType<byte>();
 			ChallengeId = (uint) System.Net.IPAddress.NetworkToHostOrder((int) buffer.GetBasicType<uint>());

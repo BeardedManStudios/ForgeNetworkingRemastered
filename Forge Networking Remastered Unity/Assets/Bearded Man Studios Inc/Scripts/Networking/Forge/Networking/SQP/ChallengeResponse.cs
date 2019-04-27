@@ -12,7 +12,7 @@ namespace BeardedManStudios.Forge.Networking.SQP
 
 		public void Deserialize(ref BMSByte buffer)
 		{
-			Header.Deserialize(ref buffer);
+			Header.Deserialize(buffer);
 		}
 	}
 }
