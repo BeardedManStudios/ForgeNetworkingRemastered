@@ -12,34 +12,25 @@ namespace BeardedManStudios.MultiplayerMenu
 	{
 		public InputField ipAddress = null;
 		public InputField portNumber = null;
-		public bool DontChangeSceneOnConnect = false;
-		public string masterServerHost = string.Empty;
-		public ushort masterServerPort = 15940;
-		public string natServerHost = string.Empty;
-		public ushort natServerPort = 15941;
-		public bool connectUsingMatchmaking = false;
-		public bool useElo = false;
-		public int myElo = 0;
-		public int eloRequired = 0;
+		public ForgeSettings Settings;
 
 		public GameObject networkManager = null;
 		public GameObject[] ToggledButtons;
+
 		private NetworkManager mgr = null;
 		private NetWorker server;
 
 		private List<Button> _uiButtons = new List<Button>();
 		private bool _matchmaking = false;
-		public bool useMainThreadManagerForRPCs = true;
-		public bool useInlineChat = false;
 
-		public bool getLocalNetworkConnections = false;
-
-		public bool useTCP = false;
+		private JoinMenu JoinMenu;
 
 		private void Start()
 		{
 			ipAddress.text = "127.0.0.1";
 			portNumber.text = "15937";
+
+			JoinMenu = GetComponent<JoinMenu>();
 
 			for (int i = 0; i < ToggledButtons.Length; ++i)
 			{
@@ -48,39 +39,30 @@ namespace BeardedManStudios.MultiplayerMenu
 					_uiButtons.Add(btn);
 			}
 
-			if (!useTCP)
+			if (!Settings.useTCP)
 			{
 				// Do any firewall opening requests on the operating system
 				NetWorker.PingForFirewall(ushort.Parse(portNumber.text));
 			}
 
-			if (useMainThreadManagerForRPCs)
+			if (Settings.useMainThreadManagerForRPCs)
 				Rpc.MainThreadRunner = MainThreadManager.Instance;
 
-			if (getLocalNetworkConnections)
+			if (Settings.getLocalNetworkConnections)
 			{
 				NetWorker.localServerLocated += LocalServerLocated;
 				NetWorker.RefreshLocalUdpListings(ushort.Parse(portNumber.text));
 			}
-
-			if (mgr == null && networkManager == null)
-			{
-				Debug.LogWarning("A network manager was not provided, generating a new one instead");
-				networkManager = new GameObject("Network Manager");
-				mgr = networkManager.AddComponent<NetworkManager>();
-			}
-			else if (mgr == null)
-				mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 		}
 
 		private void LocalServerLocated(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
 		{
-			Debug.Log("Found endpoint: " + endpoint.Address + ":" + endpoint.Port);
+			//Debug.Log("Found endpoint: " + endpoint.Address + ":" + endpoint.Port);
 		}
 
 		public void Connect()
 		{
-			if (connectUsingMatchmaking)
+			if (Settings.connectUsingMatchmaking)
 			{
 				ConnectToMatchmaking();
 				return;
@@ -94,7 +76,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			NetWorker client;
 
-			if (useTCP)
+			if (Settings.useTCP)
 			{
 				client = new TCPClient();
 				((TCPClient)client).Connect(ipAddress.text, (ushort)port);
@@ -102,10 +84,10 @@ namespace BeardedManStudios.MultiplayerMenu
 			else
 			{
 				client = new UDPClient();
-				if (natServerHost.Trim().Length == 0)
+				if (Settings.natServerHost.Trim().Length == 0)
 					((UDPClient)client).Connect(ipAddress.text, (ushort)port);
 				else
-					((UDPClient)client).Connect(ipAddress.text, (ushort)port, natServerHost, natServerPort);
+					((UDPClient)client).Connect(ipAddress.text, (ushort)port, Settings.natServerHost, Settings.natServerPort);
 			}
 
 			Connected(client);
@@ -124,7 +106,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
-			mgr.MatchmakingServersFromMasterServer(masterServerHost, masterServerPort, myElo, (response) =>
+			mgr.MatchmakingServersFromMasterServer(Settings.masterServerHost, Settings.masterServerPort, Settings.myElo, (response) =>
 			{
 				_matchmaking = false;
 				SetToggledButtons(true);
@@ -145,7 +127,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 		public void Host()
 		{
-			if (useTCP)
+			if (Settings.useTCP)
 			{
 				server = new TCPServer(64);
 				((TCPServer)server).Connect();
@@ -154,10 +136,10 @@ namespace BeardedManStudios.MultiplayerMenu
 			{
 				server = new UDPServer(64);
 
-				if (natServerHost.Trim().Length == 0)
+				if (Settings.natServerHost.Trim().Length == 0)
 					((UDPServer)server).Connect(ipAddress.text, ushort.Parse(portNumber.text));
 				else
-					((UDPServer)server).Connect(port: ushort.Parse(portNumber.text), natHost: natServerHost, natPort: natServerPort);
+					((UDPServer)server).Connect(port: ushort.Parse(portNumber.text), natHost: Settings.natServerHost, natPort: Settings.natServerPort);
 			}
 
 			server.playerTimeout += (player, sender) =>
@@ -196,27 +178,30 @@ namespace BeardedManStudios.MultiplayerMenu
 				return;
 			}
 
+			if (mgr == null && networkManager == null)
+			{
+				Debug.LogWarning("A network manager was not provided, generating a new one instead");
+				networkManager = new GameObject("Network Manager");
+				mgr = networkManager.AddComponent<NetworkManager>();
+			}
+			else if (mgr == null)
+				mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+
 			// If we are using the master server we need to get the registration data
 			JSONNode masterServerData = null;
-			if (!string.IsNullOrEmpty(masterServerHost))
+			if (!string.IsNullOrEmpty(Settings.masterServerHost))
 			{
-				string serverId = "myGame";
-				string serverName = "Forge Game";
-				string type = "Deathmatch";
-				string mode = "Teams";
-				string comment = "Demo comment...";
-
-				masterServerData = mgr.MasterServerRegisterData(networker, serverId, serverName, type, mode, comment, useElo, eloRequired);
+				masterServerData = mgr.MasterServerRegisterData(networker, Settings.serverId, Settings.serverName, Settings.type, Settings.mode, Settings.comment, Settings.useElo, Settings.eloRequired);
 			}
 
-			mgr.Initialize(networker, masterServerHost, masterServerPort, masterServerData);
+			mgr.Initialize(networker, Settings.masterServerHost, Settings.masterServerPort, masterServerData);
 
-			if (useInlineChat && networker.IsServer)
+			if (Settings.useInlineChat && networker.IsServer)
 				SceneManager.sceneLoaded += CreateInlineChat;
 
 			if (networker is IServer)
 			{
-				if (!DontChangeSceneOnConnect)
+				if (!Settings.DontChangeSceneOnConnect)
 					SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 				else
 					NetworkObject.Flush(networker); //Called because we are already in the correct scene!
@@ -238,7 +223,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 		private void OnApplicationQuit()
 		{
-			if (getLocalNetworkConnections)
+			if (Settings.getLocalNetworkConnections)
 				NetWorker.EndSession();
 
 			if (server != null) server.Disconnect(true);

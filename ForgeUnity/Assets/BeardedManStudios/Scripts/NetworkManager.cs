@@ -22,6 +22,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public NetWorker MasterServerNetworker { get; protected set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
+
+		public ForgeSettings Settings;
+
 		protected string _masterServerHost;
 		protected ushort _masterServerPort;
 
@@ -34,12 +37,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// Used to enable or disable the automatic switching for clients
 		/// </summary>
 		public bool automaticScenes = true;
-
-		[Header("Server Query Protocol settings")]
-		[Tooltip("Enabled/disable ServerQueryProtocol. Only the server takes this setting into account.")]
-		public bool enableSQP = true;
-
-		public ushort SQPPort = 15900;
 
 		/// <summary>
 		/// Internal flag to indicate that the Initialize method has been called.
@@ -68,6 +65,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
+
+			if (Settings == null)
+			{
+				Debug.LogError("No settings were provided. Trying to find default settings");
+				Settings = FindObjectOfType<ForgeSettings>();
+				if (Settings == null)
+				{
+					throw new BaseNetworkException("Could not find forge settings!");
+				}
+			}
 		}
 
 		protected virtual void OnEnable()
@@ -94,9 +101,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IServer)
 			{
-				if (enableSQP)
+				if (Settings.enableSQP)
 				{
-					sqpServer = new SQPServer(SQPPort);
+					sqpServer = new SQPServer(Settings.SQPPort);
 				}
 
 				if (!string.IsNullOrEmpty(masterServerHost))
