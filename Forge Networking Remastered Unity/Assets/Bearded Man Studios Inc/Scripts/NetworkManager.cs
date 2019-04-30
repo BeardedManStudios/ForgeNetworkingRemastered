@@ -667,5 +667,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			}
 		}
-	}
+
+        public static GameObject GetGameObjectByNetworkId(uint id)
+        {
+            return ((NetworkBehavior)Instance.Networker.NetworkObjects[id].AttachedBehavior).gameObject;
+        }
+    }
 }
