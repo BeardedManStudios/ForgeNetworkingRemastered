@@ -668,9 +668,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-        public static GameObject GetGameObjectByNetworkId(uint id)
+		/// <summary>
+		/// A helper function to retrieve a GameObject by its network id.
+		/// </summary>
+		/// <param name="id">Network id of the gameobject</param>
+        public GameObject GetGameObjectByNetworkId(uint id)
         {
-            return ((NetworkBehavior)Instance.Networker.NetworkObjects[id].AttachedBehavior).gameObject;
+			NetworkObject foundNetworkObject;
+			Networker?.NetworkObjects?.TryGetValue(id, out foundNetworkObject);
+            return ((NetworkBehavior)foundNetworkObject?.AttachedBehavior?).gameObject?;
         }
     }
 }
