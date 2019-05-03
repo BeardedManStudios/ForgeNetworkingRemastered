@@ -676,15 +676,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
         {
             if (Networker == null ) //Only check Networker, as NetworkObjects are always initiliased.
             {
-                Debug.LogWarning("Networker is null. Check if initiliased");
+                Debug.LogWarning("Networker is null. Network manager has not been initiliased.");
                 return null;
             }
+			
             NetworkObject foundNetworkObject = null;
-            if (!Networker.NetworkObjects.TryGetValue(id, out foundNetworkObject) || foundNetworkObject.AttachedBehavior == null)
+			if (!Networker.NetworkObjects.TryGetValue(id, out foundNetworkObject) || foundNetworkObject.AttachedBehavior == null)
             {
                 Debug.LogWarning("No object found by id or object has no attached behavior.");
                 return null;
             }
+			
             return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
         }
     }
