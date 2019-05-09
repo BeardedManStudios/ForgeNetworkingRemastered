@@ -617,10 +617,11 @@ namespace BeardedManStudios.Forge.Networking
 					id = forceId;
 
 					if (!networkObject.RegisterOnce(id))
+					{
 						throw new BaseNetworkException("The supplied network object has already been assigned to a networker and has an id");
+					}
 
-					//AddNetworkObject(forceId, networkObject);
-					//NetworkObjectList.Add(networkObject);
+					CompleteInitialization(networkObject);
 				}
 				else
 				{
@@ -637,8 +638,7 @@ namespace BeardedManStudios.Forge.Networking
 							throw new BaseNetworkException("The supplied network object has already been assigned to a networker and has an id");
 						}
 
-						//AddNetworkObject(currentNetworkObjectId, networkObject);
-						//NetworkObjectList.Add(networkObject);
+						CompleteInitialization(networkObject);
 						break;
 					} while (IsBound);
 				}
