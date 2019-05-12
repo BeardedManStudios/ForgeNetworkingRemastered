@@ -667,5 +667,27 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			}
 		}
-	}
+
+		/// <summary>
+		/// A helper function to retrieve a GameObject by its network id.
+		/// </summary>
+		/// <param name="id">Network id of the gameobject</param>
+        public GameObject GetGameObjectByNetworkId(uint id)
+        {
+            if (Networker == null ) //Only check Networker, as NetworkObjects are always initiliased.
+            {
+                Debug.LogWarning("Networker is null. Network manager has not been initiliased.");
+                return null;
+            }
+			
+            NetworkObject foundNetworkObject = null;
+			if (!Networker.NetworkObjects.TryGetValue(id, out foundNetworkObject) || foundNetworkObject.AttachedBehavior == null)
+            {
+                Debug.LogWarning("No object found by id or object has no attached behavior.");
+                return null;
+            }
+			
+            return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
+        }
+    }
 }
