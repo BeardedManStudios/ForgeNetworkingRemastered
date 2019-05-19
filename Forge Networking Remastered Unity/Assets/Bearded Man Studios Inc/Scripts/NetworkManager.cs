@@ -621,7 +621,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
                             Networker.objectCreated -= CreatePendingObjects;
                     }
                 }
-                    
+
 
 				return;
 			}
@@ -658,6 +658,15 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
                 if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
                     Networker.objectCreated -= CreatePendingObjects;
+				else if (pendingObjects.Count != 0 && loadingScenes.Count == 0)
+                {
+	                // Pending network behavior list is not empty when there are no more scenes to load.
+	                // Probably network behaviours that were placed in the scene have already been destroyed on the server and other clients!
+	                foreach (var kvp in pendingObjects)
+	                {
+		                Destroy(((NetworkBehavior)kvp.Value).gameObject);
+	                }
+                }
 
             } else
 			{
@@ -679,14 +688,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
                 Debug.LogWarning("Networker is null. Network manager has not been initiliased.");
                 return null;
             }
-			
+
             NetworkObject foundNetworkObject = null;
 			if (!Networker.NetworkObjects.TryGetValue(id, out foundNetworkObject) || foundNetworkObject.AttachedBehavior == null)
             {
                 Debug.LogWarning("No object found by id or object has no attached behavior.");
                 return null;
             }
-			
+
             return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
         }
     }
