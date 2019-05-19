@@ -662,10 +662,23 @@ namespace BeardedManStudios.Forge.Networking.Unity
                 {
 	                // Pending network behavior list is not empty when there are no more scenes to load.
 	                // Probably network behaviours that were placed in the scene have already been destroyed on the server and other clients!
+
+	                List<GameObject> objetsToDestroy = new List<GameObject>();
 	                foreach (var kvp in pendingObjects)
 	                {
-		                Destroy(((NetworkBehavior)kvp.Value).gameObject);
+		                var gameObject = ((NetworkBehavior) kvp.Value).gameObject;
+		                if (!objetsToDestroy.Contains(gameObject))
+			                objetsToDestroy.Add(gameObject);
 	                }
+
+	                pendingObjects.Clear();
+
+	                foreach (var o in objetsToDestroy)
+	                {
+		                Destroy(o);
+	                }
+
+	                objetsToDestroy.Clear();
                 }
 
             } else
