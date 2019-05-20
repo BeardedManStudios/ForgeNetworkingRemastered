@@ -617,9 +617,7 @@ namespace BeardedManStudios.Forge.Networking
 					id = forceId;
 
 					if (!networkObject.RegisterOnce(id))
-					{
 						throw new BaseNetworkException("The supplied network object has already been assigned to a networker and has an id");
-					}
 
 					CompleteInitialization(networkObject);
 				}
