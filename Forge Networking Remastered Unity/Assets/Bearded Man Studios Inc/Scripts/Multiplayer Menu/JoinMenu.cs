@@ -140,6 +140,7 @@ namespace BeardedManStudios.MultiplayerMenu
 			serverListItemData.NextUpdate = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
 
 			serverList.Add(serverListItemData);
+			SetListItemSelected(serverListItemData, false);
 
 			RepositionItems();
 		}
