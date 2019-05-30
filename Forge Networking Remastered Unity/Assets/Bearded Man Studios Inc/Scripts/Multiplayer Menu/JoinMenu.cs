@@ -18,7 +18,7 @@ namespace BeardedManStudios.MultiplayerMenu
 		public InputField serverAddress;
 		public InputField serverPort;
 
-		private int selectedServer;
+		private int selectedServer = -1;
 		private List<ServerListItemData> serverList = new List<ServerListItemData>();
 		private float serverListEntryTemplateHeight;
 		private float nextListUpdateTime = 0f;
