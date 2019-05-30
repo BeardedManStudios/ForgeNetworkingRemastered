@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.SQP;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.SimpleJSON;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TextFrame = BeardedManStudios.Forge.Networking.Frame.Text;
 
 namespace BeardedManStudios.MultiplayerMenu
 {
@@ -24,6 +27,7 @@ namespace BeardedManStudios.MultiplayerMenu
 		private float nextListUpdateTime = 0f;
 		private MultiplayerMenu mpMenu;
 		private SQPClient sqpClient;
+		private TCPClient masterClient;
 
 		private void Awake()
 		{
@@ -38,6 +42,11 @@ namespace BeardedManStudios.MultiplayerMenu
 			{
 				NetWorker.localServerLocated += LocalServerLocated;
 				NetWorker.RefreshLocalUdpListings();
+			}
+
+			if (!string.IsNullOrEmpty(Settings.masterServerHost))
+			{
+				RefreshMasterServerListings();
 			}
 
 			serverListEntryTemplateHeight = ((RectTransform) serverListEntryTemplate.transform).rect.height;
@@ -242,6 +251,64 @@ namespace BeardedManStudios.MultiplayerMenu
 				option.ListItem.playerCount.text = "-/-";
 				option.ListItem.pingTime.text = "--";
 			}
+		}
+
+		private void RefreshMasterServerListings()
+		{
+			masterClient = new TCPMasterClient();
+
+			masterClient.serverAccepted += (sender) =>
+			{
+				try
+				{
+					// Create the get request with the desired filters
+					JSONNode sendData = JSONNode.Parse("{}");
+					JSONClass getData = new JSONClass();
+					getData.Add("id", Settings.serverId);
+					getData.Add("type", Settings.type);
+					getData.Add("mode", Settings.mode);
+
+					sendData.Add("get", getData);
+
+					// Send the request to the server
+					masterClient.Send(TextFrame.CreateFromString(masterClient.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+				}
+				catch
+				{
+					// If anything fails, then this client needs to be disconnected
+					masterClient.Disconnect(true);
+					masterClient = null;
+				}
+			};
+
+			masterClient.textMessageReceived += (player, frame, sender) =>
+			{
+				try
+				{
+					JSONNode data = JSONNode.Parse(frame.ToString());
+					if (data["hosts"] != null)
+					{
+						var response = new MasterServerResponse(data["hosts"].AsArray);
+
+						if (response != null && response.serverResponse.Count > 0)
+						{
+							// Go through all of the available hosts and add them to the server browser
+							foreach (var server in response.serverResponse)
+							{
+								AddServer(server.Address, server.Port);
+							}
+						}
+					}
+				} finally
+				{
+					if (masterClient != null)
+					{
+						// If we succeed or fail the client needs to disconnect from the Master Server
+						masterClient.Disconnect(true);
+						masterClient = null;
+					}
+				}
+			};
 		}
 	}
 
