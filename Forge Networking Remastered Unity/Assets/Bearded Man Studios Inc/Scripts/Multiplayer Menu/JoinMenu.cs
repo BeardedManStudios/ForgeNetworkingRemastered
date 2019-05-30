@@ -27,6 +27,8 @@ namespace BeardedManStudios.MultiplayerMenu
 		private float nextListUpdateTime = 0f;
 		private MultiplayerMenu mpMenu;
 		private SQPClient sqpClient;
+		private bool masterServerEnabled;
+		private bool localDiscoveryEnabled;
 		private TCPClient masterClient;
 
 		private void Awake()
@@ -36,27 +38,41 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			mpMenu = this.GetComponentInParent<MultiplayerMenu>();
 			Settings = mpMenu.Settings;
+			serverListEntryTemplateHeight = ((RectTransform) serverListEntryTemplate.transform).rect.height;
+
+			masterServerEnabled = !string.IsNullOrEmpty(Settings.masterServerHost);
+			localDiscoveryEnabled = Settings.getLocalNetworkConnections;
+
+			// No need to do anything else if local discovery or master server is not enabled
+			if (!localDiscoveryEnabled && !masterServerEnabled)
+				return;
+
 			sqpClient = new SQPClient();
 
-			if (Settings.getLocalNetworkConnections)
+			if (localDiscoveryEnabled)
 			{
 				NetWorker.localServerLocated += LocalServerLocated;
 				NetWorker.RefreshLocalUdpListings();
 			}
 
-			if (!string.IsNullOrEmpty(Settings.masterServerHost))
-			{
+			if (masterServerEnabled)
 				RefreshMasterServerListings();
-			}
-
-			serverListEntryTemplateHeight = ((RectTransform) serverListEntryTemplate.transform).rect.height;
 		}
 
 		private void Update()
 		{
+			// No need to do anything if local discovery or master server is not enabled
+			if (!masterServerEnabled && !localDiscoveryEnabled)
+				return;
+
 			if (Time.time > nextListUpdateTime)
 			{
-				NetWorker.RefreshLocalUdpListings();
+				if (localDiscoveryEnabled)
+					NetWorker.RefreshLocalUdpListings();
+
+				if (masterServerEnabled)
+					RefreshMasterServerListings();
+
 				nextListUpdateTime = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
 			}
 
@@ -121,7 +137,7 @@ namespace BeardedManStudios.MultiplayerMenu
 		/// </summary>
 		/// <param name="address"></param>
 		/// <param name="port"></param>
-		private void AddServer(string address, ushort port = NetWorker.DEFAULT_PORT)
+		private void AddServer(string address, ushort port = NetWorker.DEFAULT_PORT, bool isLocal = true)
 		{
 			var hostAndPort = $"{address}:{port}";
 
@@ -137,7 +153,8 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			var serverListItemData = new ServerListItemData {
 				ListItem = GameObject.Instantiate<ServerListEntry>(serverListEntryTemplate, servers.content),
-				Hostname = hostAndPort
+				Hostname = hostAndPort,
+				IsLocal = isLocal
 			};
 			serverListItemData.ListItem.gameObject.SetActive(true);
 
@@ -240,13 +257,20 @@ namespace BeardedManStudios.MultiplayerMenu
 		{
 			option.ListItem.hostName.text = option.Hostname;
 
-			if (option.SqpQuery.ValidResult) {
+			if (option.SqpQuery.ValidResult)
+			{
 				var sid = option.SqpQuery.ServerInfo.ServerInfoData;
-				option.ListItem.serverName.text = sid.ServerName ?? "";
-				option.ListItem.playerCount.text = $"{(int)sid.CurrentPlayers}/{(int)sid.MaxPlayers}";
-				option.ListItem.pingTime.text = $"{(int)option.SqpQuery.RTT} ms";
+				option.ListItem.serverName.text = $"{sid.ServerName} ({option.LocalOrGlobal})";
+				option.ListItem.playerCount.text = $"{sid.CurrentPlayers.ToString()}/{sid.MaxPlayers.ToString()}";
+				option.ListItem.pingTime.text = $"{option.SqpQuery.RTT.ToString()} ms";
+				option.LastUpdateTime = Time.time;
+			}
+			else if()
+			{
 
-			} else {
+			}
+			else
+			{
 				option.ListItem.serverName.text = "Server offline";
 				option.ListItem.playerCount.text = "-/-";
 				option.ListItem.pingTime.text = "--";
@@ -312,11 +336,15 @@ namespace BeardedManStudios.MultiplayerMenu
 		}
 	}
 
-	class ServerListItemData
+	internal class ServerListItemData
 	{
 		public string Hostname;
 		public ServerListEntry ListItem;
 		public float NextUpdate;
 		public Query SqpQuery;
+		public bool IsLocal;
+		public float LastUpdateTime;
+
+		public string LocalOrGlobal => IsLocal ? "Local" : "Internet";
 	}
 }
