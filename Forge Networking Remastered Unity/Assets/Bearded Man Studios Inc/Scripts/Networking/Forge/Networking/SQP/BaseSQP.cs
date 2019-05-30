@@ -5,6 +5,9 @@ namespace BeardedManStudios.Forge.Networking.SQP
 {
 	public class BaseSQP
 	{
+		/// <summary>
+		/// After how many milliseconds should a query be considered timed out.
+		/// </summary>
 		public const int QUERY_TIMEOUT = 3000;
 		public const int MAX_PACKET_SIZE = 1472;
 

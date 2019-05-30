@@ -29,7 +29,6 @@ namespace BeardedManStudios.MultiplayerMenu
 
 		private int selectedServer = -1;
 		private List<ServerListItemData> serverList = new List<ServerListItemData>();
-		private List<ServerListItemData> timedOutServers = new List<ServerListItemData>();
 		private float serverListEntryTemplateHeight;
 		private float nextListUpdateTime = 0f;
 		private MultiplayerMenu mpMenu;
@@ -94,19 +93,6 @@ namespace BeardedManStudios.MultiplayerMenu
 						sqpClient.SendChallengeRequest(server.SqpQuery);
 						server.NextUpdate = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
 					}
-
-					if (Time.time - server.LastUpdate > SERVER_LIST_ITEM_TIMEOUT && !timedOutServers.Contains(server))
-						timedOutServers.Add(server);
-				}
-
-				if (timedOutServers.Count > 0)
-				{
-					foreach (var server in timedOutServers)
-					{
-						RemoveServer(server);
-					}
-
-					timedOutServers.Clear();
 				}
 			}
 
@@ -283,16 +269,13 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			if (option.SqpQuery.ValidResult)
 			{
-				BMSLog.Log("Valid");
 				var sid = option.SqpQuery.ServerInfo.ServerInfoData;
 				option.ListItem.serverName.text = $"{sid.ServerName} ({option.LocalOrGlobal})";
 				option.ListItem.playerCount.text = $"{sid.CurrentPlayers.ToString()}/{sid.MaxPlayers.ToString()}";
 				option.ListItem.pingTime.text = $"{option.SqpQuery.RTT.ToString()} ms";
-				option.LastUpdate = Time.time;
 			}
 			else
 			{
-				BMSLog.Log("Invalid");
 				option.ListItem.serverName.text = "Server offline";
 				option.ListItem.playerCount.text = "-/-";
 				option.ListItem.pingTime.text = "--";
@@ -365,8 +348,7 @@ namespace BeardedManStudios.MultiplayerMenu
 		public float NextUpdate;
 		public Query SqpQuery;
 		public bool IsLocal;
-		public float LastUpdate;
 
-		public string LocalOrGlobal => IsLocal ? "Local" : "Internet";
+		public string LocalOrGlobal => IsLocal ? "LAN" : "Internet";
 	}
 }

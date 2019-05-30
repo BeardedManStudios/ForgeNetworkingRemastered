@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
+using BeardedManStudios.Forge.Logging;
 
 namespace BeardedManStudios.Forge.Networking.SQP
 {
@@ -21,6 +23,7 @@ namespace BeardedManStudios.Forge.Networking.SQP
 		{
 			IPEndPoint localEP = new IPEndPoint(IPAddress.Any, 0);
 			InitSocket(localEP);
+			stopwatch.Start();
 		}
 
 		/// <summary>
@@ -66,9 +69,8 @@ namespace BeardedManStudios.Forge.Networking.SQP
 				catch (SocketException e)
 				{
 					// If the exception was a connection reset then ignore it otherwise rethrow it.
-					if (e.SocketErrorCode != SocketError.ConnectionReset) {
+					if (e.SocketErrorCode != SocketError.ConnectionReset)
 						throw;
-					}
 				}
 
 				if (read > 0)
