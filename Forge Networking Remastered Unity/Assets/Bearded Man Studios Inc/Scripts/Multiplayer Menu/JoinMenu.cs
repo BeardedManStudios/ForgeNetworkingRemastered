@@ -13,6 +13,8 @@ namespace BeardedManStudios.MultiplayerMenu
 {
 	public class JoinMenu : MonoBehaviour
 	{
+		private const float SERVER_LIST_ITEM_TIMEOUT = 5000f;
+
 		public ForgeSettings Settings;
 		public ScrollRect servers;
 		public ServerListEntry serverListEntryTemplate;
@@ -265,9 +267,10 @@ namespace BeardedManStudios.MultiplayerMenu
 				option.ListItem.pingTime.text = $"{option.SqpQuery.RTT.ToString()} ms";
 				option.LastUpdateTime = Time.time;
 			}
-			else if()
+			else if(Time.time - option.LastUpdateTime > SERVER_LIST_ITEM_TIMEOUT)
 			{
-
+				Destroy(option.ListItem.gameObject);
+				serverList.Remove(option);
 			}
 			else
 			{
