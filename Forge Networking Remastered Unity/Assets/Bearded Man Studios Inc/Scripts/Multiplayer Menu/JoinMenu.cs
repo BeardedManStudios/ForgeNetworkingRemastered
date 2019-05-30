@@ -14,11 +14,6 @@ namespace BeardedManStudios.MultiplayerMenu
 {
 	public class JoinMenu : MonoBehaviour
 	{
-		/// <summary>
-		/// How many seconds to wait before removing a server list item.
-		/// </summary>
-		private const float SERVER_LIST_ITEM_TIMEOUT = 10f;
-
 		public ForgeSettings Settings;
 		public ScrollRect servers;
 		public ServerListEntry serverListEntryTemplate;
@@ -95,7 +90,6 @@ namespace BeardedManStudios.MultiplayerMenu
 					}
 				}
 			}
-
 		}
 
 		private void OnDestroy()
