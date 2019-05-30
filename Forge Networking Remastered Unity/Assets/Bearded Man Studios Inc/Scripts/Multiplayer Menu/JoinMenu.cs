@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BeardedManStudios.Forge.Logging;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.SQP;
 using BeardedManStudios.Forge.Networking.Unity;
@@ -13,7 +14,10 @@ namespace BeardedManStudios.MultiplayerMenu
 {
 	public class JoinMenu : MonoBehaviour
 	{
-		private const float SERVER_LIST_ITEM_TIMEOUT = 5000f;
+		/// <summary>
+		/// How many seconds to wait before removing a server list item.
+		/// </summary>
+		private const float SERVER_LIST_ITEM_TIMEOUT = 10f;
 
 		public ForgeSettings Settings;
 		public ScrollRect servers;
@@ -25,6 +29,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 		private int selectedServer = -1;
 		private List<ServerListItemData> serverList = new List<ServerListItemData>();
+		private List<ServerListItemData> timedOutServers = new List<ServerListItemData>();
 		private float serverListEntryTemplateHeight;
 		private float nextListUpdateTime = 0f;
 		private MultiplayerMenu mpMenu;
@@ -89,6 +94,19 @@ namespace BeardedManStudios.MultiplayerMenu
 						sqpClient.SendChallengeRequest(server.SqpQuery);
 						server.NextUpdate = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
 					}
+
+					if (Time.time - server.LastUpdate > SERVER_LIST_ITEM_TIMEOUT && !timedOutServers.Contains(server))
+						timedOutServers.Add(server);
+				}
+
+				if (timedOutServers.Count > 0)
+				{
+					foreach (var server in timedOutServers)
+					{
+						RemoveServer(server);
+					}
+
+					timedOutServers.Clear();
 				}
 			}
 
@@ -180,10 +198,14 @@ namespace BeardedManStudios.MultiplayerMenu
 		private void RemoveServer(int index)
 		{
 			var o = serverList[index];
-			Destroy(o.ListItem.gameObject);
-			serverList.RemoveAt(index);
-			RepositionItems();
+			RemoveServer(o);
+		}
 
+		private void RemoveServer(ServerListItemData item)
+		{
+			Destroy(item.ListItem.gameObject);
+			serverList.Remove(item);
+			RepositionItems();
 		}
 
 		/// <summary>
@@ -261,19 +283,16 @@ namespace BeardedManStudios.MultiplayerMenu
 
 			if (option.SqpQuery.ValidResult)
 			{
+				BMSLog.Log("Valid");
 				var sid = option.SqpQuery.ServerInfo.ServerInfoData;
 				option.ListItem.serverName.text = $"{sid.ServerName} ({option.LocalOrGlobal})";
 				option.ListItem.playerCount.text = $"{sid.CurrentPlayers.ToString()}/{sid.MaxPlayers.ToString()}";
 				option.ListItem.pingTime.text = $"{option.SqpQuery.RTT.ToString()} ms";
-				option.LastUpdateTime = Time.time;
-			}
-			else if(Time.time - option.LastUpdateTime > SERVER_LIST_ITEM_TIMEOUT)
-			{
-				Destroy(option.ListItem.gameObject);
-				serverList.Remove(option);
+				option.LastUpdate = Time.time;
 			}
 			else
 			{
+				BMSLog.Log("Invalid");
 				option.ListItem.serverName.text = "Server offline";
 				option.ListItem.playerCount.text = "-/-";
 				option.ListItem.pingTime.text = "--";
@@ -346,7 +365,7 @@ namespace BeardedManStudios.MultiplayerMenu
 		public float NextUpdate;
 		public Query SqpQuery;
 		public bool IsLocal;
-		public float LastUpdateTime;
+		public float LastUpdate;
 
 		public string LocalOrGlobal => IsLocal ? "Local" : "Internet";
 	}
