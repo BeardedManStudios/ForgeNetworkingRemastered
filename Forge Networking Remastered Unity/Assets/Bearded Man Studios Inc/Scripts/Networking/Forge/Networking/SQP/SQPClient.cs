@@ -121,7 +121,7 @@ namespace BeardedManStudios.Forge.Networking.SQP
 				{
 					var now = SQPClient.stopwatch.ElapsedMilliseconds;
 
-					// If we have not receiced anything from a server then let's reset it's state to Idle
+					// If we have not received anything from a server then let's reset it's state to Idle
 					if (now - query.StartTime > QUERY_TIMEOUT)
 					{
 						query.State = ClientState.Idle;
@@ -146,9 +146,10 @@ namespace BeardedManStudios.Forge.Networking.SQP
 			var request = new ChallengeRequest();
 			request.Serialize(ref buffer);
 
+			query.State = ClientState.WaitingForChallange;
+
 			var data = buffer.CompressBytes();
 			socket.SendTo(data, data.Length, SocketFlags.None, query.Server);
-			query.State = ClientState.WaitingForChallange;
 		}
 
 		/// <summary>
