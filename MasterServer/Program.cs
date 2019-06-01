@@ -8,6 +8,7 @@ namespace MasterServer
 {
 	internal static class Program
 	{
+		private static bool s_Daemon = false;
 		private static string s_Host = "0.0.0.0";
 		private static ushort s_Port = 15940;
 		private static string s_Read = string.Empty;
@@ -29,7 +30,10 @@ namespace MasterServer
 			s_Server.ToggleLogging();
 
 			while (true)
-				HandleConsoleInput();
+			{
+				if (!s_Daemon)
+					HandleConsoleInput();
+			}
 		}
 
 		private static void ParseArgs(string[] args)
@@ -39,6 +43,9 @@ namespace MasterServer
 			if (args.Length > 0)
 			{
 				string value;
+				if (arguments.TryGetValue("d", out value) || arguments.TryGetValue("daemon", out value))
+					s_Daemon = true;
+
 				if (arguments.TryGetValue("h", out value) || arguments.TryGetValue("host", out value))
 					s_Host = value;
 
