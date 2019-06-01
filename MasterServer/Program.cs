@@ -56,7 +56,12 @@ namespace MasterServer
 
 			while (true)
 			{
-				read = Console.ReadLine().ToLower();
+				read = Console.ReadLine()?.ToLower();
+
+				// Running as a headless server
+				if (read == null)
+					continue;
+
 				if (read == "s" || read == "stop")
 				{
 					lock (server)
