@@ -11,7 +11,6 @@ namespace MasterServer
 		private static bool s_Daemon = false;
 		private static string s_Host = "0.0.0.0";
 		private static ushort s_Port = 15940;
-		private static string s_Read = string.Empty;
 		private static int s_EloRange = 0;
 
 		private static MasterServer s_Server;
@@ -59,15 +58,15 @@ namespace MasterServer
 			{
 				Console.WriteLine("Entering nothing will choose defaults.");
 				Console.WriteLine("Enter Host IP (Default: " + GetLocalIpAddress() + "):");
-				s_Read = Console.ReadLine();
-				s_Host = string.IsNullOrEmpty(s_Read) ? GetLocalIpAddress() : s_Read;
+				string read = Console.ReadLine();
+				s_Host = string.IsNullOrEmpty(read) ? GetLocalIpAddress() : read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
-				s_Read = Console.ReadLine();
-				if (string.IsNullOrEmpty(s_Read))
+				read = Console.ReadLine();
+				if (string.IsNullOrEmpty(read))
 					s_Port = 15940;
 				else
-					ushort.TryParse(s_Read, out s_Port);
+					ushort.TryParse(read, out s_Port);
 			}
 		}
 
