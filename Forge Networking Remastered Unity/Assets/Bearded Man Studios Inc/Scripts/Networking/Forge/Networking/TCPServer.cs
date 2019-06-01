@@ -159,15 +159,16 @@ namespace BeardedManStudios.Forge.Networking
         /// <param name="receivers">Receiver's type</param>
         /// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
         /// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
+#if WINDOWS_UWP
+        public bool Send(StreamSocket client, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+#else
         public bool Send(TcpClient client, Receivers receivers = Receivers.Target, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, params object[] objectsToSend)
+#endif
         {
             BMSByte data = ObjectMapper.BMSByte(objectsToSend);
             Binary sendFrame = new Binary(Time.Timestep, false, data, Receivers.Target, messageGroupId, false);
-#if WINDOWS_UWP
-			public bool Send(StreamSocket client, FrameStream frame)
-#else
+
             return Send(client, sendFrame);
-#endif
         }
 
         /// <summary>
