@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace MasterServer
 {
-	class Program
+	internal static class Program
 	{
 		private static void Main(string[] args)
 		{
@@ -33,22 +33,17 @@ namespace MasterServer
 				Console.WriteLine("Entering nothing will choose defaults.");
 				Console.WriteLine("Enter Host IP (Default: "+ GetLocalIPAddress() + "):");
 				read = Console.ReadLine();
-				if (string.IsNullOrEmpty(read))
-					host = GetLocalIPAddress();
-				else
-					host = read;
+				host = string.IsNullOrEmpty(read) ? GetLocalIPAddress() : read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
 				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
 					port = 15940;
 				else
-				{
 					ushort.TryParse(read, out port);
-				}
 			}
 
-			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+			Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
 			PrintHelp();
 			MasterServer server = new MasterServer(host, port);
 			server.EloRange = eloRange;
@@ -89,7 +84,7 @@ namespace MasterServer
 					}
 
 					Console.WriteLine("Restarting...");
-					Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+					Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
 					server = new MasterServer(host, port);
 				}
 				else if (read == "q" || read == "quit")
@@ -105,11 +100,11 @@ namespace MasterServer
 					PrintHelp();
 				else if (read.StartsWith("elo"))
 				{
-					int index = read.IndexOf("=");
+					int index = read.IndexOf("=", StringComparison.Ordinal);
 					string val = read.Substring(index + 1, read.Length - (index + 1));
 					if (int.TryParse(val.Replace(" ", string.Empty), out index))
 					{
-						Console.WriteLine(string.Format("Elo range set to {0}", index));
+						Console.WriteLine("Elo range set to {0}", index);
 						if (index == 0)
 							Console.WriteLine("Elo turned off");
 						server.EloRange = index;
