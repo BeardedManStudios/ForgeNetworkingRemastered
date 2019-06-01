@@ -1,6 +1,4 @@
-﻿using BeardedManStudios;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 
@@ -17,48 +15,23 @@ namespace MasterServer
 
 		private static void Main(string[] args)
 		{
-			ParseArguments(args);
+			string host = "0.0.0.0";
+			ushort port = 15940;
+			string read = string.Empty;
+			int eloRange = 0;
 
-			Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
-			PrintHelp();
-
-			server = new MasterServer(host, port)
+			var options = new CommandLineOptions();
+			if (CommandLine.Parser.Default.ParseArguments(args, options))
 			{
-				EloRange = eloRange
-			};
-			server.ToggleLogging();
-
-			while (true)
-			{
-				if (!isDaemon)
-					HandleConsoleInput();
-			}
-		}
-
-		private static void ParseArguments(string[] args)
-		{
-			Dictionary<string, string> arguments = ArgumentParser.ParseArguments(args);
-
-			if (args.Length > 0)
-			{
-				string value;
-				if (arguments.TryGetValue("d", out value) || arguments.TryGetValue("daemon", out value))
-					isDaemon = true;
-
-				if (arguments.TryGetValue("h", out value) || arguments.TryGetValue("host", out value))
-					host = value;
-
-				if (arguments.TryGetValue("p", out value) || arguments.TryGetValue("port", out value))
-					ushort.TryParse(value, out port);
-
-				if (arguments.TryGetValue("e", out value) || arguments.TryGetValue("elorange", out value))
-					int.TryParse(value, out eloRange);
+				ushort.TryParse(options.Port, out port);
+				host = options.Host;
+				eloRange = options.EloRange;
 			}
 			else
 			{
 				Console.WriteLine("Entering nothing will choose defaults.");
 				Console.WriteLine("Enter Host IP (Default: " + GetLocalIpAddress() + "):");
-				string read = Console.ReadLine();
+				read = Console.ReadLine();
 				host = string.IsNullOrEmpty(read) ? GetLocalIpAddress() : read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
@@ -112,7 +85,7 @@ namespace MasterServer
 					Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
 					server = new MasterServer(host, port);
 					break;
-				
+
 				case "q":
 				case "quit":
 					lock (server)

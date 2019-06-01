@@ -36,6 +36,7 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 *.dll
+!BeardedManStudios/packages/CommandLineParser.1.9.71/lib/net35/CommandLine.dll
 *.pdb
 *.exe
 *.cache
