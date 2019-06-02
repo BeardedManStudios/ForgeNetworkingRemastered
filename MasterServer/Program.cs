@@ -8,71 +8,72 @@ namespace MasterServer
 {
 	internal static class Program
 	{
-		private static bool s_Daemon = false;
-		private static string s_Host = "0.0.0.0";
-		private static ushort s_Port = 15940;
-		private static int s_EloRange = 0;
+		private static bool isDaemon = false;
+		private static string host = "0.0.0.0";
+		private static ushort port = 15940;
+		private static int eloRange = 0;
 
-		private static MasterServer s_Server;
+		private static MasterServer server;
 
 		private static void Main(string[] args)
 		{
-			ParseArgs(args);
+			ParseArguments(args);
 
-			Console.WriteLine("Hosting ip [{0}] on port [{1}]", s_Host, s_Port);
+			Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
 			PrintHelp();
 
-			s_Server = new MasterServer(s_Host, s_Port)
+			server = new MasterServer(host, port)
 			{
-				EloRange = s_EloRange
+				EloRange = eloRange
 			};
-			s_Server.ToggleLogging();
+			server.ToggleLogging();
 
 			while (true)
 			{
-				if (!s_Daemon)
+				if (!isDaemon)
 					HandleConsoleInput();
 			}
 		}
 
-		private static void ParseArgs(string[] args)
+		private static void ParseArguments(string[] args)
 		{
-			Dictionary<string, string> arguments = ArgumentParser.Parse(args);
+			Dictionary<string, string> arguments = ArgumentParser.ParseArguments(args);
 
 			if (args.Length > 0)
 			{
 				string value;
 				if (arguments.TryGetValue("d", out value) || arguments.TryGetValue("daemon", out value))
-					s_Daemon = true;
+					isDaemon = true;
 
 				if (arguments.TryGetValue("h", out value) || arguments.TryGetValue("host", out value))
-					s_Host = value;
+					host = value;
 
 				if (arguments.TryGetValue("p", out value) || arguments.TryGetValue("port", out value))
-					ushort.TryParse(value, out s_Port);
+					ushort.TryParse(value, out port);
 
 				if (arguments.TryGetValue("e", out value) || arguments.TryGetValue("elorange", out value))
-					int.TryParse(value, out s_EloRange);
+					int.TryParse(value, out eloRange);
 			}
 			else
 			{
 				Console.WriteLine("Entering nothing will choose defaults.");
 				Console.WriteLine("Enter Host IP (Default: " + GetLocalIpAddress() + "):");
 				string read = Console.ReadLine();
-				s_Host = string.IsNullOrEmpty(read) ? GetLocalIpAddress() : read;
+				host = string.IsNullOrEmpty(read) ? GetLocalIpAddress() : read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
 				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
-					s_Port = 15940;
+					port = 15940;
 				else
-					ushort.TryParse(read, out s_Port);
+					ushort.TryParse(read, out port);
 			}
 		}
 
 		private static void HandleConsoleInput()
 		{
-			string read = Console.ReadLine()?.ToLower();
+			string read = Console.ReadLine();
+			read = string.IsNullOrEmpty(read) ? read : read.ToLower();
 
 			switch (read)
 			{
@@ -81,16 +82,16 @@ namespace MasterServer
 
 				case "s":
 				case "stop":
-					lock (s_Server)
+					lock (server)
 					{
 						Console.WriteLine("Server stopped.");
-						s_Server.Dispose();
+						server.Dispose();
 					}
 					break;
 
 				case "l":
 				case "log":
-					if (s_Server.ToggleLogging())
+					if (server.ToggleLogging())
 						Console.WriteLine("Logging has been enabled");
 					else
 						Console.WriteLine("Logging has been disabled");
@@ -98,26 +99,26 @@ namespace MasterServer
 
 				case "r":
 				case "restart":
-					lock (s_Server)
+					lock (server)
 					{
-						if (s_Server.IsRunning)
+						if (server.IsRunning)
 						{
 							Console.WriteLine("Server stopped.");
-							s_Server.Dispose();
+							server.Dispose();
 						}
 					}
 
 					Console.WriteLine("Restarting...");
-					Console.WriteLine("Hosting ip [{0}] on port [{1}]", s_Host, s_Port);
-					s_Server = new MasterServer(s_Host, s_Port);
+					Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
+					server = new MasterServer(host, port);
 					break;
 				
 				case "q":
 				case "quit":
-					lock (s_Server)
+					lock (server)
 					{
 						Console.WriteLine("Quitting...");
-						s_Server.Dispose();
+						server.Dispose();
 					}
 
 					break;
@@ -137,7 +138,7 @@ namespace MasterServer
 							Console.WriteLine("Elo range set to {0}", index);
 							if (index == 0)
 								Console.WriteLine("Elo turned off");
-							s_Server.EloRange = index;
+							server.EloRange = index;
 						}
 						else
 							Console.WriteLine("Invalid elo range provided (Must be an integer)\n");
@@ -165,8 +166,8 @@ namespace MasterServer
 	    /// <returns></returns>
 	    private static string GetLocalIpAddress()
 	    {
-	        IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-	        foreach (IPAddress ip in host.AddressList)
+	        IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+	        foreach (IPAddress ip in hostEntry.AddressList)
 	        {
 	            if (ip.AddressFamily == AddressFamily.InterNetwork)
 		            return ip.ToString();

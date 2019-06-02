@@ -30,7 +30,7 @@ namespace BeardedManStudios
 		/// A dictionary of arguments with the key being the flag (or the index for floating args)
 		/// and the value being the associated value (or argument for floating args).
 		/// </returns>
-		public static Dictionary<string, string> Parse(params string[] args)
+		public static Dictionary<string, string> ParseArguments(params string[] args)
 		{
 			Dictionary<string, string> parsedArgs = new Dictionary<string, string>();
 
@@ -40,7 +40,7 @@ namespace BeardedManStudios
 				string arg = args[i];
 
 				string value;
-				string key = ParseArg(arg, out value) ?? floatingArgIndex++.ToString();
+				string key = ParseArgument(arg, out value) ?? floatingArgIndex++.ToString();
 
 				parsedArgs[key] = value;
 			}
@@ -66,7 +66,7 @@ namespace BeardedManStudios
 		/// <param name="arg"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		private static string ParseArg(string arg, out string value)
+		private static string ParseArgument(string arg, out string value)
 		{
 			if (arg == null)
 				throw new ArgumentNullException("arg");
