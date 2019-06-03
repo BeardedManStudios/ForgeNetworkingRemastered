@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace BeardedManStudios.MultiplayerMenu
 {
@@ -17,6 +19,46 @@ namespace BeardedManStudios.MultiplayerMenu
 		public GameObject networkManager = null;
 		public GameObject[] ToggledButtons;
 
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool DontChangeSceneOnConnect = false;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public string masterServerHost = string.Empty;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public ushort masterServerPort = 15940;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public string natServerHost = string.Empty;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public ushort natServerPort = 15941;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool connectUsingMatchmaking = false;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool useElo = false;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public int myElo = 0;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public int eloRequired = 0;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool useMainThreadManagerForRPCs = true;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool useInlineChat = false;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool getLocalNetworkConnections = false;
+
+		[Obsolete("This field is deprecated. Please use the new ForgeSettings ScriptableObject. The default settings can be found in 'Scripts/Default Forge Settings'")]
+		public bool useTCP = false;
+
+
 		private NetworkManager mgr = null;
 		private NetWorker server;
 
@@ -24,6 +66,20 @@ namespace BeardedManStudios.MultiplayerMenu
 		private bool _matchmaking = false;
 
 		private JoinMenu JoinMenu;
+
+		private void Awake()
+		{
+			if (Settings == null)
+			{
+				Debug.LogError("No settings were provided. Trying to find default settings.");
+				Debug.LogWarning("Please check the settings in the inspector. If you are using non default values then you can use the update button on the menu component in the inspector to save them.");
+				Settings = FindObjectOfType<ForgeSettings>();
+				if (Settings == null)
+				{
+					throw new BaseNetworkException("Could not find forge settings! Please make sure you update your Multiplayer Menu settings in the editor");
+				}
+			}
+		}
 
 		private void Start()
 		{
