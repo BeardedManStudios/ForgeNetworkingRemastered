@@ -6,74 +6,99 @@ using System.Net.Sockets;
 
 namespace MasterServer
 {
-	class Program
+	internal static class Program
 	{
+		private static bool isDaemon = false;
+		private static string host = "0.0.0.0";
+		private static ushort port = 15940;
+		private static int eloRange = 0;
+
+		private static MasterServer server;
+
 		private static void Main(string[] args)
 		{
-			string host = "0.0.0.0";
-			ushort port = 15940;
-			string read = string.Empty;
-			int eloRange = 0;
+			ParseArguments(args);
 
-			Dictionary<string, string> arguments = ArgumentParser.Parse(args);
+			Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
+			PrintHelp();
+
+			server = new MasterServer(host, port)
+			{
+				EloRange = eloRange
+			};
+			server.ToggleLogging();
+
+			while (true)
+			{
+				if (!isDaemon)
+					HandleConsoleInput();
+			}
+		}
+
+		private static void ParseArguments(string[] args)
+		{
+			Dictionary<string, string> arguments = ArgumentParser.ParseArguments(args);
 
 			if (args.Length > 0)
 			{
-				if (arguments.ContainsKey("host"))
-					host = arguments["host"];
+				string value;
+				if (arguments.TryGetValue("d", out value) || arguments.TryGetValue("daemon", out value))
+					isDaemon = true;
 
-				if (arguments.ContainsKey("port"))
-					ushort.TryParse(arguments["port"], out port);
+				if (arguments.TryGetValue("h", out value) || arguments.TryGetValue("host", out value))
+					host = value;
 
-				if (arguments.ContainsKey("elorange"))
-					int.TryParse(arguments["elorange"], out eloRange);
+				if (arguments.TryGetValue("p", out value) || arguments.TryGetValue("port", out value))
+					ushort.TryParse(value, out port);
+
+				if (arguments.TryGetValue("e", out value) || arguments.TryGetValue("elorange", out value))
+					int.TryParse(value, out eloRange);
 			}
 			else
 			{
 				Console.WriteLine("Entering nothing will choose defaults.");
-				Console.WriteLine("Enter Host IP (Default: "+ GetLocalIPAddress() + "):");
-				read = Console.ReadLine();
-				if (string.IsNullOrEmpty(read))
-					host = GetLocalIPAddress();
-				else
-					host = read;
+				Console.WriteLine("Enter Host IP (Default: " + GetLocalIpAddress() + "):");
+				string read = Console.ReadLine();
+				host = string.IsNullOrEmpty(read) ? GetLocalIpAddress() : read;
 
 				Console.WriteLine("Enter Port (Default: 15940):");
 				read = Console.ReadLine();
 				if (string.IsNullOrEmpty(read))
 					port = 15940;
 				else
-				{
 					ushort.TryParse(read, out port);
-				}
 			}
+		}
 
-			Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
-			PrintHelp();
-			MasterServer server = new MasterServer(host, port);
-			server.EloRange = eloRange;
-			server.ToggleLogging();
+		private static void HandleConsoleInput()
+		{
+			string read = Console.ReadLine();
+			read = string.IsNullOrEmpty(read) ? read : read.ToLower();
 
-			while (true)
+			switch (read)
 			{
-				read = Console.ReadLine().ToLower();
-				if (read == "s" || read == "stop")
-				{
+				case null:
+					return;
+
+				case "s":
+				case "stop":
 					lock (server)
 					{
 						Console.WriteLine("Server stopped.");
 						server.Dispose();
 					}
-				}
-				else if (read == "l" || read == "log")
-				{
+					break;
+
+				case "l":
+				case "log":
 					if (server.ToggleLogging())
 						Console.WriteLine("Logging has been enabled");
 					else
 						Console.WriteLine("Logging has been disabled");
-				}
-				else if (read == "r" || read == "restart")
-				{
+					break;
+
+				case "r":
+				case "restart":
 					lock (server)
 					{
 						if (server.IsRunning)
@@ -84,36 +109,44 @@ namespace MasterServer
 					}
 
 					Console.WriteLine("Restarting...");
-					Console.WriteLine(string.Format("Hosting ip [{0}] on port [{1}]", host, port));
+					Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
 					server = new MasterServer(host, port);
-				}
-				else if (read == "q" || read == "quit")
-				{
+					break;
+				
+				case "q":
+				case "quit":
 					lock (server)
 					{
 						Console.WriteLine("Quitting...");
 						server.Dispose();
 					}
+
 					break;
-				}
-				else if (read == "h" || read == "help")
+
+				case "h":
+				case "help":
 					PrintHelp();
-				else if (read.StartsWith("elo"))
-				{
-					int index = read.IndexOf("=");
-					string val = read.Substring(index + 1, read.Length - (index + 1));
-					if (int.TryParse(val.Replace(" ", string.Empty), out index))
+					break;
+
+				default:
+					if (read.StartsWith("elo"))
 					{
-						Console.WriteLine(string.Format("Elo range set to {0}", index));
-						if (index == 0)
-							Console.WriteLine("Elo turned off");
-						server.EloRange = index;
+						int index = read.IndexOf("=", StringComparison.Ordinal);
+						string val = read.Substring(index + 1, read.Length - (index + 1));
+						if (int.TryParse(val.Replace(" ", string.Empty), out index))
+						{
+							Console.WriteLine("Elo range set to {0}", index);
+							if (index == 0)
+								Console.WriteLine("Elo turned off");
+							server.EloRange = index;
+						}
+						else
+							Console.WriteLine("Invalid elo range provided (Must be an integer)\n");
 					}
 					else
-						Console.WriteLine("Invalid elo range provided (Must be an integer)\n");
-				}
-				else
-					Console.WriteLine("Command not recognized, please try again");
+						Console.WriteLine("Command not recognized, please try again");
+
+					break;
 			}
 		}
 
@@ -131,16 +164,15 @@ namespace MasterServer
 	    /// Return the Local IP-Address
 	    /// </summary>
 	    /// <returns></returns>
-	    private static string GetLocalIPAddress()
+	    private static string GetLocalIpAddress()
 	    {
-	        var host = Dns.GetHostEntry(Dns.GetHostName());
-	        foreach (var ip in host.AddressList)
+	        IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+	        foreach (IPAddress ip in hostEntry.AddressList)
 	        {
 	            if (ip.AddressFamily == AddressFamily.InterNetwork)
-	            {
-	                return ip.ToString();
-	            }
+		            return ip.ToString();
 	        }
+
 	        throw new Exception("No network adapters with an IPv4 address in the system!");
 	    }
     }

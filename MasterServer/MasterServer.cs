@@ -1,5 +1,4 @@
-﻿using BeardedManStudios;
-using BeardedManStudios.Forge.Networking;
+﻿using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 using BeardedManStudios.SimpleJSON;
@@ -16,9 +15,9 @@ namespace MasterServer
 		private const int PING_INTERVAL = 10000;
 
 		public bool IsRunning { get; private set; }
-		private TCPServer server;
-		private List<Host> hosts = new List<Host>();
-		private Dictionary<string, int> _playerRequests = new Dictionary<string, int>();
+		private readonly TCPServer server;
+		private readonly List<Host> hosts = new List<Host>();
+		private readonly Dictionary<string, int> _playerRequests = new Dictionary<string, int>();
 		private bool _eloRangeSet;
 		private int _eloRange;
 		public int EloRange
