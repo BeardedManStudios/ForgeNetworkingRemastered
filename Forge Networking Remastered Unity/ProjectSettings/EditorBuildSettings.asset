@@ -5,12 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Bearded Man Studios Inc/Scenes/MultiplayerMenu.unity
     guid: a5b9e296c950dcc4d862eeda4ce5052a
   - enabled: 0
     path: Assets/Bearded Man Studios Inc/Scenes/ServerBrowser.unity
     guid: e25b87e967aec124bba7cd17d4d3a8fc
+  - enabled: 1
+    path: Assets/Bearded Man Studios Inc/Scenes/FacepunchMultiplayerMenu.unity
+    guid: 522d973cdc2a4dd4db4b4fb4e7c3892d
   - enabled: 1
     path: Assets/Bearded Man Studios Inc/Examples/Cube Forge/CubeForgeGame.unity
     guid: 4ef136a7071399248bad683d402a0e39

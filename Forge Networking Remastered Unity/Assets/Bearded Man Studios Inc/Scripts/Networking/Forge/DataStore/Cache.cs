@@ -104,6 +104,10 @@ namespace BeardedManStudios.Forge.Networking.DataStore
 
 				if (sender is BaseTCP)
 					((TCPServer)sender).Send(player.TcpClientHandle, sendFrame);
+#if FACEPUNCH_STEAMWORKS
+				else if (sender is BaseFacepunchP2P)
+					((FacepunchP2PServer)sender).Send(player, sendFrame, true);
+#endif
 				else
 					((UDPServer)sender).Send(player, sendFrame, true);
 			}
@@ -226,8 +230,12 @@ namespace BeardedManStudios.Forge.Networking.DataStore
             if (Socket is SteamP2PClient)
                 ((SteamP2PClient)Socket).Send(sendFrame, true);
             else if (Socket is BaseTCP)
+#elif FACEPUNCH_STEAMWORKS
+			if (Socket is FacepunchP2PClient)
+				((FacepunchP2PClient)Socket).Send(sendFrame, true);
+			else if (Socket is BaseTCP)
 #else
-            if (Socket is BaseTCP)
+			if (Socket is BaseTCP)
 #endif
                 ((TCPClient)Socket).Send(sendFrame);
 			else
