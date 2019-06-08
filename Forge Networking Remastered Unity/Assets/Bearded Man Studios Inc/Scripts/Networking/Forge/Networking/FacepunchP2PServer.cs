@@ -11,10 +11,18 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class FacepunchP2PServer : BaseFacepunchP2P, IServer
 	{
-		private CommonServerLogic commonServerLogic;
+		public List<string> BannedAddresses { get; set; }
+
+		/// <summary>
+		/// Used to determine if this server is currently accepting connections
+		/// </summary>
+		public bool AcceptingConnections { get; private set; }
 
 		public Dictionary<SteamId, FacepunchNetworkingPlayer> steamPlayers = new Dictionary<SteamId, FacepunchNetworkingPlayer>();
 
+		protected List<FrameStream> bufferedMessages = new List<FrameStream>();
+
+		private CommonServerLogic commonServerLogic;
 		private FacepunchNetworkingPlayer currentReadingPlayer = null;
 
 		public FacepunchP2PServer(int maxConnections) : base(maxConnections)
@@ -24,18 +32,15 @@ namespace BeardedManStudios.Forge.Networking
 			commonServerLogic = new CommonServerLogic(this);
 		}
 
-		protected List<FrameStream> bufferedMessages = new List<FrameStream>();
-
-		public List<string> BannedAddresses { get; set; }
-
 		/// <summary>
-		/// Used to determine if this server is currently accepting connections
+		/// Send data to selected networking player
 		/// </summary>
-		public bool AcceptingConnections { get; private set; }
-
+		/// <param name="player">Client to whom to send data</param>
+		/// <param name="frame">Data to send</param>
+		/// <param name="reliable">Send reliable (slow) or unreliable (fast)</param>
 		public void Send(NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
-			FacepunchP2PPacketComposer composer = new FacepunchP2PPacketComposer(this, player, frame, reliable);
+			var composer = new FacepunchP2PPacketComposer(this, player, frame, reliable);
 
 			// If this message is reliable then make sure to keep a reference to the composer
 			// so that there are not any run-away threads
@@ -50,11 +55,22 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// Send data to players specified within frame.Receivers
+		/// </summary>
+		/// <param name="frame">Data to send</param>
+		/// <param name="reliable">Send reliable (slow) or unreliable (fast)</param>
 		public override void Send(FrameStream frame, bool reliable = false)
 		{
 			Send(frame, reliable, null);
 		}
 
+		/// <summary>
+		/// Send data to players specified within frame.Receivers but skip specified player
+		/// </summary>
+		/// <param name="frame">Data to send</param>
+		/// <param name="reliable">Send reliable (slow) or unreliable (fast)</param>
+		/// <param name="skipPlayer">Player to omit from send action</param>
 		public void Send(FrameStream frame, bool reliable = false, NetworkingPlayer skipPlayer = null)
 		{
 			if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
@@ -64,7 +80,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				for (int i = 0; i < Players.Count; i++)
 				{
-				   NetworkingPlayer player = Players[i];
+				   var player = Players[i];
 
 					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
@@ -110,7 +126,6 @@ namespace BeardedManStudios.Forge.Networking
 			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
 			Send(sendFrame, reliable, playerToIgnore);
 		}
-
 
 		/// <summary>
 		/// Start the Forge Networking server on this Facepunch Steamworks client
@@ -166,7 +181,7 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// Disconnects this server and all of it's clients
+		/// Disconnects this server and all of its clients
 		/// </summary>
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public override void Disconnect(bool forced)
@@ -174,7 +189,6 @@ namespace BeardedManStudios.Forge.Networking
 			// Since we are disconnecting we need to stop the read thread
 			Logging.BMSLog.Log("<color=cyan>FacepunchP2P server disconnecting...</color>");
 
-			//StopAcceptingConnections();
 			SteamNetworking.OnP2PSessionRequest -= OnP2PSessionRequest;
 			readThreadCancel = true;
 
@@ -229,7 +243,7 @@ namespace BeardedManStudios.Forge.Networking
 		public void CommitDisconnects() { CleanupDisconnections(); }
 
 		/// <summary>
-		/// Fully remove the player from the network
+		/// Prepare to remove the player from the network
 		/// </summary>
 		/// <param name="player">The target player</param>
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
@@ -257,6 +271,11 @@ namespace BeardedManStudios.Forge.Networking
 				FinalizeRemovePlayer(player, forced);
 		}
 
+		/// <summary>
+		/// Finalize the removal of the player from the network
+		/// </summary>
+		/// <param name="player">Player to remove</param>
+		/// <param name="forced">Was the removal forced or not?</param>
 		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
 		{
 			steamPlayers.Remove(player.SteamID);
@@ -274,7 +293,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadClients()
 		{
-			SteamId messageFrom = default(SteamId);
+			SteamId messageFrom = default;
 
 			BMSByte packet = null;
 
@@ -287,23 +306,19 @@ namespace BeardedManStudios.Forge.Networking
 
 				try
 				{
-					// Read a packet from the network
-					//uint msgSize = 0;
-
 					packet = Client.Receive(out messageFrom);
 					if (messageFrom == default)
 					{
 						Thread.Sleep(1);
 						continue;
 					}
+
 					if (packet == null)
 					{
 						Logging.BMSLog.Log("null packet received from non-null player - should not see me!");
 						Thread.Sleep(1);
 						continue;
 					}
-				
-					Logging.BMSLog.Log("packet.Size: " + packet.Size);
 
 					if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
 					{
@@ -411,7 +426,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (response == null)
 				return;
 
-			FacepunchNetworkingPlayer player = new FacepunchNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
+			var player = new FacepunchNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
 
 			// If all is in order then send the validated response to the client
 			Client.Send(response, response.Length, steamId);
@@ -465,10 +480,18 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// Parse the packet into a byte [] after it has been accepted and added to the queue for reading
+		/// If reliable, packets must be ordered before reading
+		/// </summary>
+		/// <param name="data">Raw data in the packet</param>
+		/// <param name="groupId"></param>
+		/// <param name="receivers"></param>
+		/// <param name="isReliable"></param>
 		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
-			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, currentReadingPlayer, receivers);
+			var frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, currentReadingPlayer, receivers);
 
 			if (isReliable)
 			{
@@ -577,9 +600,13 @@ namespace BeardedManStudios.Forge.Networking
 			CommitDisconnects();
 		}
 
+		/// <summary>
+		/// Send the entire buffer to the player
+		/// </summary>
+		/// <param name="player"></param>
 		private void SendBuffer(NetworkingPlayer player)
 		{
-			foreach (FrameStream frame in bufferedMessages)
+			foreach (var frame in bufferedMessages)
 				Send(player, frame, true);
 		}
 

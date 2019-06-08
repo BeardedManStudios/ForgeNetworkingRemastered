@@ -34,9 +34,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private bool headerExchanged = false;
 
+		/// <summary>
+		/// Sends data to the server
+		/// </summary>
+		/// <param name="frame">Data to send</param>
+		/// <param name="reliable">Send reliable (slow) or unreliable (fast)</param>
 		public override void Send(FrameStream frame, bool reliable = false)
 		{
-			FacepunchP2PPacketComposer composer = new FacepunchP2PPacketComposer(this, Server, frame, reliable);
+			var composer = new FacepunchP2PPacketComposer(this, Server, frame, reliable);
 
 			// If this message is reliable then make sure to keep a reference to the composer
 			// so that there are not any run-away threads
@@ -46,9 +51,6 @@ namespace BeardedManStudios.Forge.Networking
 				composer.completed += ComposerCompleted;
 				pendingComposers.Add(composer);
 			}
-
-			// TODO: New constructor for setting up callbacks before regular constructor (as seen above)
-			//composer.Init(this, Server, frame, reliable);
 		}
 
 		/// <summary>
@@ -66,10 +68,10 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// This will connect a Facepunch Steamworks Forge Networking client to a given FPSW/FNR server
+		/// Connect this FacepunchP2PClient to a FacepunchP2PServer hosted by steam user with SteamId specified
 		/// </summary>
-		/// <param name="hostId">The server's SteamID ulong</param>
-		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
+		/// <param name="hostId">The server's SteamID object</param>
+		/// <param name="pendCreates">Immediately set the NetWorker::PendCreates to true</param>
 		public void Connect(SteamId hostId, bool pendCreates = false)
 		{
 			if (Disposed)
@@ -132,7 +134,6 @@ namespace BeardedManStudios.Forge.Networking
 							connectAttemptFailed(this);
 					}
 				});
-
 			}
 			catch (Exception e)
 			{
@@ -206,8 +207,6 @@ namespace BeardedManStudios.Forge.Networking
 							Thread.Sleep(1);
 							continue;
 						}
-
-						Logging.BMSLog.Log("packet.Size: " + packet.Size);
 
 						if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
 						{
@@ -291,10 +290,18 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		/// <summary>
+		/// Parse the packet into a byte [] after it has been accepted and added to the queue for reading
+		/// If reliable, packets must be ordered before reading
+		/// </summary>
+		/// <param name="data">Raw data in the packet</param>
+		/// <param name="groupId"></param>
+		/// <param name="receivers"></param>
+		/// <param name="isReliable"></param>
 		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
-			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, Server, receivers);
+			var frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, Server, receivers);
 
 			if (isReliable)
 			{
@@ -308,9 +315,11 @@ namespace BeardedManStudios.Forge.Networking
 				FireRead(frame, Server);
 		}
 
+		/// <summary>
+		/// Disconnect and destroy the CachedFacepunchP2PClient
+		/// </summary>
 		private void CloseConnection()
 		{
-
 			if (Client == null)
 				return;
 
@@ -340,6 +349,12 @@ namespace BeardedManStudios.Forge.Networking
 			Send(GeneratePong(time));
 		}
 
+
+		/// <summary>
+		/// Reads the frame stream as if it were read on the network
+		/// </summary>
+		/// <param name="frame">Data extracted from BMSByte packet</param>
+		/// <param name="currentPlayer">Client who sent the data</param>
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
 			if (frame is ConnectionClose)
@@ -354,7 +369,6 @@ namespace BeardedManStudios.Forge.Networking
 					return;
 
 				authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
-
 				return;
 			}
 

@@ -13,6 +13,12 @@ namespace BeardedManStudios.Forge.Networking
 	{
 		private bool disposed = false;
 		private bool active = false;
+		protected bool Active
+		{
+			get { return active; }
+			set { active = value; }
+		}
+
 		private SteamId steamEndPoint;
 		private BMSByte recBuffer = new BMSByte();
 		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
@@ -28,11 +34,19 @@ namespace BeardedManStudios.Forge.Networking
 			recBuffer.SetSize(65536);
 		}
 
+		/// <summary>
+		/// Dispose of this CachedFacepunchP2PClient
+		/// </summary>
 		public void Close()
 		{
 			((IDisposable)this).Dispose();
 		}
 
+		/// <summary>
+		/// Check for and return any packets sent to us
+		/// </summary>
+		/// <param name="from">SteamId of the player who sent us this packet</param>
+		/// <returns>Packet in BMSByte format</returns>
 		public BMSByte Receive(out SteamId from)
 		{
 			CheckDisposed();
@@ -59,6 +73,14 @@ namespace BeardedManStudios.Forge.Networking
 			return null;
 		}
 
+		/// <summary>
+		/// Actually sends the packet using SteamNetworking
+		/// </summary>
+		/// <param name="dgram">byte[] to send</param>
+		/// <param name="bytes">number of bytes in the packet</param>
+		/// <param name="steamId">SteamId of the recipient</param>
+		/// <param name="type">Steamworks.P2PSend type</param>
+		/// <returns></returns>
 		int DoSend(byte[] dgram, int bytes, SteamId steamId, P2PSend type)
 		{
 			// TODO:  Option to set up multi-channel comms. Using 0 as the default and only channel for now
@@ -71,6 +93,14 @@ namespace BeardedManStudios.Forge.Networking
 			return 0;
 		}
 
+		/// <summary>
+		/// Prepare & send packet to SteamId
+		/// </summary>
+		/// <param name="dgram">byte[] to send</param>
+		/// <param name="bytes">number of bytes in the packet</param>
+		/// <param name="steamId">SteamId of the recipient</param>
+		/// <param name="type">Steamworks.P2PSend type</param>
+		/// <returns></returns>
 		public int Send(byte[] dgram, int bytes, SteamId steamId, P2PSend type = P2PSend.Unreliable)
 		{
 			CheckDisposed();
@@ -80,26 +110,19 @@ namespace BeardedManStudios.Forge.Networking
 			return (DoSend(dgram, bytes, steamId, type));
 		}
 
-		private byte[] CutArray(byte[] orig, int length)
-		{
-			byte[] newArray = new byte[length];
-			Buffer.BlockCopy(orig, 0, newArray, 0, length);
-
-			return newArray;
-		}
-
-		protected bool Active
-		{
-			get { return active; }
-			set { active = value; }
-		}
-
+		/// <summary>
+		/// On disposal of this CachedFacepunchP2PClient IDisposable object
+		/// </summary>
 		void IDisposable.Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
+		/// <summary>
+		/// Disconnects from the Steam P2PSession
+		/// </summary>
+		/// <param name="disposing"></param>
 		protected virtual void Dispose(bool disposing)
 		{
 			if (disposed)
@@ -123,6 +146,9 @@ namespace BeardedManStudios.Forge.Networking
 			Dispose(false);
 		}
 
+		/// <summary>
+		/// Throw an exception if we're trying to use something we've already committed for disposal
+		/// </summary>
 		private void CheckDisposed()
 		{
 			if (disposed)

@@ -188,11 +188,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// this is the steam ID of this networked player.
 		/// </summary>
 		public SteamId SteamID { get; protected set; }
-
-		public void AssignOwnSteamId()
-		{
-			SteamID = SteamClient.SteamId;
-		}
 #endif
 
 		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
