@@ -181,15 +181,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event PlayerEvent playerRejected;
 
-        /// <summary>
-        /// Occurs when the player has connected and been succesfully authenticated
-        /// </summary>
-        public event PlayerEvent playerAuthenticated;
+		/// <summary>
+		/// Occurs when the player has connected and been succesfully authenticated
+		/// </summary>
+		public event PlayerEvent playerAuthenticated;
 
-        /// <summary>
-        /// Occurs when a message is received over the network from a remote machine
-        /// </summary>
-        public event FrameEvent messageReceived;
+		/// <summary>
+		/// Occurs when a message is received over the network from a remote machine
+		/// </summary>
+		public event FrameEvent messageReceived;
 
 		/// <summary>
 		/// Occurs when a binary message is received over the network from a remote machine
@@ -331,17 +331,17 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public float ProximityDistance { get; set; }
 
-        /// <summary>
-        /// How often a client gets updates if it is outside the proximity range.
+		/// <summary>
+		/// How often a client gets updates if it is outside the proximity range.
 		/// 
 		/// If set to 0 clients that are too far will never get updated.
-        /// </summary>
-        public int ProximityModeUpdateFrequency { get; set; }
+		/// </summary>
+		public int ProximityModeUpdateFrequency { get; set; }
 
-        /// <summary>
-        /// Allows the newly created network object to be queued for the flush call
-        /// </summary>
-        public bool PendCreates { get; set; }
+		/// <summary>
+		/// Allows the newly created network object to be queued for the flush call
+		/// </summary>
+		public bool PendCreates { get; set; }
 
 		/// <summary>
 		/// A boolean to tell the read thread to stop reading and close
@@ -406,16 +406,16 @@ namespace BeardedManStudios.Forge.Networking
 		public static Guid InstanceGuid { get; private set; }
 		private static bool setupInstanceGuid = false;
 
-        /// <summary>
-        /// Used to authenticate the client/server connection. If null, does not perform authentication.
-        /// </summary>
-        protected IUserAuthenticator authenticator = null;
+		/// <summary>
+		/// Used to authenticate the client/server connection. If null, does not perform authentication.
+		/// </summary>
+		protected IUserAuthenticator authenticator = null;
 
-        /// <summary>
-        /// This is the base constructor which is normally used for clients and not classes
-        /// acting as hosts
-        /// </summary>
-        public NetWorker()
+		/// <summary>
+		/// This is the base constructor which is normally used for clients and not classes
+		/// acting as hosts
+		/// </summary>
+		public NetWorker()
 		{
 			Initialize();
 		}
@@ -513,10 +513,10 @@ namespace BeardedManStudios.Forge.Networking
 				action(networkObject);
 		}
 
-        /// <summary>
-        /// Iterate over all NetworkingPlayers in a thread-safe manner
-        /// </summary>
-        public void IteratePlayers(Action<NetworkingPlayer> expression)
+		/// <summary>
+		/// Iterate over all NetworkingPlayers in a thread-safe manner
+		/// </summary>
+		public void IteratePlayers(Action<NetworkingPlayer> expression)
 		{
 			lock (Players)
 			{
@@ -525,10 +525,10 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Iterate over all NetworkObjects in a thread-safe manner
-        /// </summary>
-        public void IterateNetworkObjects(Action<NetworkObject> expression)
+		/// <summary>
+		/// Iterate over all NetworkObjects in a thread-safe manner
+		/// </summary>
+		public void IterateNetworkObjects(Action<NetworkObject> expression)
 		{
 			lock (NetworkObjectList)
 			{
@@ -537,14 +537,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer by NetworkId
-        /// </summary>
-        /// <returns>
-        /// The NetworkingPlayer with NetworkId equal to id
-        /// </returns>
-        /// <param name="id">The NetworkId of the NetworkingPlayer</param>
-        public NetworkingPlayer GetPlayerById(uint id)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer by NetworkId
+		/// </summary>
+		/// <returns>
+		/// The NetworkingPlayer with NetworkId equal to id
+		/// </returns>
+		/// <param name="id">The NetworkId of the NetworkingPlayer</param>
+		public NetworkingPlayer GetPlayerById(uint id)
 		{
 			lock (Players)
 			{
@@ -558,14 +558,14 @@ namespace BeardedManStudios.Forge.Networking
 			return null;
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer based on an expression
-        /// </summary>
-        /// <returns>
-        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
-        /// </returns>
-        /// <param name="expression">The expression on which to match</param>
-        public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer based on an expression
+		/// </summary>
+		/// <returns>
+		/// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+		/// </returns>
+		/// <param name="expression">The expression on which to match</param>
+		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
 		{
 			lock (Players)
 			{
@@ -573,14 +573,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer which matches the provided NetworkingPlayer by Ip and InstanceGuid
-        /// </summary>
-        /// <returns>
-        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
-        /// </returns>
-        /// <param name="expression">The expression on which to match</param>
-        public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer which matches the provided NetworkingPlayer by Ip and InstanceGuid
+		/// </summary>
+		/// <returns>
+		/// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+		/// </returns>
+		/// <param name="expression">The expression on which to match</param>
+		public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
 		{
 			if (other.Networker == this)
 				return other;
@@ -733,7 +733,7 @@ namespace BeardedManStudios.Forge.Networking
 		internal void OnObjectCreated(NetworkObject target)
 		{
 			if (_objectCreated != null)
-                _objectCreated(target);
+				_objectCreated(target);
 		}
 
 		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
@@ -804,22 +804,22 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerRejected(NetworkingPlayer player)
 		{
 			player.Accepted = false;
-            player.Authenticated = false;
+			player.Authenticated = false;
 
 			if (playerRejected != null)
 				playerRejected(player, this);
 		}
 
-        /// <summary>
-        /// If the player is authenticated, 
-        /// </summary>
-        protected void OnPlayerAuthenticated(NetworkingPlayer player)
-        {
-            player.Authenticated = true;
+		/// <summary>
+		/// If the player is authenticated, 
+		/// </summary>
+		protected void OnPlayerAuthenticated(NetworkingPlayer player)
+		{
+			player.Authenticated = true;
 
-            if (playerAuthenticated != null)
-                playerAuthenticated(player, this);
-        }
+			if (playerAuthenticated != null)
+				playerAuthenticated(player, this);
+		}
 
 		/// <summary>
 		/// Set the port for the networker
@@ -998,21 +998,21 @@ namespace BeardedManStudios.Forge.Networking
 			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
 		}
 
-        /// <summary>
-        /// Used to set the user authenticator. NetWorker must not already be connected.
-        /// </summary>
-        public void SetUserAuthenticator(IUserAuthenticator authenticator)
-        {
-            if (IsConnected)
-                throw new BaseNetworkException("The NetWorker is already connected");
+		/// <summary>
+		/// Used to set the user authenticator. NetWorker must not already be connected.
+		/// </summary>
+		public void SetUserAuthenticator(IUserAuthenticator authenticator)
+		{
+			if (IsConnected)
+				throw new BaseNetworkException("The NetWorker is already connected");
 
-            this.authenticator = authenticator;
-        }
+			this.authenticator = authenticator;
+		}
 
-        /// <summary>
-        /// Used to bind to a port then unbind to trigger any operating system firewall requests
-        /// </summary>
-        public static void PingForFirewall(ushort port = 0)
+		/// <summary>
+		/// Used to bind to a port then unbind to trigger any operating system firewall requests
+		/// </summary>
+		public static void PingForFirewall(ushort port = 0)
 		{
 			if (port < 1)
 			{

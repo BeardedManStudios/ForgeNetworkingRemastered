@@ -573,7 +573,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000072292296}
+  m_AnchoredPosition: {x: 0, y: 0.000021428574}
   m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &970310612
@@ -1141,7 +1141,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 970310613}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9998298
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1871,9 +1871,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4df68bee168f9d54ea9521547a26ad65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DontChangeSceneOnConnect: 0
+  dontChangeSceneOnConnect: 0
   networkManager: {fileID: 186558, guid: 79adc0da5b6caf74990d862696696ecd, type: 3}
-  ToggledButtons:
+  toggledButtons:
   - {fileID: 2104711872}
   - {fileID: 1920631495}
   useMainThreadManagerForRPCs: 1

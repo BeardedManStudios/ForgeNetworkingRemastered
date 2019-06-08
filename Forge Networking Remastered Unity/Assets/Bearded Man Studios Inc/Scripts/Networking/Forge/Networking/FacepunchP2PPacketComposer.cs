@@ -6,8 +6,8 @@ using System.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
-    public class FacepunchP2PPacketComposer : BasePacketComposer
-    {
+	public class FacepunchP2PPacketComposer : BasePacketComposer
+	{
 		/// <summary>
 		/// A base for any composer based events
 		/// </summary>
@@ -56,13 +56,19 @@ namespace BeardedManStudios.Forge.Networking
 			Init(clientWorker, player, frame, reliable);
 		}
 
+		/// <summary>
+		/// Initialize the packet composer if the constructor with no arguments was used
+		/// </summary>
+		/// <param name="clientWorker">This BaseFacepunchP2P client worker</param>
+		/// <param name="player">Networking player to whom we are sending data</param>
+		/// <param name="frame">Data to be sent</param>
+		/// <param name="reliable">Send reliable (slow) or unreliable (fast)</param>
 		public void Init(BaseFacepunchP2P clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
 			ClientWorker = clientWorker;
 			Player = player;
 			Frame = frame;
 			Reliable = reliable;
-
 			Initialize();
 		}
 
@@ -75,6 +81,9 @@ namespace BeardedManStudios.Forge.Networking
 			ClientWorker.Client.Send(data, data.Length, Player.SteamID, Reliable ? Steamworks.P2PSend.Reliable : Steamworks.P2PSend.Unreliable);
 		}
 
+		/// <summary>
+		/// Set up the Packet Composer
+		/// </summary>
 		private void Initialize()
 		{
 			CreatePackets();
@@ -186,7 +195,8 @@ namespace BeardedManStudios.Forge.Networking
 				// Create and add the new packet to pending packets so that it can be sent out
 				PendingPackets.Add(orderId, new UDPPacket(Reliable, endPacket, Frame.GroupId, orderId, Frame.UniqueId, packet, false, Frame.Receivers));
 				orderId++;
-			} while (byteIndex < data.Length);
+			}
+			while (byteIndex < data.Length);
 		}
 
 		/// <summary>

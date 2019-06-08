@@ -15,11 +15,9 @@ public class FacepunchJoinMenu : MonoBehaviour
 	public FacepunchServerListEntry serverListEntryTemplate;
 	public RectTransform serverListContentRect;
 	public Button connectButton;
-
 	public Text selectedLobbyText;
+
 	private const string LOBBY_TEXT = "Selected Lobby SteamId: ";
-	//public InputField serverAddress;
-	//public InputField serverPort;
 
 	private int selectedServer = -1;
 	private List<FacepunchServerListItemData> serverList = new List<FacepunchServerListItemData>();
@@ -201,7 +199,6 @@ public class FacepunchJoinMenu : MonoBehaviour
 	private async Task RefreshLobbyList()
 	{
 		var query = new Steamworks.Data.LobbyQuery();
-		//query.FilterDistanceClose();
 		Steamworks.Data.Lobby[] lobbylist = await query.RequestAsync();
 		if (lobbylist != null)
 		{
@@ -215,7 +212,6 @@ public class FacepunchJoinMenu : MonoBehaviour
 						FacepunchServerListItemData data = serverList[j];
 						if (data.lobby.Id == lobbylist[i].Id)
 						{
-							//Then we already have this server and we will refresh it instead of adding new
 							haveThisServer = true;
 							UpdateItem(data);
 							continue;
@@ -228,7 +224,6 @@ public class FacepunchJoinMenu : MonoBehaviour
 			}
 		}
 	}
-
 }
 
 internal class FacepunchServerListItemData

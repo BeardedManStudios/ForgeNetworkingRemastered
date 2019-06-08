@@ -1,40 +1,4 @@
-﻿//
-// System.Net.Sockets.UdpClient.cs
-//
-// Author:
-//	Gonzalo Paniagua Javier <gonzalo@ximian.com>
-//	Sridhar Kulkarni (sridharkulkarni@gmail.com)
-//	Marek Safar (marek.safar@gmail.com)
-//
-// Modified by:
-//	Brent Farris (brent@beardedmangames.com)
-//
-// Copyright (C) Ximian, Inc. http://www.ximian.com
-// Copyright 2011 Xamarin Inc.
-//
-
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-
-#if !UNITY_WEBGL
+﻿#if !UNITY_WEBGL
 #if !NetFX_CORE
 #if FACEPUNCH_STEAMWORKS
 
@@ -42,42 +6,35 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 
 namespace BeardedManStudios.Forge.Networking
 {
-    public class CachedFacepunchP2PClient : IDisposable
+	public class CachedFacepunchP2PClient : IDisposable
 	{
-		public const char HOST_PORT_CHARACTER_SEPARATOR = '+';
 		private bool disposed = false;
 		private bool active = false;
-        private SteamId steamEndPoint;
+		private SteamId steamEndPoint;
+		private BMSByte recBuffer = new BMSByte();
+		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
 
-#region Instantiation
-        public CachedFacepunchP2PClient()
+		public CachedFacepunchP2PClient()
 		{
-            //steamendpoint = self
+
 		}
 
-        public CachedFacepunchP2PClient(SteamId endPoint)
-        {
-            steamEndPoint = endPoint;
-            recBuffer.SetSize(65536);
-        }
+		public CachedFacepunchP2PClient(SteamId endPoint)
+		{
+			steamEndPoint = endPoint;
+			recBuffer.SetSize(65536);
+		}
 
-#endregion
-#region Close
-        public void Close()
+		public void Close()
 		{
 			((IDisposable)this).Dispose();
 		}
-#endregion
-#region Data I/O
-		private BMSByte recBuffer = new BMSByte();
-		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
+
 		public BMSByte Receive(out SteamId from)
 		{
-			//uint dataRead = 0;
 			CheckDisposed();
 
 			if (!SteamNetworking.IsP2PPacketAvailable())
@@ -85,9 +42,11 @@ namespace BeardedManStudios.Forge.Networking
 				from = default;
 				return null;
 			}
+
 			recBuffer.Clear();
 
 			var packet = SteamNetworking.ReadP2PPacket();
+
 			if (packet.HasValue)
 			{
 				from = packet.Value.SteamId;
@@ -95,46 +54,31 @@ namespace BeardedManStudios.Forge.Networking
 				recBuffer.byteArr = packet.Value.Data;
 				return recBuffer;
 			}
+
 			from = default;
-            return null;
+			return null;
 		}
 
-        int DoSend(byte[] dgram, int bytes, SteamId steamId, P2PSend type)
-        {
-            /* Catch EACCES and turn on SO_BROADCAST then,
-			 * as UDP Sockets don't have it set by default
-			 */
-            //if(steamId.IsValid())
-			// Here the 0 is the default channel as we haven't set up multi-channel comms yet
-            if(SteamNetworking.SendP2PPacket(steamId, dgram, bytes, 0, type) == false)
-            {
-                Logging.BMSLog.LogWarningFormat("CachedSteamP2PClient:DoSend() WARNING: Unable to send packet to {0}", steamId.Value);
-            }
+		int DoSend(byte[] dgram, int bytes, SteamId steamId, P2PSend type)
+		{
+			// TODO:  Option to set up multi-channel comms. Using 0 as the default and only channel for now
 
-            return 0;
-        }
+			if (SteamNetworking.SendP2PPacket(steamId, dgram, bytes, 0, type) == false)
+			{
+				Logging.BMSLog.LogWarningFormat("CachedSteamP2PClient:DoSend() WARNING: Unable to send packet to {0}", steamId.Value);
+			}
 
-        /*public int Send(byte[] dgram, int bytes)
+			return 0;
+		}
+
+		public int Send(byte[] dgram, int bytes, SteamId steamId, P2PSend type = P2PSend.Unreliable)
 		{
 			CheckDisposed();
 			if (dgram == null)
-				throw new ArgumentNullException("dgram");
+				throw new ArgumentNullException("dgram is null");
 
-			if (!active)
-				throw new InvalidOperationException("Operation not allowed on " +
-					"non-connected Sockets.");
-
-			return (DoSend(dgram, bytes, null));
-		}*/
-
-        public int Send(byte[] dgram, int bytes, SteamId steamId, P2PSend type = P2PSend.Unreliable)
-        {
-            CheckDisposed();
-            if (dgram == null)
-                throw new ArgumentNullException("dgram is null");
-
-            return (DoSend(dgram, bytes, steamId, type));
-        }
+			return (DoSend(dgram, bytes, steamId, type));
+		}
 
 		private byte[] CutArray(byte[] orig, int length)
 		{
@@ -143,17 +87,13 @@ namespace BeardedManStudios.Forge.Networking
 
 			return newArray;
 		}
-#endregion
 
-#region Properties
 		protected bool Active
 		{
 			get { return active; }
 			set { active = value; }
 		}
 
-#endregion
-#region Disposing
 		void IDisposable.Dispose()
 		{
 			Dispose(true);
@@ -164,16 +104,17 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			if (disposed)
 				return;
+
 			disposed = true;
 
 			if (disposing)
 			{
-                //DISPOSE OF STEAM P2P SOCKET
-                if (!SteamNetworking.CloseP2PSessionWithUser(steamEndPoint))
-                {
+				// Dispose of Steam P2P Socket
+				if (!SteamNetworking.CloseP2PSessionWithUser(steamEndPoint))
+				{
 					if (steamEndPoint != SteamClient.SteamId)
-						Logging.BMSLog.Log("Could not close P2P Session with user: " + steamEndPoint.Value);
-                }
+						Logging.BMSLog.LogWarning("Could not close P2P Session with user: " + steamEndPoint.Value);
+				}
 			}
 		}
 
@@ -187,7 +128,6 @@ namespace BeardedManStudios.Forge.Networking
 			if (disposed)
 				throw new ObjectDisposedException(GetType().FullName);
 		}
-#endregion
 
 #if Net_4_5
 

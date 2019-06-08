@@ -1,6 +1,7 @@
 ﻿#if FACEPUNCH_STEAMWORKS
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Logging;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,46 +12,41 @@ using System.Threading.Tasks;
 
 public class FacepunchMultiplayerMenu : MonoBehaviour
 {
-	public bool DontChangeSceneOnConnect = false;
-
-	public GameObject networkManager = null;
-	public GameObject[] ToggledButtons;
-	private NetworkManager mgr = null;
-	private NetWorker server;
 	public const int MAXIMUM_SERVER_SLOTS = 64;
-	private Steamworks.Data.Lobby lobby;
-	public Steamworks.Data.Lobby lobbyToJoin = default;
 
-	private List<Button> _uiButtons = new List<Button>();
+	public bool dontChangeSceneOnConnect = false;
+	public GameObject networkManager = null;
+	public GameObject[] toggledButtons;
+	public Steamworks.Data.Lobby lobbyToJoin = default;
 	public bool useMainThreadManagerForRPCs = true;
 	public bool useInlineChat = false;
 
+	private NetworkManager mgr = null;
+	private NetWorker server;
+	private Steamworks.Data.Lobby lobby;
+	private List<Button> _uiButtons = new List<Button>();
+
 	private void Start()
 	{
-
-		for (int i = 0; i < ToggledButtons.Length; ++i)
+		for (int i = 0; i < toggledButtons.Length; ++i)
 		{
-			Button btn = ToggledButtons[i].GetComponent<Button>();
+			Button btn = toggledButtons[i].GetComponent<Button>();
 			if (btn != null)
 				_uiButtons.Add(btn);
 		}
 
 		if (useMainThreadManagerForRPCs)
 			Rpc.MainThreadRunner = MainThreadManager.Instance;
-
 	}
 
 	public void Connect()
 	{
 		if (lobbyToJoin.Id > 0)
 		{
-			Debug.Log("Attempting connection to steam lobby with steamId: " + lobbyToJoin.Id.Value);
 			ConnectToLobbyAsync();
 		}
-		else
-		{
-			Debug.Log("No lobby selected to join");
-		}
+
+		// TODO:  Raise a dialog to inform of the failed connection attempt
 	}
 
 	private async void ConnectToLobbyAsync()
@@ -60,14 +56,14 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 
 	private async Task ConnectToLobby()
 	{
-		RoomEnter x = await lobbyToJoin.Join();
-		if (x != RoomEnter.Success)
+		RoomEnter roomEnter = await lobbyToJoin.Join();
+		if (roomEnter != RoomEnter.Success)
 		{
-			BeardedManStudios.Forge.Logging.BMSLog.Log("Error connecting to lobby returned: " + x.ToString());
+			BMSLog.Log("Error connecting to lobby returned: " + roomEnter.ToString());
 			return;
 		}
+
 		this.lobby = lobbyToJoin;
-		BeardedManStudios.Forge.Logging.BMSLog.Log("Connected to lobby, owner.Id = " + lobbyToJoin.Owner.Id.Value);
 		ConnectToServer(lobbyToJoin.Owner.Id);
 	}
 
@@ -93,15 +89,9 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		Steamworks.Data.Lobby? lobby = await SteamMatchmaking.CreateLobbyAsync(MAXIMUM_SERVER_SLOTS);
 		if (lobby.HasValue)
 		{
-			//Debug.Log("Steam lobby created successfully. Lobby ID: " + lobby.Value.Id);
-			BeardedManStudios.Forge.Logging.BMSLog.Log("Steam lobby created successfully. Lobby ID: " + lobby.Value.Id);
 			CreateFacepunchP2PServer();
 		}
-		else
-		{
-			BeardedManStudios.Forge.Logging.BMSLog.Log("Failed to create lobby");
-		}
-
+		// TODO:  Raise a dialog to inform of the failed lobby creation attempt
 	}
 
 	private void CreateFacepunchP2PServer()
@@ -111,7 +101,7 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 
 		server.playerTimeout += (player, sender) =>
 		{
-			Debug.Log("Player " + player.NetworkId + " timed out");
+			BMSLog.Log("Player " + player.NetworkId + " timed out");
 		};
 
 		Connected(server);
@@ -129,13 +119,13 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 	{
 		if (!networker.IsBound)
 		{
-			Debug.LogError("NetWorker failed to bind");
+			BMSLog.LogWarning("NetWorker failed to bind");
 			return;
 		}
 
 		if (mgr == null && networkManager == null)
 		{
-			Debug.LogWarning("A network manager was not provided, generating a new one instead");
+			BMSLog.LogWarning("A network manager was not provided, generating a new one instead");
 			networkManager = new GameObject("Network Manager");
 			mgr = networkManager.AddComponent<NetworkManager>();
 		}
@@ -149,10 +139,10 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 
 		if (networker is IServer)
 		{
-			if (!DontChangeSceneOnConnect)
+			if (!dontChangeSceneOnConnect)
 				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 			else
-				NetworkObject.Flush(networker); //Called because we are already in the correct scene!
+				NetworkObject.Flush(networker);
 		}
 	}
 
@@ -173,6 +163,7 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 	{
 		if (server != null)
 			server.Disconnect(true);
+
 		if (lobby.Id > 0)
 			lobby.Leave();
 	}

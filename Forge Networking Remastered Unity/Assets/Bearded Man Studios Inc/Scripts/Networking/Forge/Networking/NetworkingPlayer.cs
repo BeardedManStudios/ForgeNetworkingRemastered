@@ -416,7 +416,9 @@ namespace BeardedManStudios.Forge.Networking
 							{
 								composerCount = reliableComposers.Count;
 							}
-						} while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
+						}
+						while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
+
 						currentPingWait = 0;
 					}
 				});

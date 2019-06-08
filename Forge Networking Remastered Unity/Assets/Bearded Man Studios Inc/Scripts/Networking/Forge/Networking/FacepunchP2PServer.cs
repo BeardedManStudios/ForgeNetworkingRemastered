@@ -4,7 +4,6 @@ using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using Steamworks;
 
@@ -19,11 +18,11 @@ namespace BeardedManStudios.Forge.Networking
 		private FacepunchNetworkingPlayer currentReadingPlayer = null;
 
 		public FacepunchP2PServer(int maxConnections) : base(maxConnections)
-        {
+		{
 			AcceptingConnections = true;
 			BannedAddresses = new List<string>();
-            commonServerLogic = new CommonServerLogic(this);
-        }
+			commonServerLogic = new CommonServerLogic(this);
+		}
 
 		protected List<FrameStream> bufferedMessages = new List<FrameStream>();
 
@@ -63,9 +62,9 @@ namespace BeardedManStudios.Forge.Networking
 
 			lock (Players)
 			{
-                for (int i = 0; i < Players.Count; i++)
+				for (int i = 0; i < Players.Count; i++)
 				{
-                   NetworkingPlayer player = Players[i];
+				   NetworkingPlayer player = Players[i];
 
 					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
@@ -76,8 +75,8 @@ namespace BeardedManStudios.Forge.Networking
 					}
 					catch(Exception e)
 					{
-                        Logging.BMSLog.LogException(e);
-                        Disconnect(player, true);
+						Logging.BMSLog.LogException(e);
+						Disconnect(player, true);
 					}
 				}
 			}
@@ -131,8 +130,8 @@ namespace BeardedManStudios.Forge.Networking
 					InstanceGuid = InstanceGuid.ToString()
 				};
 
-                // Do any generic initialization in result of the successful bind
-                OnBindSuccessful();
+				// Do any generic initialization in result of the successful bind
+				OnBindSuccessful();
 
 				// Listen to clients wishing to start P2PConnections and accept if they've joined the lobby
 				SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
@@ -172,8 +171,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public override void Disconnect(bool forced)
 		{
-            // Since we are disconnecting we need to stop the read thread
-            Logging.BMSLog.Log("<color=cyan>FacepunchP2P server disconnecting...</color>");
+			// Since we are disconnecting we need to stop the read thread
+			Logging.BMSLog.Log("<color=cyan>FacepunchP2P server disconnecting...</color>");
 
 			//StopAcceptingConnections();
 			SteamNetworking.OnP2PSessionRequest -= OnP2PSessionRequest;
@@ -208,7 +207,7 @@ namespace BeardedManStudios.Forge.Networking
 				// Stop listening for new connections
 				Client.Close();
 			}
-        }
+		}
 
 		/// <summary>
 		/// Disconnects a client
@@ -236,9 +235,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">If the player is being forcibly removed from an exception</param>
 		private void RemovePlayer(NetworkingPlayer player, bool forced)
 		{
-            Logging.BMSLog.LogFormat("Removing player {0}:{1} forced={2}", player.NetworkId, player.SteamID.Value, forced);
-
-            lock (Players)
+			lock (Players)
 			{
 				if (player.IsDisconnecting)
 					return;
@@ -262,7 +259,6 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void FinalizeRemovePlayer(NetworkingPlayer player, bool forced)
 		{
-            Logging.BMSLog.LogFormat("SteamP2PServer:FinalizeRemovePlayer({0}:{1}, forced={2}", player.NetworkId, player.SteamID.Value, forced);
 			steamPlayers.Remove(player.SteamID);
 			OnPlayerDisconnected(player);
 
@@ -278,9 +274,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadClients()
 		{
-            SteamId messageFrom = default(SteamId);
+			SteamId messageFrom = default(SteamId);
 
-            BMSByte packet = null;
+			BMSByte packet = null;
 
 			// Intentional infinite loop
 			while (IsBound)
@@ -309,7 +305,7 @@ namespace BeardedManStudios.Forge.Networking
 				
 					Logging.BMSLog.Log("packet.Size: " + packet.Size);
 
-                    if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
+					if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
 					{
 						// Skip this message
 						continue;
@@ -319,7 +315,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 				catch(Exception e)
 				{
-                    Logging.BMSLog.LogException(e);
+					Logging.BMSLog.LogException(e);
 
 					FacepunchNetworkingPlayer player;
 					if (steamPlayers.TryGetValue(messageFrom, out player))
@@ -336,8 +332,7 @@ namespace BeardedManStudios.Forge.Networking
 
 				if (!steamPlayers.ContainsKey(messageFrom))
 				{
-                    SetupClient(packet, messageFrom);
-					Logging.BMSLog.Log("Setting up new client: " + messageFrom.Value);
+					SetupClient(packet, messageFrom);
 					continue;
 				}
 				else
@@ -368,7 +363,7 @@ namespace BeardedManStudios.Forge.Networking
 						// will be 71 and the second packet be 69 is a forced disconnect reconnect
 						if (packet[0] == 71 && packet[1] == 69)
 						{
-                            Logging.BMSLog.LogFormat("Received packet[0]=71 & packet[1]=69");
+							Logging.BMSLog.LogFormat("Received packet[0]=71 & packet[1]=69");
 							steamPlayers.Remove(messageFrom);
 							FinalizeRemovePlayer(currentReadingPlayer, true);
 							continue;
@@ -381,49 +376,58 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        private void SetupClient(BMSByte packet, SteamId steamId)
-        {
-            if (Players.Count == MaxConnections)
-            {
-                // Tell the client why they are being disconnected
-                Send(Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true));
+		/// <summary>
+		/// Accept the client and add to our list of connected clients
+		/// </summary>
+		/// <param name="packet">The BMSByte packet received from connecting client</param>
+		/// <param name="steamId">The SteamId of the connecting client</param>
+		private void SetupClient(BMSByte packet, SteamId steamId)
+		{
+			if (Players.Count == MaxConnections)
+			{
+				// Tell the client why they are being disconnected
+				Send(Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, true));
 
-                // Send the close connection frame to the client
-                Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				// Send the close connection frame to the client
+				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
 
-                return;
-            }
-            else if (!AcceptingConnections)
-            {
-                // Tell the client why they are being disconnected
-                Send(Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
+				return;
+			}
+			else if (!AcceptingConnections)
+			{
+				// Tell the client why they are being disconnected
+				Send(Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.MAX_CONNECTIONS, true));
 
-                // Send the close connection frame to the client
-                Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
+				// Send the close connection frame to the client
+				Send(new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false));
 
-                return;
-            }
+				return;
+			}
 
-            // Validate that the connection headers are properly formatted
-            byte[] response = Websockets.ValidateConnectionHeader(packet.CompressBytes());
+			// Validate that the connection headers are properly formatted
+			byte[] response = Websockets.ValidateConnectionHeader(packet.CompressBytes());
 
-            // The response will be null if the header sent is invalid, if so then disconnect client as they are sending invalid headers
-            if (response == null)
-                return;
+			// The response will be null if the header sent is invalid, if so then disconnect client as they are sending invalid headers
+			if (response == null)
+				return;
 
-            FacepunchNetworkingPlayer player = new FacepunchNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
+			FacepunchNetworkingPlayer player = new FacepunchNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
 
-            // If all is in order then send the validated response to the client
-            Client.Send(response, response.Length, steamId);
+			// If all is in order then send the validated response to the client
+			Client.Send(response, response.Length, steamId);
 
-            OnPlayerConnected(player);
-            steamPlayers.Add(steamId, player);
+			OnPlayerConnected(player);
+			steamPlayers.Add(steamId, player);
 
-            // The player has successfully connected
-            player.Connected = true;
-        }
+			// The player has successfully connected
+			player.Connected = true;
+		}
 
-        private void ReadPacket(BMSByte packet)
+		/// <summary>
+		/// Process the incoming packet from a connected player
+		/// </summary>
+		/// <param name="packet">Incoming packet</param>
+		private void ReadPacket(BMSByte packet)
 		{
 			if (packet.Size < 17)
 				return;
@@ -478,50 +482,58 @@ namespace BeardedManStudios.Forge.Networking
 				FireRead(frame, currentReadingPlayer);
 		}
 
+		/// <summary>
+		/// Reads the frame stream as if it were read on the network
+		/// </summary>
+		/// <param name="frame">Data extracted from BMSByte packet</param>
+		/// <param name="currentPlayer">Client who sent the data</param>
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
 			// Check for default messages
 			if (frame is Text)
 			{
-                // This packet is sent if the player did not receive it's network id
-                if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
-                {
-                    currentPlayer.InstanceGuid = frame.ToString();
+				// This packet is sent if the player did not receive it's network id
+				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
+				{
+					currentPlayer.InstanceGuid = frame.ToString();
 
-                    bool rejected;
-                    OnPlayerGuidAssigned(currentPlayer, out rejected);
+					bool rejected;
+					OnPlayerGuidAssigned(currentPlayer, out rejected);
 
-                    // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-                    if (rejected)
-                        return;
+					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+					if (rejected)
+						return;
 
-                    // If so, check if there's a user authenticator
-                    if (authenticator != null)
-                    {
-                        authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
-                    } else
-                    {
-                        AuthUser(currentPlayer);
-                    }
-                    return;
-                }
-            } else if (frame is Binary)
-            {
-                if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
-                {
-                    // Authenticate user response
-                    if (currentPlayer.Authenticated || authenticator == null)
-                        return;
+					// If so, check if there's a user authenticator
+					if (authenticator != null)
+					{
+						authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
+					}
+					else
+					{
+						AuthUser(currentPlayer);
+					}
 
-                    authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
-                    return;
-                }
-            }
-
-            if (frame is ConnectionClose)
+					return;
+				}
+			}
+			else if (frame is Binary)
 			{
-				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
+				if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
+				{
+					// Authenticate user response
+					if (currentPlayer.Authenticated || authenticator == null)
+						return;
 
+					authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
+					return;
+				}
+			}
+
+			if (frame is ConnectionClose)
+			{
+				// TODO:  Check is this return send command required?
+				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
 				Disconnect(currentReadingPlayer, true);
 				CleanupDisconnections();
 				return;
@@ -531,41 +543,41 @@ namespace BeardedManStudios.Forge.Networking
 			OnMessageReceived(currentReadingPlayer, frame);
 		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an auth challenge to the user.
-        /// </summary>
-        private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
-        {
-            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an auth challenge to the user.
+		/// </summary>
+		private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
+		{
+			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
+		}
 
-        /// <summary>
-        /// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
-        /// </summary>
-        private void AuthUser(NetworkingPlayer player)
-        {
-            OnPlayerAuthenticated(player);
+		/// <summary>
+		/// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
+		/// </summary>
+		private void AuthUser(NetworkingPlayer player)
+		{
+			OnPlayerAuthenticated(player);
 
-            // If authenticated, send the player their network id and accept them
-            var buffer = new BMSByte();
-            buffer.Append(BitConverter.GetBytes(player.NetworkId));
-            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
-            SendBuffer(player);
-        }
+			// If authenticated, send the player their network id and accept them
+			var buffer = new BMSByte();
+			buffer.Append(BitConverter.GetBytes(player.NetworkId));
+			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+			SendBuffer(player);
+		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
-        /// </summary>
-        private void RejectUser(NetworkingPlayer player)
-        {
-            OnPlayerRejected(player);
-            Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
-            SendBuffer(player);
-            Disconnect(player, true);
-            CommitDisconnects();
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
+		/// </summary>
+		private void RejectUser(NetworkingPlayer player)
+		{
+			OnPlayerRejected(player);
+			Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
+			SendBuffer(player);
+			Disconnect(player, true);
+			CommitDisconnects();
+		}
 
-        private void SendBuffer(NetworkingPlayer player)
+		private void SendBuffer(NetworkingPlayer player)
 		{
 			foreach (FrameStream frame in bufferedMessages)
 				Send(player, frame, true);
@@ -586,25 +598,42 @@ namespace BeardedManStudios.Forge.Networking
 			Send(playerRequesting, GeneratePong(time));
 		}
 
+		/// <summary>
+		/// Stops accepting new connection requests
+		/// </summary>
 		public void StopAcceptingConnections()
 		{
 			AcceptingConnections = false;
+		}
 
-        }
-
+		/// <summary>
+		/// Allows new incoming connection requests
+		/// </summary>
 		public void StartAcceptingConnections()
 		{
 			AcceptingConnections = true;
-        }
+		}
 
+		/// <summary>
+		/// Callback for SteamNetworking.OnP2PSessionRequest
+		/// Accepts all incoming connections
+		/// </summary>
+		/// <param name="requestorSteamId">Incoming P2P request</param>
 		private void OnP2PSessionRequest(SteamId requestorSteamId)
 		{
+			// TODO:  Add logic to check/filter incoming P2Prequests?
+
 			if (!SteamNetworking.AcceptP2PSessionWithUser(requestorSteamId))
 			{
-				BeardedManStudios.Forge.Logging.BMSLog.Log("Could not accept P2P Session with User: " + requestorSteamId.Value);
+				Logging.BMSLog.LogWarning("Could not accept P2P Session with User: " + requestorSteamId.Value);
 			}
 		}
 
+		/// <summary>
+		/// Ban a player by NetworkId for a specified time
+		/// </summary>
+		/// <param name="networkId">Player to be banned</param>
+		/// <param name="minutes">Ban time in minutes</param>
 		public void BanPlayer(ulong networkId, int minutes)
 		{
 			NetworkingPlayer player = Players.FirstOrDefault(p => p.NetworkId == networkId);

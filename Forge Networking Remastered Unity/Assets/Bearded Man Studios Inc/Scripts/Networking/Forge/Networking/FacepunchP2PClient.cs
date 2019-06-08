@@ -1,10 +1,8 @@
 ﻿#if FACEPUNCH_STEAMWORKS
 using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
 using Steamworks;
 using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -17,6 +15,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// where there is 3 seconds between each attempt
 		/// </summary>
 		public const int CONNECT_TRIES = 10;
+		public UDPPacketManager packetManager = new UDPPacketManager();
+		public event BaseNetworkEvent connectAttemptFailed;
+
+		/// <summary>
+		/// The identity of the server as a player
+		/// </summary>
+		private NetworkingPlayer server = null;
+		public NetworkingPlayer Server { get { return server; } }
 
 		/// <summary>
 		/// The hash that is / was validated by the server
@@ -28,37 +34,22 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private bool headerExchanged = false;
 
-		/// <summary>
-		/// The identity of the server as a player
-		/// </summary>
-		private NetworkingPlayer server = null;
-		public NetworkingPlayer Server { get { return server; } }
-
-		public UDPPacketManager packetManager = new UDPPacketManager();
-
-		public event BaseNetworkEvent connectAttemptFailed;
-
-        public override void Send(FrameStream frame, bool reliable = false)
+		public override void Send(FrameStream frame, bool reliable = false)
 		{
-            /*//might have to go back to UDP packet composers. needs testing
-            byte[] data = frame.GetData(reliable);
+			FacepunchP2PPacketComposer composer = new FacepunchP2PPacketComposer(this, Server, frame, reliable);
 
-            Client.Send(data, data.Length, Server.SteamID, reliable ? EP2PSend.k_EP2PSendReliable : EP2PSend.k_EP2PSendUnreliable);*/
+			// If this message is reliable then make sure to keep a reference to the composer
+			// so that there are not any run-away threads
+			if (reliable)
+			{
+				// Use the completed event to clean up the object from memory
+				composer.completed += ComposerCompleted;
+				pendingComposers.Add(composer);
+			}
 
-            FacepunchP2PPacketComposer composer = new FacepunchP2PPacketComposer(this, Server, frame, reliable);
-
-            // If this message is reliable then make sure to keep a reference to the composer
-            // so that there are not any run-away threads
-            if (reliable)
-            {
-                // Use the completed event to clean up the object from memory
-                composer.completed += ComposerCompleted;
-                pendingComposers.Add(composer);
-            }
-
-            //TODO: New constructor for setting up callbacks before regular constructor (as seen above)
-            //composer.Init(this, Server, frame, reliable);
-        }
+			// TODO: New constructor for setting up callbacks before regular constructor (as seen above)
+			//composer.Init(this, Server, frame, reliable);
+		}
 
 		/// <summary>
 		/// Sends binary message to the specified receiver(s)
@@ -78,7 +69,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// This will connect a Facepunch Steamworks Forge Networking client to a given FPSW/FNR server
 		/// </summary>
 		/// <param name="hostId">The server's SteamID ulong</param>
-		/// <param name="port">The port that the server is hosting on</param>
 		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
 		public void Connect(SteamId hostId, bool pendCreates = false)
 		{
@@ -91,6 +81,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
+				// TODO: Check order of P2P Session requests vs packet reading. Must be accepted before attempting to read network
 				SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
 
 				ushort clientPort = DEFAULT_PORT;
@@ -103,8 +94,6 @@ namespace BeardedManStudios.Forge.Networking
 
 				// Do any generic initialization in result of the successful bind
 				OnBindSuccessful();
-
-
 
 				// Get a random hash key that needs to be used for validating that the server was connected to
 				headerHash = Websockets.HeaderHashKey();
@@ -144,7 +133,7 @@ namespace BeardedManStudios.Forge.Networking
 					}
 				});
 
-            }
+			}
 			catch (Exception e)
 			{
 				Logging.BMSLog.LogException(e);
@@ -161,8 +150,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="forced">Used to tell if this disconnect was intentional <c>false</c> or caused by an exception <c>true</c></param>
 		public override void Disconnect(bool forced)
 		{
-            Logging.BMSLog.Log("<color=cyan>FacepunchP2P client disconnecting...</color>");
+			Logging.BMSLog.Log("<color=cyan>FacepunchP2P client disconnecting...</color>");
 			SteamNetworking.OnP2PSessionRequest -= OnP2PSessionRequest;
+
 			if (Client == null)
 				return;
 
@@ -179,8 +169,6 @@ namespace BeardedManStudios.Forge.Networking
 
 				// Send signals to the methods registered to the disconnect events
 				if (forced)
-					//	OnDisconnected();
-					//else
 					OnForcedDisconnect();
 			}
 		}
@@ -191,7 +179,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadNetwork()
 		{
-            SteamId messageFrom = default(SteamId);
+			SteamId messageFrom = default;
 
 			try
 			{
@@ -205,42 +193,21 @@ namespace BeardedManStudios.Forge.Networking
 
 					try
 					{
-						//uint msgSize = 0;
-
 						packet = Client.Receive(out messageFrom);
 						if (messageFrom == default)
 						{
 							Thread.Sleep(1);
 							continue;
 						}
+
 						if (packet == null)
 						{
-							Logging.BMSLog.Log("null packet received from non-null player - should not see me!");
+							Logging.BMSLog.LogWarning("Null packet received from player: " + messageFrom.Value);
 							Thread.Sleep(1);
 							continue;
 						}
 
 						Logging.BMSLog.Log("packet.Size: " + packet.Size);
-
-						/*
-						if (SteamNetworking.IsP2PPacketAvailable())
-						{
-							packet = Client.Receive(out messageFrom);
-							if (packet == null)
-							{
-								Logging.BMSLog.Log("packet was null");
-								Thread.Sleep(1);
-								continue;
-							}
-							Logging.BMSLog.Log("packet size: " + packet.Size);
-						}
-						else
-                        {
-                            Thread.Sleep(1);
-                            continue;
-                        }
-						// Read a packet from the network
-						*/
 
 						if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
 						{
@@ -276,8 +243,8 @@ namespace BeardedManStudios.Forge.Networking
 						}
 						else if (packet.Size != 1 || packet[0] != 0)
 						{
-                            Logging.BMSLog.LogWarning("DISCONNECTED: RECEIVED UNKNOWN PACKET BEFORE HEADERS WERE EXCHANGED!");
-                            Disconnect(true);
+							Logging.BMSLog.LogWarning("DISCONNECTED: RECEIVED UNKNOWN PACKET BEFORE HEADERS WERE EXCHANGED!");
+							Disconnect(true);
 							break;
 						}
 						else
@@ -305,12 +272,12 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 						}
 
-                        if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
-                        {
-                            Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
-                            // Wait for the second message (Disconnect)
-                            continue;
-                        }
+						if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+						{
+							Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+							// Wait for the second message (Disconnect)
+							continue;
+						}
 
 						// Add the packet to the manager so that it can be tracked and executed on complete
 						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
@@ -349,7 +316,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			OnDisconnected();
 
-			// Close our CachedUDPClient so that it can no longer be used
+			// Close our CachedFacepunchP2PClient so that it can no longer be used
 			Client.Close();
 			Client = null;
 		}
@@ -381,38 +348,40 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-            if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
-            {
-                if ((Me != null && Me.Connected) || authenticator == null)
-                    return;
+			if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
+			{
+				if ((Me != null && Me.Connected) || authenticator == null)
+					return;
 
-                authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
+				authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
 
-                return;
-            }
+				return;
+			}
 
-            // Send an event off that a packet has been read
-            OnMessageReceived(currentPlayer, frame);
+			// Send an event off that a packet has been read
+			OnMessageReceived(currentPlayer, frame);
 		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an authentication response to the server.
-        /// </summary>
-        private void AuthServer(BMSByte buffer)
-        {
-            Send(new Binary(Time.Timestep, false, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, false), true);
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an authentication response to the server.
+		/// </summary>
+		private void AuthServer(BMSByte buffer)
+		{
+			Send(new Binary(Time.Timestep, false, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, false), true);
+		}
 
+		/// <summary>
+		/// Callback for SteamNetworking.OnP2PSessionRequest
+		/// Currently accepts all P2PSession requests
+		/// </summary>
+		/// <param name="requestorSteamId">Server SteamId</param>
 		private void OnP2PSessionRequest(SteamId requestorSteamId)
 		{
-			Logging.BMSLog.Log("Request for P2P Session received...");
+			// TODO:  Add in logic to check that the P2PSession request comes from the server
+
 			if (!SteamNetworking.AcceptP2PSessionWithUser(requestorSteamId))
 			{
-				BeardedManStudios.Forge.Logging.BMSLog.Log("Could not accept P2P Session with User: " + requestorSteamId.Value);
-			}
-			else
-			{
-				Logging.BMSLog.Log("Session accepted with user: " + requestorSteamId.Value);
+				Logging.BMSLog.LogWarning("Could not accept P2P Session with User: " + requestorSteamId.Value);
 			}
 		}
 
@@ -420,9 +389,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// Callback for user auth. Disconnects the user from an invalid server.
 		/// </summary>
 		private void RejectServer()
-        {
-            Disconnect(true);
-        }
-    }
+		{
+			Disconnect(true);
+		}
+	}
 }
 #endif

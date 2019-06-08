@@ -12,11 +12,7 @@ namespace BeardedManStudios.Forge.Networking
 		public delegate void MessageConfirmedEvent(NetworkingPlayer player, UDPPacket packet);
 
 		public event MessageConfirmedEvent messageConfirmed;
-
 		public CachedFacepunchP2PClient Client { get; protected set; }
-
-		// Check this!
-		//public SteamId LobbyID { get; protected set; }
 
 		protected List<FacepunchP2PPacketComposer> pendingComposers = new List<FacepunchP2PPacketComposer>();
 

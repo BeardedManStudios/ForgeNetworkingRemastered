@@ -12,6 +12,7 @@ public class FacepunchSteamworksController : MonoBehaviour
 		{
 			facepunchSteamworksController = this;
 			DontDestroyOnLoad(gameObject);
+
 			try
 			{
 				SteamClient.Init(480);
@@ -28,25 +29,10 @@ public class FacepunchSteamworksController : MonoBehaviour
 		}
 	}
 
-#if UNITY_EDITOR
-	private void OnDisable()
-	{
-		if (facepunchSteamworksController == this)
-			ShutdownSteamClient();
-	}
-#else
 	private void OnApplicationQuit()
 	{
 		if (facepunchSteamworksController == this)
-			ShutdownSteamClient();
+			SteamClient.Shutdown();
 	}
-#endif
-
-	private void ShutdownSteamClient()
-	{
-		Debug.Log("Shutting down Steam Client");
-		SteamClient.Shutdown();
-	}
-
 }
 #endif
