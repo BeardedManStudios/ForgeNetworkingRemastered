@@ -39,6 +39,10 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 			Rpc.MainThreadRunner = MainThreadManager.Instance;
 	}
 
+	/// <summary>
+	/// Connects to the currently selected Steam Lobby
+	/// Lobby selection is made within FacepuncJoinMenu.cs
+	/// </summary>
 	public void Connect()
 	{
 		if (lobbyToJoin.Id > 0)
@@ -49,11 +53,19 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		// TODO:  Raise a dialog to inform of the failed connection attempt
 	}
 
+	/// <summary>
+	/// Connect to selected steam lobby asynchronously
+	/// Void method calls the async task
+	/// </summary>
 	private async void ConnectToLobbyAsync()
 	{
 		await ConnectToLobby();
 	}
 
+	/// <summary>
+	/// Connect to the selected steam lobby
+	/// On successful connection, starts a new FacepunchP2PClient for connection to the lobby owner's FacepunchP2PServer
+	/// </summary>
 	private async Task ConnectToLobby()
 	{
 		RoomEnter roomEnter = await lobbyToJoin.Join();
@@ -67,6 +79,10 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		ConnectToServer(lobbyToJoin.Owner.Id);
 	}
 
+	/// <summary>
+	/// Creates a new FacepunchP2PClient and attempts to connect to the specified SteamId
+	/// </summary>
+	/// <param name="hostSteamId">SteamId of the host/server</param>
 	private void ConnectToServer(SteamId hostSteamId)
 	{
 		var client = new FacepunchP2PClient();
@@ -74,16 +90,28 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		Connected(client);
 	}
 
+	/// <summary>
+	/// Create a new Steam lobby and FacepunchP2PServer
+	/// </summary>
 	public void Host()
 	{
 		CreateLobbyAsync();
 	}
 
+	/// <summary>
+	/// Creates steam lobby asynchronously
+	/// Void method calls the async task
+	/// </summary>
 	private async void CreateLobbyAsync()
 	{
 		await CreateLobby();
 	}
 
+	/// <summary>
+	/// Create steam lobby asynchronously
+	/// Starts a new FacepunchP2PServer if lobby creation successful
+	/// </summary>
+	/// <returns></returns>
 	private async Task CreateLobby()
 	{
 		Steamworks.Data.Lobby? lobby = await SteamMatchmaking.CreateLobbyAsync(MAXIMUM_SERVER_SLOTS);
@@ -91,9 +119,13 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		{
 			CreateFacepunchP2PServer();
 		}
+
 		// TODO:  Raise a dialog to inform of the failed lobby creation attempt
 	}
 
+	/// <summary>
+	/// Create new FacepunchP2PServer
+	/// </summary>
 	private void CreateFacepunchP2PServer()
 	{
 		server = new FacepunchP2PServer(MAXIMUM_SERVER_SLOTS);
@@ -103,6 +135,8 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		{
 			BMSLog.Log("Player " + player.NetworkId + " timed out");
 		};
+
+		// TODO:  Add in server callbacks here as required
 
 		Connected(server);
 	}
@@ -115,6 +149,10 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 			Connect();
 	}
 
+	/// <summary>
+	/// Finalize networker creation
+	/// </summary>
+	/// <param name="networker">The FacepunchP2PServer or FacepunchP2PClient just created</param>
 	public void Connected(NetWorker networker)
 	{
 		if (!networker.IsBound)

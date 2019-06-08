@@ -1,13 +1,10 @@
 ﻿#if FACEPUNCH_STEAMWORKS
 using System.Collections.Generic;
-using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Threading.Tasks;
-
-using Steamworks;
 
 public class FacepunchJoinMenu : MonoBehaviour
 {
@@ -32,7 +29,6 @@ public class FacepunchJoinMenu : MonoBehaviour
 
 		mpMenu = this.GetComponentInParent<FacepunchMultiplayerMenu>();
 		serverListEntryTemplateHeight = ((RectTransform)serverListEntryTemplate.transform).rect.height;
-
 		RefreshLobbyListAsync();
 	}
 
@@ -66,10 +62,9 @@ public class FacepunchJoinMenu : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Add a server to the list of servers
+	/// Add a steam Lobby to the list of visible lobbies
 	/// </summary>
-	/// <param name="address"></param>
-	/// <param name="port"></param>
+	/// <param name="lobby">The Steamworks Lobby to add to the list</param>
 	private void AddServer(Steamworks.Data.Lobby lobby)
 	{
 		var hostName = lobby.Id.Value.ToString();
@@ -102,15 +97,9 @@ public class FacepunchJoinMenu : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Remove a server from the list
+	/// Remove a lobby from the list
 	/// </summary>
-	/// <param name="index"></param>
-	private void RemoveServer(int index)
-	{
-		var o = serverList[index];
-		RemoveServer(o);
-	}
-
+	/// <param name="item">Lobby listItemData to remove</param>
 	private void RemoveServer(FacepunchServerListItemData item)
 	{
 		Destroy(item.ListItem.gameObject);
@@ -145,7 +134,7 @@ public class FacepunchJoinMenu : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Select a server in the list and prefill the ipaddress and port fields
+	/// Select a lobby from the list and set the FacepunchMultiplayerMenu.lobbyToJoin variable
 	/// </summary>
 	/// <param name="index"></param>
 	private void SetSelectedServer(int index)
@@ -187,15 +176,23 @@ public class FacepunchJoinMenu : MonoBehaviour
 	/// <param name="option">The server display information to update</param>
 	private void UpdateItem(FacepunchServerListItemData option)
 	{
-		option.ListItem.hostName.text = option.Hostname;
+		// TODO:  Extract lobby info for display on the menu
 
+		option.ListItem.hostName.text = option.Hostname;
 	}
 
+	/// <summary>
+	/// Refresh the lobby list asynchronously
+	/// Void method calls the async task
+	/// </summary>
 	private async void RefreshLobbyListAsync()
 	{
 		await RefreshLobbyList();
 	}
 
+	/// <summary>
+	/// Refresh the lobby list asynchronously
+	/// </summary>
 	private async Task RefreshLobbyList()
 	{
 		var query = new Steamworks.Data.LobbyQuery();
@@ -209,7 +206,7 @@ public class FacepunchJoinMenu : MonoBehaviour
 					bool haveThisServer = false;
 					for (int j = 0; j < serverList.Count; j++)
 					{
-						FacepunchServerListItemData data = serverList[j];
+						var data = serverList[j];
 						if (data.lobby.Id == lobbylist[i].Id)
 						{
 							haveThisServer = true;
@@ -217,8 +214,10 @@ public class FacepunchJoinMenu : MonoBehaviour
 							continue;
 						}
 					}
+
 					if (haveThisServer)
 						continue;
+
 					AddServer(lobbylist[i]);
 				}
 			}

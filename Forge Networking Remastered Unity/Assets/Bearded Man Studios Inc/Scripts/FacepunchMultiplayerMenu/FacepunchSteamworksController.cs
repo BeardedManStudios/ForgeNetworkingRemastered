@@ -2,6 +2,9 @@
 using UnityEngine;
 using Steamworks;
 
+/// <summary>
+/// Singleton class to initialize Facepunch.Steamworks client and shotdown on application quit
+/// </summary>
 public class FacepunchSteamworksController : MonoBehaviour
 {
 	public static FacepunchSteamworksController facepunchSteamworksController;
@@ -15,6 +18,7 @@ public class FacepunchSteamworksController : MonoBehaviour
 
 			try
 			{
+				// Use your Steam appID here. 480 is the test SpaceWar app
 				SteamClient.Init(480);
 			}
 			catch (System.Exception e)
