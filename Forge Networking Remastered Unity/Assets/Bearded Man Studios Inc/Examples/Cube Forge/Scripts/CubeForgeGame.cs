@@ -176,12 +176,10 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void Cleanup()
 	{
-		if (NetworkManager.Instance)
-		{
-			NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
-			NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
-			NetworkManager.Instance.objectInitialized -= ObjectInitialized;
-		}
+		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
+		NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
+		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
+
 		if (networkObject != null)
 			networkObject.Destroy();
 
