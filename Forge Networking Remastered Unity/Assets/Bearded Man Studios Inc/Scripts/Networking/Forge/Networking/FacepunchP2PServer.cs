@@ -18,12 +18,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public bool AcceptingConnections { get; private set; }
 
-		public Dictionary<SteamId, FacepunchNetworkingPlayer> steamPlayers = new Dictionary<SteamId, FacepunchNetworkingPlayer>();
+		public Dictionary<SteamId, SteamNetworkingPlayer> steamPlayers = new Dictionary<SteamId, SteamNetworkingPlayer>();
 
 		protected List<FrameStream> bufferedMessages = new List<FrameStream>();
 
 		private CommonServerLogic commonServerLogic;
-		private FacepunchNetworkingPlayer currentReadingPlayer = null;
+		private SteamNetworkingPlayer currentReadingPlayer = null;
 
 		public FacepunchP2PServer(int maxConnections) : base(maxConnections)
 		{
@@ -331,7 +331,7 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					Logging.BMSLog.LogException(e);
 
-					FacepunchNetworkingPlayer player;
+					SteamNetworkingPlayer player;
 					if (steamPlayers.TryGetValue(messageFrom, out player))
 					{
 						FinalizeRemovePlayer(player, true);
@@ -425,7 +425,7 @@ namespace BeardedManStudios.Forge.Networking
 			if (response == null)
 				return;
 
-			var player = new FacepunchNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
+			var player = new SteamNetworkingPlayer(ServerPlayerCounter++, steamId, false, this);
 
 			// If all is in order then send the validated response to the client
 			Client.Send(response, response.Length, steamId);
