@@ -666,7 +666,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 	                List<GameObject> objetsToDestroy = new List<GameObject>(pendingObjects.Count);
 	                foreach (var behavior in pendingObjects.Values)
 	                {
-		                var gameObject = ((NetworkBehavior) behavior.Value).gameObject;
+		                var gameObject = ((NetworkBehavior) behavior).gameObject;
 		                if (!objetsToDestroy.Contains(gameObject))
 			                objetsToDestroy.Add(gameObject);
 	                }
