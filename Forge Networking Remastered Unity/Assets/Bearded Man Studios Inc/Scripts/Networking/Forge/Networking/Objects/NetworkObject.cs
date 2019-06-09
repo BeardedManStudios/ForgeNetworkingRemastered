@@ -453,7 +453,13 @@ namespace BeardedManStudios.Forge.Networking
 
 				Binary createdFrame = new Binary(Networker.Time.Timestep, Networker is TCPClient, createdByteData, Receivers.Server, MessageGroupIds.GetId("NO_CREATED_" + NetworkId), Networker is BaseTCP, RouterIds.CREATED_OBJECT_ROUTER_ID);
 
-				if (networker is UDPClient)
+#if STEAMWORKS
+                if (networker is SteamP2PClient)
+                    ((SteamP2PClient)networker).Send(createdFrame, true);
+                else if (networker is UDPClient)
+#else
+                if (networker is UDPClient)
+#endif
 					((UDPClient)networker).Send(createdFrame, true);
 				else
 					((TCPClient)networker).Send(createdFrame);
