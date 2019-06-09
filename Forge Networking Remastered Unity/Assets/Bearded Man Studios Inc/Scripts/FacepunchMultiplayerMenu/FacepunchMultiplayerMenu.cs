@@ -41,7 +41,7 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 
 	/// <summary>
 	/// Connects to the currently selected Steam Lobby
-	/// Lobby selection is made within FacepuncJoinMenu.cs
+	/// Lobby selection is made within FacepunchJoinMenu.cs
 	/// </summary>
 	public void Connect()
 	{
