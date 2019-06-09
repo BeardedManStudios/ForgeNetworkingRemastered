@@ -137,7 +137,6 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				Logging.BMSLog.Log("FacepunchP2PServer.Host() called");
 				SteamId selfSteamId = SteamClient.SteamId;
 				Client = new CachedFacepunchP2PClient(selfSteamId);
 				Me = new NetworkingPlayer(ServerPlayerCounter++, selfSteamId, true, this)

@@ -3,23 +3,25 @@ using UnityEngine;
 using Steamworks;
 
 /// <summary>
-/// Singleton class to initialize Facepunch.Steamworks client and shotdown on application quit
+/// Singleton class to initialize Facepunch.Steamworks client and shutdown on application quit
 /// </summary>
 public class FacepunchSteamworksController : MonoBehaviour
 {
-	public static FacepunchSteamworksController facepunchSteamworksController;
+	public static FacepunchSteamworksController Instance;
+
+	// Steam AppId 480 is the test 'spacewar' app
+	private const int STEAM_APP_ID = 480;
 
 	private void Awake()
 	{
-		if (facepunchSteamworksController == null)
+		if (Instance == null)
 		{
-			facepunchSteamworksController = this;
+			Instance = this;
 			DontDestroyOnLoad(gameObject);
 
 			try
 			{
-				// Use your Steam appID here. 480 is the test SpaceWar app
-				SteamClient.Init(480);
+				SteamClient.Init(STEAM_APP_ID);
 			}
 			catch (System.Exception e)
 			{
@@ -35,7 +37,7 @@ public class FacepunchSteamworksController : MonoBehaviour
 
 	private void OnApplicationQuit()
 	{
-		if (facepunchSteamworksController == this)
+		if (Instance == this)
 			SteamClient.Shutdown();
 	}
 }

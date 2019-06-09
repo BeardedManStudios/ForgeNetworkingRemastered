@@ -83,8 +83,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns></returns>
 		int DoSend(byte[] dgram, int bytes, SteamId steamId, P2PSend type)
 		{
-			// TODO:  Option to set up multi-channel comms. Using 0 as the default and only channel for now
-
 			if (SteamNetworking.SendP2PPacket(steamId, dgram, bytes, 0, type) == false)
 			{
 				Logging.BMSLog.LogWarningFormat("CachedSteamP2PClient:DoSend() WARNING: Unable to send packet to {0}", steamId.Value);

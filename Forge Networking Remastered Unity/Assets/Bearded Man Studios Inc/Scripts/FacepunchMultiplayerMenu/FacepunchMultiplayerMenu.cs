@@ -49,13 +49,14 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		{
 			ConnectToLobbyAsync();
 		}
-
-		// TODO:  Raise a dialog to inform of the failed connection attempt
+		else
+		{
+			BMSLog.LogWarning("No lobby selected to join");
+		}
 	}
 
 	/// <summary>
 	/// Connect to selected steam lobby asynchronously
-	/// Void method calls the async task
 	/// </summary>
 	private async void ConnectToLobbyAsync()
 	{
@@ -100,7 +101,6 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 
 	/// <summary>
 	/// Creates steam lobby asynchronously
-	/// Void method calls the async task
 	/// </summary>
 	private async void CreateLobbyAsync()
 	{
@@ -135,8 +135,6 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 		{
 			BMSLog.Log("Player " + player.NetworkId + " timed out");
 		};
-
-		// TODO:  Add in server callbacks here as required
 
 		Connected(server);
 	}
