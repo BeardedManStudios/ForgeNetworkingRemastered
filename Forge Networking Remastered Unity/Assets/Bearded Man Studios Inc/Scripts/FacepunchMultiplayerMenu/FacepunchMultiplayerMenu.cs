@@ -17,7 +17,7 @@ public class FacepunchMultiplayerMenu : MonoBehaviour
 	public bool dontChangeSceneOnConnect = false;
 	public GameObject networkManager = null;
 	public GameObject[] toggledButtons;
-	public Steamworks.Data.Lobby lobbyToJoin = default;
+	public Steamworks.Data.Lobby lobbyToJoin = default(Steamworks.Data.Lobby);
 	public bool useMainThreadManagerForRPCs = true;
 	public bool useInlineChat = false;
 

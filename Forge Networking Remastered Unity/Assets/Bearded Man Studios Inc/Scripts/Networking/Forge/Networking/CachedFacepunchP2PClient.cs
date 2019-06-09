@@ -53,7 +53,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			if (!SteamNetworking.IsP2PPacketAvailable())
 			{
-				from = default;
+				from = default(SteamId);
 				return null;
 			}
 
@@ -69,7 +69,7 @@ namespace BeardedManStudios.Forge.Networking
 				return recBuffer;
 			}
 
-			from = default;
+			from = default(SteamId);
 			return null;
 		}
 

@@ -180,7 +180,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadNetwork()
 		{
-			SteamId messageFrom = default;
+			var messageFrom = default(SteamId);
 
 			try
 			{
@@ -195,7 +195,7 @@ namespace BeardedManStudios.Forge.Networking
 					try
 					{
 						packet = Client.Receive(out messageFrom);
-						if (messageFrom == default)
+						if (messageFrom == default(SteamId))
 						{
 							Thread.Sleep(1);
 							continue;

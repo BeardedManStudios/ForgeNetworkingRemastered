@@ -156,7 +156,7 @@ public class FacepunchJoinMenu : MonoBehaviour
 		else
 		{
 			selectedLobbyText.text = LOBBY_TEXT + "0";
-			mpMenu.lobbyToJoin = default;
+			mpMenu.lobbyToJoin = default(Steamworks.Data.Lobby);
 		}
 	}
 
