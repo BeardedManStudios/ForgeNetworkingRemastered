@@ -415,9 +415,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					go.transform.position = position.Value;
 			}
 
-			//if (sendTransform)
-			// obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
-
 			if (!skipOthers)
 			{
 				// Go through all associated network behaviors in the hierarchy (including self) and
@@ -425,6 +422,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				uint idOffset = 1;
 				ProcessOthers(go.transform, obj, ref idOffset, (NetworkBehavior)netBehavior);
 			}
+
+			go.SetActive(true);
 		}
 
 		/// <summary>

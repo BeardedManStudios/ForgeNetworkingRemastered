@@ -24,12 +24,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		    if (Networker != null)
 				Networker.objectCreated -= CaptureObjects;
 		}
-		
+
 		private void CaptureObjects(NetworkObject obj)
 		{
 			if (obj.CreateCode < 0)
 				return;
-				
+
 			>:FOREACH networkObjects:<
 			>:ELSEIF:< (obj is >:[i]:<NetworkObject)
 			{
@@ -47,7 +47,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 					if (newObj == null)
 						return;
-						
+
 					newObj.Initialize(obj);
 
 					if (objectInitialized != null)
@@ -66,21 +66,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		}
 
 		>:FOREACH networkObjects:<
-		[Obsolete("Use Instantiate>:[i]:< instead, its shorter and easier to type out ;)")]
-		public >:[i]:<Behavior Instantiate>:[i]:<NetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
-		{
-			var go = Instantiate(>:[i]:<NetworkObject[index]);
-			var netBehavior = go.GetComponent<>:[i]:<Behavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
-			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
-
-			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
-			return netBehavior;
-		}
-		>:ENDFOREACH:<
-
-		>:FOREACH networkObjects:<
 		/// <summary>
 		/// Instantiate an instance of >:[i]:<
 		/// </summary>
@@ -94,6 +79,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public >:[i]:<Behavior Instantiate>:[i]:<(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
 			var go = Instantiate(>:[i]:<NetworkObject[index]);
+			go.SetActive(false);
 			var netBehavior = go.GetComponent<>:[i]:<Behavior>();
 
 			NetworkObject obj = null;
@@ -129,7 +115,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			go.GetComponent<>:[i]:<Behavior>().networkObject = (>:[i]:<NetworkObject)obj;
 
 			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
+
 			return netBehavior;
 		}
 		>:ENDFOREACH:<
