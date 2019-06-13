@@ -30,6 +30,9 @@ namespace BeardedManStudios.Forge.Networking
 			AcceptingConnections = true;
 			BannedAddresses = new List<string>();
 			commonServerLogic = new CommonServerLogic(this);
+
+			// Listen for clients wishing to start P2PConnections
+			SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
 		}
 
 		/// <summary>
@@ -146,9 +149,6 @@ namespace BeardedManStudios.Forge.Networking
 
 				// Do any generic initialization in result of the successful bind
 				OnBindSuccessful();
-
-				// Listen to clients wishing to start P2PConnections and accept if they've joined the lobby
-				SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
 
 				// Create the thread that will be listening for new data from connected clients and start its execution
 				Task.Queue(ReadClients);
