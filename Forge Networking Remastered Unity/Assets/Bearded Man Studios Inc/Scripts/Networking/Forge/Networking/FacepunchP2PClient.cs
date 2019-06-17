@@ -107,7 +107,7 @@ namespace BeardedManStudios.Forge.Networking
 				server = new NetworkingPlayer(0, hostId, true, this);
 
 				// Create the thread that will be listening for new data from connected clients and start its execution
-				Task.Queue(ReadNetwork);
+				Task.Queue(ReadNetwork, 1);
 
 				//Let myself know I connected successfully
 				OnPlayerConnected(server);
