@@ -51,12 +51,6 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			CheckDisposed();
 
-			if (!SteamNetworking.IsP2PPacketAvailable())
-			{
-				from = default(SteamId);
-				return null;
-			}
-
 			recBuffer.Clear();
 
 			var packet = SteamNetworking.ReadP2PPacket();
@@ -107,6 +101,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			return (DoSend(dgram, bytes, steamId, type));
 		}
+
+
 
 		/// <summary>
 		/// On disposal of this CachedFacepunchP2PClient IDisposable object
