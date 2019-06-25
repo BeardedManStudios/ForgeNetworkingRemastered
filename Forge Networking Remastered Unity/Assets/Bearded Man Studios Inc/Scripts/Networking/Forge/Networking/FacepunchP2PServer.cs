@@ -41,7 +41,7 @@ namespace BeardedManStudios.Forge.Networking
 		private CommonServerLogic commonServerLogic;
 		private SteamNetworkingPlayer currentReadingPlayer = null;
 
-#region Steam P2P Callbacks
+		#region Steam P2P Callbacks
 
 		/// <summary>
 		/// Callback for SteamNetworking.OnP2PSessionRequest
@@ -59,23 +59,13 @@ namespace BeardedManStudios.Forge.Networking
 				Logging.BMSLog.LogWarning("P2P Request received but server is not accepting connections");
 		}
 
-		/// <summary>
-		/// Callback for SteamNetworking.OnP2PConnectionFailed
-		/// </summary>
-		/// <param name="remoteSteamId">SteamId of the remote peer</param>
-		private void OnP2PConnectionFailed(SteamId remoteSteamId)
-		{
-			Logging.BMSLog.Log("OnP2PConnectionFailed called. Remote steamId: " + remoteSteamId.Value.ToString());
-		}
-
-#endregion
+		#endregion
 
 		public FacepunchP2PServer(int maxConnections) : base(maxConnections)
 		{
 			BannedAddresses = new List<string>();
 			commonServerLogic = new CommonServerLogic(this);
 			SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
-			SteamNetworking.OnP2PConnectionFailed += OnP2PConnectionFailed;
 		}
 
 		/// <summary>
@@ -126,7 +116,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				for (int i = 0; i < Players.Count; i++)
 				{
-				   var player = Players[i];
+					var player = Players[i];
 
 					if (!commonServerLogic.PlayerIsReceiver(player, frame, ProximityDistance, skipPlayer, ProximityModeUpdateFrequency))
 						continue;
@@ -135,7 +125,7 @@ namespace BeardedManStudios.Forge.Networking
 					{
 						Send(player, frame, reliable);
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						Logging.BMSLog.LogException(e);
 						Disconnect(player, true);
@@ -186,14 +176,13 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				if (!haveLobby)
 				{
-					CreateLobbyAsync();
+					CreateLobby();
 					return;
 				}
 
 				var selfSteamId = SteamClient.SteamId;
 				Client = new CachedFacepunchP2PClient(selfSteamId);
-				Me = new NetworkingPlayer(ServerPlayerCounter++, selfSteamId, true, this)
-				{
+				Me = new NetworkingPlayer(ServerPlayerCounter++, selfSteamId, true, this) {
 					InstanceGuid = InstanceGuid.ToString()
 				};
 
@@ -235,16 +224,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// Creates a steam lobby
 		/// </summary>
 		/// <returns></returns>
-		private async void CreateLobbyAsync()
-		{
-			await CreateLobby();
-		}
-
-		/// <summary>
-		/// Creates a steam lobby
-		/// </summary>
-		/// <returns></returns>
-		private async System.Threading.Tasks.Task CreateLobby()
+		private async void CreateLobby()
 		{
 			Steamworks.Data.Lobby? lobbyCreated = await SteamMatchmaking.CreateLobbyAsync(MaxConnections);
 			if (!lobbyCreated.HasValue)
@@ -254,7 +234,6 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			Lobby = lobbyCreated.Value;
-			Lobby.SetPublic();
 
 			// Now that we have the steam lobby, safe to set up the FacepunchP2PServer
 			Host(true);
@@ -418,7 +397,7 @@ namespace BeardedManStudios.Forge.Networking
 
 					BandwidthIn += (ulong)packet.Size;
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Logging.BMSLog.LogException(e);
 

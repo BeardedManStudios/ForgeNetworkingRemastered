@@ -35,15 +35,6 @@ namespace BeardedManStudios.Forge.Networking
 		private bool headerExchanged = false;
 
 		/// <summary>
-		/// Callback for SteamNetworking.OnP2PConnectionFailed
-		/// </summary>
-		/// <param name="remoteSteamId">SteamId of the remote peer</param>
-		private void OnP2PConnectionFailed(SteamId remoteSteamId)
-		{
-			Logging.BMSLog.Log("OnP2PConnectionFailed called. Remote steamId: " + remoteSteamId.Value.ToString());
-		}
-
-		/// <summary>
 		/// Sends data to the server
 		/// </summary>
 		/// <param name="frame">Data to send</param>
@@ -69,7 +60,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
 		/// <param name="reliable">True if message must be delivered</param>
 		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
-		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false , params object[] objectsToSend)
+		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
 		{
 			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
 			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
@@ -153,9 +144,6 @@ namespace BeardedManStudios.Forge.Networking
 							connectAttemptFailed(this);
 					}
 				});
-
-				SteamNetworking.OnP2PConnectionFailed += OnP2PConnectionFailed;
-
 			}
 			catch (Exception e)
 			{
@@ -168,21 +156,11 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// Connects to a Steam Lobby
+		/// Connects to a Steam Lobby then kicks off connection to the lobby owner's SteamId
 		/// </summary>
 		/// <param name="lobbyToJoin">The <see cref="Steamworks.Data.Lobby"/> to join</param>
 		/// <param name="pendCreates">Set the NetWorker::PendCreates to true</param>
 		private async void ConnectToLobbyAsync(Steamworks.Data.Lobby lobbyToJoin, bool pendCreates)
-		{
-			await ConnectToLobby(lobbyToJoin, pendCreates);
-		}
-
-		/// <summary>
-		/// Enters a specified Steam Lobby and Connects to the lobby owner's SteamId asynchronously
-		/// </summary>
-		/// <param name="lobbyToJoin">The <see cref="Steamworks.Data.Lobby"/> to join</param>
-		/// <param name="pendCreates">Set the NetWorker::PendCreates to true</param>
-		private async System.Threading.Tasks.Task ConnectToLobby(Steamworks.Data.Lobby lobbyToJoin, bool pendCreates)
 		{
 			RoomEnter roomEnter = await lobbyToJoin.Join();
 			if (roomEnter != RoomEnter.Success)
@@ -405,7 +383,6 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			Send(GeneratePong(time));
 		}
-
 
 		/// <summary>
 		/// Reads the frame stream as if it were read on the network

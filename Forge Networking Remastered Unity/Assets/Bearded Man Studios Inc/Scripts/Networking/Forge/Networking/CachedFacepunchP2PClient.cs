@@ -21,7 +21,6 @@ namespace BeardedManStudios.Forge.Networking
 
 		private SteamId steamEndPoint;
 		private BMSByte recBuffer = new BMSByte();
-		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
 
 		public CachedFacepunchP2PClient()
 		{
