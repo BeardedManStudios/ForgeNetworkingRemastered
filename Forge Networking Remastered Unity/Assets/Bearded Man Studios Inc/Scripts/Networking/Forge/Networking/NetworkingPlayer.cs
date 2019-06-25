@@ -1,6 +1,6 @@
 ﻿using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
-#if STEAMWORKS
+#if STEAMWORKS || FACEPUNCH_STEAMWORKS
 using Steamworks;
 #endif
 using System.Collections.Generic;
@@ -182,6 +182,12 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			SteamID = SteamUser.GetSteamID();
 		}
+#elif FACEPUNCH_STEAMWORKS
+		/// <summary>
+		/// This is used for facepunch steam P2P networking calls;
+		/// this is the steam ID of this networked player.
+		/// </summary>
+		public SteamId SteamID { get; protected set; }
 #endif
 
 		private Queue<ulong> reliableComposersToRemove = new Queue<ulong>();
@@ -244,6 +250,17 @@ namespace BeardedManStudios.Forge.Networking
 
 #if STEAMWORKS
 		public NetworkingPlayer(uint networkId, CSteamID steamId, bool isHost, NetWorker networker)
+		{
+			SteamID = steamId;
+			Networker = networker;
+			NetworkId = networkId;
+			IsHost = isHost;
+			LastPing = networker.Time.Timestep;
+			TimeoutMilliseconds = PLAYER_TIMEOUT_DISCONNECT;
+			PingInterval = DEFAULT_PING_INTERVAL;
+		}
+#elif FACEPUNCH_STEAMWORKS
+		public NetworkingPlayer(uint networkId, SteamId steamId, bool isHost, NetWorker networker)
 		{
 			SteamID = steamId;
 			Networker = networker;
@@ -394,7 +411,9 @@ namespace BeardedManStudios.Forge.Networking
 							{
 								composerCount = reliableComposers.Count;
 							}
-						} while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
+						}
+						while (composerCount > 0 && Networker.IsBound && !NetWorker.EndingSession);
+
 						currentPingWait = 0;
 					}
 				});

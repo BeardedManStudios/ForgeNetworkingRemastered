@@ -538,6 +538,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 #if STEAMWORKS
 					else if (networker is SteamP2PServer)
 						((SteamP2PServer)networker).Send(targetPlayer, frame, true);
+#elif FACEPUNCH_STEAMWORKS
+					else if (networker is FacepunchP2PServer)
+						((FacepunchP2PServer)networker).Send(targetPlayer, frame, true);
 #endif
 					else
 						((UDPServer)networker).Send(targetPlayer, frame, true);
@@ -549,6 +552,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 #if STEAMWORKS
 					else if (networker is SteamP2PServer)
 						((SteamP2PServer)networker).Send(frame, true);
+#elif FACEPUNCH_STEAMWORKS
+					else if (networker is FacepunchP2PServer)
+						((FacepunchP2PServer)networker).Send(frame, true);
 #endif
 					else
 						((UDPServer)networker).Send(frame, true);
@@ -561,6 +567,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 #if STEAMWORKS
 				else if (networker is SteamP2PClient)
 					((SteamP2PClient)networker).Send(frame, true);
+#elif FACEPUNCH_STEAMWORKS
+				else if (networker is FacepunchP2PClient)
+					((FacepunchP2PClient)networker).Send(frame, true);
 #endif
 				else
 					((UDPClient)networker).Send(frame, true);
