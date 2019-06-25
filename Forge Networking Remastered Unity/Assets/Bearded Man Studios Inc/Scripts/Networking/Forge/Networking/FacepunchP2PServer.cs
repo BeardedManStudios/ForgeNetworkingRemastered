@@ -18,6 +18,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public bool AcceptingConnections { get; private set; }
 
+		/// <summary>
+		/// Server log of Forge SteamNetworkingPlayer objects by SteamId for each connected player on the server
+		/// </summary>
 		public Dictionary<SteamId, SteamNetworkingPlayer> steamPlayers = new Dictionary<SteamId, SteamNetworkingPlayer>();
 
 		/// <summary>
@@ -61,6 +64,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		#endregion
 
+		/// <summary>
+		/// Create the FacepunchP2PServer object with specified number of slots
+		/// </summary>
+		/// <param name="maxConnections">Maximum number of clients to accept</param>
 		public FacepunchP2PServer(int maxConnections) : base(maxConnections)
 		{
 			BannedAddresses = new List<string>();

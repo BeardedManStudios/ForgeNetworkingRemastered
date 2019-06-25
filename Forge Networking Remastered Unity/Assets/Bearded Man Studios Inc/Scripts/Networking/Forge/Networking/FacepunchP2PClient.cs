@@ -35,6 +35,11 @@ namespace BeardedManStudios.Forge.Networking
 		private bool headerExchanged = false;
 
 		/// <summary>
+		/// Cached default steamId to check against
+		/// </summary>
+		private readonly SteamId defaultSteamId = default(SteamId);
+
+		/// <summary>
 		/// Sends data to the server
 		/// </summary>
 		/// <param name="frame">Data to send</param>
@@ -177,7 +182,7 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			Logging.BMSLog.Log("<color=cyan>FacepunchP2P client disconnecting...</color>");
 
-			if (Lobby.Id.Value > 0)
+			if (Lobby.Id.Value != 0)
 				Lobby.Leave();
 
 			if (Client == null)
@@ -206,7 +211,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadNetwork()
 		{
-			var messageFrom = default(SteamId);
+			var messageFrom = defaultSteamId;
 
 			try
 			{
@@ -268,9 +273,6 @@ namespace BeardedManStudios.Forge.Networking
 						if (Websockets.ValidateResponseHeader(headerHash, packet.CompressBytes()))
 						{
 							headerExchanged = true;
-
-							// TODO:  When getting the user id, it should also get the server time
-							// by using the current time in the payload and getting it back along with server time
 
 							// Ping the server to finalize the player's connection
 							Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
