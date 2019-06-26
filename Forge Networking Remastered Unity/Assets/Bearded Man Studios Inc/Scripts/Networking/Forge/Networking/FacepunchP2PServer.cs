@@ -19,7 +19,7 @@ namespace BeardedManStudios.Forge.Networking
 		public bool AcceptingConnections { get; private set; }
 
 		/// <summary>
-		/// Server log of Forge SteamNetworkingPlayer objects by SteamId for each connected player on the server
+		/// Server dictionary of Forge SteamNetworkingPlayer objects by SteamId for each connected player on the server
 		/// </summary>
 		public Dictionary<SteamId, SteamNetworkingPlayer> steamPlayers = new Dictionary<SteamId, SteamNetworkingPlayer>();
 
