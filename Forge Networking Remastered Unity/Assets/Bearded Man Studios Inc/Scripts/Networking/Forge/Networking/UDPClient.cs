@@ -153,7 +153,7 @@ namespace BeardedManStudios.Forge.Networking
 			try
 			{
 				// Setup the identity of the server as a player
-				server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
+				server = new NetworkingPlayer(0, host, true, HostResolver.Resolve(host, port), this);
 			}
 			catch (ArgumentException)
 			{

@@ -150,7 +150,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				Client = new CachedUdpClient(port);
 				Client.EnableBroadcast = true;
-				Me = new NetworkingPlayer(ServerPlayerCounter++, host, true, ResolveHost(host, port), this);
+				Me = new NetworkingPlayer(ServerPlayerCounter++, host, true, HostResolver.Resolve(host, port), this);
 				Me.InstanceGuid = InstanceGuid.ToString();
 
 				// Do any generic initialization in result of the successful bind
@@ -604,7 +604,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				clientIPEndPoint = ResolveHost(host, port);
+				clientIPEndPoint = HostResolver.Resolve(host, port);
 			}
 			catch (ArgumentException)
 			{

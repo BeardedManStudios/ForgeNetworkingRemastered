@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using BeardedManStudios.Forge.Networking.DataStore;
@@ -25,43 +24,6 @@ namespace BeardedManStudios.Forge.Networking
 		public const ushort DEFAULT_PORT = 15937;
 
 		private static List<CachedUdpClient> localListingsClientList = new List<CachedUdpClient>();
-
-		public static IPEndPoint ResolveHost(string host, ushort port)
-		{
-			// Check for any localhost type addresses
-			if (host == "0.0.0.0" || host == "127.0.0.1" || host == "::0")
-				return new IPEndPoint(IPAddress.Parse(host), port);
-			else if (host == "localhost")
-				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-
-			IPAddress ipAddress;
-
-			if (!IPAddress.TryParse(host, out ipAddress))
-			{
-				IPHostEntry hostCheck = Dns.GetHostEntry(Dns.GetHostName());
-				foreach (IPAddress ip in hostCheck.AddressList)
-				{
-					if (ip.AddressFamily == AddressFamily.InterNetwork)
-					{
-						if (ip.ToString() == host)
-							return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-					}
-				}
-
-				try
-				{
-					IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-					ipAddress = ipHostInfo.AddressList[0];
-				}
-				catch
-				{
-					Logging.BMSLog.Log("Failed to find host");
-					throw new ArgumentException("Unable to resolve host");
-				}
-			}
-
-			return new IPEndPoint(ipAddress, port);
-		}
 
 		public struct BroadcastEndpoints
 		{
@@ -223,8 +185,6 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event NetworkObject.CreateEvent objectCreateAttach;
 
-
-
 		/// <summary>
 		/// Occurs when a network object has been created on the network
 		/// </summary>
@@ -294,7 +254,22 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A helper to determine if this NetWorker is a server
 		/// </summary>
-		public bool IsServer { get { return this is IServer; } }
+		public bool IsServer => this is IServer;
+
+		/// <summary>
+		/// A helper to determine if this NetWorker is a client
+		/// </summary>
+		public bool IsClient => this is IClient;
+
+		/// <summary>
+		/// A helper to determine if this NetWorker is a TCP client
+		/// </summary>
+		public bool IsTCPClient => this is TCPClient;
+
+		/// <summary>
+		/// A helper to determine if this NetWorker is TCP
+		/// </summary>
+		public bool IsTCP => this is BaseTCP;
 
 		/// <summary>
 		/// A handle to the server cache to make cache requests
@@ -362,16 +337,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Determine whether the socket is connected
 		/// </summary>
-		public bool IsConnected
-		{
-			get
-			{
-				if (Me != null)
-					return Me.Connected;
-
-				return false;
-			}
-		}
+		public bool IsConnected => Me?.Connected ?? false;
 
 		/// <summary>
 		/// A dictionary of all of the network objects indexed by it's id
@@ -468,41 +434,48 @@ namespace BeardedManStudios.Forge.Networking
 			IsReadThreadCancelPending = true;
 		}
 
+
+		private void RunNetworkObjectHeartbeats()
+		{
+			ulong step = Time.Timestep;
+			lock (NetworkObjects)
+			{
+				foreach (NetworkObject obj in NetworkObjects.Values)
+				{
+					// Only do the heartbeat (update) on network objects that
+					// are owned by the current networker
+					if ((obj.IsOwner && obj.UpdateInterval > 0) || (IsServer && obj.AuthorityUpdateMode))
+						obj.HeartBeat(step);
+				}
+			}
+		}
+
+		private void LoopNetworkObjectHeartbeats()
+		{
+			while (IsBound)
+			{
+				RunNetworkObjectHeartbeats();
+				Thread.Sleep(10);
+			}
+		}
+
 		/// <summary>
 		/// Called once the network connection has been bound
 		/// </summary>
 		protected virtual void NetworkInitialize()
 		{
-			Task.Queue(() =>
-			{
-				while (IsBound)
-				{
-					ulong step = Time.Timestep;
-					lock (NetworkObjects)
-					{
-						foreach (NetworkObject obj in NetworkObjects.Values)
-						{
-							// Only do the heartbeat (update) on network objects that
-							// are owned by the current networker
-							if ((obj.IsOwner && obj.UpdateInterval > 0) || (IsServer && obj.AuthorityUpdateMode))
-								obj.HeartBeat(step);
-						}
-					}
-
-					Thread.Sleep(10);
-				}
-			});
+			Task.Queue(LoopNetworkObjectHeartbeats);
 		}
 
 		public void CompleteInitialization(NetworkObject networkObject)
 		{
 			lock (NetworkObjects)
 			{
-				if (NetworkObjects.ContainsKey(networkObject.NetworkId))
-					return;
-
-				NetworkObjects.Add(networkObject.NetworkId, networkObject);
-				NetworkObjectList.Add(networkObject);
+				if (!NetworkObjects.ContainsKey(networkObject.NetworkId))
+				{
+					NetworkObjects.Add(networkObject.NetworkId, networkObject);
+					NetworkObjectList.Add(networkObject);
+				}
 			}
 		}
 
@@ -831,79 +804,99 @@ namespace BeardedManStudios.Forge.Networking
 			player.RoundTripLatency = (int)ping;
 		}
 
+		private void HandleServerAcceptanceMessage(FrameStream frame)
+		{
+			Time.SetStartTime(frame.TimeStep);
+			Me = new NetworkingPlayer(frame.StreamData.GetBasicType<uint>(), "0.0.0.0", false, null, this);
+			Me.AssignPort(Port);
+			OnServerAccepted();
+		}
+
+		private void HandlePingPongMessage(FrameStream frame, NetworkingPlayer player)
+		{
+			long receivedTimestep = frame.StreamData.GetBasicType<long>();
+			DateTime received = new DateTime(receivedTimestep);
+			TimeSpan ms = DateTime.UtcNow - received;
+
+			if (frame.GroupId == MessageGroupIds.PING)
+				Pong(player, received);
+			else
+				OnPingRecieved(ms.TotalMilliseconds, player);
+		}
+
+		private void BufferMessageForMissingObject(uint id, byte routerId, FrameStream frame, NetworkingPlayer player)
+		{
+			lock (missingObjectBuffer)
+			{
+				if (!missingObjectBuffer.ContainsKey(id))
+					missingObjectBuffer.Add(id, new List<Action<NetworkObject>>());
+
+				missingObjectBuffer[id].Add((networkObject) =>
+				{
+					ExecuteRouterAction(routerId, networkObject, (Binary)frame, player);
+				});
+			}
+
+			// TODO:  If the server is missing an object, it should have a timed buffer
+			// that way useless messages are not setting around in memory
+		}
+
+		private void HandleBinaryFrameMessage(FrameStream frame, NetworkingPlayer player)
+		{
+			byte routerId = ((Binary)frame).RouterId;
+			if (routerId == RouterIds.RPC_ROUTER_ID || routerId == RouterIds.BINARY_DATA_ROUTER_ID || routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
+			{
+				uint id = frame.StreamData.GetBasicType<uint>();
+				NetworkObject targetObject = null;
+
+				lock (NetworkObjects)
+				{
+					NetworkObjects.TryGetValue(id, out targetObject);
+				}
+
+				if (targetObject == null)
+				{
+					BufferMessageForMissingObject(id, routerId, frame, player);
+				}
+				else
+				{
+					ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
+				}
+			}
+			else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
+			{
+				NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
+			}
+			else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
+				NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
+			else
+				binaryMessageReceived?.Invoke(player, (Binary)frame, this);
+		}
+
 		/// <summary>
 		/// A wrapper for the messageReceived event call that children of this can call
 		/// </summary>
 		protected void OnMessageReceived(NetworkingPlayer player, FrameStream frame)
 		{
-			if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST && this is IClient)
+			if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST && IsClient)
 			{
-				Time.SetStartTime(frame.TimeStep);
-				Me = new NetworkingPlayer(frame.StreamData.GetBasicType<uint>(), "0.0.0.0", false, null, this);
-				Me.AssignPort(Port);
-				OnServerAccepted();
+				HandleServerAcceptanceMessage(frame);
 				return;
 			}
 
 			if (frame.GroupId == MessageGroupIds.PING || frame.GroupId == MessageGroupIds.PONG)
 			{
-				long receivedTimestep = frame.StreamData.GetBasicType<long>();
-				DateTime received = new DateTime(receivedTimestep);
-				TimeSpan ms = DateTime.UtcNow - received;
-
-				if (frame.GroupId == MessageGroupIds.PING)
-					Pong(player, received);
-				else
-					OnPingRecieved(ms.TotalMilliseconds, player);
-
+				HandlePingPongMessage(frame, player);
 				return;
 			}
 
 			if (frame is Binary)
 			{
-				byte routerId = ((Binary)frame).RouterId;
-				if (routerId == RouterIds.RPC_ROUTER_ID || routerId == RouterIds.BINARY_DATA_ROUTER_ID || routerId == RouterIds.CREATED_OBJECT_ROUTER_ID)
-				{
-					uint id = frame.StreamData.GetBasicType<uint>();
-					NetworkObject targetObject = null;
-
-					lock (NetworkObjects)
-					{
-						NetworkObjects.TryGetValue(id, out targetObject);
-					}
-
-					if (targetObject == null)
-					{
-						lock (missingObjectBuffer)
-						{
-							if (!missingObjectBuffer.ContainsKey(id))
-								missingObjectBuffer.Add(id, new List<Action<NetworkObject>>());
-
-							missingObjectBuffer[id].Add((networkObject) =>
-							{
-								ExecuteRouterAction(routerId, networkObject, (Binary)frame, player);
-							});
-						}
-
-						// TODO:  If the server is missing an object, it should have a timed buffer
-						// that way useless messages are not setting around in memory
-
-						return;
-					}
-
-					ExecuteRouterAction(routerId, targetObject, (Binary)frame, player);
-				}
-				else if (routerId == RouterIds.NETWORK_OBJECT_ROUTER_ID)
-				{
-					NetworkObject.CreateNetworkObject(this, player, (Binary)frame);
-				}
-				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
-					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
-				else
-					binaryMessageReceived?.Invoke(player, (Binary)frame, this);
+				HandleBinaryFrameMessage(frame, player);
+				return;
 			}
-			else if (frame is Text && textMessageReceived != null)
-				textMessageReceived(player, (Text)frame, this);
+			else if (frame is Text)
+				textMessageReceived?.Invoke(player, (Text)frame, this);
 
 			messageReceived?.Invoke(player, frame, this);
 		}
@@ -929,7 +922,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				Me.Connected = false;
 
-				if (!(this is IServer))
+				if (IsClient)
 					Me.OnDisconnect();
 			}
 
@@ -989,6 +982,25 @@ namespace BeardedManStudios.Forge.Networking
 			this.authenticator = authenticator;
 		}
 
+		private static void BindAndReleaseOnTCP(object state)
+		{
+			ushort port = (ushort)state;
+			try
+			{
+				//IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
+				//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
+				IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+
+				TcpListener t = new TcpListener(ipLocalEndPoint);
+				t.Start();
+				t.Stop();
+			}
+			catch (Exception ex)
+			{
+				Logging.BMSLog.LogException(ex);
+			}
+		}
+
 		/// <summary>
 		/// Used to bind to a port then unbind to trigger any operating system firewall requests
 		/// </summary>
@@ -998,23 +1010,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				port = DEFAULT_PORT - 1;
 			}
-			Task.Queue(() =>
-			{
-				try
-				{
-					//IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
-					//IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, 15937);
-					IPEndPoint ipLocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
-					TcpListener t = new TcpListener(ipLocalEndPoint);
-					t.Start();
-					t.Stop();
-				}
-				catch (Exception ex)
-				{
-					Logging.BMSLog.LogException(ex);
-				}
-			});
+			ThreadPool.QueueUserWorkItem(BindAndReleaseOnTCP, port);
 		}
 
 		public static void EndSession()
@@ -1035,7 +1032,7 @@ namespace BeardedManStudios.Forge.Networking
 			BMSByte payload = new BMSByte();
 			long ticks = DateTime.UtcNow.Ticks;
 			payload.BlockCopy<long>(ticks, sizeof(long));
-			return new Ping(Time.Timestep, this is TCPClient, payload, Receivers.Server, MessageGroupIds.PING, this is BaseTCP);
+			return new Ping(Time.Timestep, IsTCPClient, payload, Receivers.Server, MessageGroupIds.PING, IsTCP);
 		}
 
 		protected Pong GeneratePong(DateTime time)
@@ -1043,7 +1040,7 @@ namespace BeardedManStudios.Forge.Networking
 			BMSByte payload = new BMSByte();
 			long ticks = time.Ticks;
 			payload.BlockCopy<long>(ticks, sizeof(long));
-			return new Pong(Time.Timestep, this is TCPClient, payload, Receivers.Target, MessageGroupIds.PONG, this is BaseTCP);
+			return new Pong(Time.Timestep, IsTCPClient, payload, Receivers.Target, MessageGroupIds.PONG, IsTCP);
 		}
 
 		/// <summary>
@@ -1062,6 +1059,7 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					cachedUdpClient.Client.Close();
 				}
+
 				localListingsClientList.Clear();
 			}
 		}
@@ -1073,32 +1071,64 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns>An array of local IPs for every active NIC</returns>
 		private static IPAddress[] GetLocalIPs()
 		{
-			List<IPAddress> ipList = new List<IPAddress>();
+			var a = new NetworkInterfaceAccumulator();
+			a.Accumulate(AddressFamily.InterNetwork);
+			return a.IPs.ToArray();
+		}
 
-			foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+		private static void AddNewLocalListingClient(CachedUdpClient localListingsClient)
+		{
+			lock (localListingsClientList)
 			{
-				switch (nic.NetworkInterfaceType)
-				{
-					case NetworkInterfaceType.Wireless80211:
-					case NetworkInterfaceType.Ethernet:
-						break;
-					default:
-						continue;
-				}
+				localListingsClientList.Add(localListingsClient);
+			}
+		}
 
-				if (nic.OperationalStatus != OperationalStatus.Up)
-					continue;
+		private static void AddFoundLocalNetworkEndpoint(string address, ushort port)
+		{
+			var ep = new BroadcastEndpoints(address, port, true);
+			LocalEndpoints.Add(ep);
+			localServerLocated?.Invoke(ep, null);
+		}
 
-				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses)
+		private static void ParseFindLocalNetworkBroadcastResponse(string endpoint, BMSByte data)
+		{
+			string[] parts = endpoint.Split('+');
+			string address = parts[0];
+			if (ushort.TryParse(parts[1], out var port))
+			{
+				if (data[0] == SERVER_BROADCAST_CODE)
+					AddFoundLocalNetworkEndpoint(address, port);
+				else if (data[0] == CLIENT_BROADCAST_CODE)
+					LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
+			}
+		}
+
+		private static void ReceiveFromFindLocalNetworkBroadcast(CachedUdpClient localListingsClient)
+		{
+			IPEndPoint groupEp = default;
+			string endpoint = string.Empty;
+			var data = localListingsClient.Receive(ref groupEp, ref endpoint);
+
+			if (data.Size != 1)
+				return;
+
+			ParseFindLocalNetworkBroadcastResponse(endpoint, data);
+		}
+
+		private static void SendFindLocalNetworkBroadcast(CachedUdpClient localListingsClient, ushort portNumber)
+		{
+			localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3,
+				new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
+
+			try
+			{
+				while (localListingsClient != null && !EndingSession)
 				{
-					if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-					{
-						ipList.Add(ip.Address);
-					}
+					ReceiveFromFindLocalNetworkBroadcast(localListingsClient);
 				}
 			}
-
-			return ipList.ToArray();
+			catch { }
 		}
 
 		/// <summary>
@@ -1106,23 +1136,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
-			lock (localListingsClientList)
-			{
-				foreach (CachedUdpClient cachedUdpClient in localListingsClientList)
-				{
-					cachedUdpClient.Client.Close();
-				}
-				localListingsClientList.Clear();
-			}
+			CloseLocalListingsClient();
 
-			// Initialize the list to hold all of the local network endpoints that respond to the request
 			if (LocalEndpoints == null)
 				LocalEndpoints = new List<BroadcastEndpoints>();
-
-			// Make sure to clear out the existing endpoints
-			lock (LocalEndpoints)
+			else
 			{
-				LocalEndpoints.Clear();
+				lock (LocalEndpoints)
+				{
+					LocalEndpoints.Clear();
+				}
 			}
 
 			foreach (IPAddress ipAddress in GetLocalIPs())
@@ -1130,44 +1153,13 @@ namespace BeardedManStudios.Forge.Networking
 				// Create a client to write on the network and discover other clients and servers
 				CachedUdpClient localListingsClient = new CachedUdpClient(new IPEndPoint(ipAddress, 19375));
 				localListingsClient.EnableBroadcast = true;
-				lock (localListingsClientList)
-				{
-					localListingsClientList.Add(localListingsClient);
-				}
-				Task.Queue(() => { CloseLocalListingsClient(); }, responseBuffer);
+				AddNewLocalListingClient(localListingsClient);
+
+				Task.Queue(CloseLocalListingsClient, responseBuffer);
 
 				Task.Queue(() =>
 				{
-					IPEndPoint groupEp = default(IPEndPoint);
-					string endpoint = string.Empty;
-
-					localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3,
-						new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
-
-					try
-					{
-						while (localListingsClient != null && !EndingSession)
-						{
-							var data = localListingsClient.Receive(ref groupEp, ref endpoint);
-
-							if (data.Size != 1)
-								continue;
-
-							string[] parts = endpoint.Split('+');
-							string address = parts[0];
-							ushort port = ushort.Parse(parts[1]);
-							if (data[0] == SERVER_BROADCAST_CODE)
-							{
-								var ep = new BroadcastEndpoints(address, port, true);
-								LocalEndpoints.Add(ep);
-								localServerLocated?.Invoke(ep, null);
-							}
-							else if (data[0] == CLIENT_BROADCAST_CODE)
-								LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
-						}
-					}
-					catch
-					{ }
+					SendFindLocalNetworkBroadcast(localListingsClient, portNumber);
 				});
 			}
 		}
