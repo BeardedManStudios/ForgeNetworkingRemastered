@@ -91,7 +91,7 @@ TODO comments should include the space after the slashes and then 2 spaces after
 ```
 
 ### Line length
-We try to keep our line lengths short, try to stick around 80 characters maximum in the horizontal space and do not go any further than 120 characters. Or goals are to prevent any kind of horizontal scrolling or automatic line wrapping.
+We try to keep our line lengths short, try to stick around 90 characters maximum in the horizontal space and do not go any further than 120 characters. Or goals are to prevent any kind of horizontal scrolling or automatic line wrapping.
 
 ### Var vs type name
 Though we accept code with `var` being used, it is hard to code review things listed as just `var` especially if they are the result of a function. If you are creating a new instance of something you can use `var` since the type name is in the line of declariation, otherwise please try to type the explicit type of the variable when it is the result of a function.
