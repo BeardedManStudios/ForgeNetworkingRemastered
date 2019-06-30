@@ -385,7 +385,7 @@ namespace BeardedManStudios
 			if (raw)
 				Append(new byte[] { 1 });
 		}
-		
+
 		/// <summary>
 		/// Get an array of a specific type from the internally tracked byte array
 		/// </summary>
@@ -607,11 +607,7 @@ namespace BeardedManStudios
 
 				throw new Exception("Deserialize case not found for this array");
 			}
-#if WINDOWS_UWP
-			else if (type == typeof(Enum))
-#else
 			else if (type.IsEnum)
-#endif
 				return GetBasicType(Enum.GetUnderlyingType(type), start, moveIndex);
 			else
 				throw new Exception("The type " + type.ToString() + " is gettable from basic type, maybe try one of the other getters?");

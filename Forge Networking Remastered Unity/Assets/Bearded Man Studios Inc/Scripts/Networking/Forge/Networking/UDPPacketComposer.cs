@@ -1,14 +1,14 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Threading;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
 	public class UDPPacketComposer : BasePacketComposer
-    {
+	{
 		/// <summary>
 		/// A base for any composer based events
 		/// </summary>

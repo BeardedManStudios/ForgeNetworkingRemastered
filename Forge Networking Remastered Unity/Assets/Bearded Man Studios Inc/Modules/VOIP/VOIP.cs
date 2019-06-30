@@ -1,9 +1,9 @@
-﻿#if !UNITY_WEBGL && !WINDOWS_UWP
+﻿#if !UNITY_WEBGL
+using System;
+using System.Collections.Generic;
 using BeardedManStudios.Forge.Logging;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity.Modules
@@ -214,7 +214,8 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 						audio.spatialBlend = audio3D;
 
 						audio.clip.SetData(readSamples.ToArray(), 0);
-						if (!audio.isPlaying) audio.Play();
+						if (!audio.isPlaying)
+							audio.Play();
 
 						readSamples.Clear();
 					}

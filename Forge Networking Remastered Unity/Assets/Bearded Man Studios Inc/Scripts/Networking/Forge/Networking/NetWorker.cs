@@ -1,14 +1,14 @@
-﻿using BeardedManStudios.Forge.Networking.DataStore;
-using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Source.Forge.Networking;
-using BeardedManStudios.Threading;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
+using BeardedManStudios.Forge.Networking.DataStore;
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Source.Forge.Networking;
+using BeardedManStudios.Threading;
 using Ping = BeardedManStudios.Forge.Networking.Frame.Ping;
 
 namespace BeardedManStudios.Forge.Networking
@@ -80,6 +80,7 @@ namespace BeardedManStudios.Forge.Networking
 		public static List<BroadcastEndpoints> LocalEndpoints { get; private set; }
 
 		public static bool EndingSession { get; private set; }
+		public bool IsActiveSession => IsBound && !EndingSession;
 
 		#region Delegates
 		/// <summary>
@@ -181,15 +182,15 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public event PlayerEvent playerRejected;
 
-        /// <summary>
-        /// Occurs when the player has connected and been succesfully authenticated
-        /// </summary>
-        public event PlayerEvent playerAuthenticated;
+		/// <summary>
+		/// Occurs when the player has connected and been succesfully authenticated
+		/// </summary>
+		public event PlayerEvent playerAuthenticated;
 
-        /// <summary>
-        /// Occurs when a message is received over the network from a remote machine
-        /// </summary>
-        public event FrameEvent messageReceived;
+		/// <summary>
+		/// Occurs when a message is received over the network from a remote machine
+		/// </summary>
+		public event FrameEvent messageReceived;
 
 		/// <summary>
 		/// Occurs when a binary message is received over the network from a remote machine
@@ -227,13 +228,16 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Occurs when a network object has been created on the network
 		/// </summary>
-		public event NetworkObject.NetworkObjectEvent objectCreated {
-			add {
+		public event NetworkObject.NetworkObjectEvent objectCreated
+		{
+			add
+			{
 				if (_objectCreated == null || !_objectCreated.GetInvocationList().Contains(value))
 					_objectCreated += value;
 			}
 
-			remove {
+			remove
+			{
 				_objectCreated -= value;
 			}
 		}
@@ -331,17 +335,17 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public float ProximityDistance { get; set; }
 
-        /// <summary>
-        /// How often a client gets updates if it is outside the proximity range.
+		/// <summary>
+		/// How often a client gets updates if it is outside the proximity range.
 		/// 
 		/// If set to 0 clients that are too far will never get updated.
-        /// </summary>
-        public int ProximityModeUpdateFrequency { get; set; }
+		/// </summary>
+		public int ProximityModeUpdateFrequency { get; set; }
 
-        /// <summary>
-        /// Allows the newly created network object to be queued for the flush call
-        /// </summary>
-        public bool PendCreates { get; set; }
+		/// <summary>
+		/// Allows the newly created network object to be queued for the flush call
+		/// </summary>
+		public bool PendCreates { get; set; }
 
 		/// <summary>
 		/// A boolean to tell the read thread to stop reading and close
@@ -406,16 +410,16 @@ namespace BeardedManStudios.Forge.Networking
 		public static Guid InstanceGuid { get; private set; }
 		private static bool setupInstanceGuid = false;
 
-        /// <summary>
-        /// Used to authenticate the client/server connection. If null, does not perform authentication.
-        /// </summary>
-        protected IUserAuthenticator authenticator = null;
+		/// <summary>
+		/// Used to authenticate the client/server connection. If null, does not perform authentication.
+		/// </summary>
+		protected IUserAuthenticator authenticator = null;
 
-        /// <summary>
-        /// This is the base constructor which is normally used for clients and not classes
-        /// acting as hosts
-        /// </summary>
-        public NetWorker()
+		/// <summary>
+		/// This is the base constructor which is normally used for clients and not classes
+		/// acting as hosts
+		/// </summary>
+		public NetWorker()
 		{
 			Initialize();
 		}
@@ -513,10 +517,10 @@ namespace BeardedManStudios.Forge.Networking
 				action(networkObject);
 		}
 
-        /// <summary>
-        /// Iterate over all NetworkingPlayers in a thread-safe manner
-        /// </summary>
-        public void IteratePlayers(Action<NetworkingPlayer> expression)
+		/// <summary>
+		/// Iterate over all NetworkingPlayers in a thread-safe manner
+		/// </summary>
+		public void IteratePlayers(Action<NetworkingPlayer> expression)
 		{
 			lock (Players)
 			{
@@ -525,10 +529,10 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Iterate over all NetworkObjects in a thread-safe manner
-        /// </summary>
-        public void IterateNetworkObjects(Action<NetworkObject> expression)
+		/// <summary>
+		/// Iterate over all NetworkObjects in a thread-safe manner
+		/// </summary>
+		public void IterateNetworkObjects(Action<NetworkObject> expression)
 		{
 			lock (NetworkObjectList)
 			{
@@ -537,14 +541,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer by NetworkId
-        /// </summary>
-        /// <returns>
-        /// The NetworkingPlayer with NetworkId equal to id
-        /// </returns>
-        /// <param name="id">The NetworkId of the NetworkingPlayer</param>
-        public NetworkingPlayer GetPlayerById(uint id)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer by NetworkId
+		/// </summary>
+		/// <returns>
+		/// The NetworkingPlayer with NetworkId equal to id
+		/// </returns>
+		/// <param name="id">The NetworkId of the NetworkingPlayer</param>
+		public NetworkingPlayer GetPlayerById(uint id)
 		{
 			lock (Players)
 			{
@@ -558,14 +562,14 @@ namespace BeardedManStudios.Forge.Networking
 			return null;
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer based on an expression
-        /// </summary>
-        /// <returns>
-        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
-        /// </returns>
-        /// <param name="expression">The expression on which to match</param>
-        public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer based on an expression
+		/// </summary>
+		/// <returns>
+		/// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+		/// </returns>
+		/// <param name="expression">The expression on which to match</param>
+		public NetworkingPlayer FindPlayer(Func<NetworkingPlayer, bool> expression)
 		{
 			lock (Players)
 			{
@@ -573,14 +577,14 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-        /// <summary>
-        /// Retrieve a NetworkingPlayer which matches the provided NetworkingPlayer by Ip and InstanceGuid
-        /// </summary>
-        /// <returns>
-        /// The first NetworkingPlayer to match the provided expression, or null if no matches are found
-        /// </returns>
-        /// <param name="expression">The expression on which to match</param>
-        public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
+		/// <summary>
+		/// Retrieve a NetworkingPlayer which matches the provided NetworkingPlayer by Ip and InstanceGuid
+		/// </summary>
+		/// <returns>
+		/// The first NetworkingPlayer to match the provided expression, or null if no matches are found
+		/// </returns>
+		/// <param name="expression">The expression on which to match</param>
+		public NetworkingPlayer FindMatchingPlayer(NetworkingPlayer other)
 		{
 			if (other.Networker == this)
 				return other;
@@ -731,7 +735,7 @@ namespace BeardedManStudios.Forge.Networking
 		internal void OnObjectCreated(NetworkObject target)
 		{
 			if (_objectCreated != null)
-                _objectCreated(target);
+				_objectCreated(target);
 		}
 
 		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
@@ -802,22 +806,22 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerRejected(NetworkingPlayer player)
 		{
 			player.Accepted = false;
-            player.Authenticated = false;
+			player.Authenticated = false;
 
 			if (playerRejected != null)
 				playerRejected(player, this);
 		}
 
-        /// <summary>
-        /// If the player is authenticated, 
-        /// </summary>
-        protected void OnPlayerAuthenticated(NetworkingPlayer player)
-        {
-            player.Authenticated = true;
+		/// <summary>
+		/// If the player is authenticated, 
+		/// </summary>
+		protected void OnPlayerAuthenticated(NetworkingPlayer player)
+		{
+			player.Authenticated = true;
 
-            if (playerAuthenticated != null)
-                playerAuthenticated(player, this);
-        }
+			if (playerAuthenticated != null)
+				playerAuthenticated(player, this);
+		}
 
 		/// <summary>
 		/// Set the port for the networker
@@ -996,21 +1000,21 @@ namespace BeardedManStudios.Forge.Networking
 			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
 		}
 
-        /// <summary>
-        /// Used to set the user authenticator. NetWorker must not already be connected.
-        /// </summary>
-        public void SetUserAuthenticator(IUserAuthenticator authenticator)
-        {
-            if (IsConnected)
-                throw new BaseNetworkException("The NetWorker is already connected");
+		/// <summary>
+		/// Used to set the user authenticator. NetWorker must not already be connected.
+		/// </summary>
+		public void SetUserAuthenticator(IUserAuthenticator authenticator)
+		{
+			if (IsConnected)
+				throw new BaseNetworkException("The NetWorker is already connected");
 
-            this.authenticator = authenticator;
-        }
+			this.authenticator = authenticator;
+		}
 
-        /// <summary>
-        /// Used to bind to a port then unbind to trigger any operating system firewall requests
-        /// </summary>
-        public static void PingForFirewall(ushort port = 0)
+		/// <summary>
+		/// Used to bind to a port then unbind to trigger any operating system firewall requests
+		/// </summary>
+		public static void PingForFirewall(ushort port = 0)
 		{
 			if (port < 1)
 			{
@@ -1074,8 +1078,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		private static void CloseLocalListingsClient()
 		{
-			lock (localListingsClientList) {
-				foreach (CachedUdpClient cachedUdpClient in localListingsClientList) {
+			lock (localListingsClientList)
+			{
+				foreach (CachedUdpClient cachedUdpClient in localListingsClientList)
+				{
 					cachedUdpClient.Client.Close();
 				}
 				localListingsClientList.Clear();
@@ -1087,11 +1093,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// Note: Only NICs of type <c>Wireless80211</c> and <c>Ethernet</c> are considered.
 		/// </summary>
 		/// <returns>An array of local IPs for every active NIC</returns>
-		private static IPAddress[] GetLocalIPs() {
+		private static IPAddress[] GetLocalIPs()
+		{
 			List<IPAddress> ipList = new List<IPAddress>();
 
-			foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
-				switch (nic.NetworkInterfaceType) {
+			foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+			{
+				switch (nic.NetworkInterfaceType)
+				{
 					case NetworkInterfaceType.Wireless80211:
 					case NetworkInterfaceType.Ethernet:
 						break;
@@ -1099,10 +1108,13 @@ namespace BeardedManStudios.Forge.Networking
 						continue;
 				}
 
-				if (nic.OperationalStatus != OperationalStatus.Up) continue;
+				if (nic.OperationalStatus != OperationalStatus.Up)
+					continue;
 
-				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
-					if (ip.Address.AddressFamily == AddressFamily.InterNetwork) {
+				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses)
+				{
+					if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+					{
 						ipList.Add(ip.Address);
 					}
 				}
@@ -1116,8 +1128,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public static void RefreshLocalUdpListings(ushort portNumber = DEFAULT_PORT, int responseBuffer = 1000)
 		{
-			lock (localListingsClientList) {
-				foreach (CachedUdpClient cachedUdpClient in localListingsClientList) {
+			lock (localListingsClientList)
+			{
+				foreach (CachedUdpClient cachedUdpClient in localListingsClientList)
+				{
 					cachedUdpClient.Client.Close();
 				}
 				localListingsClientList.Clear();
@@ -1138,7 +1152,8 @@ namespace BeardedManStudios.Forge.Networking
 				// Create a client to write on the network and discover other clients and servers
 				CachedUdpClient localListingsClient = new CachedUdpClient(new IPEndPoint(ipAddress, 19375));
 				localListingsClient.EnableBroadcast = true;
-				lock (localListingsClientList) {
+				lock (localListingsClientList)
+				{
 					localListingsClientList.Add(localListingsClient);
 				}
 				Task.Queue(() => { CloseLocalListingsClient(); }, responseBuffer);
@@ -1148,7 +1163,7 @@ namespace BeardedManStudios.Forge.Networking
 					IPEndPoint groupEp = default(IPEndPoint);
 					string endpoint = string.Empty;
 
-					localListingsClient.Send(new byte[] {BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3}, 3,
+					localListingsClient.Send(new byte[] { BROADCAST_LISTING_REQUEST_1, BROADCAST_LISTING_REQUEST_2, BROADCAST_LISTING_REQUEST_3 }, 3,
 						new IPEndPoint(IPAddress.Parse("255.255.255.255"), portNumber));
 
 					try
@@ -1170,10 +1185,12 @@ namespace BeardedManStudios.Forge.Networking
 
 								if (localServerLocated != null)
 									localServerLocated(ep, null);
-							} else if (data[0] == CLIENT_BROADCAST_CODE)
+							}
+							else if (data[0] == CLIENT_BROADCAST_CODE)
 								LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
 						}
-					} catch
+					}
+					catch
 					{ }
 				});
 			}

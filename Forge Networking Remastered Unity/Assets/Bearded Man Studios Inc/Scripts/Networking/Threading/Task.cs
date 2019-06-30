@@ -57,16 +57,9 @@ namespace BeardedManStudios.Threading
 			QueueExpression(inline);
 		}
 
-#if WINDOWS_UWP
-		public async static void Sleep(int milliseconds)
-		{
-			await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(milliseconds));
-		}
-#else
 		public static void Sleep(int milliseconds)
 		{
 			Thread.Sleep(milliseconds);
 		}
-#endif
 	}
 }

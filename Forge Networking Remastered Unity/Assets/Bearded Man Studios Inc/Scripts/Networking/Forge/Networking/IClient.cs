@@ -2,6 +2,6 @@
 {
 	public interface IClient
 	{
-		NetworkingPlayer Server { get; }
+		NetworkingPlayer ServerPlayer { get; }
 	}
 }

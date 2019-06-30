@@ -1,4 +1,4 @@
-﻿#if !UNITY_WEBGL && !WINDOWS_UWP
+﻿#if !UNITY_WEBGL
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Unity.Modules;
 #endif
@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class VoipStarter : MonoBehaviour
 {
-#if !UNITY_WEBGL && !WINDOWS_UWP
+#if !UNITY_WEBGL
 	private VOIP voip;
 	public string hostAddress;
 	public ushort hostPort;

@@ -17,10 +17,10 @@
 |                                                             |
 \------------------------------+-----------------------------*/
 
-using BeardedManStudios.Source.Threading;
-using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
+using BeardedManStudios.Source.Threading;
+using BeardedManStudios.Threading;
 using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Unity
@@ -190,17 +190,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				unityLateUpdate();
 		}
 
-#if WINDOWS_UWP
-		public static async void ThreadSleep(int length)
-#else
 		public static void ThreadSleep(int length)
-#endif
 		{
-#if WINDOWS_UWP
-			await System.Threading.Tasks.Task.Delay(System.TimeSpan.FromSeconds(length));
-#else
 			System.Threading.Thread.Sleep(length);
-#endif
 		}
 	}
 }

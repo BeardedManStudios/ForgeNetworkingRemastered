@@ -1,10 +1,10 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Nat;
-using BeardedManStudios.Threading;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Nat;
+using BeardedManStudios.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -35,7 +35,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// The identity of the server as a player
 		/// </summary>
 		private NetworkingPlayer server = null;
-		public NetworkingPlayer Server { get { return server; } }
+		public NetworkingPlayer ServerPlayer { get { return server; } }
 
 		public UDPPacketManager packetManager = new UDPPacketManager();
 
@@ -57,7 +57,7 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			//TODO: New constructor for setting up callbacks before regular constructor (as seen above)
-			composer.Init(this, Server, frame, reliable);
+			composer.Init(this, ServerPlayer, frame, reliable);
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="messageGroupId">The Binary.GroupId of the massage, use MessageGroupIds.START_OF_GENERIC_IDS + desired_id</param>
 		/// <param name="reliable">True if message must be delivered</param>
 		/// <param name="objectsToSend">Array of vars to be sent, read them with Binary.StreamData.GetBasicType<typeOfObject>()</param>
-		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false , params object[] objectsToSend)
+		public virtual void Send(Receivers receivers = Receivers.Server, int messageGroupId = MessageGroupIds.START_OF_GENERIC_IDS, bool reliable = false, params object[] objectsToSend)
 		{
 			BMSByte data = ObjectMapper.BMSByte(objectsToSend);
 			Binary sendFrame = new Binary(Time.Timestep, false, data, receivers, messageGroupId, false);
@@ -159,7 +159,7 @@ namespace BeardedManStudios.Forge.Networking
 					do
 					{
 						// Send the accept headers to the server to validate
-						Client.Send(connectHeader, connectHeader.Length, Server.IPEndPointHandle);
+						Client.Send(connectHeader, connectHeader.Length, ServerPlayer.IPEndPointHandle);
 						Thread.Sleep(3000);
 					} while (!headerExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
 
@@ -252,8 +252,8 @@ namespace BeardedManStudios.Forge.Networking
 						continue;
 
 					// This message was not from the server
-					if (groupEP.Address != Server.IPEndPointHandle.Address &&
-						groupEP.Port != Server.IPEndPointHandle.Port)
+					if (groupEP.Address != ServerPlayer.IPEndPointHandle.Address &&
+						groupEP.Port != ServerPlayer.IPEndPointHandle.Port)
 					{
 						if (packet.Size == 1 && (packet[0] == SERVER_BROADCAST_CODE || packet[1] == CLIENT_BROADCAST_CODE))
 						{
@@ -287,21 +287,24 @@ namespace BeardedManStudios.Forge.Networking
 							// This happens if the server is not accepting connections or the max connection count has been reached
 							// We will get two messages. The first one is either a MAX_CONNECTIONS or NOT_ACCEPT_CONNECTIONS group message.
 							// The second one will be the DISCONNECT message
-							UDPPacket formattedPacket = TranscodePacket(Server, packet);
+							UDPPacket formattedPacket = TranscodePacket(ServerPlayer, packet);
 
-							if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS) {
+							if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS)
+							{
 								Logging.BMSLog.LogWarning("Max Players Reached On Server");
 								// Wait for the second message (Disconnect)
 								continue;
 							}
 
-							if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS) {
+							if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS)
+							{
 								Logging.BMSLog.LogWarning("The server is busy and not accepting connections");
 								// Wait for the second message (Disconnect)
 								continue;
 							}
 
-                            if (formattedPacket.groupId == MessageGroupIds.DISCONNECT) {
+							if (formattedPacket.groupId == MessageGroupIds.DISCONNECT)
+							{
 								CloseConnection();
 								return;
 							}
@@ -324,7 +327,7 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 
 						// Format the byte data into a UDPPacket struct
-						UDPPacket formattedPacket = TranscodePacket(Server, packet);
+						UDPPacket formattedPacket = TranscodePacket(ServerPlayer, packet);
 
 						// Check to see if this is a confirmation packet, which is just
 						// a packet to say that the reliable packet has been read
@@ -340,15 +343,15 @@ namespace BeardedManStudios.Forge.Networking
 							continue;
 						}
 
-                        if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
-                        {
-                            Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
-                            // Wait for the second message (Disconnect)
-                            continue;
-                        }
+						if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+						{
+							Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+							// Wait for the second message (Disconnect)
+							continue;
+						}
 
-                        // Add the packet to the manager so that it can be tracked and executed on complete
-                        packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+						// Add the packet to the manager so that it can be tracked and executed on complete
+						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
 					}
 				}
 			}
@@ -362,7 +365,7 @@ namespace BeardedManStudios.Forge.Networking
 		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
-			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, Server, receivers);
+			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, ServerPlayer, receivers);
 
 			if (isReliable)
 			{
@@ -370,10 +373,10 @@ namespace BeardedManStudios.Forge.Networking
 
 				// TODO:  If the current reliable index for this player is not at
 				// the specified index, then it needs to wait for the correct ordering
-				Server.WaitReliable(frame);
+				ServerPlayer.WaitReliable(frame);
 			}
 			else
-				FireRead(frame, Server);
+				FireRead(frame, ServerPlayer);
 		}
 
 		private void CloseConnection()
@@ -417,34 +420,34 @@ namespace BeardedManStudios.Forge.Networking
 				return;
 			}
 
-            if(frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
-            {
-                if ((Me != null && Me.Connected) || authenticator == null)
-                    return;
+			if (frame.GroupId == MessageGroupIds.AUTHENTICATION_CHALLENGE)
+			{
+				if ((Me != null && Me.Connected) || authenticator == null)
+					return;
 
-                authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
+				authenticator.AcceptChallenge(this, frame.StreamData, AuthServer, RejectServer);
 
-                return;
-            }
+				return;
+			}
 
 			// Send an event off that a packet has been read
 			OnMessageReceived(currentPlayer, frame);
 		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an authentication response to the server.
-        /// </summary>
-        private void AuthServer(BMSByte buffer)
-        {
-            Send(new Binary(Time.Timestep, false, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, false), true);
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an authentication response to the server.
+		/// </summary>
+		private void AuthServer(BMSByte buffer)
+		{
+			Send(new Binary(Time.Timestep, false, buffer, Receivers.Server, MessageGroupIds.AUTHENTICATION_RESPONSE, false), true);
+		}
 
-        /// <summary>
-        /// Callback for user auth. Disconnects the user from an invalid server.
-        /// </summary>
-        private void RejectServer()
-        {
-            Disconnect(true);
-        }
-    }
+		/// <summary>
+		/// Callback for user auth. Disconnects the user from an invalid server.
+		/// </summary>
+		private void RejectServer()
+		{
+			Disconnect(true);
+		}
+	}
 }

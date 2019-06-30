@@ -1,11 +1,11 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Nat;
-using BeardedManStudios.Threading;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Nat;
+using BeardedManStudios.Threading;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -519,28 +519,30 @@ namespace BeardedManStudios.Forge.Networking
 					if (rejected)
 						return;
 
-                    // If so, check if there's a user authenticator
-                    if (authenticator != null)
-                    {
-                        authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
-                    } else
-                    {
-                        AuthUser(currentPlayer);
-                    }
+					// If so, check if there's a user authenticator
+					if (authenticator != null)
+					{
+						authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
+					}
+					else
+					{
+						AuthUser(currentPlayer);
+					}
 					return;
-				} 
-			} else if (frame is Binary)
-            {
-                if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
-                {
-                    // Authenticate user response
-                    if (currentPlayer.Authenticated || authenticator == null)
-                        return;
+				}
+			}
+			else if (frame is Binary)
+			{
+				if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
+				{
+					// Authenticate user response
+					if (currentPlayer.Authenticated || authenticator == null)
+						return;
 
-                    authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
-                    return;
-                }
-            }
+					authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
+					return;
+				}
+			}
 
 			if (frame is ConnectionClose)
 			{
@@ -555,46 +557,46 @@ namespace BeardedManStudios.Forge.Networking
 			OnMessageReceived(currentReadingPlayer, frame);
 		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an auth challenge to the user.
-        /// </summary>
-        private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
-        {
-            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an auth challenge to the user.
+		/// </summary>
+		private void IssueChallenge(NetworkingPlayer player, BMSByte buffer)
+		{
+			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.AUTHENTICATION_CHALLENGE, false), true);
+		}
 
-        /// <summary>
-        /// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
-        /// </summary>
-        private void AuthUser(NetworkingPlayer player)
-        {
-            OnPlayerAuthenticated(player);
+		/// <summary>
+		/// Callback for user auth. Authenticates the user and sends the user their network id for acceptance.
+		/// </summary>
+		private void AuthUser(NetworkingPlayer player)
+		{
+			OnPlayerAuthenticated(player);
 
-            // If authenticated, send the player their network id and accept them
-            var buffer = new BMSByte();
-            buffer.Append(BitConverter.GetBytes(player.NetworkId));
-            Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
-            SendBuffer(player);
-        }
+			// If authenticated, send the player their network id and accept them
+			var buffer = new BMSByte();
+			buffer.Append(BitConverter.GetBytes(player.NetworkId));
+			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+			SendBuffer(player);
+		}
 
-        /// <summary>
-        /// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
-        /// </summary>
-        private void RejectUser(NetworkingPlayer player)
-        {
-            OnPlayerRejected(player);
-            Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
-            SendBuffer(player);
-            Disconnect(player, true);
-            CommitDisconnects();
-        }
+		/// <summary>
+		/// Callback for user auth. Sends an authentication failure message to the user and then disconnects them.
+		/// </summary>
+		private void RejectUser(NetworkingPlayer player)
+		{
+			OnPlayerRejected(player);
+			Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
+			SendBuffer(player);
+			Disconnect(player, true);
+			CommitDisconnects();
+		}
 
-        /// <summary>
-        /// A callback from the NatHolePunch object saying that a client is trying to connect
-        /// </summary>
-        /// <param name="host">The host address of the client trying to connect</param>
-        /// <param name="port">The port number to communicate with the client on</param>
-        private void NatClientConnectAttempt(string host, ushort port)
+		/// <summary>
+		/// A callback from the NatHolePunch object saying that a client is trying to connect
+		/// </summary>
+		/// <param name="host">The host address of the client trying to connect</param>
+		/// <param name="port">The port number to communicate with the client on</param>
+		private void NatClientConnectAttempt(string host, ushort port)
 		{
 			IPEndPoint clientIPEndPoint;
 

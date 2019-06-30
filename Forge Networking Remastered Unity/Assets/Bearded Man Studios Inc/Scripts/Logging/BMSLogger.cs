@@ -38,7 +38,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		if (_instance != null)
 			return;
 
-#if !WINDOWS_UWP && !UNITY_IOS
+#if !UNITY_IOS
 		string directory = Application.dataPath + "/" + SAVE_FILE_DIRECTORY_NAME;
 		filepath = directory + SAVE_FILE_NAME;
 		if (!System.IO.Directory.Exists(directory))
@@ -179,8 +179,8 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 
 	private void PutLogInFile(BMSLog.Logtype type, string log)
 	{
-		// TODO:  Need to use the isolated storage for UWP and IOS
-#if WINDOWS_UWP || UNITY_IOS
+		// TODO:  Need to use the isolated storage for IOS
+#if UNITY_IOS
 		return;
 #else
 		if (!LogToFile)

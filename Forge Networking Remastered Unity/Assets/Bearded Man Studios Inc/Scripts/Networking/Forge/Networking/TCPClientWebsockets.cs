@@ -1,14 +1,14 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using BeardedManStudios.Forge.Networking.Frame;
 
 namespace BeardedManStudios.Forge.Networking
 {
 	public class TCPClientWebsockets : TCPClientBase
 	{
-        //TODO: Brent, figure out how to processor define this in a dll for unity
-        // or we need to make 2 dlls, one with and one without this pre-processored defined out
-        // This breaks iOS support because it cannot do [DllImport..]
+		//TODO: Brent, figure out how to processor define this in a dll for unity
+		// or we need to make 2 dlls, one with and one without this pre-processored defined out
+		// This breaks iOS support because it cannot do [DllImport..]
 #if !UNITY_IOS
 		[DllImport("__Internal")]
 		private static extern void ForgeConnect(string host, ushort port);
@@ -100,11 +100,11 @@ namespace BeardedManStudios.Forge.Networking
 
 				// Get the frame that was sent by the server, the server
 				// does not send masked data, only the client so send false for mask
-				FrameStream frame = Factory.ReadFrameStream(messageType, bytes, 0, MessageGroupIds.TCP_FIND_GROUP_ID, Server);
+				FrameStream frame = Factory.ReadFrameStream(messageType, bytes, 0, MessageGroupIds.TCP_FIND_GROUP_ID, ServerPlayer);
 
 				// A message has been successfully read from the network so relay that
 				// to all methods registered to the event
-				OnMessageReceived(Server, frame);
+				OnMessageReceived(ServerPlayer, frame);
 			}
 		}
 #endif

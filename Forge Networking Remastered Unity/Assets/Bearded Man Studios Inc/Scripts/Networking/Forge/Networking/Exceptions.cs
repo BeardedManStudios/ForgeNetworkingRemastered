@@ -9,9 +9,7 @@ namespace BeardedManStudios.Forge.Networking
 	{
 		public BaseNetworkException() : base() { }
 		public BaseNetworkException(string message) : base(message) { }
-#if !WINDOWS_UWP
 		public BaseNetworkException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
-#endif
 		public BaseNetworkException(string message, Exception innerException) : base(message, innerException) { }
 	}
 
@@ -22,9 +20,7 @@ namespace BeardedManStudios.Forge.Networking
 	{
 		public FailedBindingException() : base() { }
 		public FailedBindingException(string message) : base(message) { }
-#if !WINDOWS_UWP
 		public FailedBindingException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
-#endif
 		public FailedBindingException(string message, Exception innerException) : base(message, innerException) { }
 	}
 }
