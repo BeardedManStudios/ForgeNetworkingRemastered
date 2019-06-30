@@ -13,7 +13,8 @@ namespace BeardedManStudios.Forge.Networking
 	{
 		private CommonServerLogic commonServerLogic;
 
-		public Dictionary<string, UDPNetworkingPlayer> udpPlayers = new Dictionary<string, UDPNetworkingPlayer>();
+		public Dictionary<string, UDPNetworkingPlayer> udpPlayers =
+			new Dictionary<string, UDPNetworkingPlayer>();
 
 		private UDPNetworkingPlayer currentReadingPlayer = null;
 
@@ -37,7 +38,7 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void Send(NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
-			UDPPacketComposer composer = new UDPPacketComposer(this, player, frame, reliable);
+			var composer = new UDPPacketComposer(this, player, frame, reliable);
 
 			// If this message is reliable then make sure to keep a reference to the composer
 			// so that there are not any run-away threads
@@ -84,7 +85,8 @@ namespace BeardedManStudios.Forge.Networking
 
 
 		// overload for ncw field distance check case
-		public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false, NetworkingPlayer skipPlayer = null)
+		public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false,
+			NetworkingPlayer skipPlayer = null)
 		{
 			if (frame.Receivers == Receivers.AllBuffered || frame.Receivers == Receivers.OthersBuffered)
 				bufferedMessages.Add(frame);
@@ -377,45 +379,49 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		private void SetupClient(BMSByte packet, string incomingEndpoint, IPEndPoint groupEP)
+		private bool IsPacketLocalListingRequest(BMSByte packet)
 		{
-			// Check for a local listing request
-			if (packet.Size.Between(2, 4) && packet[0] == BROADCAST_LISTING_REQUEST_1 && packet[1] == BROADCAST_LISTING_REQUEST_2 && packet[2] == BROADCAST_LISTING_REQUEST_3)
-			{
-				// Don't reply if the server is not currently accepting connections
-				if (!AcceptingConnections)
-					return;
+			return packet.Size.Between(2, 4) && packet[0] == BROADCAST_LISTING_REQUEST_1
+				&& packet[1] == BROADCAST_LISTING_REQUEST_2 && packet[2] == BROADCAST_LISTING_REQUEST_3;
+		}
 
-				// This may be a local listing request so respond with the server flag byte
-				Client.Send(new byte[] { SERVER_BROADCAST_CODE }, 1, groupEP);
-				return;
-			}
+		private void HandleMaximumClientPacketResponse(string incomingEndpoint, IPEndPoint groupEP)
+		{
+			// Tell the client why they are being disconnected
+			Error frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server",
+				false, MessageGroupIds.MAX_CONNECTIONS, false);
 
-			if (Players.Count == MaxConnections)
-			{
-				// Tell the client why they are being disconnected
-				var frame = Error.CreateErrorMessage(Time.Timestep, "Max Players Reached On Server", false, MessageGroupIds.MAX_CONNECTIONS, false);
-				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
-				new UDPPacketComposer(this, playerToDisconnect, frame, false);
+			var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint,
+				false, groupEP, this);
 
-				// Send the close connection frame to the client
-				new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
+			UDPPacketComposer.SendNewUDPPacket(this, playerToDisconnect, frame, false);
 
-				return;
-			}
-			else if (!AcceptingConnections)
-			{
-				// Tell the client why they are being disconnected
-				var frame = Error.CreateErrorMessage(Time.Timestep, "The server is busy and not accepting connections", false, MessageGroupIds.NOT_ACCEPT_CONNECTIONS, false);
-				var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
-				new UDPPacketComposer(this, playerToDisconnect, frame, false);
+			// Send the close connection frame to the client
+			UDPPacketComposer.SendNewUDPPacket(this, playerToDisconnect,
+				new ConnectionClose(Time.Timestep, false, Receivers.Target,
+				MessageGroupIds.DISCONNECT, false), false);
+		}
 
-				// Send the close connection frame to the client
-				new UDPPacketComposer(this, playerToDisconnect, new ConnectionClose(Time.Timestep, false, Receivers.Target, MessageGroupIds.DISCONNECT, false), false);
+		private void HandleNotAcceptingConnectionsPacketResponse(string incomingEndpoint, IPEndPoint groupEP)
+		{
+			// Tell the client why they are being disconnected
+			var frame = Error.CreateErrorMessage(Time.Timestep,
+				"The server is busy and not accepting connections", false,
+				MessageGroupIds.NOT_ACCEPT_CONNECTIONS, false);
 
-				return;
-			}
+			var playerToDisconnect = new UDPNetworkingPlayer(ServerPlayerCounter++,
+				incomingEndpoint, false, groupEP, this);
 
+			UDPPacketComposer.SendNewUDPPacket(this, playerToDisconnect, frame, false);
+
+			// Send the close connection frame to the client
+			UDPPacketComposer.SendNewUDPPacket(this, playerToDisconnect,
+				new ConnectionClose(Time.Timestep, false, Receivers.Target,
+				MessageGroupIds.DISCONNECT, false), false);
+		}
+
+		private void HandleClientAcceptance(BMSByte packet, string incomingEndpoint, IPEndPoint groupEP)
+		{
 			// Validate that the connection headers are properly formatted
 			byte[] response = Websockets.ValidateConnectionHeader(packet.CompressBytes());
 
@@ -423,7 +429,8 @@ namespace BeardedManStudios.Forge.Networking
 			if (response == null)
 				return;
 
-			UDPNetworkingPlayer player = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint, false, groupEP, this);
+			var player = new UDPNetworkingPlayer(ServerPlayerCounter++, incomingEndpoint,
+				false, groupEP, this);
 
 			// If all is in order then send the validated response to the client
 			Client.Send(response, response.Length, groupEP);
@@ -435,6 +442,72 @@ namespace BeardedManStudios.Forge.Networking
 			player.Connected = true;
 		}
 
+		private void SetupClient(BMSByte packet, string incomingEndpoint, IPEndPoint groupEP)
+		{
+			// Check for a local listing request
+			if (IsPacketLocalListingRequest(packet) && AcceptingConnections)
+				Client.Send(new byte[] { SERVER_BROADCAST_CODE }, 1, groupEP);
+			else if (Players.Count == MaxConnections)
+				HandleMaximumClientPacketResponse(incomingEndpoint, groupEP);
+			else if (!AcceptingConnections)
+				HandleNotAcceptingConnectionsPacketResponse(incomingEndpoint, groupEP);
+			else
+				HandleClientAcceptance(packet, incomingEndpoint, groupEP);
+		}
+
+		/// <summary>
+		/// Due to the Forge Networking protocol, the only time that packet 1
+		/// will be 71 and the second packet be 69 is a forced disconnect reconnect
+		/// </summary>
+		/// <param name="packet">The packet being read from the network</param>
+		/// <returns>True if it is a forced disconnect reconnect</returns>
+		private bool IsForceDisconnectReconnectPacket(BMSByte packet)
+		{
+			return packet[0] == 71 && packet[1] == 69;
+		}
+
+		private void ProcessConfirmationPacket(ref UDPPacket formattedPacket)
+		{
+			// Called once the player has confirmed that it has been accepted
+			if (formattedPacket.groupId == MessageGroupIds.NETWORK_ID_REQUEST
+				&& !currentReadingPlayer.Accepted
+				&& currentReadingPlayer.Authenticated)
+			{
+				System.Diagnostics.Debug.WriteLine(string.Format("[{0}] REQUESTED ID RECEIVED", DateTime.Now.Millisecond));
+				// The player has been accepted
+				OnPlayerAccepted(currentReadingPlayer);
+			}
+
+			OnMessageConfirmed(currentReadingPlayer, formattedPacket);
+		}
+
+		private void ProcessPacketFromNetwork(BMSByte packet)
+		{
+			// Format the byte data into a UDPPacket struct
+			UDPPacket formattedPacket = TranscodePacket(currentReadingPlayer, packet);
+
+			if (formattedPacket.endPacket && !formattedPacket.isConfirmation)
+			{
+				if (IsForceDisconnectReconnectPacket(packet))
+				{
+					udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
+					FinalizeRemovePlayer(currentReadingPlayer, true);
+					return;
+				}
+			}
+
+			// Check to see if this is a confirmation packet, which is just
+			// a packet to say that the reliable packet has been read
+			if (formattedPacket.isConfirmation)
+			{
+				ProcessConfirmationPacket(ref formattedPacket);
+				return;
+			}
+
+			// Add the packet to the manager so that it can be tracked and executed on complete
+			currentReadingPlayer.PacketManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
+		}
+
 		private void ReadPacket(BMSByte packet)
 		{
 			if (packet.Size < 17)
@@ -442,39 +515,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				// Format the byte data into a UDPPacket struct
-				UDPPacket formattedPacket = TranscodePacket(currentReadingPlayer, packet);
-
-				if (formattedPacket.endPacket && !formattedPacket.isConfirmation)
-				{
-					// Due to the Forge Networking protocol, the only time that packet 1
-					// will be 71 and the second packet be 69 is a forced disconnect reconnect
-					if (packet[0] == 71 && packet[1] == 69)
-					{
-						udpPlayers.Remove(currentReadingPlayer.Ip + "+" + currentReadingPlayer.Port);
-						FinalizeRemovePlayer(currentReadingPlayer, true);
-						return;
-					}
-				}
-
-				// Check to see if this is a confirmation packet, which is just
-				// a packet to say that the reliable packet has been read
-				if (formattedPacket.isConfirmation)
-				{
-					// Called once the player has confirmed that it has been accepted
-					if (formattedPacket.groupId == MessageGroupIds.NETWORK_ID_REQUEST && !currentReadingPlayer.Accepted && currentReadingPlayer.Authenticated)
-					{
-						System.Diagnostics.Debug.WriteLine(string.Format("[{0}] REQUESTED ID RECEIVED", DateTime.Now.Millisecond));
-						// The player has been accepted
-						OnPlayerAccepted(currentReadingPlayer);
-					}
-
-					OnMessageConfirmed(currentReadingPlayer, formattedPacket);
-					return;
-				}
-
-				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
+				ProcessPacketFromNetwork(packet);
 			}
 			catch (Exception ex)
 			{
@@ -488,7 +529,8 @@ namespace BeardedManStudios.Forge.Networking
 		private void PacketSequenceComplete(BMSByte data, int groupId, byte receivers, bool isReliable)
 		{
 			// Pull the frame from the sent message
-			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false, groupId, currentReadingPlayer, receivers);
+			FrameStream frame = Factory.DecodeMessage(data.CompressBytes(), false,
+				groupId, currentReadingPlayer, receivers);
 
 			if (isReliable)
 			{
@@ -502,59 +544,85 @@ namespace BeardedManStudios.Forge.Networking
 				FireRead(frame, currentReadingPlayer);
 		}
 
+		private void HandleConnectionCloseFrame()
+		{
+			//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
+
+			Disconnect(currentReadingPlayer, true);
+			CleanupDisconnections();
+		}
+
+		private void HandleAuthenticationResponse(NetworkingPlayer currentPlayer, FrameStream frame)
+		{
+			// Authenticate user response
+			if (currentPlayer.Authenticated || authenticator == null)
+				return;
+
+			authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
+		}
+
+		private void HandleNetworkIdRequest(NetworkingPlayer currentPlayer, FrameStream frame)
+		{
+			currentPlayer.InstanceGuid = frame.ToString();
+
+			// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+			if (!TryPlayerGuidAssignment(currentPlayer))
+				return;
+
+			// If so, check if there's a user authenticator
+			if (authenticator != null)
+			{
+				authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
+			}
+			else
+			{
+				AuthUser(currentPlayer);
+			}
+		}
+
+		private bool IsFrameNetworkIdRequest(FrameStream frame)
+		{
+			return frame is Text && frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST;
+		}
+
+		private bool IsFrameAuthenticationResponse(FrameStream frame)
+		{
+			return frame is Binary && frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE;
+		}
+
+		private bool IsFrameConnectionClose(FrameStream frame)
+		{
+			return frame is ConnectionClose;
+		}
+
+		private bool IsDefaultMessage(FrameStream frame)
+		{
+			return IsFrameNetworkIdRequest(frame)
+				|| IsFrameAuthenticationResponse(frame)
+				|| IsFrameConnectionClose(frame);
+		}
+
+		private void HandleDefaultMessages(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			if (IsFrameNetworkIdRequest(frame))
+				HandleNetworkIdRequest(currentPlayer, frame);
+			else if (IsFrameAuthenticationResponse(frame))
+				HandleAuthenticationResponse(currentPlayer, frame);
+			else if (IsFrameConnectionClose(frame))
+				HandleConnectionCloseFrame();
+		}
+
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
-			// Check for default messages
-			if (frame is Text)
+			if (IsDefaultMessage(frame))
 			{
-				// This packet is sent if the player did not receive it's network id
-				if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
-				{
-					currentPlayer.InstanceGuid = frame.ToString();
-
-					bool rejected;
-					OnPlayerGuidAssigned(currentPlayer, out rejected);
-
-					// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-					if (rejected)
-						return;
-
-					// If so, check if there's a user authenticator
-					if (authenticator != null)
-					{
-						authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
-					}
-					else
-					{
-						AuthUser(currentPlayer);
-					}
-					return;
-				}
+				HandleDefaultMessages(frame, currentPlayer);
 			}
-			else if (frame is Binary)
+			else
 			{
-				if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
-				{
-					// Authenticate user response
-					if (currentPlayer.Authenticated || authenticator == null)
-						return;
-
-					authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
-					return;
-				}
+				// Send an event off that a packet has been read
+				OnMessageReceived(currentReadingPlayer, frame);
 			}
-
-			if (frame is ConnectionClose)
-			{
-				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
-
-				Disconnect(currentReadingPlayer, true);
-				CleanupDisconnections();
-				return;
-			}
-
-			// Send an event off that a packet has been read
-			OnMessageReceived(currentReadingPlayer, frame);
 		}
 
 		/// <summary>
@@ -575,7 +643,9 @@ namespace BeardedManStudios.Forge.Networking
 			// If authenticated, send the player their network id and accept them
 			var buffer = new BMSByte();
 			buffer.Append(BitConverter.GetBytes(player.NetworkId));
-			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+			Send(player, new Binary(Time.Timestep, false, buffer, Receivers.Target,
+				MessageGroupIds.NETWORK_ID_REQUEST, false), true);
+
 			SendBuffer(player);
 		}
 
@@ -586,6 +656,7 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			OnPlayerRejected(player);
 			Send(player, Error.CreateErrorMessage(Time.Timestep, "Authentication Failed", false, MessageGroupIds.AUTHENTICATION_FAILURE, false), false);
+
 			SendBuffer(player);
 			Disconnect(player, true);
 			CommitDisconnects();

@@ -48,13 +48,20 @@ namespace BeardedManStudios.Forge.Networking
 
 		public UDPPacketComposer() { }
 
-		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)
+		public UDPPacketComposer(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame,
+			bool reliable = false)
 		{
 #if DEEP_LOGGING
 			Logging.BMSLog.Log("---------------------------\n" + (new System.Diagnostics.StackTrace()).ToString() + "\nUNIQUE ID: " + frame.UniqueId.ToString() + "\n---------------------------");
 #endif
 
 			Init(clientWorker, player, frame, reliable);
+		}
+
+		public static void SendNewUDPPacket(BaseUDP clientWorker, NetworkingPlayer player,
+			FrameStream frame, bool reliable = false)
+		{
+			new UDPPacketComposer(clientWorker, player, frame, reliable);
 		}
 
 		public void Init(BaseUDP clientWorker, NetworkingPlayer player, FrameStream frame, bool reliable = false)

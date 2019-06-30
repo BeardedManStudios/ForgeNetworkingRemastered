@@ -535,11 +535,8 @@ namespace BeardedManStudios.Forge.Networking
 						{
 							token.player.InstanceGuid = ((Text)frame).ToString();
 
-							bool rejected;
-							OnPlayerGuidAssigned(token.player, out rejected);
-
 							// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-							if (rejected)
+							if (!TryPlayerGuidAssignment(token.player))
 								break;
 
 							token.maxAllowedBytes = int.MaxValue;

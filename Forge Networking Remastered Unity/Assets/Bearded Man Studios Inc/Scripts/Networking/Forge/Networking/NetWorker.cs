@@ -962,13 +962,14 @@ namespace BeardedManStudios.Forge.Networking
 		/// A wrapper around calling the playerGuidAssigned event from child classes
 		/// </summary>
 		/// <param name="player">The player which the guid was assigned to</param>
-		/// <param name="rejected">Returns whether the player was rejected during the handling of the event</param>
-		protected void OnPlayerGuidAssigned(NetworkingPlayer player, out bool rejected)
+		protected bool TryPlayerGuidAssignment(NetworkingPlayer player)
 		{
 			OnPlayerGuidAssigned(player);
 
 			// Return if the player was rejected during the handling of the event.
-			rejected = (player.IsDisconnecting || DisconnectingPlayers.Contains(player) || ForcedDisconnectingPlayers.Contains(player));
+			return !player.IsDisconnecting
+				&& !DisconnectingPlayers.Contains(player)
+				&& !ForcedDisconnectingPlayers.Contains(player);
 		}
 
 		/// <summary>
