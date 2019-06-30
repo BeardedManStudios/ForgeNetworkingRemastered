@@ -328,7 +328,8 @@ namespace BeardedManStudios.Forge.Networking
 		private BMSByte recBuffer = new BMSByte();
 		private EndPoint endPoint = null;
 		private Dictionary<EndPoint, string> connections = new Dictionary<EndPoint, string>();
-		public BMSByte Receive(ref IPEndPoint remoteEP, ref string endpoint)
+
+		public BMSByte Receive(ref IPEndPoint remoteEP)
 		{
 			CheckDisposed();
 
@@ -342,14 +343,16 @@ namespace BeardedManStudios.Forge.Networking
 			if (!connections.ContainsKey(endPoint))
 				connections.Add(endPoint, (((IPEndPoint)endPoint).Address.ToString() + HOST_PORT_CHARACTER_SEPARATOR + ((IPEndPoint)endPoint).Port.ToString()));
 
-			endpoint = connections[endPoint];
-
-			//if (dataRead < recBuffer.Size)
-			//	recBuffer = CutArray(recBuffer, dataRead);
-
 			recBuffer.SetSize(dataRead);
 
 			remoteEP = (IPEndPoint)endPoint;
+			return recBuffer;
+		}
+
+		public BMSByte Receive(ref IPEndPoint remoteEP, ref string endpoint)
+		{
+			var recBuffer = Receive(ref remoteEP);
+			endpoint = connections[endPoint];
 			return recBuffer;
 		}
 

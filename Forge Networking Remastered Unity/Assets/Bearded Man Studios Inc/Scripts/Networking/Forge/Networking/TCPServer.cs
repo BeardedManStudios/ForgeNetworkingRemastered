@@ -22,6 +22,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// A delegate for handling any raw TcpClient events
 		/// </summary>
 		public delegate void RawTcpClientEvent(TcpClient client);
+		#endregion
 
 		#region Events
 		/// <summary>
@@ -636,7 +637,7 @@ namespace BeardedManStudios.Forge.Networking
 		public override void Disconnect(bool forced)
 		{
 			// Since we are disconnecting we need to stop the read thread
-			readThreadCancel = true;
+			CancelReadThread();
 
 			lock (Players)
 			{

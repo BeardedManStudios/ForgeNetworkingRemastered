@@ -1,13 +1,11 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Threading;
 #if STEAMWORKS
 using Steamworks;
-#endif
-using System.Collections.Generic;
-using System.Net;
-
-using System.Net.Sockets;
-using System.Threading;
 #endif
 
 namespace BeardedManStudios.Forge.Networking

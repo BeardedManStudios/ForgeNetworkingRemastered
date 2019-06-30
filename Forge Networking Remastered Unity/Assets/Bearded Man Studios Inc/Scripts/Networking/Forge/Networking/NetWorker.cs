@@ -350,7 +350,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// A boolean to tell the read thread to stop reading and close
 		/// </summary>
-		protected bool readThreadCancel = false;
+		protected bool IsReadThreadCancelPending { get; private set; }
 
 		/// <summary>
 		/// A player reference to the current machine
@@ -461,6 +461,11 @@ namespace BeardedManStudios.Forge.Networking
 
 			ServerCache = new Cache(this);
 			EndingSession = false;
+		}
+
+		protected void CancelReadThread()
+		{
+			IsReadThreadCancelPending = true;
 		}
 
 		/// <summary>

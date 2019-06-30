@@ -73,7 +73,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="id">The timestamp for the packet to be used to lookup in packets dictionary</param>
 		/// <param name="sequence">The actual sequence reference to skip another lookup</param>
 		/// <param name="packetCompleteHandle">The method to call and pass this sequence into</param>
-		private void CompleteSequence(ulong id, UDPPacketSequence sequence, BaseUDP.PacketComplete packetCompleteHandle, NetWorker networker)
+		private void CompleteSequence(ulong id, UDPPacketSequence sequence,
+			BaseUDP.PacketComplete packetCompleteHandle, NetWorker networker)
 		{
 			packetCompleteHandle(sequence.GetData(networker), GroupId, (byte)sequence.Receivers, sequence.Reliable);
 

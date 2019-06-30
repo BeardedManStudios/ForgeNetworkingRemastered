@@ -203,7 +203,7 @@ namespace BeardedManStudios.Forge.Networking
 			nat.Disconnect();
 
 			// Since we are disconnecting we need to stop the read thread
-			readThreadCancel = true;
+			CancelReadThread();
 
 			lock (Players)
 			{
@@ -310,7 +310,7 @@ namespace BeardedManStudios.Forge.Networking
 			while (IsBound)
 			{
 				// If the read has been flagged to be canceled then break from this loop
-				if (readThreadCancel)
+				if (IsReadThreadCancelPending)
 					return;
 
 				try
@@ -474,7 +474,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+				currentReadingPlayer.PacketManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
 			}
 			catch (Exception ex)
 			{
