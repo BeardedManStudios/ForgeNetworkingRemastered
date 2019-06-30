@@ -699,14 +699,13 @@ namespace BeardedManStudios.Forge.Networking
 		}
 
 		/// <summary>
-		/// A wrapper for the bindSuccessful event call that chindren of this calls can call
+		/// A wrapper for the bindSuccessful event call that children of this calls can call
 		/// </summary>
 		protected void OnBindSuccessful()
 		{
 			IsBound = true;
 			NetworkInitialize();
-			if (bindSuccessful != null)
-				bindSuccessful(this);
+			bindSuccessful?.Invoke(this);
 		}
 
 		/// <summary>
@@ -714,12 +713,11 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		protected void OnBindFailure()
 		{
-			if (bindFailure != null)
-				bindFailure(this);
+			bindFailure?.Invoke(this);
 		}
 
 		/// <summary>
-		/// A wrapper for the playerDisconnected event call that chindren of this can call.
+		/// A wrapper for the playerDisconnected event call that children of this can call.
 		/// This also is responsible for adding the player to the lookup
 		/// </summary>
 		protected void OnPlayerConnected(NetworkingPlayer player)
@@ -733,36 +731,31 @@ namespace BeardedManStudios.Forge.Networking
 				Players.Add(player);
 			}
 
-			if (playerConnected != null)
-				playerConnected(player, this);
+			playerConnected?.Invoke(player, this);
 		}
 
 		internal void OnObjectCreated(NetworkObject target)
 		{
-			if (_objectCreated != null)
-				_objectCreated(target);
+			_objectCreated?.Invoke(target);
 		}
 
 		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
 		{
-			if (objectCreateAttach != null)
-				objectCreateAttach(identity, hash, id, frame);
+			objectCreateAttach?.Invoke(identity, hash, id, frame);
 		}
 
 		internal void OnObjectCreateRequested(int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
 		{
-			if (objectCreateRequested != null)
-				objectCreateRequested(this, identity, id, frame, callback);
+			objectCreateRequested?.Invoke(this, identity, id, frame, callback);
 		}
 
 		internal void OnFactoryObjectCreated(NetworkObject obj)
 		{
-			if (factoryObjectCreated != null)
-				factoryObjectCreated(obj);
+			factoryObjectCreated?.Invoke(obj);
 		}
 
 		/// <summary>
-		/// A wrapper for the bindFailure event call that chindren of this can call.
+		/// A wrapper for the bindFailure event call that children of this can call.
 		/// This also is responsible for removing the player from the lookup
 		/// </summary>
 		protected void OnPlayerDisconnected(NetworkingPlayer player)
@@ -774,19 +767,16 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			player.OnDisconnect();
-
-			if (playerDisconnected != null)
-				playerDisconnected(player, this);
+			playerDisconnected?.Invoke(player, this);
 		}
 
 		protected void OnPlayerTimeout(NetworkingPlayer player)
 		{
-			if (playerTimeout != null)
-				playerTimeout(player, this);
+			playerTimeout?.Invoke(player, this);
 		}
 
 		/// <summary>
-		/// A wrapper for the playerAccepted event call that chindren of this can call
+		/// A wrapper for the playerAccepted event call that children of this can call
 		/// </summary>
 		protected void OnPlayerAccepted(NetworkingPlayer player)
 		{
@@ -800,21 +790,17 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			NetworkObject.PlayerAccepted(player, currentObjects);
-
-			if (playerAccepted != null)
-				playerAccepted(player, this);
+			playerAccepted?.Invoke(player, this);
 		}
 
 		/// <summary>
-		/// A wrapper for the playerAccepted event call that chindren of this can call
+		/// A wrapper for the playerAccepted event call that children of this can call
 		/// </summary>
 		protected void OnPlayerRejected(NetworkingPlayer player)
 		{
 			player.Accepted = false;
 			player.Authenticated = false;
-
-			if (playerRejected != null)
-				playerRejected(player, this);
+			playerRejected?.Invoke(player, this);
 		}
 
 		/// <summary>
@@ -823,9 +809,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerAuthenticated(NetworkingPlayer player)
 		{
 			player.Authenticated = true;
-
-			if (playerAuthenticated != null)
-				playerAuthenticated(player, this);
+			playerAuthenticated?.Invoke(player, this);
 		}
 
 		/// <summary>
@@ -843,14 +827,12 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="ping"></param>
 		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
-			if (onPingPong != null)
-				onPingPong(ping, this);
-
+			onPingPong?.Invoke(ping, this);
 			player.RoundTripLatency = (int)ping;
 		}
 
 		/// <summary>
-		/// A wrapper for the messageReceived event call that chindren of this can call
+		/// A wrapper for the messageReceived event call that children of this can call
 		/// </summary>
 		protected void OnMessageReceived(NetworkingPlayer player, FrameStream frame)
 		{
@@ -917,14 +899,13 @@ namespace BeardedManStudios.Forge.Networking
 				}
 				else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
 					NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
-				else if (binaryMessageReceived != null)
-					binaryMessageReceived(player, (Binary)frame, this);
+				else
+					binaryMessageReceived?.Invoke(player, (Binary)frame, this);
 			}
 			else if (frame is Text && textMessageReceived != null)
 				textMessageReceived(player, (Text)frame, this);
 
-			if (messageReceived != null)
-				messageReceived(player, frame, this);
+			messageReceived?.Invoke(player, frame, this);
 		}
 
 		private void ExecuteRouterAction(byte routerId, NetworkObject networkObject, Binary frame, NetworkingPlayer player)
@@ -952,9 +933,7 @@ namespace BeardedManStudios.Forge.Networking
 					Me.OnDisconnect();
 			}
 
-			if (disconnected != null)
-				disconnected(this);
-
+			disconnected?.Invoke(this);
 			Disposed = true;
 		}
 
@@ -964,10 +943,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnForcedDisconnect()
 		{
 			IsBound = false;
-
-			if (forcedDisconnect != null)
-				forcedDisconnect(this);
-
+			forcedDisconnect?.Invoke(this);
 			Disposed = true;
 		}
 
@@ -977,9 +953,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnServerAccepted()
 		{
 			Me.Connected = true;
-
-			if (serverAccepted != null)
-				serverAccepted(this);
+			serverAccepted?.Invoke(this);
 		}
 
 		/// <summary>
@@ -988,8 +962,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="player">The player which the guid was assigned to</param>
 		protected void OnPlayerGuidAssigned(NetworkingPlayer player)
 		{
-			if (playerGuidAssigned != null)
-				playerGuidAssigned(player, this);
+			playerGuidAssigned?.Invoke(player, this);
 		}
 
 		/// <summary>
@@ -1187,9 +1160,7 @@ namespace BeardedManStudios.Forge.Networking
 							{
 								var ep = new BroadcastEndpoints(address, port, true);
 								LocalEndpoints.Add(ep);
-
-								if (localServerLocated != null)
-									localServerLocated(ep, null);
+								localServerLocated?.Invoke(ep, null);
 							}
 							else if (data[0] == CLIENT_BROADCAST_CODE)
 								LocalEndpoints.Add(new BroadcastEndpoints(address, port, false));
