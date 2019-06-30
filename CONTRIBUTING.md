@@ -2,14 +2,14 @@
 :heart::+1: **Thank you so much for taking the time to contribute!** :+1::heart:
 
 ## Code standards
-We have a worldwide community and respect everyones backgrounds and languages, however Forge Networking is primarily developed by English (US) speakers. Because of this the variable names and comments for this code base should be exclusively in English (US).
+We have a worldwide community and respect everyones backgrounds and languages, however Forge Networking is primarily developed by English (US) speakers. Because of this the variables, names, functions, comments, and everything else for this code base should be exclusively in English (US).
 
 ### .editorconfig
 We use .editorconfig to help with conforming to our coding conventions. Please make sure your chosen editor has this enabled. Check [editorconfig.org](https://editorconfig.org/#download) to see if you need to install a plugin or your IDE has this built in.
 
 **Anything not listed here should follow the [C# standard](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/naming-guidelines)**
 
-### Tabs vs Spaces?
+### Tabs vs spaces?
 Sorry space fans, we are tabs. Though I know that this is an age old argument in computer science, we had to go with one or the other.
 
 ### Accessors
@@ -64,7 +64,7 @@ Call(() =>
 });
 ```
 
-For initializer lists we have hanging brackets
+For initializer lists we have hanging brackets (no parenthisis needed)
 ```csharp
 MyClass thing = new MyClass
 {
@@ -89,3 +89,12 @@ TODO comments should include the space after the slashes and then 2 spaces after
 ```csharp
 // TODO:  Notice the space after the slashes and the 2 spaces after the colon of todo
 ```
+
+### Line length
+We try to keep our line lengths short, try to stick around 80 characters maximum in the horizontal space and do not go any further than 120 characters. Or goals are to prevent any kind of horizontal scrolling or automatic line wrapping.
+
+### Var vs type name
+Though we accept code with `var` being used, it is hard to code review things listed as just `var` especially if they are the result of a function. If you are creating a new instance of something you can use `var` since the type name is in the line of declariation, otherwise please try to type the explicit type of the variable when it is the result of a function.
+
+### Function length
+We prefer very small, descriptive functions over long monolythic functions. Try to keep your functions to something around 4-9 lines. If your functions are longer than 9 lines, it probably is a good chance for breaking it into smaller local private methods or turning what is being processed into a `class` and handling the logic more inside of there. This is not only for code clarity and readability, but also it makes it much easier to debug knowing the names of functons and produces clear stack traces.
