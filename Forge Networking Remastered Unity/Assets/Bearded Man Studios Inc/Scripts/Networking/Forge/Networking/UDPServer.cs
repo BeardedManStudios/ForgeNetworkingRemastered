@@ -172,8 +172,9 @@ namespace BeardedManStudios.Forge.Networking
 					});
 				});
 
-				//Let myself know I connected successfully
+				// Let myself know I connected successfully
 				OnPlayerConnected(Me);
+
 				// Set myself as a connected client
 				Me.Connected = true;
 

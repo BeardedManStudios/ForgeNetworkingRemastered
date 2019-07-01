@@ -12,7 +12,7 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class NetworkingPlayer
 	{
-		private const uint PLAYER_TIMEOUT_DISCONNECT = 30000;
+		private const uint PLAYER_TIMEOUT_DISCONNECT = 10000;
 		private const int DEFAULT_PING_INTERVAL = 5000;
 
 		/// <summary>

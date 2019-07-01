@@ -1,8 +1,7 @@
-﻿using BeardedManStudios.Forge.Networking;
+﻿using System.Collections.Generic;
+using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
-using BeardedManStudios.Forge.Networking.Lobby;
 using BeardedManStudios.SimpleJSON;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -76,10 +75,10 @@ public class MultiplayerMenu : MonoBehaviour
 			return;
 		}
 		ushort port;
-		if(!ushort.TryParse(portNumber.text, out port))
+		if (!ushort.TryParse(portNumber.text, out port))
 		{
 			Debug.LogError("The supplied port number is not within the allowed range 0-" + ushort.MaxValue);
-		    	return;
+			return;
 		}
 
 		NetWorker client;
@@ -111,7 +110,7 @@ public class MultiplayerMenu : MonoBehaviour
 
 		if (mgr == null && networkManager == null)
 			throw new System.Exception("A network manager was not provided, this is required for the tons of fancy stuff");
-		
+
 		mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
 
 		mgr.MatchmakingServersFromMasterServer(masterServerHost, masterServerPort, myElo, (response) =>
@@ -240,6 +239,6 @@ public class MultiplayerMenu : MonoBehaviour
 		if (getLocalNetworkConnections)
 			NetWorker.EndSession();
 
-		if (server != null) server.Disconnect(true);
+		server?.Disconnect(true);
 	}
 }
