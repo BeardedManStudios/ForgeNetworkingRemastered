@@ -112,8 +112,8 @@ namespace BeardedManStudios.Forge.Networking
 				Thread.Sleep(3000);
 			} while (!initialConnectHeaderExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
 
-			if (connectCounter >= CONNECT_TRIES)
-				connectAttemptFailed?.Invoke(this);
+			if (connectCounter >= CONNECT_TRIES && connectAttemptFailed != null)
+				connectAttemptFailed(this);
 		}
 
 		private void SetupConnectingState()
@@ -157,7 +157,9 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			catch (ArgumentException)
 			{
-				connectAttemptFailed?.Invoke(this);
+				if (connectAttemptFailed != null)
+					connectAttemptFailed(this);
+
 				throw;
 			}
 		}

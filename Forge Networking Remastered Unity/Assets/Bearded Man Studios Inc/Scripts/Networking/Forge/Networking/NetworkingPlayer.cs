@@ -289,7 +289,8 @@ namespace BeardedManStudios.Forge.Networking
 
 			StopComposers();
 
-			disconnected?.Invoke(Networker);
+			if (disconnected != null)
+				disconnected(Networker);
 		}
 
 		public void QueueComposer(BasePacketComposer composer)

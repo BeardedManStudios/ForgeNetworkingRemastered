@@ -337,7 +337,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Determine whether the socket is connected
 		/// </summary>
-		public bool IsConnected => Me?.Connected ?? false;
+		public bool IsConnected()
+		{
+			return Me != null && Me.Connected;
+		}
 
 		/// <summary>
 		/// A dictionary of all of the network objects indexed by it's id
@@ -678,7 +681,8 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			IsBound = true;
 			NetworkInitialize();
-			bindSuccessful?.Invoke(this);
+			if (bindSuccessful != null)
+				bindSuccessful(this);
 		}
 
 		/// <summary>
@@ -686,7 +690,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		protected void OnBindFailure()
 		{
-			bindFailure?.Invoke(this);
+			if (bindFailure != null)
+				bindFailure(this);
 		}
 
 		/// <summary>
@@ -704,27 +709,32 @@ namespace BeardedManStudios.Forge.Networking
 				Players.Add(player);
 			}
 
-			playerConnected?.Invoke(player, this);
+			if (playerConnected)
+				playerConnected(player, this);
 		}
 
 		internal void OnObjectCreated(NetworkObject target)
 		{
-			_objectCreated?.Invoke(target);
+			if (_objectCreated != null)
+				_objectCreated(target);
 		}
 
 		internal void OnObjectCreateAttach(int identity, int hash, uint id, FrameStream frame)
 		{
-			objectCreateAttach?.Invoke(identity, hash, id, frame);
+			if (objectCreateAttach != null)
+				objectCreateAttach(identity, hash, id, frame);
 		}
 
 		internal void OnObjectCreateRequested(int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
 		{
-			objectCreateRequested?.Invoke(this, identity, id, frame, callback);
+			if (objectCreateRequested != null)
+				objectCreateRequested(this, identity, id, frame, callback);
 		}
 
 		internal void OnFactoryObjectCreated(NetworkObject obj)
 		{
-			factoryObjectCreated?.Invoke(obj);
+			if (factoryObjectCreated != null)
+				factoryObjectCreated(obj);
 		}
 
 		/// <summary>
@@ -740,12 +750,15 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			player.OnDisconnect();
-			playerDisconnected?.Invoke(player, this);
+
+			if (playerDisconnected != null)
+				playerDisconnected(player, this);
 		}
 
 		protected void OnPlayerTimeout(NetworkingPlayer player)
 		{
-			playerTimeout?.Invoke(player, this);
+			if (playerTimeout != null)
+				playerTimeout(player, this);
 		}
 
 		/// <summary>
@@ -763,7 +776,9 @@ namespace BeardedManStudios.Forge.Networking
 			}
 
 			NetworkObject.PlayerAccepted(player, currentObjects);
-			playerAccepted?.Invoke(player, this);
+
+			if (playerAccepted != null)
+				playerAccepted(player, this);
 		}
 
 		/// <summary>
@@ -773,7 +788,9 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			player.Accepted = false;
 			player.Authenticated = false;
-			playerRejected?.Invoke(player, this);
+
+			if (playerRejected != null)
+				playerRejected(player, this);
 		}
 
 		/// <summary>
@@ -782,7 +799,9 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnPlayerAuthenticated(NetworkingPlayer player)
 		{
 			player.Authenticated = true;
-			playerAuthenticated?.Invoke(player, this);
+
+			if (playerAuthenticated != null)
+				playerAuthenticated(player, this);
 		}
 
 		/// <summary>
@@ -800,7 +819,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="ping"></param>
 		protected void OnPingRecieved(double ping, NetworkingPlayer player)
 		{
-			onPingPong?.Invoke(ping, this);
+			if (onPingPong != null)
+				onPingPong(ping, this);
+
 			player.RoundTripLatency = (int)ping;
 		}
 
@@ -869,8 +890,8 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			else if (routerId == RouterIds.ACCEPT_MULTI_ROUTER_ID)
 				NetworkObject.CreateMultiNetworkObject(this, player, (Binary)frame);
-			else
-				binaryMessageReceived?.Invoke(player, (Binary)frame, this);
+			else if (binaryMessageReceived != null)
+				binaryMessageReceived(player, (Binary)frame, this);
 		}
 
 		/// <summary>
@@ -895,10 +916,11 @@ namespace BeardedManStudios.Forge.Networking
 				HandleBinaryFrameMessage(frame, player);
 				return;
 			}
-			else if (frame is Text)
-				textMessageReceived?.Invoke(player, (Text)frame, this);
+			else if (frame is Text && textMessageReceived != null)
+				textMessageReceived(player, (Text)frame, this);
 
-			messageReceived?.Invoke(player, frame, this);
+			if (messageReceived != null)
+				messageReceived(player, frame, this);
 		}
 
 		private void ExecuteRouterAction(byte routerId, NetworkObject networkObject, Binary frame, NetworkingPlayer player)
@@ -926,7 +948,9 @@ namespace BeardedManStudios.Forge.Networking
 					Me.OnDisconnect();
 			}
 
-			disconnected?.Invoke(this);
+			if (disconnected != null)
+				disconnected(this);
+
 			Disposed = true;
 		}
 
@@ -936,7 +960,10 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnForcedDisconnect()
 		{
 			IsBound = false;
-			forcedDisconnect?.Invoke(this);
+
+			if (forcedDisconnect != null)
+				forcedDisconnect(this);
+
 			Disposed = true;
 		}
 
@@ -946,7 +973,9 @@ namespace BeardedManStudios.Forge.Networking
 		protected void OnServerAccepted()
 		{
 			Me.Connected = true;
-			serverAccepted?.Invoke(this);
+
+			if (serverAccepted != null)
+				serverAccepted(this);
 		}
 
 		/// <summary>
@@ -955,7 +984,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="player">The player which the guid was assigned to</param>
 		protected void OnPlayerGuidAssigned(NetworkingPlayer player)
 		{
-			playerGuidAssigned?.Invoke(player, this);
+			if (playerGuidAssigned != null)
+				playerGuidAssigned(player, this);
 		}
 
 		/// <summary>
@@ -977,7 +1007,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void SetUserAuthenticator(IUserAuthenticator authenticator)
 		{
-			if (IsConnected)
+			if (IsConnected())
 				throw new BaseNetworkException("The NetWorker is already connected");
 
 			this.authenticator = authenticator;
@@ -1089,7 +1119,9 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			var ep = new BroadcastEndpoints(address, port, true);
 			LocalEndpoints.Add(ep);
-			localServerLocated?.Invoke(ep, null);
+
+			if (localServerLocated != null)
+				localServerLocated(ep, null);
 		}
 
 		private static void ParseFindLocalNetworkBroadcastResponse(string endpoint, BMSByte data)

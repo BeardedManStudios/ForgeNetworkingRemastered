@@ -239,6 +239,7 @@ public class MultiplayerMenu : MonoBehaviour
 		if (getLocalNetworkConnections)
 			NetWorker.EndSession();
 
-		server?.Disconnect(true);
+		if (server != null)
+			server.Disconnect(true);
 	}
 }
