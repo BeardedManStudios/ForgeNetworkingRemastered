@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using BeardedManStudios.Forge.Networking;
+using NUnit.Framework;
 
-namespace BeardedManStudios.Forge.Networking.Tests
+namespace BeardedManStudios.Forge.Tests
 {
 	[TestFixture]
 	public class NetworkInterfaceAccumulatorTests
