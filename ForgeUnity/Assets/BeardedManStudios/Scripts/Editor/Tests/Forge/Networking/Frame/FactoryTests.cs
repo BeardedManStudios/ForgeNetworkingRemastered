@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Frame;
 using NUnit.Framework;
 
-namespace BeardedManStudios.Forge.Networking.Frame.Tests
+namespace BeardedManStudios.Forge.Tests
 {
 	[TestFixture]
 	public class FactoryTests
@@ -15,8 +17,8 @@ namespace BeardedManStudios.Forge.Networking.Frame.Tests
 		{
 			start = DateTime.UtcNow;
 
-			Type objType = typeof(Factory);
-			Type t = Type.GetType(objType.AssemblyQualifiedName);
+			var objType = typeof(Factory);
+			var t = Type.GetType(objType.AssemblyQualifiedName);
 			MethodInfo testMethod = t.GetMethod("DecodeHead", BindingFlags.NonPublic | BindingFlags.Static);
 
 			Binary sendFrame = MakeBinary(false, true, "testing veru long string cuz why not it will be ibsidfngosidfose");

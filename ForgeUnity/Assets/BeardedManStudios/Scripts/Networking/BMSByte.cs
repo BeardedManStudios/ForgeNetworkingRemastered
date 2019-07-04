@@ -98,7 +98,8 @@ namespace BeardedManStudios
 		}
 
 		/// <summary>
-		/// Resets the internal byte array and assignes the passed byte array to it
+		/// Resets the internal byte array and assigns the internal byte array to match
+		/// the byte array of the passed in bytes
 		/// </summary>
 		/// <param name="input">The bytes to be cloned into the internal byte array</param>
 		public BMSByte Clone(byte[] input, int count = 0)
@@ -119,7 +120,8 @@ namespace BeardedManStudios
 		}
 
 		/// <summary>
-		/// Resets the internal byte array and assignes the internal byte array of the passed in BMSByte to this ones internal byte array
+		/// Resets the internal byte array and assigns the internal byte array to match
+		/// the byte array of the passed in bytes
 		/// </summary>
 		/// <param name="otherBytes">The other BMSByte that will have its internal byte array cloned to this one</param>
 		/// <returns></returns>
@@ -366,7 +368,7 @@ namespace BeardedManStudios
 		}
 
 		/// <summary>
-		/// An externally accessable method for resetting the pointer, will call internal PointToStart method
+		/// An externally accessible method for resetting the pointer, will call internal PointToStart method
 		/// </summary>
 		public void ResetPointer()
 		{
@@ -610,7 +612,7 @@ namespace BeardedManStudios
 			else if (type.IsEnum)
 				return GetBasicType(Enum.GetUnderlyingType(type), start, moveIndex);
 			else
-				throw new Exception("The type " + type.ToString() + " is gettable from basic type, maybe try one of the other getters?");
+				throw new Exception("The type " + type.ToString() + " is getable from basic type, maybe try one of the other getters?");
 		}
 
 		/// <summary>
@@ -680,8 +682,8 @@ namespace BeardedManStudios
 		/// <returns>The byte at the specidifed index</returns>
 		public byte this[int i]
 		{
-			get { return byteArr[i]; }
-			set { byteArr[i] = value; }
+			get { return byteArr[i + StartPointer]; }
+			set { byteArr[i + StartPointer] = value; }
 		}
 
 		/// <summary>
