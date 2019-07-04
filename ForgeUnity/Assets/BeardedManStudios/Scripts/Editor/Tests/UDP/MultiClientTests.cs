@@ -30,6 +30,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void Connect2ClientsTest()
 		{
 			var client1 = new UDPClient();
@@ -56,6 +57,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void Connect3ClientsAtOnceTest()
 		{
 			int i, clientCount = 3;
@@ -81,6 +83,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void MultipleReconnectTest()
 		{
 			UDPClient singleClient;

@@ -64,6 +64,7 @@ namespace BeardedManStudios.Forge.Tests
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void SendBinaryTest()
 		{
 			WaitFor(() => { return client.IsConnected; });
@@ -106,6 +107,7 @@ namespace BeardedManStudios.Forge.Tests
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void SendTextTest()
 		{
 			WaitFor(() => { return client.IsConnected; });

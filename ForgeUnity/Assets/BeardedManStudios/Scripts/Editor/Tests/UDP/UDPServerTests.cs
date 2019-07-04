@@ -17,6 +17,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestBindUDPServer()
 		{
 			currentPort = BaseUDPTests.GetPort();

@@ -42,6 +42,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestCreate()
 		{
 			SetupServerBehavior();
@@ -53,6 +54,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestServerTakeOwnership()
 		{
 			SetupClientBehavior();
@@ -71,6 +73,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestClientTakeOwnership()
 		{
 			SetupServerBehavior();
@@ -88,6 +91,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestServerGiveOwnership()
 		{
 			SetupServerBehavior();

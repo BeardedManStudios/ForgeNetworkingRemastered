@@ -34,22 +34,11 @@ namespace BeardedManStudios.Forge.Tests.SimpleJSONEditor
 		[Test]
 		public void ParseCommaDecimalSeparatorCultureTest()
 		{
-			var storedCulture = Thread.CurrentThread.CurrentCulture;
 			JSONNode jsonNode;
 			float expected = 0.15f;
-			float actual;
-			try
-			{
-				Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fi-FI");
-				var jsonString = String.Format("{{ floatTest: {0} }}", expected.ToString(CultureInfo.InvariantCulture));
-				jsonNode = JSON.Parse(jsonString);
-				actual = jsonNode.Children.FirstOrDefault().AsFloat;
-			}
-			finally
-			{
-				Thread.CurrentThread.CurrentCulture = storedCulture;
-			}
-			//var floatValue = jsonNode.AsFloat;
+			var jsonString = string.Format("{{ \"floatTest\": {0} }}", expected);
+			jsonNode = JSON.Parse(jsonString);
+			float actual = jsonNode.Children.FirstOrDefault().AsFloat;
 			Assert.AreEqual(expected, actual);
 		}
 	}

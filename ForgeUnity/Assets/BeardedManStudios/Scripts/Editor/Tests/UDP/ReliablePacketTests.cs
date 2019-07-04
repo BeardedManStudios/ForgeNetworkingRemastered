@@ -51,6 +51,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void SendBinaryReliablyTest()
 		{
 			WaitFor(() => { return client.IsConnected; });
@@ -77,6 +78,7 @@ namespace BeardedManStudios.Forge.Tests.UDP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void SendManyBinaryReliablyTest()
 		{
 			int packetCount = 100;

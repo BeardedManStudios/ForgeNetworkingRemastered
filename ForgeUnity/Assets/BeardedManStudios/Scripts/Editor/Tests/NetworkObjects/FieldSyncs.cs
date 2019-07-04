@@ -69,6 +69,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void SetFields()
 		{
 			SetupClientBehavior();
@@ -81,6 +82,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void NotOwnerSetFields()
 		{
 			SetupServerBehavior();
@@ -96,6 +98,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void DoubleClientSetFields()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -106,6 +109,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void DoubleClientNotOwnerSetFields()
 		{
 			OtherClientConnectSetup(ObjectCreated);

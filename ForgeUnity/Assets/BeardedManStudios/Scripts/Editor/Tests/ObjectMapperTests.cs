@@ -8,6 +8,7 @@ namespace BeardedManStudios.Forge.Tests
 	public class ObjectMapperTests : BaseTest
 	{
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestObjectMapper()
 		{
 			var watch = new Stopwatch();

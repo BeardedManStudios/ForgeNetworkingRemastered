@@ -17,6 +17,7 @@ namespace BeardedManStudios.Forge.Tests.TCP
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void TestBindTCPServer()
 		{
 			string validHost = "0.0.0.0";

@@ -39,6 +39,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void BlankRpcTest()
 		{
 			SetupClientBehavior();
@@ -50,6 +51,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void BoolRpcTest()
 		{
 			bool val = true;
@@ -61,6 +63,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ByteRpcTest()
 		{
 			byte val = 9;
@@ -72,6 +75,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ByteArrayRpcTest()
 		{
 			byte[] val = new byte[] { 1, 3, 5, 7, 10, 32 };
@@ -95,6 +99,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void CharRpcTest()
 		{
 			char val = 'F';
@@ -106,6 +111,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void DoubleRpcTest()
 		{
 			double val = 9.939;
@@ -117,6 +123,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void FloatRpcTest()
 		{
 			float val = 9.393f;
@@ -128,6 +135,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void IntRpcTest()
 		{
 			int val = 993;
@@ -139,6 +147,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void LongRpcTest()
 		{
 			long val = -939393;
@@ -150,6 +159,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ShortRpcTest()
 		{
 			short val = 912;
@@ -161,6 +171,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void StringRpcTest()
 		{
 			string val = "Hello World!";
@@ -172,6 +183,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void UIntRpcTest()
 		{
 			uint val = 9876;
@@ -183,6 +195,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ULongRpcTest()
 		{
 			ulong val = 973453;
@@ -194,6 +207,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void UShortRpcTest()
 		{
 			ushort val = 9;
@@ -205,6 +219,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		//[Test]
+		//[Ignore("Test is awaiting review and refactor")]
 		//public void StringAndByteArrayRpcTest()
 		//{
 		//	string strVal = "Hello World!";
@@ -236,6 +251,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		//}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void AllRpcTest()
 		{
 			object[] val = new object[]
@@ -286,6 +302,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void UnreliableRpcTest()
 		{
 			SetupClientBehavior();
@@ -297,6 +314,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void CallMulti()
 		{
 			int count = 100;
@@ -316,6 +334,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversServerOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -326,6 +345,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversServerToOwnerOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -336,6 +356,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversClientToOwnerOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -346,6 +367,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversOwnerAndServerOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -356,6 +378,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversServerToTargetOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -366,6 +389,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversServerToOtherTargetOnly()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -376,6 +400,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversOthersOnlyFromServer()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -386,6 +411,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversOthersOnlyFromClient()
 		{
 			OtherClientConnectSetup(ObjectCreated);
@@ -396,6 +422,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversAllProximityFromServer()
 		{
 			server.ProximityDistance = 5.0f;
@@ -409,6 +436,7 @@ namespace BeardedManStudios.Forge.Tests.NetworkObjects
 		}
 
 		[Test]
+		[Ignore("Test is awaiting review and refactor")]
 		public void ReceiversAllProximityTooFarFromServer()
 		{
 			server.ProximityDistance = 5.0f;
