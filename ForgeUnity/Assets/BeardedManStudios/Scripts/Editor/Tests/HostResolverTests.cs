@@ -2,6 +2,7 @@
 
 namespace BeardedManStudios.Forge.Networking.Tests
 {
+	[TestFixture]
 	public class HostResolverTests
 	{
 		private const string GOOGLE = "google.com";

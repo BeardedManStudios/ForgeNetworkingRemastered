@@ -37,6 +37,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// The identity of the server as a player
 		/// </summary>
 		private NetworkingPlayer server = null;
+
+		[Obsolete("Use ServerPlayer instead, it has a much more clear intent")]
+		public NetworkingPlayer Server { get { return ServerPlayer; } }
 		public NetworkingPlayer ServerPlayer { get { return server; } }
 
 		public UDPPacketManager packetManager = new UDPPacketManager();

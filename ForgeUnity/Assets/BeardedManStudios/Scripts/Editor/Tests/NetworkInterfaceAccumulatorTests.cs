@@ -2,6 +2,7 @@
 
 namespace BeardedManStudios.Forge.Networking.Tests
 {
+	[TestFixture]
 	public class NetworkInterfaceAccumulatorTests
 	{
 		[Test]

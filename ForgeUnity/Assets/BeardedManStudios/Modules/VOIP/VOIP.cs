@@ -190,7 +190,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 
 		public void Update()
 		{
-			if (!Socket.IsConnected() || mic == null)
+			if (!Socket.IsConnected || mic == null)
 				return;
 
 			if (!IsLocalTesting)
@@ -229,7 +229,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 
 		private void VOIPWorker()
 		{
-			while (Socket.IsConnected())
+			while (Socket.IsConnected)
 			{
 				if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)
 				{

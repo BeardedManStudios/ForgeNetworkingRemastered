@@ -337,10 +337,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Determine whether the socket is connected
 		/// </summary>
-		public bool IsConnected()
-		{
-			return Me != null && Me.Connected;
-		}
+		public bool IsConnected { get { return Me != null && Me.Connected; } }
 
 		/// <summary>
 		/// A dictionary of all of the network objects indexed by it's id
@@ -1007,7 +1004,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void SetUserAuthenticator(IUserAuthenticator authenticator)
 		{
-			if (IsConnected())
+			if (IsConnected)
 				throw new BaseNetworkException("The NetWorker is already connected");
 
 			this.authenticator = authenticator;
