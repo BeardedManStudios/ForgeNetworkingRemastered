@@ -101,3 +101,5 @@ We prefer very small, descriptive functions over long monolythic functions. Try 
 
 ### Testing and TDD
 We are currently trying out the Unity unit testing tools and they look promising so far. My hope is that we will be able to fall more into the TDD ([test driven development](https://en.wikipedia.org/wiki/Test-driven_development)) flow of programming so that we have many tests for the code to make sure it continues to work as expected for all of the functionality. Of course, I know it is very difficult to unit test a multi-threaded, network based application, but it is important for us to try as much as possible to achieve a full test coverage of the system.
+
+Please make sure that you either create a new file in the [ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/tree/develop/ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests) folder. Or if you are adding new tests that are either missing or covering new functionality of a class, feel free to update existing tests.
