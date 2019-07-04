@@ -1,6 +1,5 @@
 ﻿//#define FORGE_EDITOR_DEBUGGING
 
-using BeardedManStudios.Templating;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BeardedManStudios.Templating;
 using UnityEditor;
 using UnityEngine;
 
@@ -57,11 +57,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// <summary>
 		/// This is the generated folder path
 		/// </summary>
-		private const string GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated";
+		private const string GENERATED_FOLDER_PATH = "BeardedManStudios/Generated";
 		/// <summary>
 		/// This is the user generated folder path
 		/// </summary>
-		private const string USER_GENERATED_FOLDER_PATH = "Bearded Man Studios Inc/Generated/UserGenerated";
+		private const string USER_GENERATED_FOLDER_PATH = "BeardedManStudios/Generated/UserGenerated";
 		/// <summary>
 		/// This is the wizard data stored by the user previously
 		/// </summary>
@@ -975,7 +975,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			{
 				ForgeEditorButton btn = _editorButtons[i];
 				ValidationResult validate = btn.ValidateSetup();
-				if(!validate.Result)
+				if (!validate.Result)
 				{
 					foreach (string error in validate.errorMessages)
 						Debug.LogError(error);
