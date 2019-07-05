@@ -32,7 +32,10 @@ namespace BeardedManStudios.Forge.Networking
 		/// The identity of the server as a player
 		/// </summary>
 		private NetworkingPlayer server = null;
-		public NetworkingPlayer Server { get { return server; } }
+
+		[Obsolete("Use ServerPlayer instead, it has a much more clear intent")]
+		public NetworkingPlayer Server { get { return ServerPlayer; } }
+		public NetworkingPlayer ServerPlayer { get { return server; } }
 
 		public UDPPacketManager packetManager = new UDPPacketManager();
 
@@ -42,11 +45,6 @@ namespace BeardedManStudios.Forge.Networking
 
         public override void Send(FrameStream frame, bool reliable = false)
 		{
-            /*//might have to go back to UDP packet composers. needs testing
-            byte[] data = frame.GetData(reliable);
-
-            Client.Send(data, data.Length, Server.SteamID, reliable ? EP2PSend.k_EP2PSendReliable : EP2PSend.k_EP2PSendUnreliable);*/
-
             SteamP2PPacketComposer composer = new SteamP2PPacketComposer(this, Server, frame, reliable);
 
             // If this message is reliable then make sure to keep a reference to the composer
@@ -236,7 +234,7 @@ namespace BeardedManStudios.Forge.Networking
 				while (IsBound)
 				{
 					// If the read has been flagged to be canceled then break from this loop
-					if (readThreadCancel)
+					if (IsReadThreadCancelPending)
 						return;
 
 					try
@@ -326,7 +324,7 @@ namespace BeardedManStudios.Forge.Networking
                         }
 
 						// Add the packet to the manager so that it can be tracked and executed on complete
-						packetManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+						packetManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
 					}
 				}
 			}
