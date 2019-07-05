@@ -14,6 +14,9 @@ namespace MasterServer
 		[Option('e', "elorange", DefaultValue = 0)]
 		public int EloRange { get; set; }
 
+		[Option('d', "daemon", DefaultValue = false)]
+		public bool IsDaemon {get; set;}
+
 		[ParserState]
 		public IParserState LastParserState { get; set; }
 

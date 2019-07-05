@@ -26,6 +26,7 @@ namespace MasterServer
 				ushort.TryParse(options.Port, out port);
 				host = options.Host;
 				eloRange = options.EloRange;
+				isDaemon = options.IsDaemon;
 			}
 			else
 			{
@@ -40,6 +41,21 @@ namespace MasterServer
 					port = 15940;
 				else
 					ushort.TryParse(read, out port);
+			}
+
+			Console.WriteLine("Hosting ip [{0}] on port [{1}]", host, port);
+			PrintHelp();
+
+			server = new MasterServer(host, port)
+			{
+				EloRange = eloRange
+			};
+			server.ToggleLogging();
+
+			while (true)
+			{
+				if (!isDaemon)
+					HandleConsoleInput();
 			}
 		}
 
