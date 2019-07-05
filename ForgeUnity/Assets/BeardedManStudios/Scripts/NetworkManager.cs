@@ -1,8 +1,8 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.SimpleJSON;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -25,7 +25,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		protected ushort _masterServerPort;
 
 		protected List<int> loadedScenes = new List<int>();
-        protected List<int> loadingScenes = new List<int>();
+		protected List<int> loadingScenes = new List<int>();
 
 		public bool IsServer { get { return Networker.IsServer; } }
 
@@ -72,40 +72,56 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
-			Networker = networker;
-			networker.objectCreated += CreatePendingObjects;
-			Networker.binaryMessageReceived += ReadBinary;
-			SetupObjectCreatedEvent();
+			PrepareNetworkerInstance(networker);
 
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
 
 			if (Networker is IServer)
 			{
-				if (!string.IsNullOrEmpty(masterServerHost))
-				{
-					_masterServerHost = masterServerHost;
-					_masterServerPort = masterServerPort;
-
-					RegisterOnMasterServer(masterServerRegisterData);
-				}
-
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
+				SetupMasterOnMasterServer(masterServerHost, masterServerPort, masterServerRegisterData);
 
 #if FN_WEBSERVER
-				string pathToFiles = "fnwww/html";
-				Dictionary<string, string> pages = new Dictionary<string, string>();
-				TextAsset[] assets = Resources.LoadAll<TextAsset>(pathToFiles);
-				foreach (TextAsset a in assets)
-					pages.Add(a.name, a.text);
-
-				webserver = new MVCWebServer.ForgeWebServer(networker, pages);
-				webserver.Start();
+				InitializeWebServer(networker);
 #endif
 			}
 
 			initialized = true;
 		}
+
+		private void PrepareNetworkerInstance(NetWorker networker)
+		{
+			Networker = networker;
+			networker.objectCreated += CreatePendingObjects;
+			Networker.binaryMessageReceived += ReadBinary;
+			SetupObjectCreatedEvent();
+		}
+
+		private void SetupMasterOnMasterServer(string masterServerHost, ushort masterServerPort, JSONNode masterServerRegisterData)
+		{
+			if (!string.IsNullOrEmpty(masterServerHost))
+			{
+				_masterServerHost = masterServerHost;
+				_masterServerPort = masterServerPort;
+
+				RegisterOnMasterServer(masterServerRegisterData);
+			}
+		}
+
+#if FN_WEBSERVER
+		private static void InitializeWebServer(NetWorker networker)
+		{
+			string pathToFiles = "fnwww/html";
+			var pages = new Dictionary<string, string>();
+			TextAsset[] assets = Resources.LoadAll<TextAsset>(pathToFiles);
+			foreach (TextAsset a in assets)
+				pages.Add(a.name, a.text);
+
+			webserver = new MVCWebServer.ForgeWebServer(networker, pages);
+			webserver.Start();
+		}
+#endif
 
 		protected virtual void CreatePendingObjects(NetworkObject obj)
 		{
@@ -287,9 +303,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			JSONClass registerData = new JSONClass();
 
 			registerData.Add("playerCount", new JSONData(server.Players.Count));
-			if (comment != null) registerData.Add("comment", comment);
-			if (gameType != null) registerData.Add("type", gameType);
-			if (mode != null) registerData.Add("mode", mode);
+			if (comment != null)
+				registerData.Add("comment", comment);
+			if (gameType != null)
+				registerData.Add("type", gameType);
+			if (mode != null)
+				registerData.Add("mode", mode);
 			registerData.Add("port", new JSONData(server.Port));
 
 			sendData.Add("update", registerData);
@@ -455,11 +474,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				int count = frame.StreamData.GetBasicType<int>();
 
-                loadingScenes.Clear();
+				loadingScenes.Clear();
 				for (int i = 0; i < count; i++)
-                    loadingScenes.Add(frame.StreamData.GetBasicType<int>());
+					loadingScenes.Add(frame.StreamData.GetBasicType<int>());
 
-                int[] scenesToLoad = loadingScenes.ToArray();
+				int[] scenesToLoad = loadingScenes.ToArray();
 				MainThreadManager.Run(() =>
 				{
 					if (scenesToLoad.Length == 0)
@@ -486,27 +505,27 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				return;
 			}
 
-            int sceneIndex;
-            LoadSceneMode mode;
-            lock (NetworkObject.PendingCreatesLock)
-            {
-                // We need to halt the creation of network objects until we load the scene
-                Networker.PendCreates = true;
+			int sceneIndex;
+			LoadSceneMode mode;
+			lock (NetworkObject.PendingCreatesLock)
+			{
+				// We need to halt the creation of network objects until we load the scene
+				Networker.PendCreates = true;
 
-                // Get the scene index that the server loaded
-                sceneIndex = frame.StreamData.GetBasicType<int>();
+				// Get the scene index that the server loaded
+				sceneIndex = frame.StreamData.GetBasicType<int>();
 
-                // Get the mode in which the server loaded the scene
-                int modeIndex = frame.StreamData.GetBasicType<int>();
+				// Get the mode in which the server loaded the scene
+				int modeIndex = frame.StreamData.GetBasicType<int>();
 
-                // Convert the int mode to the enum mode
-                mode = (LoadSceneMode)modeIndex;
+				// Convert the int mode to the enum mode
+				mode = (LoadSceneMode)modeIndex;
 
-                if (mode == LoadSceneMode.Single)
-                    loadingScenes.Clear();
+				if (mode == LoadSceneMode.Single)
+					loadingScenes.Clear();
 
-                loadingScenes.Add(sceneIndex);
-            }
+				loadingScenes.Add(sceneIndex);
+			}
 
 			if (networkSceneChanging != null)
 				networkSceneChanging(sceneIndex, mode);
@@ -582,10 +601,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				pendingNetworkObjects.Clear();
 				loadedScenes.Clear();
 			}
-            lock(NetworkObject.PendingCreatesLock)
-            {
-                loadingScenes.Remove(scene.buildIndex);
-            }
+			lock (NetworkObject.PendingCreatesLock)
+			{
+				loadingScenes.Remove(scene.buildIndex);
+			}
 			loadedScenes.Add(scene.buildIndex);
 
 
@@ -610,17 +629,17 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (behaviors.Count == 0)
 			{
-                if (Networker is IClient)
-                {
-                    if (loadingScenes.Count > 0)
-                        NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
-                    else
-                    {
-                        NetworkObject.Flush(Networker, loadingScenes);
-                        if(pendingObjects.Count == 0)
-                            Networker.objectCreated -= CreatePendingObjects;
-                    }
-                }
+				if (Networker is IClient)
+				{
+					if (loadingScenes.Count > 0)
+						NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
+					else
+					{
+						NetworkObject.Flush(Networker, loadingScenes);
+						if (pendingObjects.Count == 0)
+							Networker.objectCreated -= CreatePendingObjects;
+					}
+				}
 
 
 				return;
@@ -635,53 +654,54 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IClient)
 			{
-                // This would occur if objects in the additive scene arrives at the same time as the
-                // "single" scene and were flushed.
-                if (mode == LoadSceneMode.Additive && pendingNetworkObjects.Count > 0)
-                {
-                    NetworkObject foundNetworkObject;
-                    for (int i = 0; i < behaviors.Count; i++)
-                    {
-                        if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
-                        {
-                            behaviors[i].Initialize(foundNetworkObject);
-                            pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
-                            behaviors.RemoveAt(i--);
-                        }
-                    }
-                }
+				// This would occur if objects in the additive scene arrives at the same time as the
+				// "single" scene and were flushed.
+				if (mode == LoadSceneMode.Additive && pendingNetworkObjects.Count > 0)
+				{
+					NetworkObject foundNetworkObject;
+					for (int i = 0; i < behaviors.Count; i++)
+					{
+						if (pendingNetworkObjects.TryGetValue(behaviors[i].TempAttachCode, out foundNetworkObject))
+						{
+							behaviors[i].Initialize(foundNetworkObject);
+							pendingNetworkObjects.Remove(behaviors[i].TempAttachCode);
+							behaviors.RemoveAt(i--);
+						}
+					}
+				}
 
-                foreach (NetworkBehavior behavior in behaviors)
-                    pendingObjects.Add(behavior.TempAttachCode, behavior);
+				foreach (NetworkBehavior behavior in behaviors)
+					pendingObjects.Add(behavior.TempAttachCode, behavior);
 
-                NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
+				NetworkObject.Flush(Networker, loadingScenes, CreatePendingObjects);
 
-                if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
-                    Networker.objectCreated -= CreatePendingObjects;
+				if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
+					Networker.objectCreated -= CreatePendingObjects;
 				else if (pendingObjects.Count != 0 && loadingScenes.Count == 0)
-                {
-	                // Pending network behavior list is not empty when there are no more scenes to load.
-	                // Probably network behaviours that were placed in the scene have already been destroyed on the server and other clients!
+				{
+					// Pending network behavior list is not empty when there are no more scenes to load.
+					// Probably network behaviours that were placed in the scene have already been destroyed on the server and other clients!
 
-	                List<GameObject> objetsToDestroy = new List<GameObject>(pendingObjects.Count);
-	                foreach (var behavior in pendingObjects.Values)
-	                {
-		                var gameObject = ((NetworkBehavior) behavior).gameObject;
-		                if (!objetsToDestroy.Contains(gameObject))
-			                objetsToDestroy.Add(gameObject);
-	                }
+					List<GameObject> objetsToDestroy = new List<GameObject>(pendingObjects.Count);
+					foreach (var behavior in pendingObjects.Values)
+					{
+						var gameObject = ((NetworkBehavior)behavior).gameObject;
+						if (!objetsToDestroy.Contains(gameObject))
+							objetsToDestroy.Add(gameObject);
+					}
 
-	                pendingObjects.Clear();
+					pendingObjects.Clear();
 
-	                foreach (var o in objetsToDestroy)
-	                {
-		                Destroy(o);
-	                }
+					foreach (var o in objetsToDestroy)
+					{
+						Destroy(o);
+					}
 
-	                objetsToDestroy.Clear();
-                }
+					objetsToDestroy.Clear();
+				}
 
-            } else
+			}
+			else
 			{
 				// Go through all of the pending NetworkBehavior objects and initialize them on the network
 				foreach (INetworkBehavior behavior in behaviors)
@@ -694,22 +714,22 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// A helper function to retrieve a GameObject by its network id.
 		/// </summary>
 		/// <param name="id">Network id of the gameobject</param>
-        public GameObject GetGameObjectByNetworkId(uint id)
-        {
-            if (Networker == null ) //Only check Networker, as NetworkObjects are always initiliased.
-            {
-                Debug.LogWarning("Networker is null. Network manager has not been initiliased.");
-                return null;
-            }
+		public GameObject GetGameObjectByNetworkId(uint id)
+		{
+			if (Networker == null) //Only check Networker, as NetworkObjects are always initiliased.
+			{
+				Debug.LogWarning("Networker is null. Network manager has not been initiliased.");
+				return null;
+			}
 
-            NetworkObject foundNetworkObject = null;
+			NetworkObject foundNetworkObject = null;
 			if (!Networker.NetworkObjects.TryGetValue(id, out foundNetworkObject) || foundNetworkObject.AttachedBehavior == null)
-            {
-                Debug.LogWarning("No object found by id or object has no attached behavior.");
-                return null;
-            }
+			{
+				Debug.LogWarning("No object found by id or object has no attached behavior.");
+				return null;
+			}
 
-            return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
-        }
-    }
+			return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
+		}
+	}
 }
