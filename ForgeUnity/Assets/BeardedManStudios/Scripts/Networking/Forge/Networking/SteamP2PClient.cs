@@ -19,6 +19,11 @@ namespace BeardedManStudios.Forge.Networking
 		public const int CONNECT_TRIES = 10;
 
 		/// <summary>
+		/// The minimum size of a frame
+		/// </summary>
+		private const int MINIMUM_FRAME_SIZE = 17;
+
+		/// <summary>
 		/// The hash that is / was validated by the server
 		/// </summary>
 		private string headerHash = string.Empty;
@@ -26,7 +31,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// <summary>
 		/// Used to determine if the client has requested to be accepted by the server
 		/// </summary>
-		private bool headerExchanged = false;
+		private bool initialConnectHeaderExchanged = false;
+
+		private bool IsSimulatedPacketLoss => PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation;
 
 		/// <summary>
 		/// The identity of the server as a player
@@ -146,7 +153,7 @@ namespace BeardedManStudios.Forge.Networking
 						// Send the accept headers to the server to validate
 						Client.Send(connectHeader, connectHeader.Length, hostId, EP2PSend.k_EP2PSendReliable);
 						Thread.Sleep(3000);
-					} while (!headerExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
+					} while (!initialConnectHeaderExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
 
 					if (connectCounter >= CONNECT_TRIES)
 					{
@@ -225,7 +232,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		private void ReadNetwork()
 		{
-            CSteamID messageFrom = default(CSteamID);
+
 
 			try
 			{
@@ -237,95 +244,7 @@ namespace BeardedManStudios.Forge.Networking
 					if (IsReadThreadCancelPending)
 						return;
 
-					try
-					{
-                        uint msgSize = 0;
-
-                        if(SteamNetworking.IsP2PPacketAvailable(out msgSize))
-                        {
-                            packet = Client.Receive(msgSize, out messageFrom);
-                        }
-                        else
-                        {
-                            Thread.Sleep(1);
-                            continue;
-                        }
-						// Read a packet from the network
-
-
-						if (PacketLossSimulation > 0.0f && new Random().NextDouble() <= PacketLossSimulation)
-						{
-							// Skip this message
-							continue;
-						}
-
-						BandwidthIn += (ulong)packet.Size;
-					}
-					catch (SocketException ex)
-					{
-						// This is a common exception when we exit the blocking call
-						Logging.BMSLog.LogException(ex);
-						Disconnect(true);
-					}
-
-					// Check to make sure a message was received
-					if (packet == null || packet.Size <= 0)
-						continue;
-
-					// Check to see if the headers have been exchanged
-					if (!headerExchanged)
-					{
-						if (Websockets.ValidateResponseHeader(headerHash, packet.CompressBytes()))
-						{
-							headerExchanged = true;
-
-							// TODO:  When getting the user id, it should also get the server time
-							// by using the current time in the payload and getting it back along with server time
-
-							// Ping the server to finalize the player's connection
-							Send(Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false, Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false), true);
-						}
-						else if (packet.Size != 1 || packet[0] != 0)
-						{
-                            Logging.BMSLog.LogWarning("DISCONNECTED: RECEIVED UNKNOWN PACKET BEFORE HEADERS WERE EXCHANGED!");
-                            Disconnect(true);
-							break;
-						}
-						else
-							continue;
-					}
-					else
-					{
-						if (packet.Size < 17)
-							continue;
-
-						// Format the byte data into a UDPPacket struct
-						UDPPacket formattedPacket = TranscodePacket(Server, packet);
-
-						// Check to see if this is a confirmation packet, which is just
-						// a packet to say that the reliable packet has been read
-						if (formattedPacket.isConfirmation)
-						{
-							if (formattedPacket.groupId == MessageGroupIds.DISCONNECT)
-							{
-								CloseConnection();
-								return;
-							}
-
-							OnMessageConfirmed(server, formattedPacket);
-							continue;
-						}
-
-                        if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
-                        {
-                            Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
-                            // Wait for the second message (Disconnect)
-                            continue;
-                        }
-
-						// Add the packet to the manager so that it can be tracked and executed on complete
-						packetManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
-					}
+					ReceiveNetworkData();
 				}
 			}
 			catch (Exception ex)
@@ -350,6 +269,157 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			else
 				FireRead(frame, Server);
+		}
+
+		private void ReceiveNetworkData()
+		{
+			try
+			{
+				ReadPacket();
+			}
+			catch (SocketException ex)
+			{
+				// This is a common exception when we exit the blocking call
+				Logging.BMSLog.LogException(ex);
+				Disconnect(true);
+			}
+
+			// Check to see if the headers have been exchanged
+			if (!initialConnectHeaderExchanged)
+			{
+
+			}
+			else
+			{
+
+			}
+		}
+
+		private void ReadPacket()
+		{
+			CSteamID messageFrom = default(CSteamID);
+			BMSByte packet;
+			uint msgSize = 0;
+
+			if(SteamNetworking.IsP2PPacketAvailable(out msgSize))
+			{
+				packet = Client.Receive(msgSize, out messageFrom);
+			}
+			else
+			{
+				// TODO: Is this needed?
+				Thread.Sleep(1);
+				return;
+			}
+
+			BandwidthIn += (ulong)packet.Size;
+
+			ProcessRawPacket(packet, messageFrom);
+		}
+
+		private void ProcessRawPacket(BMSByte packet, CSteamID messageFrom)
+		{
+			if (IsSimulatedPacketLoss || packet == null || packet.Size <= 0)
+				return;
+
+			if (!initialConnectHeaderExchanged)
+				HandleHeaderExchanging(packet);
+			else
+				HandlePacket(packet);
+		}
+
+		private void HandleHeaderExchanging(BMSByte packet)
+		{
+			if (Websockets.ValidateResponseHeader(headerHash, packet.CompressBytes()))
+			{
+				CompleteHeaderExchange();
+			}
+			else if (packet.Size >= MINIMUM_FRAME_SIZE)
+			{
+				HandleServerRejection(packet);
+				CancelReadThread();
+			}
+			else if (packet.Size != 1 || packet[0] != 0)
+			{
+				Disconnect(true);
+				CancelReadThread();
+			}
+		}
+
+		private void CompleteHeaderExchange()
+		{
+			initialConnectHeaderExchanged = true;
+
+			// TODO:  When getting the user id, it should also get the server time by using
+			// the current time in the payload and getting it back along with server time
+
+			// Ping the server to finalize the player's connection
+			var textFrame = Text.CreateFromString(Time.Timestep, InstanceGuid.ToString(), false,
+				Receivers.Server, MessageGroupIds.NETWORK_ID_REQUEST, false);
+
+			Send(textFrame, true);
+		}
+
+		/// <summary>
+		/// The server sent us a message before sending a response header to validate
+		/// This happens if the server is not accepting connections or the max connection count has been reached
+		/// We will get two messages. The first one is either a MAX_CONNECTIONS or NOT_ACCEPT_CONNECTIONS group message.
+		/// The second one will be the DISCONNECT message
+		/// </summary>
+		/// <param name="packet">The packet recieved causing relating to the rejection</param>
+		private void HandleServerRejection(BMSByte packet)
+		{
+			UDPPacket formattedPacket = TranscodePacket(ServerPlayer, packet);
+
+			if (formattedPacket.groupId == MessageGroupIds.MAX_CONNECTIONS)
+				Logging.BMSLog.LogWarning("Max Players Reached On Server");
+			else if (formattedPacket.groupId == MessageGroupIds.NOT_ACCEPT_CONNECTIONS)
+				Logging.BMSLog.LogWarning("The server is busy and not accepting connections");
+			else if (formattedPacket.groupId == MessageGroupIds.DISCONNECT)
+				CloseConnection();
+			else
+			{
+				Disconnect(true);
+				CancelReadThread();
+			}
+		}
+
+		private void HandlePacket(BMSByte packet)
+		{
+			if (packet.Size < MINIMUM_FRAME_SIZE)
+			{
+				CancelReadThread();
+				return;
+			}
+
+			// Format the byte data into a UDPPacket struct
+			UDPPacket formattedPacket = TranscodePacket(ServerPlayer, packet);
+
+			if (IsDisconnectableGroupId(formattedPacket))
+				HandleDisconnectableGroupId(formattedPacket);
+			else if (!formattedPacket.isConfirmation)
+				packetManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
+		}
+
+		private void HandleDisconnectableGroupId(UDPPacket formattedPacket)
+		{
+			// Check to see if this is a confirmation packet, which is just
+			// a packet to say that the reliable packet has been read
+			if (formattedPacket.isConfirmation)
+			{
+				if (formattedPacket.groupId != MessageGroupIds.DISCONNECT)
+					OnMessageConfirmed(server, formattedPacket);
+			}
+			else if (formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE)
+				Logging.BMSLog.LogWarning("The server rejected the authentication attempt");
+
+			CancelReadThread();
+		}
+
+		private bool IsDisconnectableGroupId(UDPPacket formattedPacket)
+		{
+			return formattedPacket.groupId == MessageGroupIds.DISCONNECT
+			       || formattedPacket.groupId == MessageGroupIds.AUTHENTICATION_FAILURE;
 		}
 
 		private void CloseConnection()
