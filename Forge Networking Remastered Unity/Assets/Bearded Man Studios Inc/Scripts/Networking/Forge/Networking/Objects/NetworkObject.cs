@@ -280,8 +280,10 @@ namespace BeardedManStudios.Forge.Networking
 		private struct PendingLocalRPC
 		{
 			public NetworkingPlayer TargetPlayer;
+            public NetworkingPlayer Sender;
 			public byte MethodId;
 			public Receivers Receivers;
+            public bool Replace;
             public bool Reliable;
 			public object[] Args;
 
@@ -883,10 +885,7 @@ namespace BeardedManStudios.Forge.Networking
 				InvokeRpc(rpc.sender, rpc.timestep, rpc.data, rpc.receivers);
 
             foreach (PendingLocalRPC rpc in pendingLocalRpcs)
-                if (rpc.Reliable)
-                    SendRpc(rpc.TargetPlayer, rpc.MethodId, rpc.Args);
-                else
-                    SendRpcUnreliable(rpc.TargetPlayer, rpc.MethodId, rpc.Args);
+                SendRpc(rpc.TargetPlayer, rpc.MethodId, rpc.Replace, rpc.Reliable, rpc.Receivers, rpc.Sender, rpc.Args);
 
 			pendingClientRegisterRpc.Clear();
 			pendingLocalRpcs.Clear();
@@ -1204,6 +1203,8 @@ namespace BeardedManStudios.Forge.Networking
 					TargetPlayer = targetPlayer,
 					MethodId = methodId,
 					Receivers = receivers,
+                    Sender = sender,
+                    Replace = replacePrevious,
                     Reliable = reliable,
 					Args = args
 				});
