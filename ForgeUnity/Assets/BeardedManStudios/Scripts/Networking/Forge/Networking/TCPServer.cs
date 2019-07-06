@@ -10,7 +10,7 @@ namespace BeardedManStudios.Forge.Networking
 {
 	// new TCPServer as of September 2018
 	/// <summary>
-	/// This is the main TCP server object responsible for listening for incomming connections
+	/// This is the main TCP server object responsible for listening for incoming connections
 	/// and reading any data sent from clients who are currently connected
 	/// </summary>
 	public class TCPServer : BaseTCP, IServer
@@ -52,7 +52,7 @@ namespace BeardedManStudios.Forge.Networking
 		private IPAddress ipAddress = null;
 
 		/// <summary>
-		/// The main thread that will continuiously listen for new client connections
+		/// The main thread that will continuously listen for new client connections
 		/// </summary>
 		//private Thread connectionThread = null;
 
@@ -189,6 +189,26 @@ namespace BeardedManStudios.Forge.Networking
 					}
 				}
 			}
+		}
+
+		public void SendReliableToPlayer(NetworkingPlayer player, FrameStream frame)
+		{
+			SendToPlayer(frame, player);
+		}
+
+		public void SendUnreliableToPlayer(NetworkingPlayer player, FrameStream frame)
+		{
+			SendToPlayer(frame, player);
+		}
+
+		public void SendReliable(FrameStream frame)
+		{
+			SendAll(frame);
+		}
+
+		public void SendUnreliable(FrameStream frame)
+		{
+			SendAll(frame);
 		}
 
 		/// <summary>

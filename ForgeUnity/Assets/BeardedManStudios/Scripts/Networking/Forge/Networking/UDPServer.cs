@@ -38,19 +38,36 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void Send(NetworkingPlayer player, FrameStream frame, bool reliable = false)
 		{
-			var composer = new UDPPacketComposer(this, player, frame, reliable);
-
-			// If this message is reliable then make sure to keep a reference to the composer
-			// so that there are not any run-away threads
 			if (reliable)
+				SendReliableToPlayer(player, frame);
+			else
+				SendUnreliableToPlayer(player, frame);
+		}
+
+		public void SendUnreliableToPlayer(NetworkingPlayer player, FrameStream frame)
+		{
+			new UDPPacketComposer(this, player, frame, false);
+		}
+
+		public void SendUnreliable(FrameStream frame)
+		{
+			Send(frame, false, null);
+		}
+
+		public void SendReliableToPlayer(NetworkingPlayer player, FrameStream frame)
+		{
+			var composer = new UDPPacketComposer(this, player, frame, true);
+			lock (pendingComposers)
 			{
-				lock (pendingComposers)
-				{
-					// Use the completed event to clean up the object from memory
-					composer.completed += ComposerCompleted;
-					pendingComposers.Add(composer);
-				}
+				// Use the completed event to clean up the object from memory
+				composer.completed += ComposerCompleted;
+				pendingComposers.Add(composer);
 			}
+		}
+
+		public void SendReliable(FrameStream frame)
+		{
+			Send(frame, true, null);
 		}
 
 		public override void Send(FrameStream frame, bool reliable = false)
@@ -82,7 +99,6 @@ namespace BeardedManStudios.Forge.Networking
 				}
 			}
 		}
-
 
 		// overload for ncw field distance check case
 		public void Send(FrameStream frame, NetworkingPlayer sender, bool reliable = false,

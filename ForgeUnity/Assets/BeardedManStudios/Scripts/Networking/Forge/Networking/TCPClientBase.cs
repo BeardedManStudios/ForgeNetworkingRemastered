@@ -191,6 +191,16 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
+		public void SendReliable(FrameStream frame)
+		{
+			Send(frame);
+		}
+
+		public void SendUnreliable(FrameStream frame)
+		{
+			Send(frame);
+		}
+
 		/// <summary>
 		/// Sends binary message to the specific receiver(s)
 		/// </summary>

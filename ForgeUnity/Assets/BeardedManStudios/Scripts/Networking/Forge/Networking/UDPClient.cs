@@ -50,17 +50,24 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void Send(FrameStream frame, bool reliable = false)
 		{
-			UDPPacketComposer composer = new UDPPacketComposer();
-
-			// If this message is reliable then make sure to keep a reference to the composer
-			// so that there are not any run-away threads
 			if (reliable)
-			{
-				composer.completed += ComposerCompleted;
-				pendingComposers.Add(composer);
-			}
+				SendReliable(frame);
+			else
+				SendUnreliable(frame);
+		}
 
-			composer.Init(this, ServerPlayer, frame, reliable);
+		public void SendReliable(FrameStream frame)
+		{
+			var composer = new UDPPacketComposer();
+			composer.completed += ComposerCompleted;
+			pendingComposers.Add(composer);
+			composer.Init(this, ServerPlayer, frame, true);
+		}
+
+		public void SendUnreliable(FrameStream frame)
+		{
+			var composer = new UDPPacketComposer();
+			composer.Init(this, ServerPlayer, frame, false);
 		}
 
 		/// <summary>
