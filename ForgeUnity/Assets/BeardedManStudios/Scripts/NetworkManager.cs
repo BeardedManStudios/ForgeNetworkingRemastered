@@ -2,6 +2,7 @@
 using System.Linq;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking.MasterServer;
 using BeardedManStudios.SimpleJSON;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,8 +22,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public NetWorker MasterServerNetworker { get; protected set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
-		protected string _masterServerHost;
-		protected ushort _masterServerPort;
+		protected string masterServerHost;
+		protected ushort masterServerPort;
 
 		protected List<int> loadedScenes = new List<int>();
 		protected List<int> loadingScenes = new List<int>();
@@ -50,11 +51,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				Destroy(gameObject);
 				return;
 			}
-
 			Instance = this;
 			MainThreadManager.Create();
-
-			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
 		}
 
@@ -73,21 +71,22 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
 			PrepareNetworkerInstance(networker);
-
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
+			InitializeServerElements(masterServerHost, masterServerPort, masterServerRegisterData);
+			initialized = true;
+		}
 
+		private void InitializeServerElements(string masterServerHost, ushort masterServerPort, JSONNode masterServerRegisterData)
+		{
 			if (Networker is IServer)
 			{
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
 				SetupMasterOnMasterServer(masterServerHost, masterServerPort, masterServerRegisterData);
-
 #if FN_WEBSERVER
 				InitializeWebServer(networker);
 #endif
 			}
-
-			initialized = true;
 		}
 
 		private void PrepareNetworkerInstance(NetWorker networker)
@@ -102,8 +101,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (!string.IsNullOrEmpty(masterServerHost))
 			{
-				_masterServerHost = masterServerHost;
-				_masterServerPort = masterServerPort;
+				this.masterServerHost = masterServerHost;
+				this.masterServerPort = masterServerPort;
 
 				RegisterOnMasterServer(masterServerRegisterData);
 			}
@@ -117,7 +116,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			TextAsset[] assets = Resources.LoadAll<TextAsset>(pathToFiles);
 			foreach (TextAsset a in assets)
 				pages.Add(a.name, a.text);
-
 			webserver = new MVCWebServer.ForgeWebServer(networker, pages);
 			webserver.Start();
 		}
@@ -126,181 +124,79 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		protected virtual void CreatePendingObjects(NetworkObject obj)
 		{
 			INetworkBehavior behavior;
-
 			if (!pendingObjects.TryGetValue(obj.CreateCode, out behavior))
 			{
-				if (obj.CreateCode < 0)
-					pendingNetworkObjects.Add(obj.CreateCode, obj);
-
+				AddNetworkObjectToPendingList(obj);
 				return;
 			}
+			MakeFoundPendingNetworkObjectActive(obj, behavior);
+			CleanUpPendingObjectsIfNeeded();
+		}
 
+		private void AddNetworkObjectToPendingList(NetworkObject obj)
+		{
+			if (obj.CreateCode < 0)
+				pendingNetworkObjects.Add(obj.CreateCode, obj);
+			else
+				BMSLogger.Instance.Log("A network object with id " + obj.NetworkId + " was being added to pending without a create code");
+		}
+
+		private void MakeFoundPendingNetworkObjectActive(NetworkObject obj, INetworkBehavior behavior)
+		{
 			behavior.Initialize(obj);
 			pendingObjects.Remove(obj.CreateCode);
+		}
 
+		private void CleanUpPendingObjectsIfNeeded()
+		{
 			if (pendingObjects.Count == 0 && loadingScenes.Count == 0)
 				Networker.objectCreated -= CreatePendingObjects;
 		}
 
-		public virtual void MatchmakingServersFromMasterServer(string masterServerHost,
-			ushort masterServerPort,
-			int elo,
-			System.Action<MasterServerResponse> callback = null,
-			string gameId = "myGame",
-			string gameType = "any",
+		public virtual void MatchmakingServersFromMasterServer(string masterServerHost, ushort masterServerPort, int elo,
+			System.Action<MasterServerResponse> callback = null, string gameId = "myGame", string gameType = "any",
 			string gameMode = "all")
 		{
-			// The Master Server communicates over TCP
-			TCPMasterClient client = new TCPMasterClient();
-
-			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += (sender) =>
+			var fetcher = MasterServerResponseFetcher.CreateWithData(new MasterServerResponseFetcher.FetchRequestData
 			{
-				try
-				{
-					// Create the get request with the desired filters
-					JSONNode sendData = JSONNode.Parse("{}");
-					JSONClass getData = new JSONClass();
-					getData.Add("id", gameId);
-					getData.Add("type", gameType);
-					getData.Add("mode", gameMode);
-					getData.Add("elo", new JSONData(elo));
-
-					sendData.Add("get", getData);
-
-					// Send the request to the server
-					client.Send(Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
-				}
-				catch
-				{
-					// If anything fails, then this client needs to be disconnected
-					client.Disconnect(true);
-					client = null;
-
-					MainThreadManager.Run(() =>
-					{
-						if (callback != null)
-							callback(null);
-					});
-				}
-			};
-
-			// An event that is raised when the server responds with hosts
-			client.textMessageReceived += (player, frame, sender) =>
-			{
-				try
-				{
-					// Get the list of hosts to iterate through from the frame payload
-					JSONNode data = JSONNode.Parse(frame.ToString());
-					MainThreadManager.Run(() =>
-					{
-						if (data["hosts"] != null)
-						{
-							MasterServerResponse response = new MasterServerResponse(data["hosts"].AsArray);
-							if (callback != null)
-								callback(response);
-						}
-						else
-						{
-							if (callback != null)
-								callback(null);
-						}
-					});
-				}
-				finally
-				{
-					if (client != null)
-					{
-						// If we succeed or fail the client needs to disconnect from the Master Server
-						client.Disconnect(true);
-						client = null;
-					}
-				}
-			};
-
-			try
-			{
-				client.Connect(masterServerHost, masterServerPort);
-			}
-			catch (System.Exception ex)
-			{
-				Debug.LogError(ex.Message);
-				MainThreadManager.Run(() =>
-				{
-					if (callback != null)
-						callback(null);
-				});
-			}
+				completedCallback = callback,
+				elo = elo,
+				gameId = gameId,
+				gameMode = gameMode,
+				gameType = gameType,
+				hostAddress = masterServerHost,
+				hostPort = masterServerPort
+			});
+			fetcher.SendFetchRequest();
 		}
 
-		public virtual JSONNode MasterServerRegisterData(NetWorker server, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
+		public virtual JSONNode MasterServerRegisterData(NetWorker server, string id, string serverName, string type,
+			string mode, string comment = "", bool useElo = false, int eloRequired = 0)
 		{
-			// Create the get request with the desired filters
-			JSONNode sendData = JSONNode.Parse("{}");
-			JSONClass registerData = new JSONClass();
-			registerData.Add("id", id);
-			registerData.Add("name", serverName);
-			registerData.Add("port", new JSONData(server.Port));
-			registerData.Add("playerCount", new JSONData(server.Players.Count));
-			registerData.Add("maxPlayers", new JSONData(server.MaxConnections));
-			registerData.Add("comment", comment);
-			registerData.Add("type", type);
-			registerData.Add("mode", mode);
-			registerData.Add("protocol", server is UDPServer ? "udp" : "tcp");
-			registerData.Add("elo", new JSONData(eloRequired));
-			registerData.Add("useElo", new JSONData(useElo));
-			sendData.Add("register", registerData);
-
-			return sendData;
+			return TCPMasterClient.CreateMasterServerRegisterData(server, id, serverName, type,
+				mode, comment, useElo, eloRequired);
 		}
 
 		protected virtual void RegisterOnMasterServer(JSONNode masterServerData)
 		{
 			// The Master Server communicates over TCP
-			TCPMasterClient client = new TCPMasterClient();
-
-			// Once this client has been accepted by the master server it should send it's get request
-			client.serverAccepted += (sender) =>
-			{
-				try
-				{
-					Text temp = Text.CreateFromString(client.Time.Timestep, masterServerData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_REGISTER, true);
-
-					//Debug.Log(temp.GetData().Length);
-					// Send the request to the server
-					client.Send(temp);
-
-					Networker.disconnected += s =>
-					{
-						client.Disconnect(false);
-						MasterServerNetworker = null;
-					};
-				}
-				catch
-				{
-					// If anything fails, then this client needs to be disconnected
-					client.Disconnect(true);
-					client = null;
-				}
-			};
-
-			client.Connect(_masterServerHost, _masterServerPort);
-
-			Networker.disconnected += NetworkerDisconnected;
+			var client = new TCPMasterClient();
+			client.RegisterOnMasterServer(masterServerHost, masterServerPort, masterServerData);
 			MasterServerNetworker = client;
+			Networker.disconnected += DisconnectFromMasterServer;
 		}
 
-		protected virtual void NetworkerDisconnected(NetWorker sender)
+		protected virtual void DisconnectFromMasterServer(NetWorker sender)
 		{
-			Networker.disconnected -= NetworkerDisconnected;
+			Networker.disconnected -= DisconnectFromMasterServer;
 			MasterServerNetworker.Disconnect(false);
 			MasterServerNetworker = null;
 		}
 
 		public virtual void UpdateMasterServerListing(NetWorker server, string comment = null, string gameType = null, string mode = null)
 		{
-			JSONNode sendData = JSONNode.Parse("{}");
-			JSONClass registerData = new JSONClass();
+			var sendData = JSONNode.Parse("{}");
+			var registerData = new JSONClass();
 
 			registerData.Add("playerCount", new JSONData(server.Players.Count));
 			if (comment != null)
@@ -318,15 +214,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		protected virtual void UpdateMasterServerListing(JSONNode masterServerData)
 		{
-			if (string.IsNullOrEmpty(_masterServerHost))
-			{
+			if (string.IsNullOrEmpty(masterServerHost))
 				throw new System.Exception("This server is not registered on a master server, please ensure that you are passing a master server host and port into the initialize");
-			}
 
 			if (MasterServerNetworker == null)
-			{
 				throw new System.Exception("Connection to master server is closed. Make sure to be connected to master server before update trial");
-			}
 
 			// The Master Server communicates over TCP
 			TCPMasterClient client = new TCPMasterClient();
@@ -349,7 +241,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				}
 			};
 
-			client.Connect(_masterServerHost, _masterServerPort);
+			client.Connect(masterServerHost, masterServerPort);
 		}
 
 		public virtual void Disconnect()
