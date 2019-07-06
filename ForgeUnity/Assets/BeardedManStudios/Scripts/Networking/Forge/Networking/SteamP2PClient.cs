@@ -283,16 +283,6 @@ namespace BeardedManStudios.Forge.Networking
 				Logging.BMSLog.LogException(ex);
 				Disconnect(true);
 			}
-
-			// Check to see if the headers have been exchanged
-			if (!initialConnectHeaderExchanged)
-			{
-
-			}
-			else
-			{
-
-			}
 		}
 
 		private void ReadPacket()
