@@ -56,6 +56,24 @@ if (1 == 1)
 }
 ```
 
+For infinite loops, while loops, and do-while loops, we need these to be exceptionally clear. So in the case of any of these we will use hanging brackets.
+```csharp
+while (true)
+{
+    DoSomethingFancy();
+}
+
+do
+{
+    DoSomethingFancy();
+} while(true);
+
+for(;;)
+{
+    DoSomethingFancy();
+}
+```
+
 For lambda expressions we have hanging brackets
 ```csharp
 Call(() =>
