@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -36,17 +36,42 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void AddNetworkInterfaceIfPossible(NetworkInterface nic, AddressFamily family)
 		{
-			switch (nic.NetworkInterfaceType)
+#if UNITY_ANDROID
+			switch ( nic.Name )
+			{
+				case "lo": // Localhost
+				case "wlan0": // Wifi
+					break;
+				default:
+					continue;
+			}
+
+			switch (nic.OperationalStatus)
+			{
+				case OperationalStatus.Up:
+				case OperationalStatus.Testing:
+				case OperationalStatus.Unknown:
+				case OperationalStatus.Dormant:
+					break;
+				case OperationalStatus.Down:
+				case OperationalStatus.NotPresent:
+				case OperationalStatus.LowerLayerDown:
+				default:
+					continue;
+			}
+#else
+			switch ( nic.NetworkInterfaceType )
 			{
 				case NetworkInterfaceType.Wireless80211:
 				case NetworkInterfaceType.Ethernet:
 					break;
 				default:
-					return;
+					continue;
 			}
 
-			if (nic.OperationalStatus != OperationalStatus.Up)
-				return;
+			if ( nic.OperationalStatus != OperationalStatus.Up )
+				continue;
+#endif
 
 			AddIfInFamily(nic, family);
 		}
