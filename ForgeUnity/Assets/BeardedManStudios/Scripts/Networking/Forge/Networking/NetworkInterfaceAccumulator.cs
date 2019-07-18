@@ -37,13 +37,13 @@ namespace BeardedManStudios.Forge.Networking
 		private void AddNetworkInterfaceIfPossible(NetworkInterface nic, AddressFamily family)
 		{
 #if UNITY_ANDROID
-			switch ( nic.Name )
+			switch (nic.Name)
 			{
 				case "lo": // Localhost
 				case "wlan0": // Wifi
 					break;
 				default:
-					continue;
+					return;
 			}
 
 			switch (nic.OperationalStatus)
@@ -57,20 +57,20 @@ namespace BeardedManStudios.Forge.Networking
 				case OperationalStatus.NotPresent:
 				case OperationalStatus.LowerLayerDown:
 				default:
-					continue;
+					return;
 			}
 #else
-			switch ( nic.NetworkInterfaceType )
+			switch (nic.NetworkInterfaceType)
 			{
 				case NetworkInterfaceType.Wireless80211:
 				case NetworkInterfaceType.Ethernet:
 					break;
 				default:
-					continue;
+					return;
 			}
 
-			if ( nic.OperationalStatus != OperationalStatus.Up )
-				continue;
+			if (nic.OperationalStatus != OperationalStatus.Up)
+				return;
 #endif
 
 			AddIfInFamily(nic, family);
