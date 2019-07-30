@@ -753,7 +753,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
 
-			if (scene.IsValid() && scene.isLoaded)
+			if (scene.IsValid())
 			{
 				UnloadSceneNetworkObjects(buildIndex);
 
