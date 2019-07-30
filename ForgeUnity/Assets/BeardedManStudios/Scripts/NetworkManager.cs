@@ -729,6 +729,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
             return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
         }
 
+		/// <summary>
+		/// Callback for when a Scene has been unloaded
+		/// </summary>
+		/// <param name="scene"></param>
 		public virtual void SceneUnloaded(Scene scene)
 		{
 			// The NetworkManager has not yet been initialized with a Networker.
@@ -782,6 +786,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
+		/// <summary>
+		/// Called when you want to remove all network objects from the Networker list for a scene
+		/// </summary>
+		/// <param name="buildIndex"></param>
 		void UnloadSceneNetworkObjects(int buildIndex)
 		{
 			if (buildIndex >= 0)

@@ -1204,6 +1204,7 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				NetworkObjects.Remove(networkObject.NetworkId);
 			}
+
 			lock (NetworkObjectList)
 			{
 				NetworkObjectList.Remove(networkObject);
