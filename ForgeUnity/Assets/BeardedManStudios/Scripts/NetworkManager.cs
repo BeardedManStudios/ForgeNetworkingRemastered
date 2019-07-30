@@ -64,7 +64,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (automaticScenes)
 			{
-				SceneManager.sceneLoaded += SceneReady;
+				SceneManager.sceneLoaded += SceneLoaded;
 				SceneManager.sceneUnloaded += SceneUnloaded;
 			}
 		}
@@ -73,7 +73,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		{
 			if (automaticScenes)
 			{
-				SceneManager.sceneLoaded -= SceneReady;
+				SceneManager.sceneLoaded -= SceneLoaded;
 				SceneManager.sceneUnloaded -= SceneUnloaded;
 			}
 		}
@@ -584,7 +584,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		public virtual void SceneReady(Scene scene, LoadSceneMode mode)
+		public virtual void SceneLoaded(Scene scene, LoadSceneMode mode)
 		{
 			// The NetworkManager has not yet been initialized with a Networker.
 			if (!initialized)
