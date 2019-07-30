@@ -43,6 +43,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new TestNetworkObject(networker, id, frame);
 						break;
+					case SomeMoveableNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new SomeMoveableNetworkObject(networker, id, frame);
+						break;
 				}
 
 				if (!availableCallback)
