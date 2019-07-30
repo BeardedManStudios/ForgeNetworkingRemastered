@@ -757,17 +757,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// <param name="buildIndex"></param>
 		public void UnloadSceneAdditive(int buildIndex)
 		{
-			if (!initialized || buildIndex < 0)
+			if (buildIndex < 0)
 				return;
 
 			Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
-
-			if (scene.IsValid())
-			{
-				UnloadSceneNetworkObjects(buildIndex);
-
-				SceneManager.UnloadSceneAsync(buildIndex);
-			}
+			UnloadSceneAdditive(scene);
 		}
 
 		/// <summary>
@@ -778,11 +772,19 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public void UnloadSceneAdditive(string sceneName)
 		{
 			Scene scene = SceneManager.GetSceneByName(sceneName);
+			UnloadSceneAdditive(scene);
+		}
+
+		/// <summary>
+		/// Unloads a networked scene which must be additive
+		/// </summary>
+		/// <param name="scene"></param>
+		void UnloadSceneAdditive(Scene scene)
+		{
 			if (scene.IsValid())
 			{
 				UnloadSceneNetworkObjects(scene.buildIndex);
-
-				SceneManager.UnloadSceneAsync(sceneName);
+				SceneManager.UnloadSceneAsync(scene.buildIndex);
 			}
 		}
 
