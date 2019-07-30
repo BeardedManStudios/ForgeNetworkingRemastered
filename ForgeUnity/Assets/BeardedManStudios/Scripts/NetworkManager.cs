@@ -746,6 +746,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			SendFrame(Networker, frame);
 		}
 
+		/// <summary>
+		/// Unloads a scene from the network
+		/// You should only use this if the scene you want to unload is a additive scene
+		/// </summary>
+		/// <param name="buildIndex"></param>
 		public void UnloadSceneAdditive(int buildIndex)
 		{
 			if (!initialized || buildIndex < 0)
@@ -761,6 +766,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
+		/// <summary>
+		/// Unloads a scene from the network
+		/// You should only use this if the scene you want to unload is a additive scene
+		/// </summary>
+		/// <param name="sceneName"></param>
 		public void UnloadSceneAdditive(string sceneName)
 		{
 			Scene scene = SceneManager.GetSceneByName(sceneName);
