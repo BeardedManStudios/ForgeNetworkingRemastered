@@ -158,7 +158,7 @@ namespace BeardedManStudios.MultiplayerMenu
 			};
 			serverListItemData.ListItem.gameObject.SetActive(true);
 
-			var endpoint = NetWorker.ResolveHost(address, Settings.SQPPort);
+			var endpoint = HostResolver.Resolve(address, Settings.SQPPort);
 
 			serverListItemData.SqpQuery = sqpClient.GetQuery(endpoint);
 
