@@ -797,14 +797,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				List<NetworkObject> networkObjectsToDestroy = new List<NetworkObject>();
 
 				// Gets all networkObjects related to the scene we are destorying
-				Networker.IterateNetworkObjects(x =>
+				Networker.IterateNetworkObjects(networkObject =>
 				{
-					NetworkBehavior networkBehavior = (NetworkBehavior)x.AttachedBehavior;
+					NetworkBehavior networkBehavior = (NetworkBehavior)networkObject.AttachedBehavior;
 					if (networkBehavior && networkBehavior.gameObject)
 					{
 						if (networkBehavior.gameObject.scene.buildIndex == buildIndex)
 						{
-							networkObjectsToDestroy.Add(x);
+							networkObjectsToDestroy.Add(networkObject);
 						}
 					}
 				});
