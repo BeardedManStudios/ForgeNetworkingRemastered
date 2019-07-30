@@ -1193,5 +1193,44 @@ namespace BeardedManStudios.Forge.Networking
 				});
 			}
 		}
+
+		/// <summary>
+		/// Used to manually remove a networkobject from the networker
+		/// </summary>
+		/// <param name="networkObject"></param>
+		public void ManualRemove(NetworkObject networkObject)
+		{
+			lock (NetworkObjects)
+			{
+				NetworkObjects.Remove(networkObject.NetworkId);
+			}
+			lock (NetworkObjectList)
+			{
+				NetworkObjectList.Remove(networkObject);
+			}
+		}
+
+		/// <summary>
+		/// Used to manually remove a bunch of networkobjects from the networker
+		/// </summary>
+		/// <param name="networkObjects"></param>
+		public void ManualRemove(List<NetworkObject> networkObjects)
+		{
+			foreach (NetworkObject obj in networkObjects)
+			{
+				lock (NetworkObjects)
+				{
+					NetworkObjects.Remove(obj.NetworkId);
+				}
+			}
+
+			foreach (NetworkObject obj in networkObjects)
+			{
+				lock (NetworkObjectList)
+				{
+					NetworkObjectList.Remove(obj);
+				}
+			}
+		}
 	}
 }

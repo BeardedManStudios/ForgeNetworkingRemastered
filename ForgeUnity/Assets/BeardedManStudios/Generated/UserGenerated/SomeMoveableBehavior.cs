@@ -6,10 +6,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 {
 	[GeneratedRPC("{\"types\":[]")]
 	[GeneratedRPCVariableNames("{\"types\":[]")]
-	public abstract partial class NetworkCameraBehavior : NetworkBehavior
+	public abstract partial class SomeMoveableBehavior : NetworkBehavior
 	{
 
-		public NetworkCameraNetworkObject networkObject = null;
+		public SomeMoveableNetworkObject networkObject = null;
 
 		public override void Initialize(NetworkObject obj)
 		{
@@ -17,7 +17,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (networkObject != null && networkObject.AttachedBehavior != null)
 				return;
 
-			networkObject = (NetworkCameraNetworkObject)obj;
+			networkObject = (SomeMoveableNetworkObject)obj;
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
@@ -74,7 +74,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
 		{
-			Initialize(new NetworkCameraNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
+			Initialize(new SomeMoveableNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
 		private void DestroyGameObject(NetWorker sender)
@@ -85,7 +85,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null)
 		{
-			return new NetworkCameraNetworkObject(networker, this, createCode, metadata);
+			return new SomeMoveableNetworkObject(networker, this, createCode, metadata);
 		}
 
 		protected override void InitializedTransform()
