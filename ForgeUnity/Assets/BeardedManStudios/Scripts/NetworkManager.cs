@@ -11,6 +11,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 {
 	public partial class NetworkManager : MonoBehaviour
 	{
+		private const int UnloadSceneCommand = 2;
+
 		public static NetworkManager Instance { get; private set; }
 
 		public UnityAction<int, LoadSceneMode> networkSceneChanging;
@@ -61,13 +63,19 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		protected virtual void OnEnable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded += SceneReady;
+			{
+				SceneManager.sceneLoaded += SceneLoaded;
+				SceneManager.sceneUnloaded += SceneUnloaded;
+			}
 		}
 
 		protected virtual void OnDisable()
 		{
 			if (automaticScenes)
-				SceneManager.sceneLoaded -= SceneReady;
+			{
+				SceneManager.sceneLoaded -= SceneLoaded;
+				SceneManager.sceneUnloaded -= SceneUnloaded;
+			}
 		}
 
 		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
@@ -486,39 +494,48 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				return;
 			}
 
-            int sceneIndex;
-            LoadSceneMode mode;
-            lock (NetworkObject.PendingCreatesLock)
-            {
-                // We need to halt the creation of network objects until we load the scene
-                Networker.PendCreates = true;
+			// Get the sceme index we are talking about
+			int sceneIndex = frame.StreamData.GetBasicType<int>();
 
-                // Get the scene index that the server loaded
-                sceneIndex = frame.StreamData.GetBasicType<int>();
+			// Get the mode in which the server loaded the scene
+			int modeIndex = frame.StreamData.GetBasicType<int>();
 
-                // Get the mode in which the server loaded the scene
-                int modeIndex = frame.StreamData.GetBasicType<int>();
-
-                // Convert the int mode to the enum mode
-                mode = (LoadSceneMode)modeIndex;
-
-                if (mode == LoadSceneMode.Single)
-                    loadingScenes.Clear();
-
-                loadingScenes.Add(sceneIndex);
-            }
-
-			if (networkSceneChanging != null)
-				networkSceneChanging(sceneIndex, mode);
-
-			MainThreadManager.Run(() =>
+			if (modeIndex == UnloadSceneCommand)
 			{
+				MainThreadManager.Run(() =>
+				{
+					UnloadSceneAdditive(sceneIndex);
+				});
+			}
+			else
+			{
+				LoadSceneMode mode;
+				lock (NetworkObject.PendingCreatesLock)
+				{
+					// We need to halt the creation of network objects until we load the scene
+					Networker.PendCreates = true;
+
+					// Convert the int mode to the enum mode
+					mode = (LoadSceneMode)modeIndex;
+
+					if (mode == LoadSceneMode.Single)
+						loadingScenes.Clear();
+
+					loadingScenes.Add(sceneIndex);
+				}
+
+				if (networkSceneChanging != null)
+					networkSceneChanging(sceneIndex, mode);
+
+				MainThreadManager.Run(() =>
+				{
 				// Load the scene that the server loaded in the same LoadSceneMode
 				if (mode == LoadSceneMode.Additive)
-					SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
-				else if (mode == LoadSceneMode.Single)
-					SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
-			});
+						SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+					else if (mode == LoadSceneMode.Single)
+						SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
+				});
+			}
 		}
 
 		/// <summary>
@@ -567,7 +584,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 		}
 
-		public virtual void SceneReady(Scene scene, LoadSceneMode mode)
+		public virtual void SceneLoaded(Scene scene, LoadSceneMode mode)
 		{
 			// The NetworkManager has not yet been initialized with a Networker.
 			if (!initialized)
@@ -711,5 +728,96 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
             return ((NetworkBehavior)foundNetworkObject.AttachedBehavior).gameObject;
         }
-    }
+
+		/// <summary>
+		/// Callback for when a Scene has been unloaded
+		/// </summary>
+		/// <param name="scene"></param>
+		public virtual void SceneUnloaded(Scene scene)
+		{
+			// The NetworkManager has not yet been initialized with a Networker.
+			if (!initialized)
+				return;
+
+			loadedScenes.Remove(scene.buildIndex);
+
+			// Send buildindex and 2 refering to
+			BMSByte data = ObjectMapper.BMSByte(scene.buildIndex, UnloadSceneCommand);
+
+			Binary frame = new Binary(Networker.Time.Timestep, false, data, Networker is IServer ? Receivers.All : Receivers.Server, MessageGroupIds.VIEW_CHANGE, false);
+
+			// Send the binary frame to either the server or the clients
+			SendFrame(Networker, frame);
+		}
+
+		/// <summary>
+		/// Unloads a scene from the network
+		/// You should only use this if the scene you want to unload is a additive scene
+		/// </summary>
+		/// <param name="buildIndex"></param>
+		public void UnloadSceneAdditive(int buildIndex)
+		{
+			if (buildIndex < 0)
+				return;
+
+			Scene scene = SceneManager.GetSceneByBuildIndex(buildIndex);
+			UnloadSceneAdditive(scene);
+		}
+
+		/// <summary>
+		/// Unloads a scene from the network
+		/// You should only use this if the scene you want to unload is a additive scene
+		/// </summary>
+		/// <param name="sceneName"></param>
+		public void UnloadSceneAdditive(string sceneName)
+		{
+			Scene scene = SceneManager.GetSceneByName(sceneName);
+			UnloadSceneAdditive(scene);
+		}
+
+		/// <summary>
+		/// Unloads a networked scene which must be additive
+		/// </summary>
+		/// <param name="scene"></param>
+		void UnloadSceneAdditive(Scene scene)
+		{
+			if (scene.IsValid())
+			{
+				UnloadSceneNetworkObjects(scene.buildIndex);
+				SceneManager.UnloadSceneAsync(scene.buildIndex);
+			}
+		}
+
+		/// <summary>
+		/// Called when you want to remove all network objects from the Networker list for a scene
+		/// </summary>
+		/// <param name="buildIndex"></param>
+		void UnloadSceneNetworkObjects(int buildIndex)
+		{
+			if (buildIndex >= 0)
+			{
+				List<NetworkObject> networkObjectsToDestroy = new List<NetworkObject>();
+
+				// Gets all networkObjects related to the scene we are destorying
+				Networker.IterateNetworkObjects(networkObject =>
+				{
+					NetworkBehavior networkBehavior = (NetworkBehavior)networkObject.AttachedBehavior;
+					if (networkBehavior && networkBehavior.gameObject)
+					{
+						if (networkBehavior.gameObject.scene.buildIndex == buildIndex)
+						{
+							networkObjectsToDestroy.Add(networkObject);
+						}
+					}
+				});
+
+				Networker.ManualRemove(networkObjectsToDestroy);
+
+				foreach (NetworkObject networkObject in networkObjectsToDestroy)
+				{
+					pendingNetworkObjects.Remove(networkObject.CreateCode);
+				}
+			}
+		}
+	}
 }
