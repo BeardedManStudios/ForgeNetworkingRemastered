@@ -183,7 +183,7 @@ namespace BeardedManStudios.Forge.Networking
                         func();
                 });
 
-                m_CreateLobbyResult = SteamMatchmaking.CreateLobby(lobbyType, 5);
+                m_CreateLobbyResult = SteamMatchmaking.CreateLobby(lobbyType, MaxConnections);
                 // Do any generic initialization in result of the successful bind
                 OnBindSuccessful();
 
