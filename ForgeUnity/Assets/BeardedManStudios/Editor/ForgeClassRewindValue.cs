@@ -67,6 +67,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableRPCTypes.VECTOR3;
 			else if (fieldType == typeof(Vector4))
 				type = ForgeAcceptableRPCTypes.VECTOR4;
+			else if (fieldType == typeof(Float2))
+				type = ForgeAcceptableRPCTypes.FLOAT2;
+			else if (fieldType == typeof(Float3))
+				type = ForgeAcceptableRPCTypes.FLOAT3;
+			else if (fieldType == typeof(Float4))
+				type = ForgeAcceptableRPCTypes.FLOAT4;
 			else if (fieldType == typeof(string))
 				type = ForgeAcceptableRPCTypes.STRING;
 			//else if (fieldType == typeof(object[]))
