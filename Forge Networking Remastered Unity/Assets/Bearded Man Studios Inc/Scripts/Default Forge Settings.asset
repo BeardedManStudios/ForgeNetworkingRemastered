@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ee38554e7f4f21a5263c8984aad8d2, type: 3}
+  m_Name: Default Forge Settings
+  m_EditorClassIdentifier: 
+  DontChangeSceneOnConnect: 0
+  useMainThreadManagerForRPCs: 1
+  useTCP: 0
+  connectUsingMatchmaking: 0
+  useElo: 0
+  useInlineChat: 0
+  myElo: 0
+  eloRequired: 0
+  masterServerHost: 
+  masterServerPort: 15940
+  natServerHost: 
+  natServerPort: 15941
+  getLocalNetworkConnections: 1
+  enableSQP: 1
+  SQPPort: 15900
+  serverId: myGame
+  serverName: Forge Game
+  type: Deathmatch
+  mode: Teams
+  comment: Demo comment...
