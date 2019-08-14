@@ -286,7 +286,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Modules
 
 		private float[] ToFloatArray(BMSByte data)
 		{
-			int len = (data.Size - 1) / 4;
+			int len = data.Size / 4;
 			float[] floatArray = new float[len];
 
 			for (int i = 0; i < data.Size - 1; i += 4)
