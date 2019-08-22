@@ -5,6 +5,7 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.SQP;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
+using BeardedManStudios.Source.Forge.Networking;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,11 +20,11 @@ namespace BeardedManStudios.MultiplayerMenu
 		public ServerListEntry serverListEntryTemplate;
 		public RectTransform serverListContentRect;
 		public Button connectButton;
-		public InputField serverAddress;
-		public InputField serverPort;
+        public InputField serverAddress;
+        public InputField serverPort;
 
-		private int selectedServer = -1;
-		private List<ServerListItemData> serverList = new List<ServerListItemData>();
+        public int selectedServer = -1;
+        public List<ServerListItemData> serverList = new List<ServerListItemData>();
 		private float serverListEntryTemplateHeight;
 		private float nextListUpdateTime = 0f;
 		private MultiplayerMenu mpMenu;
@@ -37,8 +38,8 @@ namespace BeardedManStudios.MultiplayerMenu
 			// Init the MainThreadManager
 			MainThreadManager.Create();
 
-			mpMenu = this.GetComponentInParent<MultiplayerMenu>();
-			Settings = mpMenu.Settings;
+			mpMenu = FindObjectOfType<MultiplayerMenu>();
+            Settings = mpMenu.Settings;
 			serverListEntryTemplateHeight = ((RectTransform) serverListEntryTemplate.transform).rect.height;
 
 			masterServerEnabled = !string.IsNullOrEmpty(Settings.masterServerHost);
@@ -81,20 +82,37 @@ namespace BeardedManStudios.MultiplayerMenu
 			{
 				sqpClient.Update();
 
-				foreach (var server in serverList)
-				{
-					UpdateItem(server);
-					if (Time.time > server.NextUpdate && server.SqpQuery.State == ClientState.Idle) {
-						sqpClient.SendChallengeRequest(server.SqpQuery);
-						server.NextUpdate = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
-					}
-				}
-			}
+                List<ServerListItemData> invalidServers = new List<ServerListItemData>();
+                foreach (var server in serverList)
+                {
+                    UpdateItem(server);
+                    if (Time.time > server.NextUpdate && server.SqpQuery.State == ClientState.Idle)
+                    {
+
+                        sqpClient.SendChallengeRequest(server.SqpQuery);
+
+                        if (server.removeNextUpdate && !server.SqpQuery.ValidResult)
+                        {
+                            invalidServers.Add(server);
+                        }
+
+                        if (!server.SqpQuery.ValidResult)
+                            server.removeNextUpdate = true;
+                        else
+                            server.removeNextUpdate = false;
+
+                        server.NextUpdate = Time.time + 3.0f + UnityEngine.Random.Range(0.0f, 1.0f);
+                    }
+                }
+                foreach (ServerListItemData slid in invalidServers)
+                    RemoveServer(slid);
+            }
 		}
 
 		private void OnDestroy()
 		{
-			if (sqpClient != null)
+            NetWorker.localServerLocated -= LocalServerLocated;
+            if (sqpClient != null)
 			{
 				sqpClient.ShutDown();
 				NetWorker.EndSession();
@@ -112,10 +130,10 @@ namespace BeardedManStudios.MultiplayerMenu
 				if (serverList[i].ListItem.gameObject != eventData.pointerPress) continue;
 
 				SetSelectedServer(i);
-				if (eventData.clickCount == 2)
-					mpMenu.Connect();
+                if (eventData.clickCount == 2)
+                    mpMenu.Connect();
 
-				return;
+                return;
 			}
 		}
 
@@ -128,7 +146,8 @@ namespace BeardedManStudios.MultiplayerMenu
 		{
 			MainThreadManager.Run(() =>
 			{
-				AddServer(endpoint.Address, endpoint.Port);
+                if (!endpoint.Address.Equals(LocalNetworkScanning.GetLocalIPAddress()))
+                    AddServer(endpoint.Address, endpoint.Port);
 			});
 		}
 
@@ -161,11 +180,9 @@ namespace BeardedManStudios.MultiplayerMenu
 			var endpoint = HostResolver.Resolve(address, Settings.SQPPort);
 
 			serverListItemData.SqpQuery = sqpClient.GetQuery(endpoint);
+            serverListItemData.NextUpdate = Time.time + .2f;
 
-			UpdateItem(serverListItemData);
-			serverListItemData.NextUpdate = Time.time + 5.0f + UnityEngine.Random.Range(0.0f, 1.0f);
-
-			serverList.Add(serverListItemData);
+            serverList.Add(serverListItemData);
 			SetListItemSelected(serverListItemData, false);
 
 			RepositionItems();
@@ -228,19 +245,19 @@ namespace BeardedManStudios.MultiplayerMenu
 				SetListItemSelected(serverList[i], index == i);
 			}
 
-			if (index >= 0) {
-				var addressParts = serverList[index].Hostname.Split(':');
-				serverAddress.text = addressParts[0];
+            if (index >= 0) {
+                var addressParts = serverList[index].Hostname.Split(':');
+                serverAddress.text = addressParts[0];
 
-				if (addressParts.Length == 2)
-					serverPort.text = addressParts[1];
-				else
-					serverPort.text = NetWorker.DEFAULT_PORT.ToString();
-			} else
-			{
-				serverAddress.text = "";
-				serverPort.text = NetWorker.DEFAULT_PORT.ToString();
-			}
+                if (addressParts.Length == 2)
+                    serverPort.text = addressParts[1];
+                else
+                    serverPort.text = NetWorker.DEFAULT_PORT.ToString();
+            } else
+            {
+                serverAddress.text = "";
+                serverPort.text = NetWorker.DEFAULT_PORT.ToString();
+            }
 		}
 
 		/// <summary>
@@ -276,7 +293,8 @@ namespace BeardedManStudios.MultiplayerMenu
 			}
 		}
 
-		private void RefreshMasterServerListings()
+        public int ServersCount => serverList.Count;
+        private void RefreshMasterServerListings()
 		{
 			masterClient = new TCPMasterClient();
 
@@ -334,15 +352,16 @@ namespace BeardedManStudios.MultiplayerMenu
 			};
 		}
 	}
-
-	internal class ServerListItemData
+    [System.Serializable]
+    public class ServerListItemData
 	{
 		public string Hostname;
 		public ServerListEntry ListItem;
 		public float NextUpdate;
 		public Query SqpQuery;
 		public bool IsLocal;
+        public bool removeNextUpdate;
 
-		public string LocalOrGlobal => IsLocal ? "LAN" : "Internet";
+        public string LocalOrGlobal => IsLocal ? "LAN" : "Internet";
 	}
 }
