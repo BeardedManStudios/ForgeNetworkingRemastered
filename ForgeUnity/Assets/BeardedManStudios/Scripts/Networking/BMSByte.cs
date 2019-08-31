@@ -612,7 +612,7 @@ namespace BeardedManStudios
 			else if (type.IsEnum)
 				return GetBasicType(Enum.GetUnderlyingType(type), start, moveIndex);
 			else
-				throw new Exception("The type " + type.ToString() + " is getable from basic type, maybe try one of the other getters?");
+				throw new Exception("The type " + type.ToString() + " isn't getable from basic type, maybe try one of the other getters?");
 		}
 
 		/// <summary>
