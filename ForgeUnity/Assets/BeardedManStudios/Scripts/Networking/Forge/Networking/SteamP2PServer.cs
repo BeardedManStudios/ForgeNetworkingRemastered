@@ -399,7 +399,7 @@ namespace BeardedManStudios.Forge.Networking
 						// The client has sent the connection request again
 						if (response != null)
 						{
-							Client.Send(response, response.Length, messageFrom, EP2PSend.k_EP2PSendReliable);
+							Client.Send(response, response.Length, messageFrom, EP2PSend.k_EP2PSendUnreliable);
 							continue;
 						}
 						else
