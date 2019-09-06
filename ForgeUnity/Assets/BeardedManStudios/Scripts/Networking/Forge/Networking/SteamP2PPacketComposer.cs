@@ -72,7 +72,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="data">The packet data that is to be sent</param>
 		private void Send(byte[] data)
 		{
-			ClientWorker.Client.Send(data, data.Length, Player.SteamID, Reliable ? Steamworks.EP2PSend.k_EP2PSendReliable : Steamworks.EP2PSend.k_EP2PSendUnreliable);
+			ClientWorker.Client.Send(data, data.Length, Player.SteamID, Steamworks.EP2PSend.k_EP2PSendUnreliable);
 		}
 
 		private void Initialize()
