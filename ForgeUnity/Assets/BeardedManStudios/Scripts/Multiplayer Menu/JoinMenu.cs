@@ -97,7 +97,6 @@ namespace BeardedManStudios.MultiplayerMenu
 			if (sqpClient != null)
 			{
 				sqpClient.ShutDown();
-				NetWorker.EndSession();
 			}
 		}
 
