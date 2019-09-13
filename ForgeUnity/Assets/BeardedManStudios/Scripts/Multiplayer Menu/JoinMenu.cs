@@ -317,7 +317,8 @@ namespace BeardedManStudios.MultiplayerMenu
 							// Go through all of the available hosts and add them to the server browser
 							foreach (var server in response.serverResponse)
 							{
-								AddServer(server.Address, server.Port);
+								// Run on main thread as we are creating UnityEngine.GameObjects
+								MainThreadManager.Run(() => AddServer(server.Address, server.Port));
 							}
 						}
 					}
