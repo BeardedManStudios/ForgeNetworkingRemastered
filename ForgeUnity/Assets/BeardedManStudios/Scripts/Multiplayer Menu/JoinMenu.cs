@@ -331,6 +331,8 @@ namespace BeardedManStudios.MultiplayerMenu
 					}
 				}
 			};
+
+			masterClient.Connect(Settings.masterServerHost, Settings.masterServerPort);
 		}
 	}
 
