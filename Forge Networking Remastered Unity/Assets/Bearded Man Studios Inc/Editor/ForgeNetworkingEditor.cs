@@ -486,13 +486,13 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 							_editorButtons.RemoveAt(i);
 
 							string factoryData = SourceCodeFactory();
-							using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs")))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs").Checkout()))
 							{
 								sw.Write(factoryData);
 							}
 
 							string networkManagerData = SourceCodeNetworkManager();
-							using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs")))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs").Checkout()))
 							{
 								sw.Write(networkManagerData);
 							}
@@ -692,7 +692,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		{
 			string classGenerationFactory = SourceCodeFactory();
 
-			using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs")))
+			using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs").Checkout()))
 			{
 				sw.Write(classGenerationFactory);
 			}
@@ -969,87 +969,103 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			}
 
 			EditorApplication.LockReloadAssemblies();
-
-			int identity = 1;
-			for (int i = 0; i < _editorButtons.Count; ++i)
+			try
 			{
-				ForgeEditorButton btn = _editorButtons[i];
-				ValidationResult validate = btn.ValidateSetup();
-				if(!validate.Result)
-				{
-					foreach (string error in validate.errorMessages)
-						Debug.LogError(error);
-					Debug.LogError(String.Format("Compilation of {0} failed. Please resolve any outputted errors and try again.", btn.ButtonName));
-					break;
-				}
 
-				if (_editorButtons[i].IsCreated)
+				int identity = 1;
+				for (int i = 0; i < _editorButtons.Count; ++i)
 				{
-					//Brand new class being added!
-					string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
-					string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
-					if (!string.IsNullOrEmpty(networkObjectData))
+					ForgeEditorButton btn = _editorButtons[i];
+					ValidationResult validate = btn.ValidateSetup();
+					if (!validate.Result)
 					{
-						using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, string.Format("{0}{1}.cs", _editorButtons[i].StrippedSearchName, "NetworkObject"))))
-						{
-							sw.Write(networkObjectData);
-						}
-
-						using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, string.Format("{0}{1}.cs", _editorButtons[i].StrippedSearchName, "Behavior"))))
-						{
-							sw.Write(networkBehaviorData);
-						}
-						identity++;
-
-						string strippedName = _editorButtons[i].StrippedSearchName;
-						_editorButtons[i].ButtonName = strippedName + "NetworkObject";
+						foreach (string error in validate.errorMessages)
+							Debug.LogError(error);
+						Debug.LogError(String.Format(
+							"Compilation of {0} failed. Please resolve any outputted errors and try again.",
+							btn.ButtonName));
+						break;
 					}
-				}
-				else
-				{
-					if (_editorButtons[i].TiedObject != null)
-					{
-						if (_editorButtons[i].TiedObject.IsNetworkBehavior)
-						{
-							string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
 
-							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
-							{
-								sw.Write(networkBehaviorData);
-							}
-						}
-						else if (_editorButtons[i].TiedObject.IsNetworkObject)
+					if (_editorButtons[i].IsCreated)
+					{
+						//Brand new class being added!
+						string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
+						string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
+						if (!string.IsNullOrEmpty(networkObjectData))
 						{
-							string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
-							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename)))
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath,
+								string.Format("{0}{1}.cs", _editorButtons[i].StrippedSearchName, "NetworkObject")
+									.Checkout())))
 							{
 								sw.Write(networkObjectData);
 							}
+
+							using (StreamWriter sw = File.CreateText(Path.Combine(_userStoringPath,
+								string.Format("{0}{1}.cs", _editorButtons[i].StrippedSearchName, "Behavior")
+									.Checkout())))
+							{
+								sw.Write(networkBehaviorData);
+							}
+
 							identity++;
+
+							string strippedName = _editorButtons[i].StrippedSearchName;
+							_editorButtons[i].ButtonName = strippedName + "NetworkObject";
+						}
+					}
+					else
+					{
+						if (_editorButtons[i].TiedObject != null)
+						{
+							if (_editorButtons[i].TiedObject.IsNetworkBehavior)
+							{
+								string networkBehaviorData = SourceCodeNetworkBehavior(null, _editorButtons[i]);
+
+								using (StreamWriter sw = File.CreateText(Path
+									.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename).Checkout()))
+								{
+									sw.Write(networkBehaviorData);
+								}
+							}
+							else if (_editorButtons[i].TiedObject.IsNetworkObject)
+							{
+								string networkObjectData = SourceCodeNetworkObject(null, _editorButtons[i], identity);
+								using (StreamWriter sw = File.CreateText(Path
+									.Combine(_userStoringPath, _editorButtons[i].TiedObject.Filename).Checkout()))
+								{
+									sw.Write(networkObjectData);
+								}
+
+								identity++;
+							}
 						}
 					}
 				}
-			}
 
-			string factoryData = SourceCodeFactory();
-			using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs")))
+				string factoryData = SourceCodeFactory();
+				using (StreamWriter sw =
+					File.CreateText(Path.Combine(_storingPath, "NetworkObjectFactory.cs").Checkout()))
+				{
+					sw.Write(factoryData);
+				}
+
+				string networkManagerData = SourceCodeNetworkManager();
+				using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs").Checkout()))
+				{
+					sw.Write(networkManagerData);
+				}
+
+				//IFormatter previousSavedState = new BinaryFormatter();
+				//using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+				//{
+				//    previousSavedState.Serialize(s, _editorButtons);
+				//}
+			}
+			finally
 			{
-				sw.Write(factoryData);
+				EditorApplication.UnlockReloadAssemblies();	
 			}
-
-			string networkManagerData = SourceCodeNetworkManager();
-			using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "NetworkManager.cs")))
-			{
-				sw.Write(networkManagerData);
-			}
-
-			//IFormatter previousSavedState = new BinaryFormatter();
-			//using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-			//{
-			//    previousSavedState.Serialize(s, _editorButtons);
-			//}
-
-			EditorApplication.UnlockReloadAssemblies();
 
 			AssetDatabase.Refresh();
 
