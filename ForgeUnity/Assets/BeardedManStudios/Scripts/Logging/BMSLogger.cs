@@ -4,7 +4,9 @@ using UnityEngine;
 public class BMSLogger : MonoBehaviour, IBMSLogger
 {
 	#region Singleton
+
 	private static BMSLogger _instance;
+
 	public static BMSLogger Instance
 	{
 		get
@@ -14,14 +16,18 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 			return _instance;
 		}
 	}
+
 	#endregion
 
 	#region Public Data
+
 	public bool LoggerVisible;
 	public bool LogToFile;
+
 	#endregion
 
 	#region Private Data
+
 	private bool showLogger = false;
 	private static string filepath;
 	private string BMSLogs;
@@ -29,9 +35,11 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 	private Vector2 ScrollPos;
 	private const string SAVE_FILE_DIRECTORY_NAME = "Logs/";
 	private const string SAVE_FILE_NAME = "bmslog.txt";
+
 	#endregion
 
 	#region Runtime
+
 	[RuntimeInitializeOnLoadMethod]
 	private static void Init()
 	{
@@ -47,7 +55,6 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		{
 			using (System.IO.File.Create(filepath))
 			{
-
 			}
 		}
 #endif
@@ -66,9 +73,11 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		if (_instance.LogToFile)
 			Debug.LogFormat("Logging to file: {0}", filepath);
 	}
+
 	#endregion
 
 	#region Public API
+
 	public static void DebugLog(string log)
 	{
 		Instance.Log(log);
@@ -138,9 +147,11 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		PutLogInFile(BMSLog.Logtype.Exception, logInfo);
 		BMSLogs += coloredError + System.Environment.NewLine;
 	}
+
 	#endregion
 
 	#region Unity API
+
 	private void Awake()
 	{
 		if (_instance == null)
@@ -159,7 +170,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 			BMSLog.Log("========= START RUN =========");
 	}
 
-	void OnGUI()
+	private void OnGUI()
 	{
 		if (!LoggerVisible)
 			return;
@@ -169,12 +180,20 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		if (!showLogger)
 			return;
 
-		GUILayout.BeginArea(new Rect(0, Screen.height - (Screen.height * 0.3f), Screen.width * 0.4f, Screen.height * 0.3f));
+		int w = Screen.width, h = Screen.height;
+
+		GUIStyle style = GUI.skin.textArea;
+		style.alignment = TextAnchor.LowerLeft;
+		style.fontSize = h * 2 / 100;
+		style.richText = true;
+
+		GUILayout.BeginArea(new Rect(0, h - (h * 0.3f), w * 0.4f, h * 0.3f));
 		ScrollPos = GUILayout.BeginScrollView(ScrollPos);
-		GUILayout.TextArea(BMSLogs, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+		GUILayout.TextArea(BMSLogs, style, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 		GUILayout.EndScrollView();
 		GUILayout.EndArea();
 	}
+
 	#endregion
 
 	private void PutLogInFile(BMSLog.Logtype type, string log)
@@ -194,15 +213,16 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 				read = sr.ReadToEnd();
 			}
 
-			string dlog = string.Format("[{0} - {1}] {2}", System.DateTime.Now.ToString(), type.ToString().ToUpper(), log);
+			string dlog = string.Format("[{0} - {1}] {2}", System.DateTime.Now.ToString(), type.ToString().ToUpper(),
+				log);
 			if (type == BMSLog.Logtype.Exception)
 			{
 				dlog = string.Format("{0}{1}{2}",
 					dlog,
 					System.Environment.NewLine,
 					System.Environment.StackTrace);
-
 			}
+
 			string finalLog = string.Format("{0}{1}", read, dlog);
 
 			using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filepath))
