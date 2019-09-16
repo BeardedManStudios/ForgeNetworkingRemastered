@@ -108,7 +108,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 
 	public void LogWarning(string log)
 	{
-		string coloredWarning = string.Format("<color=yellow>{0}</color>", log);
+		string coloredWarning = $"<color=yellow>{log}</color>";
 		PutLogInFile(BMSLog.Logtype.Warning, log);
 		BMSLogs += coloredWarning + System.Environment.NewLine;
 
@@ -121,7 +121,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 	public void LogWarningFormat(string log, params object[] args)
 	{
 		string logInfo = string.Format(log, args);
-		string coloredWarning = string.Format("<color=yellow>{0}</color>", logInfo);
+		string coloredWarning = $"<color=yellow>{logInfo}</color>";
 		PutLogInFile(BMSLog.Logtype.Warning, logInfo);
 		BMSLogs += coloredWarning + System.Environment.NewLine;
 
@@ -133,7 +133,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 
 	public void LogException(string log)
 	{
-		string coloredError = string.Format("<color=red>{0}</color>", log);
+		string coloredError = $"<color=red>{log}</color>";
 		Debug.LogError(log);
 		PutLogInFile(BMSLog.Logtype.Exception, log);
 		BMSLogs += coloredError + System.Environment.NewLine;
@@ -142,7 +142,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 	public void LogExceptionFormat(string log, params object[] args)
 	{
 		string logInfo = string.Format(log, args);
-		string coloredError = string.Format("<color=red>{0}</color>", logInfo);
+		string coloredError = $"<color=red>{logInfo}</color>";
 		Debug.LogError(logInfo);
 		PutLogInFile(BMSLog.Logtype.Exception, logInfo);
 		BMSLogs += coloredError + System.Environment.NewLine;
@@ -213,17 +213,13 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 				read = sr.ReadToEnd();
 			}
 
-			string dlog = string.Format("[{0} - {1}] {2}", System.DateTime.Now.ToString(), type.ToString().ToUpper(),
-				log);
+			string dlog = $"[{System.DateTime.Now.ToString()} - {type.ToString().ToUpper()}] {log}";
 			if (type == BMSLog.Logtype.Exception)
 			{
-				dlog = string.Format("{0}{1}{2}",
-					dlog,
-					System.Environment.NewLine,
-					System.Environment.StackTrace);
+				dlog = $"{dlog}{System.Environment.NewLine}{System.Environment.StackTrace}";
 			}
 
-			string finalLog = string.Format("{0}{1}", read, dlog);
+			string finalLog = $"{read}{dlog}";
 
 			using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filepath))
 			{
