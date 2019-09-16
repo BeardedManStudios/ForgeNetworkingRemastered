@@ -49,6 +49,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					BMSByte metadataTransform = new BMSByte();
 					metadataTransform.Clone(obj.Metadata);
 					metadataTransform.MoveStartIndex(1);
+					gameObject.SetActive(false);
 
 					bool changePos = (transformFlags & 0x01) != 0;
                     bool changeRotation = (transformFlags & 0x02) != 0;
@@ -67,6 +68,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			MainThreadManager.Run(() =>
 			{
+				gameObject.SetActive(true);
 				NetworkStart();
 				networkObject.Networker.FlushCreateActions(networkObject);
 			});
