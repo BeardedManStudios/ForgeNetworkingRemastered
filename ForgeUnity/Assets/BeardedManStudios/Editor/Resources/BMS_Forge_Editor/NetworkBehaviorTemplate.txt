@@ -67,6 +67,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			MainThreadManager.Run(() =>
 			{
+				gameObject.SetActive(true);
 				NetworkStart();
 				networkObject.Networker.FlushCreateActions(networkObject);
 			});

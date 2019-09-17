@@ -42,6 +42,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						{
 							var go = Instantiate(>:[i]:<NetworkObject[obj.CreateCode]);
 							newObj = go.GetComponent<>:[i]:<Behavior>();
+							go.SetActive(false);
 						}
 					}
 
