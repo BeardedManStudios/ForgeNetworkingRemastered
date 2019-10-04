@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using BeardedManStudios.Forge.Networking.DataStore;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Source.Forge.Networking;
@@ -452,10 +451,10 @@ namespace BeardedManStudios.Forge.Networking
 
 		private void LoopNetworkObjectHeartbeats()
 		{
-			while (IsBound)
+			while (IsActiveSession)
 			{
 				RunNetworkObjectHeartbeats();
-				Thread.Sleep(10);
+				Task.Sleep(10);
 			}
 		}
 
@@ -1010,9 +1009,8 @@ namespace BeardedManStudios.Forge.Networking
 			this.authenticator = authenticator;
 		}
 
-		private static void BindAndReleaseOnTCP(object state)
+		private static void BindAndReleaseOnTCP(ushort port)
 		{
-			ushort port = (ushort)state;
 			try
 			{
 				//IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
@@ -1039,7 +1037,7 @@ namespace BeardedManStudios.Forge.Networking
 				port = DEFAULT_PORT - 1;
 			}
 
-			ThreadPool.QueueUserWorkItem(BindAndReleaseOnTCP, port);
+			Task.Queue(() => { BindAndReleaseOnTCP(port); });
 		}
 
 		public static void EndSession()
@@ -1047,12 +1045,10 @@ namespace BeardedManStudios.Forge.Networking
 			EndingSession = true;
 			CloseLocalListingsClient();
 
-			// Reset the ending session after 1000ms so that we know all the threads have cleaned up
-			// for any remaining threads that may be going for this previous process
-			Task.Queue(() =>
-			{
-				EndingSession = false;
-			}, 1000);
+			// Wait until all the threads have cleaned up before resetting the termination flag
+			Task.WaitAll();
+
+			EndingSession = false;
 		}
 
 		public Ping GeneratePing()

@@ -310,7 +310,7 @@ namespace BeardedManStudios.Forge.Networking
 			BMSByte packet = null;
 
 			// Intentional infinite loop
-			while (IsBound)
+			while (IsActiveSession)
 			{
 				// If the read has been flagged to be canceled then break from this loop
 				if (IsReadThreadCancelPending)

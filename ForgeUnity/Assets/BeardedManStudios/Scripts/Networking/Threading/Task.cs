@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using BeardedManStudios.Forge.Logging;
 
 namespace BeardedManStudios.Threading
 {
@@ -26,11 +27,20 @@ namespace BeardedManStudios.Threading
 	public static class Task
 	{
 		/// <summary>
+		/// Event that is signaled when all task threads have completed their execution
+		/// </summary>
+		public static ManualResetEvent threadsJoinedEvent = new ManualResetEvent(true);
+
+		private static int numRunningTasks = 0;
+
+		/// <summary>
 		/// Sets the method that is to be executed on the separate thread
 		/// </summary>
 		/// <param name="expression">The method that is to be called on the newly created thread</param>
 		private static void QueueExpression(WaitCallback expression)
 		{
+			Interlocked.Increment(ref numRunningTasks);
+			threadsJoinedEvent.Reset();
 			ThreadPool.QueueUserWorkItem(expression);
 		}
 
@@ -51,6 +61,10 @@ namespace BeardedManStudios.Threading
 
 				// Call the requested method
 				expression();
+				if (Interlocked.Decrement(ref numRunningTasks) == 0)
+				{
+					threadsJoinedEvent.Set();
+				}
 			};
 
 			// Set the method to be called on the separate thread to be the inline method we have just created
@@ -60,6 +74,17 @@ namespace BeardedManStudios.Threading
 		public static void Sleep(int milliseconds)
 		{
 			Thread.Sleep(milliseconds);
+		}
+
+		/// <summary>
+		/// Block execution until all enqueued tasks have completed
+		/// </summary>
+		public static void WaitAll()
+		{
+			while (!threadsJoinedEvent.WaitOne(1000, false))
+			{
+				BMSLog.LogFormat("Task: WaitAll waited for 1s");
+			}
 		}
 	}
 }

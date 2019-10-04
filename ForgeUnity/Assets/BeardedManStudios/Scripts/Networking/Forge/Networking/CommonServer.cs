@@ -110,7 +110,7 @@ namespace BeardedManStudios.Forge.Networking
 		public void CheckClientTimeout(Action<NetworkingPlayer> timeoutDisconnect)
 		{
 			List<NetworkingPlayer> timedoutPlayers = new List<NetworkingPlayer>();
-			while (server.IsBound)
+			while (server.IsActiveSession)
 			{
 				server.IteratePlayers((player) =>
 				{
