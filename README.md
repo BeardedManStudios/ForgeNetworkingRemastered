@@ -3,9 +3,6 @@
 
 
 
-[![Backers on Open Collective](https://opencollective.com/forgenetworking/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/forgenetworking/sponsors/badge.svg)](#sponsors) 
-
 In short, Forge Networking is a free and open source multiplayer game (multi-user) networking system that has a very good integration with the Unity game engine. You wanna make a multiplayer game or real time multi-user application? This is the library for you.
 
 Welcome to the most innovative networking solution (which works with the Unity game engine). Forge's network bandwidth is unbeatable, its performance outclasses other solutions, its flexibility is in a league of its own, and, as always, it has no CCU limits whatsoever. Forge Networking is an open source networking solution built in C#. It is completely multi-threaded and was designed to work both inside and outside of the Unity Game Engine but mainly in conjunction with Unity. To get started, check out the links listed below in this readme.
@@ -47,7 +44,8 @@ Use the links below to learn how to create your first project with Forge Remaste
 
 ## Ways to support the project
 1) Make pull requests :D
-2) Any donations are much appreciated <3
+2) [GitHub Sponsorship](https://github.com/sponsors/BrentFarris)
+3) Any donations are much appreciated <3
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CXPTUZR3KBLU)
 
@@ -55,31 +53,6 @@ Use the links below to learn how to create your first project with Forge Remaste
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
 <a href="https://github.com/undefined/undefinedgraphs/contributors"><img src="https://opencollective.com/forgenetworking/contributors.svg?width=890&button=false" /></a>
-
-
-## Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/forgenetworking#backer)]
-
-<a href="https://opencollective.com/forgenetworking#backers" target="_blank"><img src="https://opencollective.com/forgenetworking/backers.svg?width=890"></a>
-
-
-## Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/forgenetworking#sponsor)]
-
-<a href="https://opencollective.com/forgenetworking/sponsor/0/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/1/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/2/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/3/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/4/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/5/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/6/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/7/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/8/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/forgenetworking/sponsor/9/website" target="_blank"><img src="https://opencollective.com/forgenetworking/sponsor/9/avatar.svg"></a>
-
-
 
 ## License (MIT)
 Copyright 2017 Bearded Man Studios, Inc.
