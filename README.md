@@ -52,7 +52,7 @@ Use the links below to learn how to create your first project with Forge Remaste
 ## Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/undefined/undefinedgraphs/contributors"><img src="https://opencollective.com/forgenetworking/contributors.svg?width=890&button=false" /></a>
+<img src="https://opencollective.com/forgenetworking/contributors.svg?width=890&button=false" />
 
 ## License (MIT)
 Copyright 2017 Bearded Man Studios, Inc.
