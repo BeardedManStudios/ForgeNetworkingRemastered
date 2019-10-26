@@ -162,6 +162,7 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
+			Cleanup();
 			NetworkManager.Instance.Disconnect();
 			SceneManager.LoadScene(0);
 		}
@@ -176,9 +177,12 @@ public class CubeForgeGame : CubeForgeGameBehavior
 
 	private void Cleanup()
 	{
-		NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
-		NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
-		NetworkManager.Instance.objectInitialized -= ObjectInitialized;
+		if (NetworkManager.Instance != null)
+		{
+			NetworkManager.Instance.Networker.playerAccepted -= PlayerAccepted;
+			NetworkManager.Instance.Networker.onPingPong -= OnPingPong;
+			NetworkManager.Instance.objectInitialized -= ObjectInitialized;
+		}
 
 		if (networkObject != null)
 			networkObject.Destroy();
