@@ -140,11 +140,17 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Plugins\$(TargetFileName)"
-copy "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\Forge Networking Remastered Unity\Assets\Bearded Man Studios Inc\Plugins\$(TargetName).pdb"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <Target Name="AfterBuild">
+        <Copy SourceFiles="$(TargetPath)"
+              DestinationFolder="$(ProjectDir)..\ForgeUnity\Assets\BeardedManStudios\Plugins\"
+              OverwriteReadOnlyFiles="true"
+              SkipUnchangedFiles="false" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb"
+              DestinationFolder="$(ProjectDir)..\ForgeUnity\Assets\BeardedManStudios\Plugins\"
+              OverwriteReadOnlyFiles="true"
+              SkipUnchangedFiles="false" />
+    </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
