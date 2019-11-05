@@ -1,8 +1,10 @@
-﻿using BeardedManStudios.Forge.Networking.Frame;
+﻿using System;
+using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
+using BeardedManStudios.Forge.Networking.SQP;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -23,6 +25,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public NetWorker MasterServerNetworker { get; protected set; }
 		public Dictionary<int, INetworkBehavior> pendingObjects = new Dictionary<int, INetworkBehavior>();
 		public Dictionary<int, NetworkObject> pendingNetworkObjects = new Dictionary<int, NetworkObject>();
+
+		public ForgeSettings Settings;
+
 		protected string _masterServerHost;
 		protected ushort _masterServerPort;
 
@@ -41,6 +46,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// </summary>
 		protected bool initialized;
 
+		/// <summary>
+		/// The service that handles Server Query Protocol requests
+		/// </summary>
+		protected SQPServer sqpServer;
+
 #if FN_WEBSERVER
 		MVCWebServer.ForgeWebServer webserver = null;
 #endif
@@ -58,6 +68,16 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			// This object should move through scenes
 			DontDestroyOnLoad(gameObject);
+
+			if (Settings == null)
+			{
+				Debug.LogError("No settings were provided. Trying to find default settings");
+				Settings = FindObjectOfType<ForgeSettings>();
+				if (Settings == null)
+				{
+					throw new BaseNetworkException("Could not find forge settings!");
+				}
+			}
 		}
 
 		protected virtual void OnEnable()
@@ -90,6 +110,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			if (Networker is IServer)
 			{
+				if (Settings.enableSQP)
+				{
+					sqpServer = new SQPServer(Settings.SQPPort);
+				}
+
 				if (!string.IsNullOrEmpty(masterServerHost))
 				{
 					_masterServerHost = masterServerHost;
@@ -352,6 +377,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker != null)
 				Networker.Disconnect(false);
 
+			if (sqpServer != null)
+				sqpServer.ShutDown();
+
 			NetWorker.EndSession();
 
 			NetworkObject.ClearNetworkObjects(Networker);
@@ -368,6 +396,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			if (Networker != null)
 				Networker.Disconnect(false);
 
+			if (sqpServer != null)
+				sqpServer.ShutDown();
+
 			NetWorker.EndSession();
 		}
 
@@ -378,6 +409,26 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				for (int i = 0; i < Networker.NetworkObjectList.Count; i++)
 					Networker.NetworkObjectList[i].InterpolateUpdate();
 			}
+
+			if (sqpServer != null)
+			{
+				UpdateSQPServer();
+			}
+		}
+
+		protected virtual void UpdateSQPServer()
+		{
+			// Update SQP data with current values
+			var sid = sqpServer.ServerInfoData;
+
+			sid.Port = Networker.Port;
+			// This count will include the host, for dedicated server setups it needs to be count-1
+			sid.CurrentPlayers = Convert.ToUInt16(Networker.Players.Count);
+			sid.MaxPlayers = Convert.ToUInt16(Networker.MaxConnections);
+			sid.ServerName = Settings.serverName;
+			sid.ServerType = Settings.type;
+
+			sqpServer.Update();
 		}
 
 		protected virtual void ProcessOthers(Transform obj, NetworkObject createTarget, ref uint idOffset, NetworkBehavior netBehavior = null)
@@ -423,9 +474,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					go.transform.position = position.Value;
 			}
 
-			//if (sendTransform)
-			// obj.SendRpc(NetworkBehavior.RPC_SETUP_TRANSFORM, Receivers.AllBuffered, go.transform.position, go.transform.rotation);
-
 			if (!skipOthers)
 			{
 				// Go through all associated network behaviors in the hierarchy (including self) and
@@ -433,6 +481,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				uint idOffset = 1;
 				ProcessOthers(go.transform, obj, ref idOffset, (NetworkBehavior)netBehavior);
 			}
+
+			go.SetActive(true);
 		}
 
 		/// <summary>

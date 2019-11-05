@@ -3,6 +3,8 @@ using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.SimpleJSON;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 namespace NatHolePunchServer
 {
@@ -53,17 +55,17 @@ namespace NatHolePunchServer
 				{
 					server.Disconnect(player, false);
 
-					string addresss = json["host"];
+					string address = json["host"];
 					ushort port = json["port"].AsUShort;
 					ushort listeningPort = json["clientPort"].AsUShort;
 
-					addresss = NetWorker.ResolveHost(addresss, port).Address.ToString();
+					address = ResolveHost(address, port).Address.ToString();
 
-					if (!hosts.ContainsKey(addresss))
+					if (!hosts.ContainsKey(address))
 						return;
 
 					Host foundHost = new Host();
-					foreach (Host iHost in hosts[addresss])
+					foreach (Host iHost in hosts[address])
 					{
 						if (iHost.port == port)
 						{
@@ -136,6 +138,42 @@ namespace NatHolePunchServer
 			}
 
 			return false;
+		}
+
+		public static IPEndPoint ResolveHost(string host, ushort port)
+		{
+			// Check for any localhost type addresses
+			if (host == "0.0.0.0" || host == "127.0.0.1" || host == "::0")
+				return new IPEndPoint(IPAddress.Parse(host), port);
+			else if (host == "localhost")
+				return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+
+			IPAddress ipAddress;
+
+			if (!IPAddress.TryParse(host, out ipAddress))
+			{
+				IPHostEntry hostCheck = Dns.GetHostEntry(Dns.GetHostName());
+				foreach (IPAddress ip in hostCheck.AddressList)
+				{
+					if (ip.AddressFamily == AddressFamily.InterNetwork)
+					{
+						if (ip.ToString() == host)
+							return new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+					}
+				}
+
+				try
+				{
+					IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+					ipAddress = ipHostInfo.AddressList[0];
+				}
+				catch
+				{
+					throw new ArgumentException("Unable to resolve host");
+				}
+			}
+
+			return new IPEndPoint(ipAddress, port);
 		}
 	}
 }

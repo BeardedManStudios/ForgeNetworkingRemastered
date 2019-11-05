@@ -183,7 +183,7 @@ namespace BeardedManStudios.Forge.Networking
                         func();
                 });
 
-                m_CreateLobbyResult = SteamMatchmaking.CreateLobby(lobbyType, 5);
+                m_CreateLobbyResult = SteamMatchmaking.CreateLobby(lobbyType, MaxConnections);
                 // Do any generic initialization in result of the successful bind
                 OnBindSuccessful();
 
@@ -226,7 +226,7 @@ namespace BeardedManStudios.Forge.Networking
             // Since we are disconnecting we need to stop the read thread
             Logging.BMSLog.Log("<color=cyan>SteamP2P server disconnecting...</color>");
             StopAcceptingConnections();
-			readThreadCancel = true;
+			CancelReadThread();
 
 			lock (Players)
 			{
@@ -338,7 +338,7 @@ namespace BeardedManStudios.Forge.Networking
 			while (IsBound)
 			{
 				// If the read has been flagged to be canceled then break from this loop
-				if (readThreadCancel)
+				if (IsReadThreadCancelPending)
 					return;
 
 				try
@@ -496,7 +496,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				// Add the packet to the manager so that it can be tracked and executed on complete
-				currentReadingPlayer.PacketManager.AddPacket(formattedPacket, PacketSequenceComplete, this);
+				currentReadingPlayer.PacketManager.AddAndTrackPacket(formattedPacket, PacketSequenceComplete, this);
 			}
 			catch (Exception e)
 			{
@@ -526,55 +526,119 @@ namespace BeardedManStudios.Forge.Networking
 
 		public override void FireRead(FrameStream frame, NetworkingPlayer currentPlayer)
 		{
-			// Check for default messages
-			if (frame is Text)
+			if (IsDefaultMessage(frame))
 			{
-                // This packet is sent if the player did not receive it's network id
-                if (frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST)
-                {
-                    currentPlayer.InstanceGuid = frame.ToString();
-
-                    bool rejected;
-                    OnPlayerGuidAssigned(currentPlayer, out rejected);
-
-                    // If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
-                    if (rejected)
-                        return;
-
-                    // If so, check if there's a user authenticator
-                    if (authenticator != null)
-                    {
-                        authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
-                    } else
-                    {
-                        AuthUser(currentPlayer);
-                    }
-                    return;
-                }
-            } else if (frame is Binary)
-            {
-                if (frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE)
-                {
-                    // Authenticate user response
-                    if (currentPlayer.Authenticated || authenticator == null)
-                        return;
-
-                    authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
-                    return;
-                }
-            }
-
-            if (frame is ConnectionClose)
-			{
-				//Send(currentReadingPlayer, new ConnectionClose(Time.Timestep, false, Receivers.Server, MessageGroupIds.DISCONNECT, false), false);
-
-				Disconnect(currentReadingPlayer, true);
-				CleanupDisconnections();
-				return;
+				HandleDefaultMessages(frame, currentPlayer);
 			}
+			else
+			{
+				// Send an event off that a packet has been read
+				OnMessageReceived(currentReadingPlayer, frame);
+			}
+		}
 
-			// Send an event off that a packet has been read
-			OnMessageReceived(currentReadingPlayer, frame);
+		/// <summary>
+		/// Handle default messages like network id request, authentication and connection close
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <param name="currentPlayer"></param>
+		private void HandleDefaultMessages(FrameStream frame, NetworkingPlayer currentPlayer)
+		{
+			if (IsFrameNetworkIdRequest(frame))
+				HandleNetworkIdRequest(currentPlayer, frame);
+			else if (IsFrameAuthenticationResponse(frame))
+				HandleAuthenticationResponse(currentPlayer, frame);
+			else if (IsFrameConnectionClose(frame))
+				HandleConnectionCloseFrame();
+		}
+
+		/// <summary>
+		/// Is the <see cref="FrameStream"/> a network id request frame?
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns>True if the <see cref="FrameStream"/> is a network id request frame, False otherwise</returns>
+		private bool IsFrameNetworkIdRequest(FrameStream frame)
+		{
+			return frame is Text && frame.GroupId == MessageGroupIds.NETWORK_ID_REQUEST;
+		}
+
+		/// <summary>
+		/// Is the <see cref="FrameStream"/> an authentication response frame?
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns>True if the <see cref="FrameStream"/> is an authentication frame, False otherwise</returns>
+		private bool IsFrameAuthenticationResponse(FrameStream frame)
+		{
+			return frame is Binary && frame.GroupId == MessageGroupIds.AUTHENTICATION_RESPONSE;
+		}
+
+		/// <summary>
+		/// Is the <see cref="FrameStream"/> a connection close frame?
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns>True if the <see cref="FrameStream"/> is a connection close frame, False otherwise</returns>
+		private bool IsFrameConnectionClose(FrameStream frame)
+		{
+			return frame is ConnectionClose;
+		}
+
+		/// <summary>
+		/// Is the <see cref="FrameStream"/> a defualt forge message frame?
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns></returns>
+		private bool IsDefaultMessage(FrameStream frame)
+		{
+			return IsFrameNetworkIdRequest(frame)
+			       || IsFrameAuthenticationResponse(frame)
+			       || IsFrameConnectionClose(frame);
+		}
+
+		/// <summary>
+		/// Handle network id requests
+		/// </summary>
+		/// <param name="currentPlayer"></param>
+		/// <param name="frame"></param>
+		private void HandleNetworkIdRequest(NetworkingPlayer currentPlayer, FrameStream frame)
+		{
+			currentPlayer.InstanceGuid = frame.ToString();
+
+			// If the player was rejected during the handling of the playerGuidAssigned event, don't accept them.
+			if (!TryPlayerGuidAssignment(currentPlayer))
+				return;
+
+			// If so, check if there's a user authenticator
+			if (authenticator != null)
+			{
+				authenticator.IssueChallenge(this, currentPlayer, IssueChallenge, AuthUser);
+			}
+			else
+			{
+				AuthUser(currentPlayer);
+			}
+		}
+
+		/// <summary>
+		/// Handle authentication responses
+		/// </summary>
+		/// <param name="currentPlayer"></param>
+		/// <param name="frame"></param>
+		private void HandleAuthenticationResponse(NetworkingPlayer currentPlayer, FrameStream frame)
+		{
+			// Authenticate user response
+			if (currentPlayer.Authenticated || authenticator == null)
+				return;
+
+			authenticator.VerifyResponse(this, currentPlayer, frame.StreamData, AuthUser, RejectUser);
+		}
+
+		/// <summary>
+		/// Handle connection close
+		/// </summary>
+		private void HandleConnectionCloseFrame()
+		{
+			Disconnect(currentReadingPlayer, true);
+			CleanupDisconnections();
 		}
 
         /// <summary>

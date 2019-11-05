@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestProgram", "..\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicStandAloneServer", "..\BasicStandAloneServer\BasicStandAloneServer.csproj", "{BEFCD412-96E9-42F1-8841-AA2F500DBDA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingUnityEditor", "..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj", "{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeUnity", "..\ForgeUnity\Forge Networking Remastered Unity.csproj", "{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
