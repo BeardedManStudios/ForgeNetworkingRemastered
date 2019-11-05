@@ -511,6 +511,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				if (Networker is IServer)
 					return;
 
+				if (!automaticScenes)
+					return;
+
 				int count = frame.StreamData.GetBasicType<int>();
 
                 loadingScenes.Clear();
@@ -544,6 +547,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				return;
 			}
 
+			if (!automaticScenes)
+				return;
+
 			// Get the sceme index we are talking about
 			int sceneIndex = frame.StreamData.GetBasicType<int>();
 
@@ -574,6 +580,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					loadingScenes.Add(sceneIndex);
 				}
 
+				// Called when the server wants you to change the scene
 				if (networkSceneChanging != null)
 					networkSceneChanging(sceneIndex, mode);
 
