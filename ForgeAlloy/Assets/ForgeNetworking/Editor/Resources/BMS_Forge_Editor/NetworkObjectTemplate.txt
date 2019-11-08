@@ -1,0 +1,161 @@
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Unity;
+using System;
+using UnityEngine;
+
+namespace BeardedManStudios.Forge.Networking.Generated
+{
+	[GeneratedInterpol("{\"inter\":[>:interpolateValues:<]")]
+	public partial class >:className:< : NetworkObject
+	{
+		public const int IDENTITY = >:identity:<;
+
+		private byte[] _dirtyFields = new byte[>:bitwiseSize:<];
+
+		#pragma warning disable 0067
+		public event FieldChangedEvent fieldAltered;
+		#pragma warning restore 0067
+		>:FOREVERY variables:<
+		[ForgeGeneratedField]
+		private >:[0]:< _>:[1]:<;
+		public event FieldEvent<>:[0]:<> >:[1]:<Changed;
+		public >:[3]:< >:[1]:<Interpolation = new >:[3]:<() { LerpT = >:[4]:<, Enabled = >:[2]:< };
+		public >:[0]:< >:[1]:<
+		{
+			get { return _>:[1]:<; }
+			set
+			{
+				// Don't do anything if the value is the same
+				if (_>:[1]:< == value)
+					return;
+
+				// Mark the field as dirty for the network to transmit
+				_dirtyFields[>:[6]:<] |= >:[5]:<;
+				_>:[1]:< = value;
+				hasDirtyFields = true;
+			}
+		}
+
+		public void Set>:[1]:<Dirty()
+		{
+			_dirtyFields[>:[6]:<] |= >:[5]:<;
+			hasDirtyFields = true;
+		}
+
+		private void RunChange_>:[1]:<(ulong timestep)
+		{
+			if (>:[1]:<Changed != null) >:[1]:<Changed(_>:[1]:<, timestep);
+			if (fieldAltered != null) fieldAltered(">:[1]:<", _>:[1]:<, timestep);
+		}
+		>:ENDFOREVERY:<
+		>:FOREVERY rewinds:<
+		public Rewind<>:[0]:<> rewind>:[1]:< = new Rewind<>:[0]:<>() { rewindTime = >:[2]:< };
+		>:ENDFOREVERY:<
+
+		protected override void OwnershipChanged()
+		{
+			base.OwnershipChanged();
+			SnapInterpolations();
+		}
+		
+		public void SnapInterpolations()
+		{
+			>:FOREVERY variables:<
+			>:[1]:<Interpolation.current = >:[1]:<Interpolation.target;
+			>:ENDFOREVERY:<
+		}
+
+		public override int UniqueIdentity { get { return IDENTITY; } }
+
+		protected override BMSByte WritePayload(BMSByte data)
+		{
+			>:FOREVERY variables:<
+			UnityObjectMapper.Instance.MapBytes(data, _>:[1]:<);
+			>:ENDFOREVERY:<
+
+			return data;
+		}
+
+		protected override void ReadPayload(BMSByte payload, ulong timestep)
+		{
+			>:FOREVERY variables:<
+			_>:[1]:< = UnityObjectMapper.Instance.Map<>:[0]:<>(payload);
+			>:[1]:<Interpolation.current = _>:[1]:<;
+			>:[1]:<Interpolation.target = _>:[1]:<;
+			RunChange_>:[1]:<(timestep);
+			>:ENDFOREVERY:<
+		}
+
+		protected override BMSByte SerializeDirtyFields()
+		{
+			dirtyFieldsData.Clear();
+			dirtyFieldsData.Append(_dirtyFields);
+
+			>:FOREVERY variables:<
+			if ((>:[5]:< & _dirtyFields[>:[6]:<]) != 0)
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _>:[1]:<);
+			>:ENDFOREVERY:<
+
+			// Reset all the dirty fields
+			for (int i = 0; i < _dirtyFields.Length; i++)
+				_dirtyFields[i] = 0;
+
+			return dirtyFieldsData;
+		}
+
+		protected override void ReadDirtyFields(BMSByte data, ulong timestep)
+		{
+			if (readDirtyFlags == null)
+				Initialize();
+
+			Buffer.BlockCopy(data.byteArr, data.StartIndex(), readDirtyFlags, 0, readDirtyFlags.Length);
+			data.MoveStartIndex(readDirtyFlags.Length);
+
+			>:FOREVERY variables:<
+			if ((>:[5]:< & readDirtyFlags[>:[6]:<]) != 0)
+			{
+				if (>:[1]:<Interpolation.Enabled)
+				{
+					>:[1]:<Interpolation.target = UnityObjectMapper.Instance.Map<>:[0]:<>(data);
+					>:[1]:<Interpolation.Timestep = timestep;
+				}
+				else
+				{
+					_>:[1]:< = UnityObjectMapper.Instance.Map<>:[0]:<>(data);
+					RunChange_>:[1]:<(timestep);
+				}
+			}
+			>:ENDFOREVERY:<
+		}
+
+		public override void InterpolateUpdate()
+		{
+			if (IsOwner)
+				return;
+
+			>:FOREVERY variables:<
+			if (>:[1]:<Interpolation.Enabled && !>:[1]:<Interpolation.current.UnityNear(>:[1]:<Interpolation.target, 0.0015f))
+			{
+				_>:[1]:< = (>:[0]:<)>:[1]:<Interpolation.Interpolate();
+				//RunChange_>:[1]:<(>:[1]:<Interpolation.Timestep);
+			}
+			>:ENDFOREVERY:<
+		}
+
+		private void Initialize()
+		{
+			if (readDirtyFlags == null)
+				readDirtyFlags = new byte[>:bitwiseSize:<];
+
+			>:FOREVERY rewinds:<
+			rewind>:[1]:<.Time = NetWorker.Time;
+			>:ENDFOREVERY:<
+		}
+
+		public >:className:<() : base() { Initialize(); }
+		public >:className:<(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null) : base(networker, networkBehavior, createCode, metadata) { Initialize(); }
+		public >:className:<(NetWorker networker, uint serverId, FrameStream frame) : base(networker, serverId, frame) { Initialize(); }
+
+		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
+	}
+}
