@@ -123,7 +123,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					RegisterOnMasterServer(masterServerRegisterData);
 				}
 
-				Networker.playerAccepted += PlayerAcceptedSceneSetup;
+				if (automaticScenes)
+				{
+					Networker.playerAccepted += PlayerAcceptedSceneSetup;
+				}
 
 #if FN_WEBSERVER
 				string pathToFiles = "fnwww/html";
@@ -511,9 +514,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 				if (Networker is IServer)
 					return;
 
-				if (!automaticScenes)
-					return;
-
 				int count = frame.StreamData.GetBasicType<int>();
 
                 loadingScenes.Clear();
@@ -546,9 +546,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 				return;
 			}
-
-			if (!automaticScenes)
-				return;
 
 			// Get the sceme index we are talking about
 			int sceneIndex = frame.StreamData.GetBasicType<int>();
