@@ -1,58 +1,72 @@
-﻿using Forge.Serialization;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
+using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
 	public class UDPSocket : ISocket, IServerSocket, IClientSocket
 	{
-		private readonly Socket _socket;
+		public EndPoint EndPoint { get; private set; }
+
+		private BMSByte _acceptBuffer = new BMSByte();
+
+		private readonly Socket _acceptSocket;
+		private readonly Socket _liveSocket;
 
 		public UDPSocket()
 		{
-			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_liveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_acceptBuffer.SetArraySize(256);
 		}
 
 		public UDPSocket(Socket socket)
 		{
-			_socket = socket;
+			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_acceptBuffer.SetArraySize(256);
+			_liveSocket = socket;
 		}
 
 		public ISocket AwaitAccept()
 		{
-			throw new System.NotImplementedException();
+			EndPoint ep = default;
+			var sock = new UDPSocket();
+			_acceptSocket.ReceiveFrom(_acceptBuffer.byteArr, 0, _acceptBuffer.Size, SocketFlags.None, ref ep);
+			sock.EndPoint = ep;
+			return sock;
 		}
 
 		public void Close()
 		{
-			_socket.Close();
+			_acceptSocket.Close();
+			_liveSocket.Close();
 		}
 
 		public void Connect(string address, ushort port)
 		{
-			var endpoint = GetEndpoint(address, port);
-			_socket.Connect(endpoint);
+			EndPoint = GetEndpoint(address, port);
+			_liveSocket.Connect(EndPoint);
 		}
 
 		public void Listen(string address, ushort port, int maxParallelConnections)
 		{
 			var endpoint = GetEndpoint(address, port);
-			_socket.Bind(endpoint);
-			_socket.Listen(maxParallelConnections);
+			_acceptSocket.Bind(endpoint);
+			_acceptSocket.Listen(maxParallelConnections);
 		}
 
 		public int Receive(BMSByte buffer)
 		{
 			buffer.Clear();
-			int length = _socket.Receive(buffer.byteArr);
+			int length = _liveSocket.Receive(buffer.byteArr);
 			buffer.AugmentSize(length);
 			return length;
 		}
 
-		public void Send(byte[] buffer, int length)
+		public void Send(ISocket target, byte[] buffer, int length)
 		{
 			int offset = 0;
-			_socket.Send(buffer, offset, length, SocketFlags.None);
+			_liveSocket.SendTo(buffer, offset, length, SocketFlags.None, target.EndPoint);
 		}
 
 		private IPEndPoint GetEndpoint(string address, ushort port)

@@ -6,6 +6,8 @@ namespace Forge.Networking.Sockets
 {
 	public class TCPSocket : ISocket, IServerSocket, IClientSocket
 	{
+		public EndPoint EndPoint => _socket.RemoteEndPoint;
+
 		private readonly Socket _socket;
 
 		public TCPSocket()
@@ -50,10 +52,10 @@ namespace Forge.Networking.Sockets
 			return length;
 		}
 
-		public void Send(byte[] buffer, int length)
+		public void Send(ISocket target, byte[] buffer, int length)
 		{
 			int offset = 0;
-			_socket.Send(buffer, offset, length, SocketFlags.None);
+			_socket.SendTo(buffer, offset, length, SocketFlags.None, target.EndPoint);
 		}
 
 		private IPEndPoint GetEndpoint(string address, ushort port)
