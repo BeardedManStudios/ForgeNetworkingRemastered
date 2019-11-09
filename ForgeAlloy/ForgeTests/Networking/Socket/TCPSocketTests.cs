@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
 using NUnit.Framework;

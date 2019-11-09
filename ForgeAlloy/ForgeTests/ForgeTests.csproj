@@ -63,6 +63,7 @@
     <Compile Include="BMSByteTests.cs" />
     <Compile Include="ForgeNetworkingTest.cs" />
     <Compile Include="Networking\Messaging\ForgeMessageTests.cs" />
+    <Compile Include="Networking\Messaging\MessageRepositoryTests.cs" />
     <Compile Include="Networking\Players\PlayerRepositoryTests.cs" />
     <Compile Include="Networking\Socket\TCPSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,7 +77,10 @@
       <Name>Forge</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Networking\Messaging\Interpreters\" />
+    <Folder Include="Networking\Messaging\Messages\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

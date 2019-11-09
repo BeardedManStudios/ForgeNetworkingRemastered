@@ -41,5 +41,10 @@ namespace Forge
 			}
 			return (T)factoryMethod();
 		}
+
+		public static void Clear()
+		{
+			_typeLookup.Clear();
+		}
 	}
 }

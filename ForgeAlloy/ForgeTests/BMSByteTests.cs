@@ -1,7 +1,7 @@
 ﻿using Forge.Serialization;
 using NUnit.Framework;
 
-namespace Forge.Tests
+namespace ForgeTests
 {
 	[TestFixture]
 	public class BMSByteTests

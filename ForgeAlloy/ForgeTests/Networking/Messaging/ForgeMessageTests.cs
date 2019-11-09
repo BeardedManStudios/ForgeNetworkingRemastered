@@ -1,14 +1,14 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Serialization;
 using NUnit.Framework;
-using System;
 
-namespace Forge.Tests.Networking.Messaging
+namespace ForgeTests.Networking.Messaging
 {
 	[TestFixture]
-	public class ForgeMessageTests
+	public class ForgeMessageTests : ForgeNetworkingTest
 	{
 		private static IMessage interpretedMessage = null;
 
@@ -42,18 +42,16 @@ namespace Forge.Tests.Networking.Messaging
 			}
 		}
 
-		[SetUp]
-		public void Setup()
+		public override void Setup()
 		{
+			base.Setup();
 			ForgeMessageCodes.Register<ForgeMessageMock>(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
-			ForgeTypeFactory.Register<IMessageReceipt, ForgeMessageReceipt>();
 		}
 
-		[TearDown]
-		public void Teardown()
+		public override void Teardown()
 		{
+			base.Teardown();
 			ForgeMessageCodes.Unregister(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
-			ForgeTypeFactory.Unregister<IMessageReceipt>();
 			interpretedMessage = null;
 		}
 

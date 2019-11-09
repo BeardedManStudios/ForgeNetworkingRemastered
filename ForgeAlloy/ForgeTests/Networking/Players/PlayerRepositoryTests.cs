@@ -1,8 +1,9 @@
 ﻿using FakeItEasy;
+using Forge;
 using Forge.Networking.Players;
 using NUnit.Framework;
 
-namespace Forge.Tests.Networking.Player
+namespace ForgeTests.Networking.Player
 {
 	[TestFixture]
 	public class PlayerRepositoryTests : ForgeNetworkingTest

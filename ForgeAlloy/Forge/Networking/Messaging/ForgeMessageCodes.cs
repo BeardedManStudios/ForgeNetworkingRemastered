@@ -29,5 +29,10 @@ namespace Forge.Networking.Messaging
 			Type t = _codeTypeLookup[code];
 			return Activator.CreateInstance(t);
 		}
+
+		public static void Clear()
+		{
+			_codeTypeLookup.Clear();
+		}
 	}
 }

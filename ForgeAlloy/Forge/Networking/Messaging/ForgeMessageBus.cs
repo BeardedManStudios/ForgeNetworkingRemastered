@@ -1,4 +1,5 @@
 ﻿using System;
+using Forge.Networking.Messaging.Messages;
 using Forge.Serialization;
 
 namespace Forge.Networking.Messaging

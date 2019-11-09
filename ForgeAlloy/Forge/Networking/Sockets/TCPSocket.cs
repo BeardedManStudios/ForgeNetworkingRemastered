@@ -1,12 +1,12 @@
-﻿using Forge.Serialization;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
+using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
 	public class TCPSocket : ISocket, IServerSocket, IClientSocket
 	{
-		private Socket _socket;
+		private readonly Socket _socket;
 
 		public TCPSocket()
 		{
