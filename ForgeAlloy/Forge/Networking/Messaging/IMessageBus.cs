@@ -2,8 +2,8 @@
 {
 	public interface IMessageBus
 	{
-		void SendMessage(IMessage message, IMessageReciever reciever);
-		IMessageReceipt SendReliableMessage(IMessage message, IMessageReciever reciever);
-		void ReceiveMessageBuffer(INetworkHost host, byte[] messageBuffer);
+		void SendMessage(IMessage message, IMessageClient reciever);
+		IMessageReceipt SendReliableMessage(IMessage message, IMessageClient reciever);
+		void ReceiveMessageBuffer(INetwork host, IMessageClient sender, byte[] messageBuffer);
 	}
 }

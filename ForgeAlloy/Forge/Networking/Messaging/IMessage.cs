@@ -7,7 +7,7 @@ namespace Forge.Networking.Messaging
 		int MessageCode { get; set; }
 		IMessageReceipt Receipt { get; set; }
 		IMessageInterpreter Interpreter { get; }
-		void Interpret(INetworkHost host);
+		void Interpret(INetwork host);
 		void Serialize(BMSByte buffer);
 		void Deserialize(BMSByte buffer);
 	}

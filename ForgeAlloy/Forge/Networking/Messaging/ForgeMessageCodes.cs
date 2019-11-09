@@ -6,6 +6,9 @@ namespace Forge.Networking.Messaging
 	public static partial class ForgeMessageCodes
 	{
 		public const int UNIT_TEST_MOCK_MESSAGE = -1;
+		public const int SEND_NAME_MESSAGE = 0;
+
+
 
 		private static readonly Dictionary<int, Type> _codeTypeLookup = new Dictionary<int, Type>();
 

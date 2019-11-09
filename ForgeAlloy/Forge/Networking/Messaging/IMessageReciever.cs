@@ -1,6 +1,6 @@
 ﻿namespace Forge.Networking.Messaging
 {
-	public interface IMessageReciever
+	public interface IMessageClient
 	{
 		void Send(byte[] message);
 	}

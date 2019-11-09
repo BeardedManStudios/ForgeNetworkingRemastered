@@ -17,6 +17,7 @@ namespace Forge.Tests.Networking.Player
 			repo.AddPlayer(player);
 			Assert.AreEqual(1, repo.Count);
 			INetPlayer found = repo.GetPlayer(player.Id);
+			Assert.AreEqual(player, found);
 			Assert.AreEqual(player.Id, found.Id);
 			Assert.AreEqual(1, repo.Count);
 		}
@@ -54,6 +55,7 @@ namespace Forge.Tests.Networking.Player
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(9);
 			var repo = ForgeTypeFactory.Get<IPlayerRepository>();
+			repo.AddPlayer(player);
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(1));
 		}
 	}

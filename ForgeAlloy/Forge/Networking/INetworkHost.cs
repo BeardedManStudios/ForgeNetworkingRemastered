@@ -1,6 +1,6 @@
 ﻿namespace Forge.Networking
 {
-	public interface INetworkHost
+	public interface INetwork
 	{
 
 	}

@@ -2,6 +2,6 @@
 {
 	public interface IMessageInterpreter
 	{
-		void Interpret(INetworkHost netHost, IMessage message);
+		void Interpret(INetwork netHost, IMessage message);
 	}
 }

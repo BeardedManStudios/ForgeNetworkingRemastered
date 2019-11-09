@@ -18,8 +18,9 @@ namespace Forge.Networking.Messaging
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);
 
-		public void Interpret(INetworkHost host)
+		public void Interpret(INetwork host)
 		{
+			this.GetHashCode();
 			Interpreter.Interpret(host, this);
 		}
 	}

@@ -1,9 +1,9 @@
-﻿using System;
-using FakeItEasy;
+﻿using FakeItEasy;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Serialization;
 using NUnit.Framework;
+using System;
 
 namespace Forge.Tests.Networking.Messaging
 {
@@ -22,9 +22,9 @@ namespace Forge.Tests.Networking.Messaging
 				get
 				{
 					var mockInterpreter = A.Fake<IMessageInterpreter>();
-					A.CallTo(() => mockInterpreter.Interpret(A<INetworkHost>._, A<IMessage>._)).Invokes((ctx) =>
+					A.CallTo(() => mockInterpreter.Interpret(A<INetwork>._, A<IMessage>._)).Invokes((ctx) =>
 					{
-						interpretedMessage = (IMessage)ctx.Arguments[1];
+						interpretedMessage = (ForgeMessage)ctx.Arguments[1];
 						ItWorked = true;
 					});
 					return mockInterpreter;
@@ -58,7 +58,7 @@ namespace Forge.Tests.Networking.Messaging
 		[Test]
 		public void MessageSerialization_ShouldMatch()
 		{
-			var host = A.Fake<INetworkHost>();
+			var host = A.Fake<INetwork>();
 			var receipt = new ForgeMessageReceipt();
 			receipt.Signature = Guid.NewGuid();
 
@@ -68,7 +68,7 @@ namespace Forge.Tests.Networking.Messaging
 			mock.Receipt = receipt;
 
 			byte[] bin = null;
-			var rec = A.Fake<IMessageReciever>();
+			var rec = A.Fake<IMessageClient>();
 			A.CallTo(() => rec.Send(A<byte[]>._)).Invokes((ctx) =>
 			{
 				bin = (byte[])ctx.Arguments[0];
@@ -76,7 +76,9 @@ namespace Forge.Tests.Networking.Messaging
 			var bus = new ForgeMessageBus();
 			bus.SendMessage(mock, rec);
 			Assert.IsNotNull(bin);
-			bus.ReceiveMessageBuffer(host, bin);
+
+			var sender = A.Fake<IMessageClient>();
+			bus.ReceiveMessageBuffer(host, sender, bin);
 
 			Assert.AreEqual(mock.MessageCode, interpretedMessage.MessageCode);
 			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);

@@ -1,4 +1,5 @@
-﻿using Forge.Networking.Messaging;
+﻿using Forge.Networking;
+using Forge.Networking.Messaging;
 using Forge.Networking.Players;
 
 namespace Forge
@@ -12,7 +13,7 @@ namespace Forge
 			ForgeTypeFactory.Register<IMessageBus, ForgeMessageBus>();
 
 			// TODO:  Add the message registry here for the codes
-			//ForgeMessageCodes.Register<>
+			ForgeMessageCodes.Register<SendPlayerName>(ForgeMessageCodes.SEND_NAME_MESSAGE);
 		}
 	}
 }
