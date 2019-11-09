@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Forge.Serialization;
+using NUnit.Framework;
 
 namespace Forge.Tests
 {

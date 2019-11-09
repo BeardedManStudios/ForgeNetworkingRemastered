@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Forge
+namespace Forge.Serialization
 {
 	public struct Vector
 	{

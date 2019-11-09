@@ -2,6 +2,6 @@
 {
 	public interface IMessageReciever
 	{
-		void Send(IMessage message);
+		void Send(byte[] message);
 	}
 }

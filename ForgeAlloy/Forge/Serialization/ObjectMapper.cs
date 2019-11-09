@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Forge
+namespace Forge.Serialization
 {
 	public class ObjectMapper
 	{

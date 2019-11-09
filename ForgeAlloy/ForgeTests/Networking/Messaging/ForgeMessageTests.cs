@@ -2,40 +2,46 @@
 using FakeItEasy;
 using Forge.Networking;
 using Forge.Networking.Messaging;
+using Forge.Serialization;
 using NUnit.Framework;
 
 namespace Forge.Tests.Networking.Messaging
 {
-	public class MessageInterpreterMock : IMessageInterpreter
-	{
-		public void Interpret(INetworkHost netHost, IMessage message)
-		{
-			var m = (ForgeMessageMock)message;
-			m.ItWorked = true;
-		}
-	}
-
-	public class ForgeMessageMock : ForgeMessage
-	{
-		public string MockString { get; set; } = "";
-		public bool ItWorked { get; set; } = false;
-
-		public override IMessageInterpreter Interpreter => new MessageInterpreterMock();
-
-		public override void DeserializeData(BMSByte buffer)
-		{
-			MockString = buffer.GetBasicType<string>();
-		}
-
-		public override void SerializeData(BMSByte buffer)
-		{
-			ObjectMapper.Instance.MapBytes(buffer, MockString);
-		}
-	}
-
 	[TestFixture]
 	public class ForgeMessageTests
 	{
+		private static IMessage interpretedMessage = null;
+
+		public class ForgeMessageMock : ForgeMessage
+		{
+			public string MockString { get; set; } = "";
+			public bool ItWorked { get; set; } = false;
+
+			public override IMessageInterpreter Interpreter
+			{
+				get
+				{
+					var mockInterpreter = A.Fake<IMessageInterpreter>();
+					A.CallTo(() => mockInterpreter.Interpret(A<INetworkHost>._, A<IMessage>._)).Invokes((ctx) =>
+					{
+						interpretedMessage = (IMessage)ctx.Arguments[1];
+						ItWorked = true;
+					});
+					return mockInterpreter;
+				}
+			}
+
+			public override void Deserialize(BMSByte buffer)
+			{
+				MockString = buffer.GetBasicType<string>();
+			}
+
+			public override void Serialize(BMSByte buffer)
+			{
+				ObjectMapper.Instance.MapBytes(buffer, MockString);
+			}
+		}
+
 		[SetUp]
 		public void Setup()
 		{
@@ -46,6 +52,7 @@ namespace Forge.Tests.Networking.Messaging
 		public void Teardown()
 		{
 			ForgeMessageCodes.Unregister(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
+			interpretedMessage = null;
 		}
 
 		[Test]
@@ -54,23 +61,30 @@ namespace Forge.Tests.Networking.Messaging
 			var host = A.Fake<INetworkHost>();
 			var receipt = new ForgeMessageReceipt();
 			receipt.Signature = Guid.NewGuid();
-			var mock = new ForgeMessageMock
+
+			var mock = new ForgeMessageMock();
+			mock.MessageCode = ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE;
+			mock.MockString = "This is a test message";
+			mock.Receipt = receipt;
+
+			byte[] bin = null;
+			var rec = A.Fake<IMessageReciever>();
+			A.CallTo(() => rec.Send(A<byte[]>._)).Invokes((ctx) =>
 			{
-				MessageCode = ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE,
-				MockString = "This is a test message",
-				Receipt = receipt
-			};
+				bin = (byte[])ctx.Arguments[0];
+			});
+			var bus = new ForgeMessageBus();
+			bus.SendMessage(mock, rec);
+			Assert.IsNotNull(bin);
+			bus.ReceiveMessageBuffer(host, bin);
 
-			byte[] bin = mock.Serialize();
-			var target = ForgeMessage.Deserialize(bin);
-			target.Interpret(host);
-			Assert.AreEqual(mock.MessageCode, target.MessageCode);
-			Assert.AreEqual(mock.Receipt.Signature, target.Receipt.Signature);
+			Assert.AreEqual(mock.MessageCode, interpretedMessage.MessageCode);
+			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
 
-			var mockTarget = (ForgeMessageMock)target;
-			Assert.IsTrue(mockTarget.ItWorked);
-			Assert.AreEqual(mock.MockString, mockTarget.MockString);
-			Assert.AreNotEqual(mock.ItWorked, mockTarget.ItWorked);
+			var res = (ForgeMessageMock)interpretedMessage;
+			Assert.IsTrue(res.ItWorked);
+			Assert.AreEqual(mock.MockString, res.MockString);
+			Assert.AreNotEqual(mock.ItWorked, res.ItWorked);
 		}
 	}
 }

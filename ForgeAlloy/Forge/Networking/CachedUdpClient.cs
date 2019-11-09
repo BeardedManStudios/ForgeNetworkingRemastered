@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Forge.Serialization;
 
 namespace Forge.Networking
 {
@@ -151,7 +152,7 @@ namespace Forge.Networking
 		#endregion
 		#region Connect
 
-		void DoConnect(IPEndPoint endPoint)
+		private void DoConnect(IPEndPoint endPoint)
 		{
 			/* Catch EACCES and turn on SO_BROADCAST then,
 			 * as UDP Sockets don't have it set by default
@@ -356,7 +357,7 @@ namespace Forge.Networking
 			return recBuffer;
 		}
 
-		int DoSend(byte[] dgram, int bytes, IPEndPoint endPoint)
+		private int DoSend(byte[] dgram, int bytes, IPEndPoint endPoint)
 		{
 			/* Catch EACCES and turn on SO_BROADCAST then,
 			 * as UDP Sockets don't have it set by default
@@ -440,7 +441,7 @@ namespace Forge.Networking
 		}
 		#endregion
 
-		IAsyncResult DoBeginSend(byte[] datagram, int bytes,
+		private IAsyncResult DoBeginSend(byte[] datagram, int bytes,
 			IPEndPoint endPoint,
 			AsyncCallback requestCallback,
 			object state)

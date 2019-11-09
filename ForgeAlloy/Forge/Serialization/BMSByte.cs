@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Forge
+namespace Forge.Serialization
 {
 	/// <summary>
 	/// This is the main byte wrapper class for manipulating cached bytes

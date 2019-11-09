@@ -1,4 +1,6 @@
-﻿namespace Forge.Networking.Messaging
+﻿using Forge.Serialization;
+
+namespace Forge.Networking.Messaging
 {
 	public interface IMessage
 	{
@@ -6,6 +8,7 @@
 		IMessageReceipt Receipt { get; set; }
 		IMessageInterpreter Interpreter { get; }
 		void Interpret(INetworkHost host);
-		byte[] Serialize();
+		void Serialize(BMSByte buffer);
+		void Deserialize(BMSByte buffer);
 	}
 }

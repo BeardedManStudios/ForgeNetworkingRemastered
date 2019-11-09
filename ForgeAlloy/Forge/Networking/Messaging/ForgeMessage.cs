@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Forge.Serialization;
 
 namespace Forge.Networking.Messaging
 {
@@ -15,40 +15,12 @@ namespace Forge.Networking.Messaging
 		}
 
 		public abstract IMessageInterpreter Interpreter { get; }
-		public abstract void SerializeData(BMSByte buffer);
-		public abstract void DeserializeData(BMSByte buffer);
+		public abstract void Serialize(BMSByte buffer);
+		public abstract void Deserialize(BMSByte buffer);
 
 		public void Interpret(INetworkHost host)
 		{
 			Interpreter.Interpret(host, this);
-		}
-
-		public byte[] Serialize()
-		{
-			var buffer = new BMSByte();
-			buffer.SetSize(128);
-			ObjectMapper.Instance.MapBytes(buffer, MessageCode, Receipt?.Signature.ToString() ?? "");
-			SerializeData(buffer);
-			return buffer.CompressBytes();
-		}
-
-		public static IMessage Deserialize(byte[] message)
-		{
-			var buffer = new BMSByte();
-			buffer.BlockCopy(message, 0, message.Length);
-			int code = buffer.GetBasicType<int>();
-			var m = (IMessage)ForgeMessageCodes.Instantiate(code);
-			m.MessageCode = code;
-			string guid = buffer.GetBasicType<string>();
-			if (guid.Length > 0)
-			{
-				m.Receipt = new ForgeMessageReceipt
-				{
-					Signature = Guid.Parse(guid)
-				};
-			}
-			((ForgeMessage)m).DeserializeData(buffer);
-			return m;
 		}
 	}
 }
