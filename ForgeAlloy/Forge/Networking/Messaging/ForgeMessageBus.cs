@@ -7,11 +7,16 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
+		private static int GetMessageCode(IMessage message)
+		{
+			return ForgeMessageCodes.GetCodeFromType(message.GetType());
+		}
+
 		public void SendMessage(IMessage message, ISocket receiver)
 		{
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-			ObjectMapper.Instance.MapBytes(buffer, message.MessageCode, message.Receipt?.Signature.ToString() ?? "");
+			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
 			byte[] messageBuffer = buffer.CompressBytes();
 			receiver.Send(messageBuffer, messageBuffer.Length);
@@ -24,7 +29,8 @@ namespace Forge.Networking.Messaging
 			message.Receipt = receipt;
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-			ObjectMapper.Instance.MapBytes(buffer, message.MessageCode, message.Receipt?.Signature.ToString() ?? "");
+
+			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
 			byte[] messageBuffer = buffer.CompressBytes();
 			receiver.Send(messageBuffer, messageBuffer.Length);
@@ -44,9 +50,7 @@ namespace Forge.Networking.Messaging
 		private static IMessage CreateMessageTypeFromBuffer(BMSByte buffer)
 		{
 			int code = buffer.GetBasicType<int>();
-			var m = (IMessage)ForgeMessageCodes.Instantiate(code);
-			m.MessageCode = code;
-			return m;
+			return (IMessage)ForgeMessageCodes.Instantiate(code);
 		}
 
 		private void ProcessBufferGuid(ISocket sender, BMSByte buffer, IMessage m)

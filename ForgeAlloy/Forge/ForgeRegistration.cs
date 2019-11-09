@@ -1,4 +1,6 @@
-﻿using Forge.Networking.Messaging;
+﻿using Forge.Networking;
+using Forge.Networking.Messaging;
+using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
 
 namespace Forge
@@ -11,9 +13,13 @@ namespace Forge
 			ForgeTypeFactory.Register<IMessageReceipt, ForgeMessageReceipt>();
 			ForgeTypeFactory.Register<IMessageBus, ForgeMessageBus>();
 			ForgeTypeFactory.Register<IMessageRepository, ForgeMessageRepository>();
+			ForgeTypeFactory.Register<INetworkContainer, ForgeNetworkContainer>();
 
-			// TODO:  Add the message registry here for the codes
-			//ForgeMessageCodes.Register<SendPlayerName>(ForgeMessageCodes.SEND_NAME_MESSAGE);
+			// Custom messages
+			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();
+
+			// Add the message registry here for the codes
+			ForgeMessageCodes.Register<ForgeEntityMessage>();
 		}
 
 		public static void Teardown()

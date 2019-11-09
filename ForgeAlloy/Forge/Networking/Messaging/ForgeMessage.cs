@@ -4,8 +4,6 @@ namespace Forge.Networking.Messaging
 {
 	public abstract class ForgeMessage : IMessage
 	{
-		public int MessageCode { get; set; }
-
 		private ForgeMessageReceipt _receipt;
 
 		public IMessageReceipt Receipt
@@ -20,7 +18,6 @@ namespace Forge.Networking.Messaging
 
 		public void Interpret(INetworkContainer host)
 		{
-			this.GetHashCode();
 			Interpreter.Interpret(host, this);
 		}
 	}

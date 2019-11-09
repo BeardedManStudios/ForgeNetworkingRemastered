@@ -5,11 +5,18 @@ namespace Forge.Networking.Messaging.Interpreters
 {
 	public class ForgeEntityMessageInterpreter : IMessageInterpreter
 	{
-		public void Interpret(INetworkContainer netHost, IMessage message)
+		public void Interpret(INetworkContainer netContainer, IMessage message)
 		{
-			var eMessage = (ForgeEntityMessage)message;
-			IEntity entity = netHost.EngineContainer.FindEntityWithId(eMessage.EntityId);
-			entity.ProcessNetworkMessage(message);
+			var eMessage = (IEntityMessage)message;
+			try
+			{
+				IEntity entity = netContainer.EngineContainer.FindEntityWithId(eMessage.EntityId);
+				entity.ProcessNetworkMessage(eMessage);
+			}
+			catch (EngineEntityNotFoundException)
+			{
+				netContainer.EngineContainer.ProcessUnavailableEntityMessage(eMessage);
+			}
 		}
 	}
 }

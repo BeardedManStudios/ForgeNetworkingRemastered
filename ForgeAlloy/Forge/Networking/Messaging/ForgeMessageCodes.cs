@@ -5,34 +5,44 @@ namespace Forge.Networking.Messaging
 {
 	public static partial class ForgeMessageCodes
 	{
-		public const int UNIT_TEST_MOCK_MESSAGE = -1;
-		public const int SEND_NAME_MESSAGE = 0;
+		private static readonly List<Type> _messageTypes = new List<Type>();
 
-
-
-		private static readonly Dictionary<int, Type> _codeTypeLookup = new Dictionary<int, Type>();
-
-		public static void Register<T>(int code)
+		public static void Register<T>()
 		{
-			// TODO:  Throw an exception here if it already exists
-			_codeTypeLookup.Add(code, typeof(T));
+			var t = typeof(T);
+			if (_messageTypes.IndexOf(t) >= 0)
+				throw new DuplicateMessageTypeRegistrationException(t);
+			_messageTypes.Add(t);
+		}
+
+		public static void Unregister(Type t)
+		{
+			_messageTypes.Remove(t);
 		}
 
 		public static void Unregister(int code)
 		{
-			_codeTypeLookup.Remove(code);
+			_messageTypes.RemoveAt(code);
 		}
 
 		public static object Instantiate(int code)
 		{
-			// TODO:  Throw an exception here that means something
-			Type t = _codeTypeLookup[code];
-			return Activator.CreateInstance(t);
+			if (code < 0 || code >= _messageTypes.Count)
+				throw new MessageCodeNotFoundException(code);
+			return Activator.CreateInstance(_messageTypes[code]);
+		}
+
+		public static int GetCodeFromType(Type type)
+		{
+			int code = _messageTypes.IndexOf(type);
+			if (code < 0)
+				throw new MessageTypeNotFoundException(type);
+			return code;
 		}
 
 		public static void Clear()
 		{
-			_codeTypeLookup.Clear();
+			_messageTypes.Clear();
 		}
 	}
 }

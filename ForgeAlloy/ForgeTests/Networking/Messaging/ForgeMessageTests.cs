@@ -46,13 +46,13 @@ namespace ForgeTests.Networking.Messaging
 		public override void Setup()
 		{
 			base.Setup();
-			ForgeMessageCodes.Register<ForgeMessageMock>(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
+			ForgeMessageCodes.Register<ForgeMessageMock>();
 		}
 
 		public override void Teardown()
 		{
 			base.Teardown();
-			ForgeMessageCodes.Unregister(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
+			ForgeMessageCodes.Unregister(typeof(ForgeMessageMock));
 			interpretedMessage = null;
 		}
 
@@ -64,7 +64,6 @@ namespace ForgeTests.Networking.Messaging
 			receipt.Signature = Guid.NewGuid();
 
 			var mock = new ForgeMessageMock();
-			mock.MessageCode = ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE;
 			mock.MockString = "This is a test message";
 			mock.Receipt = receipt;
 
@@ -81,7 +80,6 @@ namespace ForgeTests.Networking.Messaging
 			var sender = A.Fake<ISocket>();
 			bus.ReceiveMessageBuffer(host, sender, bin);
 
-			Assert.AreEqual(mock.MessageCode, interpretedMessage.MessageCode);
 			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
 
 			var res = (ForgeMessageMock)interpretedMessage;

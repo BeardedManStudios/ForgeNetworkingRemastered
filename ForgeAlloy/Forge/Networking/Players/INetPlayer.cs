@@ -6,8 +6,6 @@ namespace Forge.Networking.Players
 	{
 		ISocket Socket { get; }
 		int Id { get; }
-		string Ip { get; }
-		ushort Port { get; }
 		string Name { get; }
 	}
 }

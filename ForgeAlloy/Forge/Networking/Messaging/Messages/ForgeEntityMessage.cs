@@ -3,7 +3,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
-	public class ForgeEntityMessage : ForgeMessage
+	public class ForgeEntityMessage : ForgeMessage, IEntityMessage
 	{
 		public int EntityId { get; set; }
 
