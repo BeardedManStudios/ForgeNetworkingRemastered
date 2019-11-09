@@ -67,8 +67,6 @@ namespace Forge
 		{
 			if (byteArr.Length < newSize)
 				Array.Resize<byte>(ref byteArr, newSize);
-
-			Size = newSize;
 		}
 
 		/// <summary>
@@ -553,6 +551,8 @@ namespace Forge
 			}
 			else if (type == typeof(string))
 				return GetString(start, moveIndex);
+			else if (type == typeof(Vector))
+				return GetVector(start, moveIndex);
 			else if (type.IsArray)
 			{
 				int rank = type.GetArrayRank();
@@ -632,6 +632,21 @@ namespace Forge
 				MoveStartIndex(length);
 
 			return Encoding.UTF8.GetString(byteArr, start + sizeof(int), length);
+		}
+
+		public Vector GetVector(int start, bool moveIndex = false)
+		{
+			Vector vec = new Vector
+			{
+				x = GetBasicType<float>(start, false),
+				y = GetBasicType<float>(start + sizeof(float), false),
+				z = GetBasicType<float>(start + (sizeof(float) * 2), false)
+			};
+
+			if (moveIndex)
+				MoveStartIndex(sizeof(float) * 3);
+
+			return vec;
 		}
 
 		/// <summary>

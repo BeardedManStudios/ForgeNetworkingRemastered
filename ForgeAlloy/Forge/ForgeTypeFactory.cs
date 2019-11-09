@@ -9,12 +9,22 @@ namespace Forge
 
 		public static void Register<T>(Func<object> factoryMethod)
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			if (_typeLookup.ContainsKey(t))
 			{
 				throw new Exception($"The type ({t}) is already registered");
 			}
 			_typeLookup.Add(t, factoryMethod);
+		}
+
+		public static void Register<TInterface, TActual>() where TActual : new()
+		{
+			var t = typeof(TInterface);
+			if (_typeLookup.ContainsKey(t))
+			{
+				throw new Exception($"The type ({t}) is already registered");
+			}
+			_typeLookup.Add(t, () => new TActual());
 		}
 
 		public static void Unregister<T>()
@@ -24,7 +34,7 @@ namespace Forge
 
 		public static T Get<T>()
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			if (!_typeLookup.TryGetValue(t, out var factoryMethod))
 			{
 				throw new Exception($"The type ({t}) is not registered");

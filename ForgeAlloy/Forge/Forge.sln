@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge", "Forge.csproj", "{94DAE1FF-AA9A-42DA-8327-F2C3C0AD1539}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeTests", "..\ForgeTests\ForgeTests.csproj", "{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94DAE1FF-AA9A-42DA-8327-F2C3C0AD1539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94DAE1FF-AA9A-42DA-8327-F2C3C0AD1539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94DAE1FF-AA9A-42DA-8327-F2C3C0AD1539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94DAE1FF-AA9A-42DA-8327-F2C3C0AD1539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9E20A864-17D6-4128-9E3E-132F8A854A34}
+	EndGlobalSection
+EndGlobal
