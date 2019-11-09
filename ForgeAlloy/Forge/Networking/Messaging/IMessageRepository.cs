@@ -10,5 +10,6 @@ namespace Forge.Networking.Messaging
 		void RemoveMessage(Guid guid);
 		bool Exists(Guid guid);
 		void Clear();
+		// TODO:  Will need a way to either group messages or get all of them to re-send
 	}
 }

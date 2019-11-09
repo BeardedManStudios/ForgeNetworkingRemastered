@@ -61,7 +61,7 @@ namespace Forge.Networking.Sockets
 			string host = string.IsNullOrEmpty(address) ? Dns.GetHostName() : address;
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
 
-			//TODO: Support IPv6
+			// TODO:  Support IPv6
 			IPAddress ipAddress = null;
 			for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
 			{

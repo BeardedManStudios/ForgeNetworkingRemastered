@@ -1,9 +1,11 @@
-﻿namespace Forge.Networking.Messaging
+﻿using Forge.Networking.Sockets;
+
+namespace Forge.Networking.Messaging
 {
 	public interface IMessageBus
 	{
-		void SendMessage(IMessage message, IMessageClient reciever);
-		IMessageReceipt SendReliableMessage(IMessage message, IMessageClient reciever);
-		void ReceiveMessageBuffer(INetwork host, IMessageClient sender, byte[] messageBuffer);
+		void SendMessage(IMessage message, ISocket reciever);
+		IMessageReceipt SendReliableMessage(IMessage message, ISocket reciever);
+		void ReceiveMessageBuffer(INetworkContainer host, ISocket sender, byte[] messageBuffer);
 	}
 }
