@@ -12,7 +12,11 @@
 /[Ff]orge[Aa]lloy/[Uu]nity/[Bb]uilds/
 /[Ff]orge[Aa]lloy/[Uu]nity/Assets/AssetStoreTools*
 /[Ff]orge[Aa]lloy/[Ff]orge/[Pp]ackages/
+/[Ff]orge[Aa]lloy/[Ff]orge/[Oo]bj/
+/[Ff]orge[Aa]lloy/[Ff]orge/[Bb]in/
 /[Ff]orge[Aa]lloy/[Ff]orge[Tt]ests/[Pp]ackages/
+/[Ff]orge[Aa]lloy/[Ff]orge[Tt]ests/[Oo]bj/
+/[Ff]orge[Aa]lloy/[Ff]orge[Tt]ests/[Bb]in/
 
 /[Bb]earded[Mm]an[Ss]tudios/bin/
 /[Bb]earded[Mm]an[Ss]tudios/obj/
