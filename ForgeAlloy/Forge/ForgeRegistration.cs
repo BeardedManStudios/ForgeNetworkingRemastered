@@ -13,7 +13,7 @@ namespace Forge
 			ForgeTypeFactory.Register<IMessageBus, ForgeMessageBus>();
 
 			// TODO:  Add the message registry here for the codes
-			ForgeMessageCodes.Register<SendPlayerName>(ForgeMessageCodes.SEND_NAME_MESSAGE);
+			//ForgeMessageCodes.Register<SendPlayerName>(ForgeMessageCodes.SEND_NAME_MESSAGE);
 		}
 	}
 }

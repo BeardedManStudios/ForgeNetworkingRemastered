@@ -141,7 +141,7 @@ namespace Forge.Networking
 			if (localEP != null)
 				socket.Bind(localEP);
 
-			recBuffer.SetSize(65536);
+			recBuffer.SetArraySize(65536);
 		}
 
 		#region Close
@@ -344,7 +344,7 @@ namespace Forge.Networking
 			if (!connections.ContainsKey(endPoint))
 				connections.Add(endPoint, (((IPEndPoint)endPoint).Address.ToString() + HOST_PORT_CHARACTER_SEPARATOR + ((IPEndPoint)endPoint).Port.ToString()));
 
-			recBuffer.SetSize(dataRead);
+			recBuffer.SetArraySize(dataRead);
 
 			remoteEP = (IPEndPoint)endPoint;
 			return recBuffer;

@@ -17,7 +17,7 @@ namespace Forge
 			_typeLookup.Add(t, factoryMethod);
 		}
 
-		public static void Register<TInterface, TActual>() where TActual : new()
+		public static void Register<TInterface, TActual>() where TActual : TInterface, new()
 		{
 			var t = typeof(TInterface);
 			if (_typeLookup.ContainsKey(t))

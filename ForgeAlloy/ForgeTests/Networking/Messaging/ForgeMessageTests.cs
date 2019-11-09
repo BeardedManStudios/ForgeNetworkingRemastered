@@ -46,12 +46,14 @@ namespace Forge.Tests.Networking.Messaging
 		public void Setup()
 		{
 			ForgeMessageCodes.Register<ForgeMessageMock>(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
+			ForgeTypeFactory.Register<IMessageReceipt, ForgeMessageReceipt>();
 		}
 
 		[TearDown]
 		public void Teardown()
 		{
 			ForgeMessageCodes.Unregister(ForgeMessageCodes.UNIT_TEST_MOCK_MESSAGE);
+			ForgeTypeFactory.Unregister<IMessageReceipt>();
 			interpretedMessage = null;
 		}
 

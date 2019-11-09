@@ -5,25 +5,25 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
-		public void SendMessage(IMessage message, IMessageClient reciever)
+		public void SendMessage(IMessage message, IMessageClient receiver)
 		{
 			var buffer = new BMSByte();
-			buffer.SetSize(128);
+			buffer.SetArraySize(128);
 			ObjectMapper.Instance.MapBytes(buffer, message.MessageCode, message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
-			reciever.Send(buffer.CompressBytes());
+			receiver.Send(buffer.CompressBytes());
 		}
 
-		public IMessageReceipt SendReliableMessage(IMessage message, IMessageClient reciever)
+		public IMessageReceipt SendReliableMessage(IMessage message, IMessageClient receiver)
 		{
 			var receipt = ForgeTypeFactory.Get<IMessageReceipt>();
 			receipt.Signature = Guid.NewGuid();
 			message.Receipt = receipt;
 			var buffer = new BMSByte();
-			buffer.SetSize(128);
+			buffer.SetArraySize(128);
 			ObjectMapper.Instance.MapBytes(buffer, message.MessageCode, message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
-			reciever.Send(buffer.CompressBytes());
+			receiver.Send(buffer.CompressBytes());
 			return receipt;
 		}
 

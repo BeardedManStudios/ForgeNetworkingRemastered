@@ -63,10 +63,16 @@ namespace Forge.Serialization
 		/// Manually set the interpreted size of the interal byte array (will resize if larger)
 		/// </summary>
 		/// <param name="newSize">The size to be resized to</param>
-		public void SetSize(int newSize)
+		public void SetArraySize(int newSize)
 		{
 			if (byteArr.Length < newSize)
 				Array.Resize<byte>(ref byteArr, newSize);
+		}
+
+		public void AugmentSize(int augmentedSize)
+		{
+			SetArraySize(augmentedSize);
+			Size = augmentedSize;
 		}
 
 		/// <summary>
