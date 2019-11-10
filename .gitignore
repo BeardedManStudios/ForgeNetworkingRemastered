@@ -12,7 +12,9 @@
 /[Ff]orge[Aa]lloy/[Uu]nity/[Bb]uilds*
 /[Ff]orge[Aa]lloy/[Uu]nity/[Pp]ackages*
 /[Ff]orge[Aa]lloy/[Uu]nity/[Pp]roject[Ss]ettings*
-/[Ff]orge[Aa]lloy/[Uu]nity/Assets/AssetStoreTools*
+/[Ff]orge[Aa]lloy/[Uu]nity/[Aa]ssets/[Ff]orge[Nn]etworking/[Pp]lugins/*.dll.meta
+/[Ff]orge[Aa]lloy/[Uu]nity/[Aa]ssets/[Ff]orge[Nn]etworking/[Pp]lugins/*.pdb.meta
+/[Ff]orge[Aa]lloy/[Uu]nity/[Aa]ssets/[Aa]ssetStoreTools*
 /[Ff]orge[Aa]lloy/[Ff]orge/[Pp]ackages/*
 /[Ff]orge[Aa]lloy/[Ff]orge/[Oo]bj/*
 /[Ff]orge[Aa]lloy/[Ff]orge/[Bb]in/*
