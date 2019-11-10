@@ -29,7 +29,7 @@ namespace ForgeTests.Networking.Socket
 			var serverAcceptSocketHandle = A.Fake<ISocket>();
 			A.CallTo(() => serverAcceptSocketHandle.EndPoint).Returns(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937));
 			client.Send(serverAcceptSocketHandle, new byte[] { 1 }, 1);
-			Thread.Sleep(90);
+			Thread.Sleep(50);
 			A.CallTo(() => netContainer.PlayerRepository.AddPlayer(A<INetPlayer>._)).MustHaveHappenedOnceExactly();
 			A.CallTo(() => netContainer.EngineContainer.PlayerJoined(A<INetPlayer>._)).MustHaveHappenedOnceExactly();
 			client.Close();

@@ -4,7 +4,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
-	public class ForgeUDPSocket : IServerSocket, IClientSocket
+	public class ForgeUDPSocket : CommonSocketBase, IServerSocket, IClientSocket
 	{
 		public EndPoint EndPoint { get; private set; } = default;
 
@@ -69,26 +69,6 @@ namespace Forge.Networking.Sockets
 		{
 			int offset = 0;
 			_liveSocket.SendTo(buffer, offset, length, SocketFlags.None, target.EndPoint);
-		}
-
-		private IPEndPoint GetEndpoint(string address, ushort port)
-		{
-			string host = string.IsNullOrEmpty(address) ? Dns.GetHostName() : address;
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-
-			// TODO:  Support IPv6
-			IPAddress ipAddress = null;
-			for (int i = 0; i < ipHostInfo.AddressList.Length; ++i)
-			{
-				ipAddress = ipHostInfo.AddressList[i];
-				if (ipAddress.AddressFamily != AddressFamily.InterNetworkV6)
-				{
-					break;
-				}
-			}
-
-			IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
-			return localEndPoint;
 		}
 	}
 }
