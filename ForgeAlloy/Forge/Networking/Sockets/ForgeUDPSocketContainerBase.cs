@@ -20,6 +20,7 @@ namespace Forge.Networking.Sockets
 
 		public virtual void ShutDown()
 		{
+			readTokenSource.Cancel();
 			ManagedSocket.Close();
 		}
 
@@ -28,10 +29,10 @@ namespace Forge.Networking.Sockets
 			EndPoint readEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
 			var buffer = new BMSByte();
 			buffer.SetArraySize(2048);
-			while (true)
+			while (!readTokenSource.Token.IsCancellationRequested)
 			{
 				buffer.Clear();
-				int readLen = ManagedSocket.Receive(buffer, ref readEp);
+				ManagedSocket.Receive(buffer, ref readEp);
 				synchronizationContext.Post(SynchronizedMessageRead, new SocketContainerSynchronizationReadData
 				{
 					Buffer = buffer.CompressBytes(),

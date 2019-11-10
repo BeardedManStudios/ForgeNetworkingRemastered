@@ -20,19 +20,16 @@ namespace Forge.Networking.Sockets
 			_acceptBuffer.SetArraySize(256);
 		}
 
-		private ForgeUDPSocket(Socket socket)
-		{
-			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			_acceptBuffer.SetArraySize(256);
-			_liveSocket = socket;
-		}
-
 		public ISocket AwaitAccept()
 		{
 			EndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937);
 			var sock = new ForgeUDPSocket();
 			_acceptSocket.ReceiveFrom(_acceptBuffer.byteArr, 0, _acceptBuffer.byteArr.Length, SocketFlags.None, ref ep);
 			sock.EndPoint = ep;
+
+			// TODO:  This should tell the cleint what point to start communicating on now
+			_acceptSocket.SendTo(new byte[] { 1 }, 0, 1, SocketFlags.None, ep);
+
 			return sock;
 		}
 

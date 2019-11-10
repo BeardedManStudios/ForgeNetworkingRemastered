@@ -19,6 +19,8 @@ namespace Forge.Networking.Sockets
 
 		public void StartServer(string address, ushort port, int maxPlayers, INetworkContainer netContainer)
 		{
+			// TODO:  Use maxPlayers
+
 			this.netContainer = netContainer;
 			_socket.Listen(address, port, MAX_PARALLEL_CONNECTION_REQUEST);
 			_newConnectionsTokenSource = new CancellationTokenSource();
@@ -35,7 +37,7 @@ namespace Forge.Networking.Sockets
 
 		private void ListenForConnections()
 		{
-			while (true)
+			while (!_newConnectionsTokenSource.Token.IsCancellationRequested)
 			{
 				ISocket newClient = _socket.AwaitAccept();
 				synchronizationContext.Post(SynchronizedPlayerConnected, newClient);
@@ -44,11 +46,14 @@ namespace Forge.Networking.Sockets
 
 		private void SynchronizedPlayerConnected(object state)
 		{
-			var socket = (ISocket)state;
-			var newPlayer = ForgeTypeFactory.GetNew<INetPlayer>();
-			newPlayer.Socket = socket;
-			netContainer.PlayerRepository.AddPlayer(newPlayer);
-			netContainer.EngineContainer.PlayerJoined(newPlayer);
+			var newClient = (ISocket)state;
+			if (!netContainer.PlayerRepository.Exists(newClient.EndPoint))
+			{
+				var newPlayer = ForgeTypeFactory.GetNew<INetPlayer>();
+				newPlayer.Socket = newClient;
+				netContainer.PlayerRepository.AddPlayer(newPlayer);
+				netContainer.EngineContainer.PlayerJoined(newPlayer);
+			}
 		}
 	}
 }

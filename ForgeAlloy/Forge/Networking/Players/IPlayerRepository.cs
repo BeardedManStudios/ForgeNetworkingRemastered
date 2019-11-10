@@ -11,5 +11,6 @@ namespace Forge.Networking.Players
 		void RemovePlayer(INetPlayer player);
 		INetPlayer GetPlayer(Guid id);
 		INetPlayer GetPlayer(EndPoint endpoint);
+		bool Exists(EndPoint endpoint);
 	}
 }

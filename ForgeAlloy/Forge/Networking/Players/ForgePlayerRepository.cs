@@ -49,5 +49,10 @@ namespace Forge.Networking.Players
 				throw new PlayerNotFoundException(endpoint);
 			return player;
 		}
+
+		public bool Exists(EndPoint endpoint)
+		{
+			return _playerAddressLookup.TryGetValue(endpoint, out _);
+		}
 	}
 }
