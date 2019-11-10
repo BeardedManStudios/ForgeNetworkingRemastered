@@ -19,6 +19,7 @@ namespace Forge
 			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();
 
 			// Add the message registry here for the codes
+			ForgeMessageCodes.Register<ForgeReceiptAcknowledgement>();
 			ForgeMessageCodes.Register<ForgeEntityMessage>();
 		}
 

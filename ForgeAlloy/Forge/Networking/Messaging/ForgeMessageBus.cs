@@ -12,17 +12,17 @@ namespace Forge.Networking.Messaging
 			return ForgeMessageCodes.GetCodeFromType(message.GetType());
 		}
 
-		public void SendMessage(IMessage message, ISocket receiver)
+		public void SendMessage(IMessage message, ISocket sender, ISocket receiver)
 		{
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
 			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
 			byte[] messageBuffer = buffer.CompressBytes();
-			receiver.Send(messageBuffer, messageBuffer.Length);
+			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 		}
 
-		public IMessageReceipt SendReliableMessage(IMessage message, ISocket receiver)
+		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, ISocket receiver)
 		{
 			var receipt = ForgeTypeFactory.Get<IMessageReceipt>();
 			receipt.Signature = Guid.NewGuid();
@@ -33,16 +33,16 @@ namespace Forge.Networking.Messaging
 			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
 			byte[] messageBuffer = buffer.CompressBytes();
-			receiver.Send(messageBuffer, messageBuffer.Length);
+			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 			return receipt;
 		}
 
-		public void ReceiveMessageBuffer(INetworkContainer host, ISocket sender, byte[] messageBuffer)
+		public void ReceiveMessageBuffer(INetworkContainer host, ISocket readingSocket, ISocket messageSender, byte[] messageBuffer)
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
 			var m = CreateMessageTypeFromBuffer(buffer);
-			ProcessBufferGuid(sender, buffer, m);
+			ProcessBufferGuid(readingSocket, messageSender, buffer, m);
 			m.Deserialize(buffer);
 			m.Interpret(host);
 		}
@@ -53,14 +53,14 @@ namespace Forge.Networking.Messaging
 			return (IMessage)ForgeMessageCodes.Instantiate(code);
 		}
 
-		private void ProcessBufferGuid(ISocket sender, BMSByte buffer, IMessage m)
+		private void ProcessBufferGuid(ISocket readingSocket, ISocket messageSender, BMSByte buffer, IMessage m)
 		{
 			string guid = buffer.GetBasicType<string>();
 			if (guid.Length == 0)
 				return;
 			m.Receipt = ForgeTypeFactory.Get<IMessageReceipt>();
 			m.Receipt.Signature = Guid.Parse(guid);
-			SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = guid }, sender);
+			SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = guid }, readingSocket, messageSender);
 		}
 	}
 }

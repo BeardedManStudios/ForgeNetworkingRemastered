@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FakeItEasy;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
 using NUnit.Framework;
@@ -52,7 +53,7 @@ namespace ForgeTests.Networking.Socket
 			Task backgroundThread = Task.Run(() =>
 			{
 				var connectedClient = server.AwaitAccept();
-				connectedClient.Send(msg, msg.Length);
+				connectedClient.Send(A.Fake<ISocket>(), msg, msg.Length);
 			});
 
 			TCPSocket client = new TCPSocket();

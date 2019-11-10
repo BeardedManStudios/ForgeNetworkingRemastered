@@ -68,17 +68,17 @@ namespace ForgeTests.Networking.Messaging
 			mock.Receipt = receipt;
 
 			byte[] bin = null;
-			var rec = A.Fake<ISocket>();
-			A.CallTo(() => rec.Send(A<byte[]>._, A<int>._)).Invokes((ctx) =>
+			var receiver = A.Fake<ISocket>();
+			var sender = A.Fake<ISocket>();
+			A.CallTo(() => sender.Send(A<ISocket>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
 			{
-				bin = (byte[])ctx.Arguments[0];
+				bin = (byte[])ctx.Arguments[1];
 			});
 			var bus = new ForgeMessageBus();
-			bus.SendMessage(mock, rec);
+			bus.SendMessage(mock, sender, receiver);
 			Assert.IsNotNull(bin);
 
-			var sender = A.Fake<ISocket>();
-			bus.ReceiveMessageBuffer(host, sender, bin);
+			bus.ReceiveMessageBuffer(host, receiver, sender, bin);
 
 			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
 
