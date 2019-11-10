@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6311E6C6-0A20-383B-320B-694068DE37A5}</ProjectGuid>
+    <ProjectGuid>{EB712CBB-E5D4-1E70-28AE-D1BC0F5773E3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -53,34 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\ForgeNetworking\Editor\src\ForgeEditor.cs" />
-     <Compile Include="Assets\ForgeNetworking\Editor\src\Messages\IMessageProperty.cs" />
-     <Compile Include="Assets\ForgeNetworking\Editor\src\Messages\IMessageTemplate.cs" />
-     <Compile Include="Assets\ForgeNetworking\Editor\src\Messages\IMessageTemplateRepository.cs" />
-     <Compile Include="Assets\ForgeNetworking\Editor\src\Messages\MessageProperty.cs" />
-     <Compile Include="Assets\ForgeNetworking\Editor\src\Messages\MessageTemplate.cs" />
      <Compile Include="Assets\ForgeNetworking\Editor\Tests\Messages\MessagePropertyTests.cs" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\NetworkBehaviorTemplate.txt" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\NetworkObjectTemplate.txt" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\NetworkObjectFactoryTemplate.txt" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
-     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\version.txt" />
- <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
- </Reference>
+     <None Include="Assets\ForgeNetworking\Editor\Tests\Tests.asmdef" />
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -330,32 +304,11 @@
  <Reference Include="Forge">
  <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Assets/ForgeNetworking/Plugins/Forge.dll</HintPath>
  </Reference>
- <Reference Include="UnityEditor.Advertisements">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.Editor">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.Tracker">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.Purchasing">
- <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
- </Reference>
  <Reference Include="FakeItEasy">
  <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Assets/ForgeNetworking/Editor/Plugins/FakeItEasy.dll</HintPath>
  </Reference>
  <Reference Include="Castle.Core">
  <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Assets/ForgeNetworking/Editor/Plugins/Castle.Core.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.iOS.Extensions.Xcode">
- <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.iOS.Extensions.Common">
- <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -711,10 +664,6 @@
  <Reference Include="Boo.Lang">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{CD8C9303-404B-FB8D-6B9B-21988D5CAC0A}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
