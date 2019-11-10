@@ -1,5 +1,6 @@
 ﻿using Forge.Engine;
 using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Players;
 using UnityEngine;
 
 namespace Forge.Networking.Runtime
@@ -8,11 +9,15 @@ namespace Forge.Networking.Runtime
 	{
 		public IEntityRepository EntityRepository
 		{
-			get => throw new System.NotImplementedException();
-			set => throw new System.NotImplementedException();
+			get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException();
 		}
 
 		public IEntity FindEntityWithId(int id)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void PlayerJoined(INetPlayer newPlayer)
 		{
 			throw new System.NotImplementedException();
 		}
