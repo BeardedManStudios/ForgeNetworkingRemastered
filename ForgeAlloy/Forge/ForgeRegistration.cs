@@ -21,6 +21,7 @@ namespace Forge
 			ForgeTypeFactory.Register<IPagenatedMessage, ForgePagenatedMessage>();
 			ForgeTypeFactory.Register<IMessageDestructor, ForgeMessageDestructor>();
 			ForgeTypeFactory.Register<IMessageConstructor, ForgeMessageConstructor>();
+			ForgeTypeFactory.Register<IMessageBufferInterpreter, ForgeMessageBufferInterpreter>();
 
 			// Custom messages
 			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();

@@ -16,9 +16,6 @@ namespace Forge.Networking.Messaging.Paging
 
 			// TODO:  Throw or catch when page.Size == 0
 
-			// TODO:  Make sure the guid we have matches this (probably done elsewhere)
-			var guid = Guid.Parse(page.GetBasicType<string>());
-
 			var pageNumber = page.GetBasicType<int>();
 			var totalSize = page.GetBasicType<int>();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
 
@@ -7,6 +8,15 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
+		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
+		private readonly IMessageDestructor _messageDestructor;
+
+		public ForgeMessageBus()
+		{
+			MessageBufferInterpreter = ForgeTypeFactory.Get<IMessageBufferInterpreter>();
+			_messageDestructor = ForgeTypeFactory.Get<IMessageDestructor>();
+		}
+
 		private static int GetMessageCode(IMessage message)
 		{
 			return ForgeMessageCodes.GetCodeFromType(message.GetType());
@@ -18,7 +28,8 @@ namespace Forge.Networking.Messaging
 			buffer.SetArraySize(128);
 			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
-			byte[] messageBuffer = buffer.CompressBytes();
+			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
+			byte[] messageBuffer = pm.Buffer.CompressBytes();
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 		}
 
@@ -29,10 +40,10 @@ namespace Forge.Networking.Messaging
 			message.Receipt = receipt;
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-
 			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
 			message.Serialize(buffer);
-			byte[] messageBuffer = buffer.CompressBytes();
+			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
+			byte[] messageBuffer = pm.Buffer.CompressBytes();
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 			return receipt;
 		}
@@ -41,10 +52,14 @@ namespace Forge.Networking.Messaging
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
-			var m = CreateMessageTypeFromBuffer(buffer);
-			ProcessBufferGuid(readingSocket, messageSender, buffer, m);
-			m.Deserialize(buffer);
-			m.Interpret(host);
+			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer);
+			if (constructor.MessageReconstructed)
+			{
+				var m = CreateMessageTypeFromBuffer(constructor.MessageBuffer);
+				ProcessMessageSignature(readingSocket, messageSender, constructor.MessageBuffer, m);
+				m.Deserialize(constructor.MessageBuffer);
+				m.Interpret(host);
+			}
 		}
 
 		private static IMessage CreateMessageTypeFromBuffer(BMSByte buffer)
@@ -53,7 +68,7 @@ namespace Forge.Networking.Messaging
 			return (IMessage)ForgeMessageCodes.Instantiate(code);
 		}
 
-		private void ProcessBufferGuid(ISocket readingSocket, ISocket messageSender, BMSByte buffer, IMessage m)
+		private void ProcessMessageSignature(ISocket readingSocket, ISocket messageSender, BMSByte buffer, IMessage m)
 		{
 			string guid = buffer.GetBasicType<string>();
 			if (guid.Length == 0)
