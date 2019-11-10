@@ -17,12 +17,11 @@ namespace Forge.Networking.Sockets
 			_socket = ForgeTypeFactory.GetNew<IServerSocket>();
 		}
 
-		public void StartServer(string address, ushort port, int maxPlayers, INetworkContainer netContainer)
+		public void StartServer(ushort port, int maxPlayers, INetworkContainer netContainer)
 		{
 			// TODO:  Use maxPlayers
-
 			this.netContainer = netContainer;
-			_socket.Listen(address, port, MAX_PARALLEL_CONNECTION_REQUEST);
+			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
 			_newConnectionsTokenSource = new CancellationTokenSource();
 			readTokenSource = new CancellationTokenSource();
 			Task.Run(ListenForConnections, _newConnectionsTokenSource.Token);

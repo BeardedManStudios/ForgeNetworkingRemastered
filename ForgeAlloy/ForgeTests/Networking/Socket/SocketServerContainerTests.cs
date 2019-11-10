@@ -23,7 +23,7 @@ namespace ForgeTests.Networking.Socket
 		{
 			var netContainer = A.Fake<INetworkContainer>();
 			var serverContainer = ForgeTypeFactory.GetNew<ISocketServerContainer>();
-			serverContainer.StartServer("127.0.0.1", 15937, 10, netContainer);
+			serverContainer.StartServer(15937, 10, netContainer);
 			var client = ForgeTypeFactory.GetNew<IClientSocket>();
 			client.Connect("127.0.0.1", 15937);
 			var serverAcceptSocketHandle = A.Fake<ISocket>();

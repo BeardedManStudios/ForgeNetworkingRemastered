@@ -2,7 +2,7 @@
 {
 	public interface IServerSocket : ISocket
 	{
-		void Listen(string address, ushort port, int maxParallelConnections);
+		void Listen(ushort port, int maxParallelConnections);
 		ISocket AwaitAccept();
 	}
 }

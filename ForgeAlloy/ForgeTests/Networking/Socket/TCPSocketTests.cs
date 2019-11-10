@@ -17,7 +17,7 @@ namespace ForgeTests.Networking.Socket
 		public void SocketListenAndClose_ShouldNotThrow()
 		{
 			ForgeTCPSocket socket = new ForgeTCPSocket();
-			socket.Listen(LOCAL_IP, TEST_PORT, 100);
+			socket.Listen(TEST_PORT, 100);
 			socket.Close();
 		}
 
@@ -25,7 +25,7 @@ namespace ForgeTests.Networking.Socket
 		public void SocketConnect_ShouldNotThrow()
 		{
 			ForgeTCPSocket server = new ForgeTCPSocket();
-			server.Listen(LOCAL_IP, TEST_PORT, 100);
+			server.Listen(TEST_PORT, 100);
 
 			Task backgroundThread = Task.Run(() =>
 			{
@@ -49,7 +49,7 @@ namespace ForgeTests.Networking.Socket
 			buffer.SetArraySize(512);
 
 			ForgeTCPSocket server = new ForgeTCPSocket();
-			server.Listen(LOCAL_IP, TEST_PORT, 100);
+			server.Listen(TEST_PORT, 100);
 
 			Task backgroundThread = Task.Run(() =>
 			{

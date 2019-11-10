@@ -26,9 +26,9 @@ namespace Forge.Networking.Sockets
 			_socket.Connect(endpoint);
 		}
 
-		public void Listen(string address, ushort port, int maxParallelConnections)
+		public void Listen(ushort port, int maxParallelConnections)
 		{
-			var endpoint = GetEndpoint(address, port);
+			var endpoint = new IPEndPoint(IPAddress.Any, port);
 			_socket.Bind(endpoint);
 			_socket.Listen(maxParallelConnections);
 		}
