@@ -1,11 +1,14 @@
-﻿using UnityEditor;
+﻿using Forge.Editor.UI.WIndows;
+using UnityEditor;
 using UnityEngine;
 
 namespace Forge.Editor
 {
 	public class ForgeEditor : EditorWindow
 	{
-		[MenuItem("Forge/Editor")]
+		private readonly IEditorWindow _messageListWindow = new MessageListWindow();
+
+		[MenuItem("Window/Forge/Editor")]
 		public static void Init()
 		{
 			var window = GetWindow<ForgeEditor>();
@@ -15,7 +18,12 @@ namespace Forge.Editor
 
 		public void Initialize()
 		{
-			this.titleContent = new GUIContent("Forge Editor");
+			this.titleContent = new GUIContent("Forge");
+		}
+
+		public void OnGUI()
+		{
+			_messageListWindow.Draw();
 		}
 	}
 }
