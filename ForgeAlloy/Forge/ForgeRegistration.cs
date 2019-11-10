@@ -4,6 +4,7 @@ using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Players;
+using Forge.Networking.Sockets;
 
 namespace Forge
 {
@@ -27,6 +28,13 @@ namespace Forge
 			ForgeTypeFactory.Register<IMessageDestructor, ForgeMessageDestructor>();
 			ForgeTypeFactory.Register<IMessageConstructor, ForgeMessageConstructor>();
 			ForgeTypeFactory.Register<IMessageBufferInterpreter, ForgeMessageBufferInterpreter>();
+
+			// Sockets
+			ForgeTypeFactory.Register<ISocket, ForgeUDPSocket>();
+			ForgeTypeFactory.Register<IServerSocket, ForgeUDPSocket>();
+			ForgeTypeFactory.Register<IClientSocket, ForgeUDPSocket>();
+			ForgeTypeFactory.Register<ISocketServerContainer, ForgeUDPSocketServerContainer>();
+			ForgeTypeFactory.Register<INetPlayer, ForgePlayer>();
 
 			// Custom messages
 			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();

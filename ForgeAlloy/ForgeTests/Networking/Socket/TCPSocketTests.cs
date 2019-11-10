@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using FakeItEasy;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
@@ -15,7 +16,7 @@ namespace ForgeTests.Networking.Socket
 		[Test]
 		public void SocketListenAndClose_ShouldNotThrow()
 		{
-			TCPSocket socket = new TCPSocket();
+			ForgeTCPSocket socket = new ForgeTCPSocket();
 			socket.Listen(LOCAL_IP, TEST_PORT, 100);
 			socket.Close();
 		}
@@ -23,7 +24,7 @@ namespace ForgeTests.Networking.Socket
 		[Test]
 		public void SocketConnect_ShouldNotThrow()
 		{
-			TCPSocket server = new TCPSocket();
+			ForgeTCPSocket server = new ForgeTCPSocket();
 			server.Listen(LOCAL_IP, TEST_PORT, 100);
 
 			Task backgroundThread = Task.Run(() =>
@@ -31,7 +32,7 @@ namespace ForgeTests.Networking.Socket
 				server.AwaitAccept();
 			});
 
-			TCPSocket client = new TCPSocket();
+			ForgeTCPSocket client = new ForgeTCPSocket();
 			client.Connect(LOCAL_IP, TEST_PORT);
 			client.Close();
 			server.Close();
@@ -47,7 +48,7 @@ namespace ForgeTests.Networking.Socket
 			BMSByte buffer = new BMSByte();
 			buffer.SetArraySize(512);
 
-			TCPSocket server = new TCPSocket();
+			ForgeTCPSocket server = new ForgeTCPSocket();
 			server.Listen(LOCAL_IP, TEST_PORT, 100);
 
 			Task backgroundThread = Task.Run(() =>
@@ -56,9 +57,10 @@ namespace ForgeTests.Networking.Socket
 				connectedClient.Send(A.Fake<ISocket>(), msg, msg.Length);
 			});
 
-			TCPSocket client = new TCPSocket();
+			EndPoint ep = default;
+			ForgeTCPSocket client = new ForgeTCPSocket();
 			client.Connect(LOCAL_IP, TEST_PORT);
-			int readLength = client.Receive(buffer);
+			int readLength = client.Receive(buffer, ref ep);
 			client.Close();
 			server.Close();
 

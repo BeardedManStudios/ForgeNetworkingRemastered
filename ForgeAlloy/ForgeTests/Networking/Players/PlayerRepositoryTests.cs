@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using Forge;
 using Forge.Networking.Players;
 using NUnit.Framework;
@@ -11,8 +12,9 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void AddPlayer_ShouldGetSamePlayer()
 		{
+			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
-			A.CallTo(() => player.Id).Returns(9);
+			A.CallTo(() => player.Id).Returns(id);
 			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 			Assert.AreEqual(0, repo.Count);
 			repo.AddPlayer(player);
@@ -26,8 +28,9 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void RemovePlayer_ShouldRemoveSamePlayer()
 		{
+			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
-			A.CallTo(() => player.Id).Returns(9);
+			A.CallTo(() => player.Id).Returns(id);
 			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 
 			// Test using the reference to the player
@@ -47,17 +50,36 @@ namespace ForgeTests.Networking.Player
 		public void GettingPlayerFromEmptyRepo_ShouldThrow()
 		{
 			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
-			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(9));
+			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
 		}
 
 		[Test]
 		public void GettingPlayerThatDoesNotExist_ShouldThrow()
 		{
+			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
-			A.CallTo(() => player.Id).Returns(9);
+			A.CallTo(() => player.Id).Returns(id);
 			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
-			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(1));
+			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
+		}
+
+		[Test]
+		public void GettingPlayerByEndpoint_ShouldFindPlayer()
+		{
+
+		}
+
+		[Test]
+		public void GettingPlayerByEndpointThatDoesntExist_ShouldThrow()
+		{
+
+		}
+
+		[Test]
+		public void AddingPlayer_ShouldHaveGuidAssigned()
+		{
+
 		}
 	}
 }

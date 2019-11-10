@@ -4,18 +4,18 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
-	public class TCPSocket : ISocket, IServerSocket, IClientSocket
+	public class ForgeTCPSocket : IServerSocket, IClientSocket
 	{
 		public EndPoint EndPoint => _socket.RemoteEndPoint;
 
 		private readonly Socket _socket;
 
-		public TCPSocket()
+		public ForgeTCPSocket()
 		{
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		}
 
-		private TCPSocket(Socket socket)
+		private ForgeTCPSocket(Socket socket)
 		{
 			_socket = socket;
 		}
@@ -41,13 +41,13 @@ namespace Forge.Networking.Sockets
 		public ISocket AwaitAccept()
 		{
 			var newConnection = _socket.Accept();
-			return new TCPSocket(newConnection);
+			return new ForgeTCPSocket(newConnection);
 		}
 
-		public int Receive(BMSByte buffer)
+		public int Receive(BMSByte buffer, ref EndPoint endpoint)
 		{
 			buffer.Clear();
-			int length = _socket.Receive(buffer.byteArr);
+			int length = _socket.ReceiveFrom(buffer.byteArr, ref endpoint);
 			buffer.AugmentSize(length);
 			return length;
 		}

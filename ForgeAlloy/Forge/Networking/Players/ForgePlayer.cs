@@ -1,11 +1,12 @@
-﻿using Forge.Networking.Sockets;
+﻿using System;
+using Forge.Networking.Sockets;
 
 namespace Forge.Networking.Players
 {
 	public class ForgePlayer : INetPlayer
 	{
-		public ISocket Socket { get; private set; }
-		public int Id { get; private set; }
-		public string Name { get; private set; }
+		public ISocket Socket { get; set; }
+		public Guid Id { get; set; }
+		public string Name { get; set; }
 	}
 }

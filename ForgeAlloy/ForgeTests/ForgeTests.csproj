@@ -68,6 +68,7 @@
     <Compile Include="Networking\Messaging\Paging\MessageConstructorTests.cs" />
     <Compile Include="Networking\Messaging\Paging\MessageDestructorTests.cs" />
     <Compile Include="Networking\Players\PlayerRepositoryTests.cs" />
+    <Compile Include="Networking\Socket\SocketServerContainerTests.cs" />
     <Compile Include="Networking\Socket\TCPSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

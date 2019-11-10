@@ -4,34 +4,34 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
-	public class UDPSocket : ISocket, IServerSocket, IClientSocket
+	public class ForgeUDPSocket : IServerSocket, IClientSocket
 	{
-		public EndPoint EndPoint { get; private set; }
+		public EndPoint EndPoint { get; private set; } = default;
 
 		private BMSByte _acceptBuffer = new BMSByte();
 
 		private readonly Socket _acceptSocket;
 		private readonly Socket _liveSocket;
 
-		public UDPSocket()
+		public ForgeUDPSocket()
 		{
-			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
-			_liveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			_liveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			_acceptBuffer.SetArraySize(256);
 		}
 
-		private UDPSocket(Socket socket)
+		private ForgeUDPSocket(Socket socket)
 		{
-			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			_acceptBuffer.SetArraySize(256);
 			_liveSocket = socket;
 		}
 
 		public ISocket AwaitAccept()
 		{
-			EndPoint ep = default;
-			var sock = new UDPSocket();
-			_acceptSocket.ReceiveFrom(_acceptBuffer.byteArr, 0, _acceptBuffer.Size, SocketFlags.None, ref ep);
+			EndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937);
+			var sock = new ForgeUDPSocket();
+			_acceptSocket.ReceiveFrom(_acceptBuffer.byteArr, 0, _acceptBuffer.byteArr.Length, SocketFlags.None, ref ep);
 			sock.EndPoint = ep;
 			return sock;
 		}
@@ -52,14 +52,15 @@ namespace Forge.Networking.Sockets
 		{
 			var endpoint = GetEndpoint(address, port);
 			_acceptSocket.Bind(endpoint);
-			_acceptSocket.Listen(maxParallelConnections);
+			var liveEndpoint = GetEndpoint(address, (ushort)(port + 1));
+			_liveSocket.Bind(liveEndpoint);
+			EndPoint = _liveSocket.LocalEndPoint;
 		}
 
-		public int Receive(BMSByte buffer)
+		public int Receive(BMSByte buffer, ref EndPoint endpoint)
 		{
 			buffer.Clear();
-			EndPoint ep = default;
-			int length = _liveSocket.ReceiveFrom(buffer.byteArr, 0, buffer.Size, SocketFlags.None, ref ep);
+			int length = _liveSocket.ReceiveFrom(buffer.byteArr, 0, buffer.byteArr.Length, SocketFlags.None, ref endpoint);
 			buffer.AugmentSize(length);
 			return length;
 		}

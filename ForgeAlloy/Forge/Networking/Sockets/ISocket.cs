@@ -7,7 +7,7 @@ namespace Forge.Networking.Sockets
 	{
 		EndPoint EndPoint { get; }
 		void Send(ISocket target, byte[] buffer, int length);
-		int Receive(BMSByte buffer);
+		int Receive(BMSByte buffer, ref EndPoint endpoint);
 		void Close();
 	}
 }

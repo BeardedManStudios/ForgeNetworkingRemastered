@@ -1,4 +1,5 @@
 ﻿using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Players;
 
 namespace Forge.Engine
 {
@@ -7,5 +8,6 @@ namespace Forge.Engine
 		IEntityRepository EntityRepository { get; set; }
 		IEntity FindEntityWithId(int id);
 		void ProcessUnavailableEntityMessage(IEntityMessage message);
+		void PlayerJoined(INetPlayer newPlayer);
 	}
 }
