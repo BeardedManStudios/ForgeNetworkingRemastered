@@ -15,7 +15,7 @@ namespace Forge.Networking.Sockets
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		}
 
-		public TCPSocket(Socket socket)
+		private TCPSocket(Socket socket)
 		{
 			_socket = socket;
 		}

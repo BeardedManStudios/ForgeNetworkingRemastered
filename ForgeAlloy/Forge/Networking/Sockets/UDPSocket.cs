@@ -20,7 +20,7 @@ namespace Forge.Networking.Sockets
 			_acceptBuffer.SetArraySize(256);
 		}
 
-		public UDPSocket(Socket socket)
+		private UDPSocket(Socket socket)
 		{
 			_acceptSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
 			_acceptBuffer.SetArraySize(256);
