@@ -65,6 +65,8 @@
     <Compile Include="Networking\Messaging\ForgeMessageTests.cs" />
     <Compile Include="Networking\Messaging\Interpreters\EntityMessageInterpreter.cs" />
     <Compile Include="Networking\Messaging\MessageRepositoryTests.cs" />
+    <Compile Include="Networking\Messaging\Paging\MessageConstructorTests.cs" />
+    <Compile Include="Networking\Messaging\Paging\MessageDestructorTests.cs" />
     <Compile Include="Networking\Players\PlayerRepositoryTests.cs" />
     <Compile Include="Networking\Socket\TCPSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

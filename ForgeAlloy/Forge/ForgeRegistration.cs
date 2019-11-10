@@ -1,6 +1,7 @@
 ﻿using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Players;
 
 namespace Forge
@@ -14,6 +15,12 @@ namespace Forge
 			ForgeTypeFactory.Register<IMessageBus, ForgeMessageBus>();
 			ForgeTypeFactory.Register<IMessageRepository, ForgeMessageRepository>();
 			ForgeTypeFactory.Register<INetworkContainer, ForgeNetworkContainer>();
+
+			// Message pagination
+			ForgeTypeFactory.Register<IMessagePage, ForgeMessagePage>();
+			ForgeTypeFactory.Register<IPagenatedMessage, ForgePagenatedMessage>();
+			ForgeTypeFactory.Register<IMessageDestructor, ForgeMessageDestructor>();
+			ForgeTypeFactory.Register<IMessageConstructor, ForgeMessageConstructor>();
 
 			// Custom messages
 			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();

@@ -357,7 +357,7 @@ namespace Forge.Serialization
 		/// <summary>
 		/// Point the index to the end of the internal byte array of valid data
 		/// </summary>
-		private void PointToEnd()
+		public void PointToEnd()
 		{
 			index = Size;
 		}
