@@ -58,7 +58,8 @@ namespace Forge.Networking.Sockets
 		public int Receive(BMSByte buffer)
 		{
 			buffer.Clear();
-			int length = _liveSocket.Receive(buffer.byteArr);
+			EndPoint ep = default;
+			int length = _liveSocket.ReceiveFrom(buffer.byteArr, 0, buffer.Size, SocketFlags.None, ref ep);
 			buffer.AugmentSize(length);
 			return length;
 		}
