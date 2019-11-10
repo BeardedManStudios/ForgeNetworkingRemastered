@@ -21,8 +21,8 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void PartialSinglePage_ShouldBeSame()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			buffer.AugmentSize(destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -44,8 +44,8 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void ExactMaxPageSize_ShouldBeSame()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			buffer.AugmentSize(destructor.MaxPageLength);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -67,8 +67,8 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void ExactDoublePageSize_ShouldBeSame()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			buffer.AugmentSize(destructor.MaxPageLength * 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -96,8 +96,8 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void ExactTripplePageSize_ShouldBeSame()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			buffer.AugmentSize(destructor.MaxPageLength * 3);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -125,8 +125,8 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void AboveMaxPageSize_ShouldBeSame()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			buffer.AugmentSize(destructor.MaxPageLength + destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)

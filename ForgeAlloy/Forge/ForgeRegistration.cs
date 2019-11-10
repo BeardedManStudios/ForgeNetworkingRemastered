@@ -1,4 +1,5 @@
-﻿using Forge.Networking;
+﻿using Forge.Engine;
+using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
@@ -10,11 +11,15 @@ namespace Forge
 	{
 		public static void Initialize()
 		{
+			// Containers and repositories
 			ForgeTypeFactory.Register<IPlayerRepository, ForgePlayerRepository>();
+			ForgeTypeFactory.Register<INetworkContainer, ForgeNetworkContainer>();
+			ForgeTypeFactory.Register<IEntityRepository, ForgeEntityRepository>();
+
+			// Messaging
 			ForgeTypeFactory.Register<IMessageReceipt, ForgeMessageReceipt>();
 			ForgeTypeFactory.Register<IMessageBus, ForgeMessageBus>();
 			ForgeTypeFactory.Register<IMessageRepository, ForgeMessageRepository>();
-			ForgeTypeFactory.Register<INetworkContainer, ForgeNetworkContainer>();
 
 			// Message pagination
 			ForgeTypeFactory.Register<IMessagePage, ForgeMessagePage>();

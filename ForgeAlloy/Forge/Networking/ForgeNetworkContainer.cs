@@ -10,7 +10,7 @@ namespace Forge.Networking
 
 		public ForgeNetworkContainer()
 		{
-			PlayerRepository = ForgeTypeFactory.Get<IPlayerRepository>();
+			PlayerRepository = ForgeTypeFactory.GetNew<IPlayerRepository>();
 		}
 
 		public void ChangeEngineContainer(IEngineContainer engineContainer)

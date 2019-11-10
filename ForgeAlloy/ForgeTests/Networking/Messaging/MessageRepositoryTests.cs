@@ -16,7 +16,7 @@ namespace ForgeTests.Networking.Messaging
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
 			message.Receipt.Signature = new Guid();
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			repo.AddMessage(message);
 			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
 		}
@@ -26,7 +26,7 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var message = A.Fake<IMessage>();
 			message.Receipt = null;
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			Assert.Throws<MessageRepositoryMissingGuidOnMessageException>(() => repo.AddMessage(message));
 		}
 
@@ -36,7 +36,7 @@ namespace ForgeTests.Networking.Messaging
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
 			message.Receipt.Signature = new Guid();
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			repo.AddMessage(message);
 			Assert.Throws<MessageWithReceiptSignatureAlreadyExistsException>(() => repo.AddMessage(message));
 		}
@@ -45,7 +45,7 @@ namespace ForgeTests.Networking.Messaging
 		public void CheckForMessage_ShouldNotExist()
 		{
 			Guid fake = new Guid();
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			Assert.IsFalse(repo.Exists(fake));
 		}
 
@@ -55,7 +55,7 @@ namespace ForgeTests.Networking.Messaging
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
 			message.Receipt.Signature = new Guid();
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			repo.AddMessage(message);
 			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
 			repo.RemoveMessage(message.Receipt.Signature);
@@ -72,7 +72,7 @@ namespace ForgeTests.Networking.Messaging
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
 			message.Receipt.Signature = new Guid();
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			repo.AddMessage(message, 3);
 			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
 			Thread.Sleep(1);
@@ -84,14 +84,14 @@ namespace ForgeTests.Networking.Messaging
 		[Test]
 		public void AddMessageWithNegativeTTL_ShouldThrow()
 		{
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			Assert.Throws<InvalidMessageRepositoryTTLProvided>(() => repo.AddMessage(A.Fake<IMessage>(), -1));
 		}
 
 		[Test]
 		public void AddMessageWithZeroTTL_ShouldThrow()
 		{
-			var repo = ForgeTypeFactory.Get<IMessageRepository>();
+			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			Assert.Throws<InvalidMessageRepositoryTTLProvided>(() => repo.AddMessage(A.Fake<IMessage>(), 0));
 		}
 	}

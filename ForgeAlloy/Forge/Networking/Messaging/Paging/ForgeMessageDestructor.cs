@@ -13,7 +13,7 @@ namespace Forge.Networking.Messaging.Paging
 			if (messageBuffer.Size == 0)
 				throw new CantBreakdownEmptyMessageException();
 			int offset = 0;
-			var pm = ForgeTypeFactory.Get<IPagenatedMessage>();
+			var pm = ForgeTypeFactory.GetNew<IPagenatedMessage>();
 			pm.Buffer = messageBuffer;
 
 			var messageGuid = Guid.NewGuid();
@@ -23,7 +23,7 @@ namespace Forge.Networking.Messaging.Paging
 			do
 			{
 				BMSByte header = GetHeader(messageGuid, pm.Pages.Count, totalSize);
-				var page = ForgeTypeFactory.Get<IMessagePage>();
+				var page = ForgeTypeFactory.GetNew<IMessagePage>();
 				page.StartOffset = offset;
 				page.Length = Math.Min(messageBuffer.Size - offset, MaxPageLength) + header.Size;
 				messageBuffer.InsertRange(offset, header);

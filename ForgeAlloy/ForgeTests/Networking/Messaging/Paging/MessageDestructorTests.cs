@@ -12,7 +12,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void AtMaxSize_ShouldBeSinglePage()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			buffer.AugmentSize(destructor.MaxPageLength);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -31,7 +31,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void DoubleMaxSize_ShouldBeTwoPages()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			int headerLength = destructor.HeaderLength;
 			buffer.AugmentSize(destructor.MaxPageLength * 2);
 			buffer.PointToEnd();
@@ -53,7 +53,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void TrippleMaxSize_ShouldBeThreePages()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			int headerLength = destructor.HeaderLength;
 			buffer.AugmentSize(destructor.MaxPageLength * 3);
 			buffer.PointToEnd();
@@ -77,7 +77,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void BelowMaxSize_ShouldBeSinglePage()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			buffer.AugmentSize(destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -96,7 +96,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void AboveMaxSize_ShouldBeTwoPagesButSecondIsntMax()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			int headerLength = destructor.HeaderLength;
 			buffer.AugmentSize(destructor.MaxPageLength + destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
@@ -118,7 +118,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		public void EmptyMessageBuffer_ShouldThrowException()
 		{
 			var buffer = new BMSByte();
-			var destructor = ForgeTypeFactory.Get<IMessageDestructor>();
+			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
 			Assert.Throws<CantBreakdownEmptyMessageException>(() => destructor.BreakdownMessage(buffer));
 		}
 	}

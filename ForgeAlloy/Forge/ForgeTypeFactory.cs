@@ -32,7 +32,7 @@ namespace Forge
 			_typeLookup.Remove(typeof(T));
 		}
 
-		public static T Get<T>()
+		public static T GetNew<T>()
 		{
 			var t = typeof(T);
 			if (!_typeLookup.TryGetValue(t, out var factoryMethod))

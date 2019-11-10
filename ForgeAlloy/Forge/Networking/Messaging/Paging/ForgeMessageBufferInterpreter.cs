@@ -21,7 +21,7 @@ namespace Forge.Networking.Messaging.Paging
 
 		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, Guid guid)
 		{
-			var constructor = ForgeTypeFactory.Get<IMessageConstructor>();
+			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
 			constructor.ReconstructMessagePage(buffer);
 			if (!constructor.MessageReconstructed)
 				_messageConstructors.Add(guid, constructor);

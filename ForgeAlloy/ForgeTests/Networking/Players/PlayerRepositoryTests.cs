@@ -13,7 +13,7 @@ namespace ForgeTests.Networking.Player
 		{
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(9);
-			var repo = ForgeTypeFactory.Get<IPlayerRepository>();
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 			Assert.AreEqual(0, repo.Count);
 			repo.AddPlayer(player);
 			Assert.AreEqual(1, repo.Count);
@@ -28,7 +28,7 @@ namespace ForgeTests.Networking.Player
 		{
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(9);
-			var repo = ForgeTypeFactory.Get<IPlayerRepository>();
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 
 			// Test using the reference to the player
 			repo.AddPlayer(player);
@@ -46,7 +46,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void GettingPlayerFromEmptyRepo_ShouldThrow()
 		{
-			var repo = ForgeTypeFactory.Get<IPlayerRepository>();
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(9));
 		}
 
@@ -55,7 +55,7 @@ namespace ForgeTests.Networking.Player
 		{
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(9);
-			var repo = ForgeTypeFactory.Get<IPlayerRepository>();
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(1));
 		}
