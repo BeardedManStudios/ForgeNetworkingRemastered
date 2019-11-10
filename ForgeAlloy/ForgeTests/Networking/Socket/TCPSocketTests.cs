@@ -57,7 +57,7 @@ namespace ForgeTests.Networking.Socket
 				connectedClient.Send(A.Fake<ISocket>(), msg, msg.Length);
 			});
 
-			EndPoint ep = default;
+			EndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937);
 			ForgeTCPSocket client = new ForgeTCPSocket();
 			client.Connect(LOCAL_IP, TEST_PORT);
 			int readLength = client.Receive(buffer, ref ep);

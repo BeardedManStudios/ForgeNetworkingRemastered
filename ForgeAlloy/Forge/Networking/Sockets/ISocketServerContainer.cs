@@ -3,6 +3,5 @@
 	public interface ISocketServerContainer : ISocketContainer
 	{
 		void StartServer(string address, ushort port, int maxPlayers, INetworkContainer netContainer);
-		void ShutDown();
 	}
 }

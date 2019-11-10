@@ -1,13 +1,22 @@
-﻿namespace Forge.Networking.Sockets
+﻿using System.Threading.Tasks;
+
+namespace Forge.Networking.Sockets
 {
-	public class ForgeUDPSocketClientContainer : ISocketClientContainer
+	public class ForgeUDPSocketClientContainer : ForgeUDPSocketContainerBase, ISocketClientContainer
 	{
 		private readonly IClientSocket _socket;
-		public ISocket ManagedSocket => _socket;
+		public override ISocket ManagedSocket => _socket;
 
-		public ForgeUDPSocketClientContainer()
+		public ForgeUDPSocketClientContainer() : base()
 		{
 			_socket = ForgeTypeFactory.GetNew<IClientSocket>();
+		}
+
+		public void StartClient(string address, ushort port, INetworkContainer netContainer)
+		{
+			this.netContainer = netContainer;
+			_socket.Connect(address, port);
+			Task.Run(ReadNetwork, readTokenSource.Token);
 		}
 	}
 }

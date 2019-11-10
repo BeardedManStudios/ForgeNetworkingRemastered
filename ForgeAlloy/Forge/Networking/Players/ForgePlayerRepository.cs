@@ -33,11 +33,14 @@ namespace Forge.Networking.Players
 		public void RemovePlayer(INetPlayer player)
 		{
 			_playerLookup.Remove(player.Id);
+			_playerAddressLookup.Remove(player.Socket.EndPoint);
 		}
 
 		public void RemovePlayer(Guid id)
 		{
+			var player = _playerLookup[id];
 			_playerLookup.Remove(id);
+			_playerAddressLookup.Remove(player.Socket.EndPoint);
 		}
 
 		public INetPlayer GetPlayer(EndPoint endpoint)

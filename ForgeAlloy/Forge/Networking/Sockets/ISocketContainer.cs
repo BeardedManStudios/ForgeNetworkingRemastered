@@ -3,5 +3,6 @@
 	public interface ISocketContainer
 	{
 		ISocket ManagedSocket { get; }
+		void ShutDown();
 	}
 }
