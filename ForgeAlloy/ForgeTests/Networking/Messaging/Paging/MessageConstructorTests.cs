@@ -22,7 +22,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		{
 			var buffer = new BMSByte();
 			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var bufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
 			buffer.AugmentSize(destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -32,8 +32,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
-			pm.Buffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
-			constructor.ReconstructMessagePage(pm.Buffer);
+			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -45,7 +44,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		{
 			var buffer = new BMSByte();
 			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var bufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
 			buffer.AugmentSize(destructor.MaxPageLength);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -55,8 +54,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
-			pm.Buffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
-			constructor.ReconstructMessagePage(pm.Buffer);
+			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -68,7 +66,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		{
 			var buffer = new BMSByte();
 			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var bufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
 			buffer.AugmentSize(destructor.MaxPageLength * 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -78,14 +76,13 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			IMessageConstructor constructor = null;
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				Assert.IsFalse(constructor.MessageReconstructed);
-				Assert.AreEqual(0, constructor.MessageBuffer.Size);
-				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
-				constructor.ReconstructMessagePage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
 			}
+			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -97,7 +94,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		{
 			var buffer = new BMSByte();
 			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var bufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
 			buffer.AugmentSize(destructor.MaxPageLength * 3);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -107,14 +104,13 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			IMessageConstructor constructor = null;
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				Assert.IsFalse(constructor.MessageReconstructed);
-				Assert.AreEqual(0, constructor.MessageBuffer.Size);
-				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
-				constructor.ReconstructMessagePage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
 			}
+			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -126,7 +122,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		{
 			var buffer = new BMSByte();
 			var destructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var bufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
 			buffer.AugmentSize(destructor.MaxPageLength + destructor.MaxPageLength / 2);
 			buffer.PointToEnd();
 			for (int i = 0; i < buffer.Size; i++)
@@ -136,14 +132,13 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			IMessageConstructor constructor = null;
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				Assert.IsFalse(constructor.MessageReconstructed);
-				Assert.AreEqual(0, constructor.MessageBuffer.Size);
-				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
-				constructor.ReconstructMessagePage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
 			}
+			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
