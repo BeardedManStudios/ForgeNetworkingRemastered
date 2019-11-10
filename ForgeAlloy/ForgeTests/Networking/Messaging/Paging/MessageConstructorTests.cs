@@ -32,6 +32,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			pm.Buffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
 			constructor.ReconstructMessagePage(pm.Buffer);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
@@ -54,6 +55,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			pm.Buffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
 			constructor.ReconstructMessagePage(pm.Buffer);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
@@ -81,6 +83,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
 				Assert.IsFalse(constructor.MessageReconstructed);
 				Assert.AreEqual(0, constructor.MessageBuffer.Size);
+				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
 				constructor.ReconstructMessagePage(pageBuffer);
 			}
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -109,6 +112,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
 				Assert.IsFalse(constructor.MessageReconstructed);
 				Assert.AreEqual(0, constructor.MessageBuffer.Size);
+				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
 				constructor.ReconstructMessagePage(pageBuffer);
 			}
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -137,6 +141,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
 				Assert.IsFalse(constructor.MessageReconstructed);
 				Assert.AreEqual(0, constructor.MessageBuffer.Size);
+				pageBuffer.GetBasicType<string>(); // This guid is pulled off in the IMessageBufferInterpreter
 				constructor.ReconstructMessagePage(pageBuffer);
 			}
 			Assert.IsTrue(constructor.MessageReconstructed);
