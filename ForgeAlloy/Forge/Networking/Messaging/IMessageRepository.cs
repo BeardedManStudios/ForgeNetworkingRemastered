@@ -9,6 +9,8 @@ namespace Forge.Networking.Messaging
 		void RemoveMessage(IMessage message);
 		void RemoveMessage(Guid guid);
 		bool Exists(Guid guid);
+		IMessage[] GetAll();
+		IMessage Get(Guid guid);
 		void Clear();
 		// TODO:  Will need a way to either group messages or get all of them to re-send
 	}

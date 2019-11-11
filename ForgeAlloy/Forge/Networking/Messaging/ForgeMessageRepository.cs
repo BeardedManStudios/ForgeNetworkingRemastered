@@ -130,5 +130,22 @@ namespace Forge.Networking.Messaging
 				}
 			}
 		}
+
+		public IMessage[] GetAll()
+		{
+			lock (_messages)
+			{
+				int idx = 0;
+				IMessage[] allMessages = new IMessage[_messages.Count];
+				foreach (var kv in _messages)
+					allMessages[idx++] = kv.Value;
+				return allMessages;
+			}
+		}
+
+		public IMessage Get(Guid guid)
+		{
+			return _messages[guid];
+		}
 	}
 }
