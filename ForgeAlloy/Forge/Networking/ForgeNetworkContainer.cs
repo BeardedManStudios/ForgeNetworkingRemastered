@@ -2,6 +2,7 @@
 using Forge.Engine;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
+using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
@@ -10,7 +11,7 @@ namespace Forge.Networking
 		public IPlayerRepository PlayerRepository { get; private set; }
 		public IEngineContainer EngineContainer { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
-		public INetPlayer SelfPlayer { get; private set; }
+		public ISocketContainer SocketContainer { get; private set; }
 
 		public ForgeNetworkContainer()
 		{
@@ -23,6 +24,11 @@ namespace Forge.Networking
 			EngineContainer = engineContainer;
 		}
 
+		public void ChangeSocketContainer(ISocketContainer socketContainer)
+		{
+			SocketContainer = socketContainer;
+		}
+
 		public void SendMessage(IMessage message, Guid playerId)
 		{
 			INetPlayer player = PlayerRepository.GetPlayer(playerId);
@@ -31,7 +37,7 @@ namespace Forge.Networking
 
 		public void SendMessage(IMessage message, INetPlayer player)
 		{
-			MessageBus.SendMessage(message, SelfPlayer.Socket, player.Socket);
+			MessageBus.SendMessage(message, SocketContainer.ManagedSocket, player.Socket);
 		}
 	}
 }
