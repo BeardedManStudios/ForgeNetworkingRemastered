@@ -64,11 +64,25 @@ dotnet_naming_symbols.private_symbols.applicable_kinds              = property,f
 dotnet_naming_symbols.private_symbols.applicable_accessibilities    = private
 # Private readonly members
 dotnet_naming_rule.private_readonly_members_start_with_underscore.severity  = suggestion
-dotnet_naming_rule.private_readonly_members_start_with_underscore.symbols   = private_symbols
+dotnet_naming_rule.private_readonly_members_start_with_underscore.symbols   = private_readonly_symbols
 dotnet_naming_rule.private_readonly_members_start_with_underscore.style     = prefixed_with_underscore_camel_case_style
-dotnet_naming_symbols.private_symbols.applicable_kinds                      = property,field,event,delegate
-dotnet_naming_symbols.private_symbols.applicable_accessibilities            = private
-dotnet_naming_symbols.private_symbols.required_modifiers                    = readonly
+dotnet_naming_symbols.private_readonly_symbols.applicable_kinds             = property,field,event,delegate
+dotnet_naming_symbols.private_readonly_symbols.applicable_accessibilities   = private
+dotnet_naming_symbols.private_readonly_symbols.required_modifiers           = readonly
+# Private static members
+dotnet_naming_rule.private_static_members_start_with_underscore.severity	= suggestion
+dotnet_naming_rule.private_static_members_start_with_underscore.symbols		= private_static_symbols
+dotnet_naming_rule.private_static_members_start_with_underscore.style		= prefixed_with_underscore_camel_case_style
+dotnet_naming_symbols.private_static_symbols.applicable_kinds				= property,field,event,delegate
+dotnet_naming_symbols.private_static_symbols.applicable_accessibilities		= private
+dotnet_naming_symbols.private_static_symbols.required_modifiers				= static
+# Private static readonly members
+dotnet_naming_rule.private_static_readonly_members_start_with_underscore.severity	= suggestion
+dotnet_naming_rule.private_static_readonly_members_start_with_underscore.symbols	= private_static_readonly_symbols
+dotnet_naming_rule.private_static_readonly_members_start_with_underscore.style		= prefixed_with_underscore_camel_case_style
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds				= property,field,event,delegate
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities	= private
+dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers			= static,readonly
 # Use screaming snake case for constant fields
 dotnet_naming_rule.constant_fields_should_be_screaming_snake_case.severity  = suggestion
 dotnet_naming_rule.constant_fields_should_be_screaming_snake_case.symbols   = constant_fields

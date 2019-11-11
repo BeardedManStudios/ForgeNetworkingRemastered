@@ -463,6 +463,14 @@ namespace Forge.Serialization
 			return obj;
 		}
 
+		public byte[] GetByteRange(int count, bool moveIndex = true)
+		{
+			byte[] block = new byte[count];
+			Buffer.BlockCopy(byteArr, StartIndex(), block, 0, count);
+			MoveStartIndex(count);
+			return block;
+		}
+
 		/// <summary>
 		/// This will get the value for a basic data type in this data
 		/// </summary>
@@ -476,7 +484,7 @@ namespace Forge.Serialization
 				if (moveIndex)
 					MoveStartIndex(sizeof(sbyte));
 
-				return byteArr[start];
+				return (sbyte)byteArr[start];
 			}
 			else if (type == typeof(byte))
 			{

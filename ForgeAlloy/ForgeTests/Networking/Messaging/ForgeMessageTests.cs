@@ -39,7 +39,7 @@ namespace ForgeTests.Networking.Messaging
 
 			public override void Serialize(BMSByte buffer)
 			{
-				ObjectMapper.Instance.MapBytes(buffer, MockString);
+				buffer.Append(ForgeSerializationContainer.Instance.Serialize(MockString));
 			}
 		}
 

@@ -71,6 +71,21 @@
     <Compile Include="Networking\Socket\SocketServerContainerTests.cs" />
     <Compile Include="Networking\Socket\TCPSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\Serializers\BoolSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\ByteArraySerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\ByteSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\DoubleSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\FloatSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\IntSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\LongSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\SByteSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\ShortSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\StringSerializationTests.cs" />
+    <Compile Include="Serialization\Serializers\TypeSerializerTestsBase.cs" />
+    <Compile Include="Serialization\Serializers\UIntSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\ULongSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\UShortSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\VectorSerializerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -82,7 +97,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Engine\" />
     <Folder Include="Networking\Messaging\Messages\" />
+    <Folder Include="Reflection\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

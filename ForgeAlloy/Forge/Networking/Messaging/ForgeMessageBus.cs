@@ -26,7 +26,10 @@ namespace Forge.Networking.Messaging
 		{
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
+			buffer.Append(
+				ForgeSerializationContainer.Instance.Serialize(GetMessageCode(message)),
+				ForgeSerializationContainer.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			byte[] messageBuffer = pm.Buffer.CompressBytes();
@@ -40,7 +43,10 @@ namespace Forge.Networking.Messaging
 			message.Receipt = receipt;
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-			ObjectMapper.Instance.MapBytes(buffer, GetMessageCode(message), message.Receipt?.Signature.ToString() ?? "");
+			buffer.Append(
+				ForgeSerializationContainer.Instance.Serialize(GetMessageCode(message)),
+				ForgeSerializationContainer.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			byte[] messageBuffer = pm.Buffer.CompressBytes();
