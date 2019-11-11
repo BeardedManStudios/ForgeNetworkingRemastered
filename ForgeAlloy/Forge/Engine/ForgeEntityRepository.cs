@@ -6,11 +6,14 @@ namespace Forge.Engine
 	{
 		private Dictionary<int, IEntity> _entityLookup = new Dictionary<int, IEntity>();
 
+		public event EntityAddedToRepository onEntityAdded;
+
 		public void AddEntity(IEntity entity)
 		{
 			if (_entityLookup.ContainsKey(entity.Id))
 				throw new EntityExistsInRepositoryException(entity.Id);
 			_entityLookup.Add(entity.Id, entity);
+			onEntityAdded(entity);
 		}
 
 		public IEntity GetEntityById(int id)
