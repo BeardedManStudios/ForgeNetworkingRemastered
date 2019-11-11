@@ -94,5 +94,7 @@ namespace ForgeTests.Networking.Messaging
 			var repo = ForgeTypeFactory.GetNew<IMessageRepository>();
 			Assert.Throws<InvalidMessageRepositoryTTLProvided>(() => repo.AddMessage(A.Fake<IMessage>(), 0));
 		}
+
+		// TODO:  Need to add tests for both Get and GetAll
 	}
 }
