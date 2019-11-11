@@ -9,18 +9,16 @@ namespace Forge.Networking.Players
 		private readonly Dictionary<Guid, INetPlayer> _playerLookup = new Dictionary<Guid, INetPlayer>();
 		private readonly Dictionary<EndPoint, INetPlayer> _playerAddressLookup = new Dictionary<EndPoint, INetPlayer>();
 
+		public event PlayerAddedToRepository onPlayerAdded;
+
 		public int Count { get => _playerLookup.Count; }
-
-		public ForgePlayerRepository()
-		{
-
-		}
 
 		public void AddPlayer(INetPlayer player)
 		{
 			player.Id = Guid.NewGuid();
 			_playerLookup.Add(player.Id, player);
 			_playerAddressLookup.Add(player.Socket.EndPoint, player);
+			onPlayerAdded?.Invoke(player);
 		}
 
 		public INetPlayer GetPlayer(Guid id)

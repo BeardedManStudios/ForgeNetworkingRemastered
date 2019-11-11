@@ -3,8 +3,11 @@ using System.Net;
 
 namespace Forge.Networking.Players
 {
+	public delegate void PlayerAddedToRepository(INetPlayer player);
+
 	public interface IPlayerRepository
 	{
+		event PlayerAddedToRepository onPlayerAdded;
 		int Count { get; }
 		void AddPlayer(INetPlayer player);
 		void RemovePlayer(Guid id);

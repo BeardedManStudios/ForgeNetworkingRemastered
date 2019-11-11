@@ -10,7 +10,7 @@ namespace Forge.Networking.Messaging.Interpreters
 			var eMessage = (IEntityMessage)message;
 			try
 			{
-				IEntity entity = netContainer.EngineContainer.FindEntityWithId(eMessage.EntityId);
+				IEntity entity = netContainer.EngineContainer.EntityRepository.GetEntityById(eMessage.EntityId);
 				entity.ProcessNetworkMessage(eMessage);
 			}
 			catch (EngineEntityNotFoundException)

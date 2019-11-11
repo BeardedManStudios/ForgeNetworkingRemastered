@@ -13,7 +13,7 @@ namespace Forge.Engine
 			if (_entityLookup.ContainsKey(entity.Id))
 				throw new EntityExistsInRepositoryException(entity.Id);
 			_entityLookup.Add(entity.Id, entity);
-			onEntityAdded(entity);
+			onEntityAdded?.Invoke(entity);
 		}
 
 		public IEntity GetEntityById(int id)

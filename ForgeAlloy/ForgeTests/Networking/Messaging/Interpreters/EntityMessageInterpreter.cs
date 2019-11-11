@@ -19,7 +19,7 @@ namespace ForgeTests.Networking.Messaging.Interpreters
 			var network = ForgeTypeFactory.GetNew<INetworkContainer>();
 			network.ChangeEngineContainer(engine);
 
-			A.CallTo(() => engine.FindEntityWithId(A<int>._)).Returns(entity);
+			A.CallTo(() => engine.EntityRepository.GetEntityById(A<int>._)).Returns(entity);
 			entityMessage.Interpret(network);
 
 			A.CallTo(() => entity.ProcessNetworkMessage(A<IEntityMessage>._)).MustHaveHappenedOnceExactly();
