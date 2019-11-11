@@ -10,6 +10,7 @@ namespace Forge.Networking.Players
 		{
 
 		}
+
 		public PlayerNotFoundException(EndPoint ep)
 			: base($"A player with the endpoint {ep} could not be found in the repository")
 		{

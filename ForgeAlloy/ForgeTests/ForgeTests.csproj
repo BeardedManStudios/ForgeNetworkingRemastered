@@ -60,7 +60,14 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BMSByteTests.cs" />
+    <Compile Include="DataStructures\VectorTests.cs" />
+    <Compile Include="Engine\EntityRepositoryTests.cs" />
+    <Compile Include="Networking\NetworkContainerTests.cs" />
+    <Compile Include="Networking\Players\PlayerTests.cs" />
+    <Compile Include="Networking\Socket\SocketClientContainerTests.cs" />
+    <Compile Include="Networking\Socket\UDPSocketTests.cs" />
+    <Compile Include="Reflection\TypeReflectionRepositoryTests.cs" />
+    <Compile Include="Serialization\BMSByteTests.cs" />
     <Compile Include="ForgeNetworkingTest.cs" />
     <Compile Include="Networking\Messaging\ForgeMessageTests.cs" />
     <Compile Include="Networking\Messaging\Interpreters\EntityMessageInterpreter.cs" />
@@ -71,6 +78,7 @@
     <Compile Include="Networking\Socket\SocketServerContainerTests.cs" />
     <Compile Include="Networking\Socket\TCPSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SerializationContainerTests.cs" />
     <Compile Include="Serialization\Serializers\BoolSerializerTests.cs" />
     <Compile Include="Serialization\Serializers\ByteArraySerializerTests.cs" />
     <Compile Include="Serialization\Serializers\ByteSerializerTests.cs" />
@@ -85,7 +93,7 @@
     <Compile Include="Serialization\Serializers\UIntSerializerTests.cs" />
     <Compile Include="Serialization\Serializers\ULongSerializerTests.cs" />
     <Compile Include="Serialization\Serializers\UShortSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\VectorSerializerTests.cs" />
+    <Compile Include="Serialization\Serializers\Vector3DSerializerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -97,9 +105,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Engine\" />
     <Folder Include="Networking\Messaging\Messages\" />
-    <Folder Include="Reflection\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

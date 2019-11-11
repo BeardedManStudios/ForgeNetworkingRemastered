@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Forge.DataStructures;
 
 namespace Forge.Serialization
 {
@@ -565,7 +566,7 @@ namespace Forge.Serialization
 			}
 			else if (type == typeof(string))
 				return GetString(start, moveIndex);
-			else if (type == typeof(Vector))
+			else if (type == typeof(Vector3D))
 				return GetVector(start, moveIndex);
 			else if (type.IsArray)
 			{
@@ -648,13 +649,13 @@ namespace Forge.Serialization
 			return Encoding.UTF8.GetString(byteArr, start + sizeof(int), length);
 		}
 
-		public Vector GetVector(int start, bool moveIndex = false)
+		public Vector3D GetVector(int start, bool moveIndex = false)
 		{
-			Vector vec = new Vector
+			var vec = new Vector3D
 			{
-				x = GetBasicType<float>(start, false),
-				y = GetBasicType<float>(start + sizeof(float), false),
-				z = GetBasicType<float>(start + (sizeof(float) * 2), false)
+				X = GetBasicType<float>(start, false),
+				Y = GetBasicType<float>(start + sizeof(float), false),
+				Z = GetBasicType<float>(start + (sizeof(float) * 2), false)
 			};
 
 			if (moveIndex)

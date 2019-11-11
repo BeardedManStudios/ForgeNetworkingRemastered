@@ -1,11 +1,13 @@
 ﻿using Forge.Serialization;
 using NUnit.Framework;
 
-namespace ForgeTests
+namespace ForgeTests.Serialization
 {
 	[TestFixture]
 	public class BMSByteTests
 	{
+		// TODO:  Finish testing all the other public methods of BMSByte
+
 		[Test]
 		public void AppendBytesAndCompressBytes()
 		{

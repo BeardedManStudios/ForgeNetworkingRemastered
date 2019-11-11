@@ -1,57 +1,57 @@
 ﻿using System;
 
-namespace Forge.Serialization
+namespace Forge.DataStructures
 {
-	public struct Vector
+	public struct Vector3D
 	{
-		public float x { get; set; }
+		public float X { get; set; }
 
-		public float y { get; set; }
+		public float Y { get; set; }
 
-		public float z { get; set; }
+		public float Z { get; set; }
 
 		/// <summary>
-		/// Get's the magnitude (pythagorean theorem) of this vector (the length
+		/// Gets the magnitude (Pythagorean theorem) of this vector (the length
 		/// of the hypotenuse of the right triangle produced by this vector)
 		/// </summary>
 		public float Magnitude
 		{
-			get { return (float)Math.Sqrt((x * x) + (y * y) + (z * z)); }
+			get { return (float)Math.Sqrt((X * X) + (Y * Y) + (Z * Z)); }
 		}
 
 		public float SqrMagnitude
 		{
-			get { return (float)((x * x) + (y * y) + (z * z)); }
+			get { return (float)((X * X) + (Y * Y) + (Z * Z)); }
 		}
 
 		/// <summary>
 		/// This will return a new normalized $js.Vector3 of this vector
 		/// </summary>
-		public Vector Normalized
+		public Vector3D Normalized
 		{
 			get
 			{
-				var tmp = new Vector(x, y, z);
+				var tmp = new Vector3D(X, Y, Z);
 
 				var mag = Magnitude;
-				tmp.x = tmp.x / mag;
-				tmp.y = tmp.y / mag;
-				tmp.z = tmp.z / mag;
+				tmp.X = tmp.X / mag;
+				tmp.Y = tmp.Y / mag;
+				tmp.Z = tmp.Z / mag;
 
 				return tmp;
 			}
 		}
 
-		public Vector(float xyz) : this()
+		public Vector3D(float xyz) : this()
 		{
-			x = y = z = xyz;
+			X = Y = Z = xyz;
 		}
 
-		public Vector(float x, float y, float z) : this()
+		public Vector3D(float x, float y, float z) : this()
 		{
-			this.x = x;
-			this.y = y;
-			this.z = z;
+			X = x;
+			Y = y;
+			Z = z;
 		}
 
 		/// <summary>
@@ -59,9 +59,9 @@ namespace Forge.Serialization
 		/// </summary>
 		/// <param name="vector">The vector to be multiplied with this vector</param>
 		/// <returns>The result of dot product (vector multiplication)</returns>
-		public float Dot(Vector vector)
+		public float Dot(Vector3D vector)
 		{
-			return (x * vector.x) + (y * vector.y) + (z * vector.z);
+			return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
 		}
 
 		/// <summary>
@@ -70,12 +70,12 @@ namespace Forge.Serialization
 		/// </summary>
 		/// <param name="vector">The vector to be multiplied with this vector</param>
 		/// <returns>The result of cross product (vector multiplication)</returns>
-		public Vector Cross(Vector vector)
+		public Vector3D Cross(Vector3D vector)
 		{
-			return new Vector(
-				(y * vector.z) - (z * vector.y),
-				(z * vector.x) - (x * vector.z),
-				(x * vector.y) - (y * vector.x)
+			return new Vector3D(
+				(Y * vector.Z) - (Z * vector.Y),
+				(Z * vector.X) - (X * vector.Z),
+				(X * vector.Y) - (Y * vector.X)
 			);
 		}
 
@@ -84,23 +84,23 @@ namespace Forge.Serialization
 		/// </summary>
 		/// <param name="vector">The vector to check the distance to</param>
 		/// <returns>The distance between this Vector and the supplied Vector</returns>
-		public float Distance(Vector vector)
+		public float Distance(Vector3D vector)
 		{
-			return (float)Math.Sqrt(((vector.x - x) * (vector.x - x)) + ((y - vector.y) * (y - vector.y)) + ((z - vector.z) * (z - vector.z)));
+			return (float)Math.Sqrt(((vector.X - X) * (vector.X - X)) + ((Y - vector.Y) * (Y - vector.Y)) + ((Z - vector.Z) * (Z - vector.Z)));
 		}
 
-		public float DistanceSquared(Vector vector)
+		public float DistanceSquared(Vector3D vector)
 		{
-			return new Vector(x - vector.x, y - vector.y, z - vector.z).SqrMagnitude;
+			return new Vector3D(X - vector.X, Y - vector.Y, Z - vector.Z).SqrMagnitude;
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Vector))
+			if (!(obj is Vector3D))
 				return false;
 
-			Vector other = (Vector)obj;
-			return x == other.x && y == other.y && z == other.z;
+			Vector3D other = (Vector3D)obj;
+			return X == other.X && Y == other.Y && Z == other.Z;
 		}
 
 		public override int GetHashCode()

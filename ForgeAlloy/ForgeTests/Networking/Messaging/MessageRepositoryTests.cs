@@ -66,7 +66,7 @@ namespace ForgeTests.Networking.Messaging
 			Assert.IsFalse(repo.Exists(message.Receipt.Signature));
 		}
 
-		[Test, Ignore("This is a timed test and should be ran on-demand")]
+		[Test]
 		public void MessageAfterTTL_ShouldBeRemoved()
 		{
 			var message = A.Fake<IMessage>();
