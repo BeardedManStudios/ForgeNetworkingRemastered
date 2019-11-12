@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Forge.Networking.Sockets
 {
 	public class ForgeUDPSocketClientContainer : ForgeUDPSocketContainerBase, ISocketClientContainer
 	{
+		public Guid NetPlayerId { get; set; }
 		private readonly IClientSocket _socket;
 		public override ISocket ManagedSocket => _socket;
 

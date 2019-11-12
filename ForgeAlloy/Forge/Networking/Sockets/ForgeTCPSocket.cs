@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using Forge.Serialization;
 
@@ -52,10 +53,16 @@ namespace Forge.Networking.Sockets
 			return length;
 		}
 
-		public void Send(ISocket target, byte[] buffer, int length)
+		public void Send(EndPoint endpoint, byte[] buffer, int length)
 		{
 			int offset = 0;
-			_socket.SendTo(buffer, offset, length, SocketFlags.None, target.EndPoint);
+			_socket.SendTo(buffer, offset, length, SocketFlags.None, endpoint);
+		}
+
+		public void ReportAcceptance(ISocket target)
+		{
+			byte[] portBytes = BitConverter.GetBytes(((IPEndPoint)EndPoint).Port);
+			_socket.SendTo(portBytes, 0, portBytes.Length, SocketFlags.None, target.EndPoint);
 		}
 	}
 }

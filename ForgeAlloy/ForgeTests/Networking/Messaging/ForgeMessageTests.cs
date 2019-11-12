@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using FakeItEasy;
 using Forge.Networking;
 using Forge.Networking.Messaging;
@@ -23,9 +24,9 @@ namespace ForgeTests.Networking.Messaging
 				get
 				{
 					var mockInterpreter = A.Fake<IMessageInterpreter>();
-					A.CallTo(() => mockInterpreter.Interpret(A<INetworkContainer>._, A<IMessage>._)).Invokes((ctx) =>
+					A.CallTo(() => mockInterpreter.Interpret(A<INetworkContainer>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
 					{
-						interpretedMessage = (ForgeMessage)ctx.Arguments[1];
+						interpretedMessage = (ForgeMessage)ctx.Arguments[2];
 						ItWorked = true;
 					});
 					return mockInterpreter;
@@ -70,15 +71,15 @@ namespace ForgeTests.Networking.Messaging
 			byte[] bin = null;
 			var receiver = A.Fake<ISocket>();
 			var sender = A.Fake<ISocket>();
-			A.CallTo(() => sender.Send(A<ISocket>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
+			A.CallTo(() => sender.Send(A<EndPoint>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
 			{
 				bin = (byte[])ctx.Arguments[1];
 			});
 			var bus = new ForgeMessageBus();
-			bus.SendMessage(mock, sender, receiver);
+			bus.SendMessage(mock, sender, receiver.EndPoint);
 			Assert.IsNotNull(bin);
 
-			bus.ReceiveMessageBuffer(host, receiver, sender, bin);
+			bus.ReceiveMessageBuffer(host, receiver, sender.EndPoint, bin);
 
 			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
 

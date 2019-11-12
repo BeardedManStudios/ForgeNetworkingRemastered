@@ -1,11 +1,15 @@
-﻿using Forge.Engine;
+﻿using System.Net;
+using Forge.Engine;
 using Forge.Networking.Messaging.Messages;
 
 namespace Forge.Networking.Messaging.Interpreters
 {
 	public class ForgeEntityMessageInterpreter : IMessageInterpreter
 	{
-		public void Interpret(INetworkContainer netContainer, IMessage message)
+		public bool ValidOnClient => true;
+		public bool ValidOnServer => true;
+
+		public void Interpret(INetworkContainer netContainer, EndPoint sender, IMessage message)
 		{
 			var eMessage = (IEntityMessage)message;
 			try

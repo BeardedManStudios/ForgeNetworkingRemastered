@@ -65,12 +65,17 @@ namespace Forge
 		private static void RegisterCustomMessages()
 		{
 			ForgeTypeFactory.Register<IEntityMessage, ForgeEntityMessage>();
+			ForgeTypeFactory.Register<IChallengeMessage, ForgeConnectChallengeMessage>();
+			ForgeTypeFactory.Register<IChallengeResponseMessage, ForgeConnectChallengeResponseMessage>();
 		}
 
 		private static void RegisterMessageCodes()
 		{
 			ForgeMessageCodes.Register<ForgeReceiptAcknowledgement>();
 			ForgeMessageCodes.Register<ForgeEntityMessage>();
+			ForgeMessageCodes.Register<ForgeRequestIdentityMessage>();
+			ForgeMessageCodes.Register<ForgeNetworkIdentityMessage>();
+			ForgeMessageCodes.Register<ForgeReadyForEngineMessage>();
 		}
 
 		private static void SetupSerializers()

@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
 
 namespace Forge.Networking.Sockets
@@ -12,9 +14,12 @@ namespace Forge.Networking.Sockets
 		public override ISocket ManagedSocket => _socket;
 		private CancellationTokenSource _newConnectionsTokenSource;
 
+		private IPlayerRepository _challengedPlayers;
+
 		public ForgeUDPSocketServerContainer()
 		{
 			_socket = ForgeTypeFactory.GetNew<IServerSocket>();
+			_challengedPlayers = ForgeTypeFactory.GetNew<IPlayerRepository>();
 		}
 
 		public void StartServer(ushort port, int maxPlayers, INetworkContainer netContainer)
@@ -24,7 +29,6 @@ namespace Forge.Networking.Sockets
 			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
 			_newConnectionsTokenSource = new CancellationTokenSource();
 			readTokenSource = new CancellationTokenSource();
-			Task.Run(ListenForConnections, _newConnectionsTokenSource.Token);
 			Task.Run(ReadNetwork, readTokenSource.Token);
 		}
 
@@ -34,25 +38,29 @@ namespace Forge.Networking.Sockets
 			base.ShutDown();
 		}
 
-		private void ListenForConnections()
+		public void ChallengeSuccess(INetworkContainer netContainer, EndPoint endpoint)
 		{
-			while (!_newConnectionsTokenSource.Token.IsCancellationRequested)
+			INetPlayer player = _challengedPlayers.GetPlayer(endpoint);
+			var netIdentity = new ForgeNetworkIdentityMessage
 			{
-				ISocket newClient = _socket.AwaitAccept();
-				synchronizationContext.Post(SynchronizedPlayerConnected, newClient);
-			}
+				Identity = player.Id
+			};
+			_challengedPlayers.RemovePlayer(player);
+			netContainer.PlayerRepository.AddPlayer(player);
+			netContainer.MessageBus.SendReliableMessage(netIdentity, ManagedSocket, endpoint);
 		}
 
-		private void SynchronizedPlayerConnected(object state)
+		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
 		{
-			var newClient = (ISocket)state;
-			if (!netContainer.PlayerRepository.Exists(newClient.EndPoint))
+			// TODO:  Check if the player has been banned and only do the following if not
+			if (!netContainer.PlayerRepository.Exists(data.Endpoint))
 			{
 				var newPlayer = ForgeTypeFactory.GetNew<INetPlayer>();
-				newPlayer.Socket = newClient;
-				netContainer.PlayerRepository.AddPlayer(newPlayer);
-				netContainer.EngineContainer.PlayerJoined(newPlayer);
+				newPlayer.EndPoint = data.Endpoint;
+				_challengedPlayers.AddPlayer(newPlayer);
 			}
+			else
+				base.ProcessMessageRead(data);
 		}
 	}
 }

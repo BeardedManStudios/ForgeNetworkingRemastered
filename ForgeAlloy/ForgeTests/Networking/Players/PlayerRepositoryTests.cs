@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using FakeItEasy;
 using Forge;
 using Forge.Networking.Players;
@@ -67,19 +68,83 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void GettingPlayerByEndpoint_ShouldFindPlayer()
 		{
-
+			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var player = A.Fake<INetPlayer>();
+			A.CallTo(() => player.EndPoint).Returns(ep);
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			repo.AddPlayer(player);
+			var found = repo.GetPlayer(ep);
+			Assert.AreEqual(player, found);
+			Assert.AreEqual(player.EndPoint, found.EndPoint);
 		}
 
 		[Test]
 		public void GettingPlayerByEndpointThatDoesntExist_ShouldThrow()
 		{
-
+			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3515);
+			var player = A.Fake<INetPlayer>();
+			A.CallTo(() => player.EndPoint).Returns(ep);
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			repo.AddPlayer(player);
+			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(wrongEp));
 		}
 
 		[Test]
 		public void AddingPlayer_ShouldHaveGuidAssigned()
 		{
+			var initialId = Guid.NewGuid();
+			var player = A.Fake<INetPlayer>();
+			player.Id = initialId;
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			repo.AddPlayer(player);
+			Assert.AreNotEqual(initialId, player.Id);
+			Assert.AreNotEqual(new Guid(), player.Id);
+		}
 
+		[Test]
+		public void AddingPlayer_ShouldInvokeTheAddedPlayerEventAndMatch()
+		{
+			var player = A.Fake<INetPlayer>();
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var evt = A.Fake<PlayerAddedToRepository>();
+			repo.onPlayerAdded += evt;
+			repo.AddPlayer(player);
+			A.CallTo(() => evt(player)).MustHaveHappenedOnceExactly();
+		}
+
+		[Test]
+		public void AddingPlayerAndCheckingExist_ShouldReturnTrue()
+		{
+			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var player = A.Fake<INetPlayer>();
+			A.CallTo(() => player.EndPoint).Returns(ep);
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			repo.AddPlayer(player);
+			bool exists = repo.Exists(player.EndPoint);
+			Assert.IsTrue(exists);
+		}
+
+		[Test]
+		public void EmptyRepositoryPlayerExist_ShouldReturnFalse()
+		{
+			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			bool exists = repo.Exists(ep);
+			Assert.IsFalse(exists);
+		}
+
+		[Test]
+		public void CheckingExistOnNonAddedPlayerOnNonEmptyRepository_ShouldReturnFalse()
+		{
+			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3574);
+			var player = A.Fake<INetPlayer>();
+			A.CallTo(() => player.EndPoint).Returns(ep);
+			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			repo.AddPlayer(player);
+			bool exists = repo.Exists(wrongEp);
+			Assert.IsFalse(exists);
 		}
 	}
 }

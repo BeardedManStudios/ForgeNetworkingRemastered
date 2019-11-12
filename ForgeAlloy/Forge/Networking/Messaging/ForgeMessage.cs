@@ -15,10 +15,5 @@ namespace Forge.Networking.Messaging
 		public abstract IMessageInterpreter Interpreter { get; }
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);
-
-		public void Interpret(INetworkContainer host)
-		{
-			Interpreter.Interpret(host, this);
-		}
 	}
 }

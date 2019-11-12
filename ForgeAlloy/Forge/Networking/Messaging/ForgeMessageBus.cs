@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Sockets;
@@ -22,7 +23,7 @@ namespace Forge.Networking.Messaging
 			return ForgeMessageCodes.GetCodeFromType(message.GetType());
 		}
 
-		public void SendMessage(IMessage message, ISocket sender, ISocket receiver)
+		public void SendMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
@@ -36,7 +37,7 @@ namespace Forge.Networking.Messaging
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 		}
 
-		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, ISocket receiver)
+		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
 			var receipt = ForgeTypeFactory.GetNew<IMessageReceipt>();
 			receipt.Signature = Guid.NewGuid();
@@ -54,7 +55,7 @@ namespace Forge.Networking.Messaging
 			return receipt;
 		}
 
-		public void ReceiveMessageBuffer(INetworkContainer host, ISocket readingSocket, ISocket messageSender, byte[] messageBuffer)
+		public void ReceiveMessageBuffer(INetworkContainer netContainer, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
@@ -64,7 +65,15 @@ namespace Forge.Networking.Messaging
 				var m = CreateMessageTypeFromBuffer(constructor.MessageBuffer);
 				ProcessMessageSignature(readingSocket, messageSender, constructor.MessageBuffer, m);
 				m.Deserialize(constructor.MessageBuffer);
-				m.Interpret(host);
+
+				// TODO:  I don't like this type check and if branching in here...
+				bool isServer = netContainer.SocketContainer is ISocketClientContainer;
+
+				var interpreter = m.Interpreter;
+				if (interpreter.ValidOnClient && !isServer)
+					interpreter.Interpret(netContainer, messageSender, m);
+				else if (interpreter.ValidOnServer && isServer)
+					interpreter.Interpret(netContainer, messageSender, m);
 			}
 		}
 
@@ -74,7 +83,7 @@ namespace Forge.Networking.Messaging
 			return (IMessage)ForgeMessageCodes.Instantiate(code);
 		}
 
-		private void ProcessMessageSignature(ISocket readingSocket, ISocket messageSender, BMSByte buffer, IMessage m)
+		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)
 		{
 			string guid = buffer.GetBasicType<string>();
 			if (guid.Length == 0)

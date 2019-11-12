@@ -54,7 +54,7 @@ namespace ForgeTests.Networking.Socket
 			Task backgroundThread = Task.Run(() =>
 			{
 				var connectedClient = server.AwaitAccept();
-				connectedClient.Send(A.Fake<ISocket>(), msg, msg.Length);
+				connectedClient.Send(A.Fake<EndPoint>(), msg, msg.Length);
 			});
 
 			EndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937);

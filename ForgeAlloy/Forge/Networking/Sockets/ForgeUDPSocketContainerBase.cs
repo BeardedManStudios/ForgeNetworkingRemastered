@@ -43,10 +43,14 @@ namespace Forge.Networking.Sockets
 
 		protected void SynchronizedMessageRead(object state)
 		{
-			var data = (SocketContainerSynchronizationReadData)state;
+			ProcessMessageRead((SocketContainerSynchronizationReadData)state);
+		}
+
+		protected virtual void ProcessMessageRead(SocketContainerSynchronizationReadData data)
+		{
 			INetPlayer player = netContainer.PlayerRepository.GetPlayer(data.Endpoint);
 			netContainer.MessageBus.ReceiveMessageBuffer(netContainer, ManagedSocket,
-				player.Socket, data.Buffer);
+				player.EndPoint, data.Buffer);
 		}
 	}
 }

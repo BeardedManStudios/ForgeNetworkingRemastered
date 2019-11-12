@@ -37,7 +37,7 @@ namespace Forge.Networking
 
 		public void SendMessage(IMessage message, INetPlayer player)
 		{
-			MessageBus.SendMessage(message, SocketContainer.ManagedSocket, player.Socket);
+			MessageBus.SendMessage(message, SocketContainer.ManagedSocket, player.EndPoint);
 		}
 	}
 }

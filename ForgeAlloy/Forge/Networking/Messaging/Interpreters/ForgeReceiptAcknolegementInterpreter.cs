@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Net;
 
 namespace Forge.Networking.Messaging.Interpreters
 {
 	public class ForgeReceiptAcknolegementInterpreter : IMessageInterpreter
 	{
-		public void Interpret(INetworkContainer netHost, IMessage message)
+		public bool ValidOnClient => true;
+		public bool ValidOnServer => true;
+
+		public void Interpret(INetworkContainer netHost, EndPoint sender, IMessage message)
 		{
 			throw new NotImplementedException();
 		}

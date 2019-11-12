@@ -3,6 +3,5 @@
 	public interface IServerSocket : ISocket
 	{
 		void Listen(ushort port, int maxParallelConnections);
-		ISocket AwaitAccept();
 	}
 }

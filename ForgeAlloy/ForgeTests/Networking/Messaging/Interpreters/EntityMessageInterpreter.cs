@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Net;
+using FakeItEasy;
 using Forge;
 using Forge.Engine;
 using Forge.Networking;
@@ -20,7 +21,7 @@ namespace ForgeTests.Networking.Messaging.Interpreters
 			network.ChangeEngineContainer(engine);
 
 			A.CallTo(() => engine.EntityRepository.GetEntityById(A<int>._)).Returns(entity);
-			entityMessage.Interpret(network);
+			entityMessage.Interpreter.Interpret(network, A.Fake<EndPoint>(), entityMessage);
 
 			A.CallTo(() => entity.ProcessNetworkMessage(A<IEntityMessage>._)).MustHaveHappenedOnceExactly();
 		}

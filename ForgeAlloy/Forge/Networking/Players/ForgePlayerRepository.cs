@@ -17,7 +17,7 @@ namespace Forge.Networking.Players
 		{
 			player.Id = Guid.NewGuid();
 			_playerLookup.Add(player.Id, player);
-			_playerAddressLookup.Add(player.Socket.EndPoint, player);
+			_playerAddressLookup.Add(player.EndPoint, player);
 			onPlayerAdded?.Invoke(player);
 		}
 
@@ -31,14 +31,14 @@ namespace Forge.Networking.Players
 		public void RemovePlayer(INetPlayer player)
 		{
 			_playerLookup.Remove(player.Id);
-			_playerAddressLookup.Remove(player.Socket.EndPoint);
+			_playerAddressLookup.Remove(player.EndPoint);
 		}
 
 		public void RemovePlayer(Guid id)
 		{
 			var player = _playerLookup[id];
 			_playerLookup.Remove(id);
-			_playerAddressLookup.Remove(player.Socket.EndPoint);
+			_playerAddressLookup.Remove(player.EndPoint);
 		}
 
 		public INetPlayer GetPlayer(EndPoint endpoint)

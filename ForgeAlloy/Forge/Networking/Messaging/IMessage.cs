@@ -6,7 +6,6 @@ namespace Forge.Networking.Messaging
 	{
 		IMessageReceipt Receipt { get; set; }
 		IMessageInterpreter Interpreter { get; }
-		void Interpret(INetworkContainer host);
 		void Serialize(BMSByte buffer);
 		void Deserialize(BMSByte buffer);
 	}
