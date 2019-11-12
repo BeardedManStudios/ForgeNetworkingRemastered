@@ -139,6 +139,9 @@ namespace Forge.Networking.Messaging
 			return _messages[guid];
 		}
 
-		public IEnumerator<KeyValuePair<EndPoint, IMessage>> GetIterator() => _messages.Values.GetEnumerator();
+		public Dictionary<Guid, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator()
+		{
+			return _messages.Values;
+		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Forge.Networking.Messaging
 		void RemoveMessage(Guid guid);
 		bool Exists(Guid guid);
 		KeyValuePair<EndPoint, IMessage> Get(Guid guid);
-		IEnumerator<KeyValuePair<EndPoint, IMessage>> GetIterator();
+		Dictionary<Guid, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator();
 		void Clear();
 		// TODO:  Will need a way to either group messages or get all of them to re-send
 	}

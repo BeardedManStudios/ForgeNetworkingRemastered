@@ -11,9 +11,6 @@ namespace ForgeTests.Networking.Messaging
 	[TestFixture]
 	public class MessageRepositoryTests : ForgeNetworkingTest
 	{
-		// TODO:  Validate the endpoint on the messages
-		// TODO:  Validate the iterator of the messages
-
 		[Test]
 		public void AddMessage_ShouldExist()
 		{
@@ -99,6 +96,7 @@ namespace ForgeTests.Networking.Messaging
 			Assert.Throws<InvalidMessageRepositoryTTLProvided>(() => repo.AddMessage(A.Fake<IMessage>(), A.Fake<EndPoint>(), 0));
 		}
 
-		// TODO:  Need to add tests for both Get and GetAll
+		// TODO:  Validate the endpoint on the messages
+		// TODO:  Validate the iterator of the messages
 	}
 }
