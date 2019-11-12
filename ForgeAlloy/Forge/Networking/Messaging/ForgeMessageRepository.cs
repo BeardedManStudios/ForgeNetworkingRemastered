@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,10 +14,11 @@ namespace Forge.Networking.Messaging
 		{
 			public DateTime ttl;
 			public IMessage message;
+			public EndPoint sender;
 		}
 
 		private readonly List<StoredMessage> _messagesWithTTL = new List<StoredMessage>();
-		private readonly Dictionary<Guid, IMessage> _messages = new Dictionary<Guid, IMessage>();
+		private readonly Dictionary<Guid, KeyValuePair<EndPoint, IMessage>> _messages = new Dictionary<Guid, KeyValuePair<EndPoint, IMessage>>();
 
 		public void Clear()
 		{
@@ -54,7 +56,7 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public void AddMessage(IMessage message)
+		public void AddMessage(IMessage message, EndPoint sender)
 		{
 			if (message.Receipt == null)
 				throw new MessageRepositoryMissingGuidOnMessageException();
@@ -62,16 +64,16 @@ namespace Forge.Networking.Messaging
 				throw new MessageWithReceiptSignatureAlreadyExistsException();
 			lock (_messages)
 			{
-				_messages.Add(message.Receipt.Signature, message);
+				_messages.Add(message.Receipt.Signature, new KeyValuePair<EndPoint, IMessage>(sender, message));
 			}
 		}
 
-		public void AddMessage(IMessage message, int ttlMilliseconds)
+		public void AddMessage(IMessage message, EndPoint sender, int ttlMilliseconds)
 		{
 			if (ttlMilliseconds <= 0)
 				throw new InvalidMessageRepositoryTTLProvided(ttlMilliseconds);
 
-			AddMessage(message);
+			AddMessage(message, sender);
 			var span = new TimeSpan(0, 0, 0, 0, ttlMilliseconds);
 			var now = DateTime.UtcNow;
 			lock (_messagesWithTTL)
@@ -79,7 +81,8 @@ namespace Forge.Networking.Messaging
 				_messagesWithTTL.Add(new StoredMessage
 				{
 					ttl = now + span,
-					message = message
+					message = message,
+					sender = sender
 				});
 				if (_messagesWithTTL.Count == 1)
 				{
@@ -131,21 +134,11 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public IMessage[] GetAll()
-		{
-			lock (_messages)
-			{
-				int idx = 0;
-				IMessage[] allMessages = new IMessage[_messages.Count];
-				foreach (var kv in _messages)
-					allMessages[idx++] = kv.Value;
-				return allMessages;
-			}
-		}
-
-		public IMessage Get(Guid guid)
+		public KeyValuePair<EndPoint, IMessage> Get(Guid guid)
 		{
 			return _messages[guid];
 		}
+
+		public IEnumerator<KeyValuePair<EndPoint, IMessage>> GetIterator() => _messages.Values.GetEnumerator();
 	}
 }

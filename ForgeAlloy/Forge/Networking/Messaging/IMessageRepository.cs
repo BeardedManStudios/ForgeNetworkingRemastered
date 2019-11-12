@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 
 namespace Forge.Networking.Messaging
 {
 	public interface IMessageRepository
 	{
-		void AddMessage(IMessage message);
-		void AddMessage(IMessage message, int ttlMilliseconds);
+		void AddMessage(IMessage message, EndPoint sender);
+		void AddMessage(IMessage message, EndPoint sender, int ttlMilliseconds);
 		void RemoveMessage(IMessage message);
 		void RemoveMessage(Guid guid);
 		bool Exists(Guid guid);
-		IMessage[] GetAll();
-		IMessage Get(Guid guid);
+		KeyValuePair<EndPoint, IMessage> Get(Guid guid);
+		IEnumerator<KeyValuePair<EndPoint, IMessage>> GetIterator();
 		void Clear();
 		// TODO:  Will need a way to either group messages or get all of them to re-send
 	}
