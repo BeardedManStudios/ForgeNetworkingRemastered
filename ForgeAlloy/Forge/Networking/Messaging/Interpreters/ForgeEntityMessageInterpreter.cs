@@ -19,7 +19,7 @@ namespace Forge.Networking.Messaging.Interpreters
 			}
 			catch (EngineEntityNotFoundException)
 			{
-				netContainer.EngineContainer.ProcessUnavailableEntityMessage(eMessage);
+				netContainer.EngineContainer.ProcessUnavailableEntityMessage(eMessage, sender);
 			}
 		}
 	}

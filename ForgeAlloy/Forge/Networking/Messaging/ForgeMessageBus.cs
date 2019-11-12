@@ -67,7 +67,7 @@ namespace Forge.Networking.Messaging
 				m.Deserialize(constructor.MessageBuffer);
 
 				// TODO:  I don't like this type check and if branching in here...
-				bool isServer = netContainer.SocketContainer is ISocketClientContainer;
+				bool isServer = netContainer.SocketContainer is ISocketServerContainer;
 
 				var interpreter = m.Interpreter;
 				if (interpreter.ValidOnClient && !isServer)
