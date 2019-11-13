@@ -9,6 +9,8 @@ namespace Forge.Factory
 
 		public static void Register<TInterface, TActual>() where TActual : TInterface, IFactory, new()
 		{
+			if (typeof(TInterface) == typeof(IFactory))
+				throw new CantRegisterTypeIFactoryInAbstractFactoryException();
 			var t = typeof(TInterface);
 			if (_factories.ContainsKey(t))
 				throw new Exception($"The type ({t}) is already registered");

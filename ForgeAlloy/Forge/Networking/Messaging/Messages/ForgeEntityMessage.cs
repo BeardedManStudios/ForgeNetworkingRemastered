@@ -11,7 +11,7 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			byte[] s = ForgeSerializationContainer.Instance.Serialize(EntityId);
+			byte[] s = ForgeSerializationStrategy.Instance.Serialize(EntityId);
 			buffer.Append(s);
 		}
 

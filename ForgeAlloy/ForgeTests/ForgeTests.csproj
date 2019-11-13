@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="DataStructures\VectorTests.cs" />
     <Compile Include="Engine\EntityRepositoryTests.cs" />
+    <Compile Include="Factory\AbstractFactoryTests.cs" />
+    <Compile Include="Factory\TypeFactoryTests.cs" />
     <Compile Include="Networking\Messaging\Interpreters\MessageReceiptAcknowledgementTests.cs" />
     <Compile Include="Networking\Messaging\MessageBusTests.cs" />
     <Compile Include="Networking\Messaging\MessageReceiptTests.cs" />

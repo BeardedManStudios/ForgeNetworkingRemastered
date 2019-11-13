@@ -8,7 +8,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => true;
 
-		public void Interpret(INetworkContainer netHost, EndPoint sender, IMessage message)
+		public void Interpret(INetworkFacade netHost, EndPoint sender, IMessage message)
 		{
 			throw new NotImplementedException();
 		}

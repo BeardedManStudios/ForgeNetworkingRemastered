@@ -26,7 +26,7 @@ namespace ForgeTests.Networking.Messaging
 					var mockInterpreter = A.Fake<IMessageInterpreter>();
 					A.CallTo(() => mockInterpreter.ValidOnClient).Returns(true);
 					A.CallTo(() => mockInterpreter.ValidOnServer).Returns(true);
-					A.CallTo(() => mockInterpreter.Interpret(A<INetworkContainer>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
+					A.CallTo(() => mockInterpreter.Interpret(A<INetworkFacade>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
 					{
 						interpretedMessage = (ForgeMessage)ctx.Arguments[2];
 						ItWorked = true;
@@ -42,7 +42,7 @@ namespace ForgeTests.Networking.Messaging
 
 			public override void Serialize(BMSByte buffer)
 			{
-				buffer.Append(ForgeSerializationContainer.Instance.Serialize(MockString));
+				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(MockString));
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace ForgeTests.Networking.Messaging
 		[Test]
 		public void MessageSerialization_ShouldMatch()
 		{
-			var host = A.Fake<INetworkContainer>();
+			var host = A.Fake<INetworkFacade>();
 			var receipt = new ForgeMessageReceipt();
 			receipt.Signature = Guid.NewGuid();
 

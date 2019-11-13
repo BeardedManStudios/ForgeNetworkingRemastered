@@ -1,6 +1,6 @@
 ﻿namespace Forge.Networking.Sockets
 {
-	public interface ISocketContainer
+	public interface ISocketFacade
 	{
 		ISocket ManagedSocket { get; }
 		void ShutDown();

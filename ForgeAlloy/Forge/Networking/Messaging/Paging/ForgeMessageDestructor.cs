@@ -38,9 +38,9 @@ namespace Forge.Networking.Messaging.Paging
 		{
 			var header = new BMSByte();
 			header.Append(
-				ForgeSerializationContainer.Instance.Serialize(messageGuid.ToString()),
-				ForgeSerializationContainer.Instance.Serialize(pageNumber),
-				ForgeSerializationContainer.Instance.Serialize(totalSize)
+				ForgeSerializationStrategy.Instance.Serialize(messageGuid.ToString()),
+				ForgeSerializationStrategy.Instance.Serialize(pageNumber),
+				ForgeSerializationStrategy.Instance.Serialize(totalSize)
 			);
 			return header;
 		}

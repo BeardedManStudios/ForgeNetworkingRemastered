@@ -7,14 +7,14 @@ using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
-	public class ForgeNetworkContainer : INetworkContainer
+	public class ForgeNetworkFacade : INetworkFacade
 	{
 		public IPlayerRepository PlayerRepository { get; private set; }
 		public IEngineContainer EngineContainer { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
-		public ISocketContainer SocketContainer { get; private set; }
+		public ISocketFacade SocketContainer { get; private set; }
 
-		public ForgeNetworkContainer()
+		public ForgeNetworkFacade()
 		{
 			PlayerRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			MessageBus = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBus>();
@@ -25,7 +25,7 @@ namespace Forge.Networking
 			EngineContainer = engineContainer;
 		}
 
-		public void ChangeSocketContainer(ISocketContainer socketContainer)
+		public void ChangeSocketContainer(ISocketFacade socketContainer)
 		{
 			SocketContainer = socketContainer;
 		}

@@ -29,8 +29,8 @@ namespace Forge.Networking.Messaging
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
 			buffer.Append(
-				ForgeSerializationContainer.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationContainer.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
+				ForgeSerializationStrategy.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
 			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
@@ -46,8 +46,8 @@ namespace Forge.Networking.Messaging
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
 			buffer.Append(
-				ForgeSerializationContainer.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationContainer.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
+				ForgeSerializationStrategy.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
 			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
@@ -56,7 +56,7 @@ namespace Forge.Networking.Messaging
 			return receipt;
 		}
 
-		public void ReceiveMessageBuffer(INetworkContainer netContainer, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
+		public void ReceiveMessageBuffer(INetworkFacade netContainer, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
@@ -68,7 +68,7 @@ namespace Forge.Networking.Messaging
 				m.Deserialize(constructor.MessageBuffer);
 
 				// TODO:  I don't like this type check and if branching in here...
-				bool isServer = netContainer.SocketContainer is ISocketServerContainer;
+				bool isServer = netContainer.SocketContainer is ISocketServerFacade;
 
 				var interpreter = m.Interpreter;
 				if (interpreter.ValidOnClient && !isServer)

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace Forge.Serialization
 {
-	public class ForgeSerializationContainer : ISerializationContainer
+	public class ForgeSerializationStrategy : ISerializationStrategy
 	{
 		private readonly Dictionary<Type, ITypeSerializer> _serializers = new Dictionary<Type, ITypeSerializer>();
 
-		private static ForgeSerializationContainer _instance = null;
-		public static ForgeSerializationContainer Instance
+		private static ForgeSerializationStrategy _instance = null;
+		public static ForgeSerializationStrategy Instance
 		{
 			get
 			{
 				if (_instance == null)
-					_instance = new ForgeSerializationContainer();
+					_instance = new ForgeSerializationStrategy();
 				return _instance;
 			}
 		}
 
-		private ForgeSerializationContainer() { }
+		private ForgeSerializationStrategy() { }
 
 		public void AddSerializer<T>(ITypeSerializer serializer)
 		{

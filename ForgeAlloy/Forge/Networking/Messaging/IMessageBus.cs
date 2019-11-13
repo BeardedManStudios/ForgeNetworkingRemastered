@@ -9,6 +9,6 @@ namespace Forge.Networking.Messaging
 		IMessageBufferInterpreter MessageBufferInterpreter { get; }
 		void SendMessage(IMessage message, ISocket sender, EndPoint reciever);
 		IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, EndPoint reciever);
-		void ReceiveMessageBuffer(INetworkContainer host, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer);
+		void ReceiveMessageBuffer(INetworkFacade host, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer);
 	}
 }

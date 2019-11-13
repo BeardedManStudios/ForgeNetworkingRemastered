@@ -9,7 +9,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => false;
 
-		public void Interpret(INetworkContainer netHost, EndPoint sender, IMessage message)
+		public void Interpret(INetworkFacade netHost, EndPoint sender, IMessage message)
 		{
 			var challenge = (IChallengeMessage)message;
 			var response = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeResponseMessage>();

@@ -11,7 +11,7 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationContainer.Instance.Serialize(ReceiptGuid));
+			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(ReceiptGuid));
 		}
 
 		public override void Serialize(BMSByte buffer)

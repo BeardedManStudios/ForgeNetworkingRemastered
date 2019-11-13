@@ -19,7 +19,7 @@ namespace Forge
 		{
 			AbstractFactory.Clear();
 			ForgeMessageCodes.Clear();
-			ForgeSerializationContainer.Instance.Clear();
+			ForgeSerializationStrategy.Instance.Clear();
 		}
 
 		private static void RegisterMessageCodes()
@@ -33,19 +33,19 @@ namespace Forge
 
 		private static void SetupSerializers()
 		{
-			ForgeSerializationContainer.Instance.AddSerializer<byte>(new ByteSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<sbyte>(new SByteSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<short>(new ShortSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<ushort>(new UShortSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<int>(new IntSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<uint>(new UIntSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<long>(new LongSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<ulong>(new ULongSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<float>(new FloatSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<double>(new DoubleSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<bool>(new BoolSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<string>(new StringSerializer());
-			ForgeSerializationContainer.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<byte>(new ByteSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<sbyte>(new SByteSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<short>(new ShortSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<ushort>(new UShortSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<int>(new IntSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<uint>(new UIntSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<long>(new LongSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<ulong>(new ULongSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<float>(new FloatSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<double>(new DoubleSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<bool>(new BoolSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<string>(new StringSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
 		}
 	}
 }

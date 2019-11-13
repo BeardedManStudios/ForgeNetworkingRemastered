@@ -13,7 +13,7 @@ namespace Forge.Factory
 		public override void PrimeRegistry()
 		{
 			Register<IPlayerRepository, ForgePlayerRepository>();
-			Register<INetworkContainer, ForgeNetworkContainer>();
+			Register<INetworkFacade, ForgeNetworkFacade>();
 			Register<IEntityRepository, ForgeEntityRepository>();
 			Register<IMessageReceipt, ForgeMessageReceipt>();
 			Register<IMessageBus, ForgeMessageBus>();
@@ -26,7 +26,7 @@ namespace Forge.Factory
 			Register<ISocket, ForgeUDPSocket>();
 			Register<IServerSocket, ForgeUDPSocket>();
 			Register<IClientSocket, ForgeUDPSocket>();
-			Register<ISocketServerContainer, ForgeUDPSocketServerContainer>();
+			Register<ISocketServerFacade, ForgeUDPSocketServerFacade>();
 			Register<INetPlayer, ForgePlayer>();
 			Register<IEntityMessage, ForgeEntityMessage>();
 			Register<IChallengeMessage, ForgeConnectChallengeMessage>();

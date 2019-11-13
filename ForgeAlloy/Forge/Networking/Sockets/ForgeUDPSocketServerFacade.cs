@@ -8,7 +8,7 @@ using Forge.Networking.Players;
 
 namespace Forge.Networking.Sockets
 {
-	public class ForgeUDPSocketServerContainer : ForgeUDPSocketContainerBase, ISocketServerContainer
+	public class ForgeUDPSocketServerFacade : ForgeUDPSocketContainerBase, ISocketServerFacade
 	{
 		private const int MAX_PARALLEL_CONNECTION_REQUEST = 64;
 
@@ -19,13 +19,13 @@ namespace Forge.Networking.Sockets
 
 		private IPlayerRepository _challengedPlayers;
 
-		public ForgeUDPSocketServerContainer()
+		public ForgeUDPSocketServerFacade()
 		{
 			_socket = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IServerSocket>();
 			_challengedPlayers = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 		}
 
-		public void StartServer(ushort port, int maxPlayers, INetworkContainer netContainer)
+		public void StartServer(ushort port, int maxPlayers, INetworkFacade netContainer)
 		{
 			// TODO:  Use maxPlayers
 			this.netContainer = netContainer;
@@ -41,7 +41,7 @@ namespace Forge.Networking.Sockets
 			base.ShutDown();
 		}
 
-		public void ChallengeSuccess(INetworkContainer netContainer, EndPoint endpoint)
+		public void ChallengeSuccess(INetworkFacade netContainer, EndPoint endpoint)
 		{
 			INetPlayer player = _challengedPlayers.GetPlayer(endpoint);
 			var netIdentity = new ForgeNetworkIdentityMessage

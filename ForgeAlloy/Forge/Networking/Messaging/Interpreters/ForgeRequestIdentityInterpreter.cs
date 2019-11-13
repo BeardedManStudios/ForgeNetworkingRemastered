@@ -8,7 +8,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => false;
 		public bool ValidOnServer => true;
 
-		public void Interpret(INetworkContainer netHost, EndPoint sender, IMessage message)
+		public void Interpret(INetworkFacade netHost, EndPoint sender, IMessage message)
 		{
 			var player = netHost.PlayerRepository.GetPlayer(sender);
 			var identityMessage = new ForgeNetworkIdentityMessage

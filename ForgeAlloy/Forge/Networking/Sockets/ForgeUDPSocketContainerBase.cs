@@ -9,7 +9,7 @@ namespace Forge.Networking.Sockets
 	{
 		public abstract ISocket ManagedSocket { get; }
 
-		protected INetworkContainer netContainer;
+		protected INetworkFacade netContainer;
 		protected CancellationTokenSource readTokenSource;
 		protected SynchronizationContext synchronizationContext;
 

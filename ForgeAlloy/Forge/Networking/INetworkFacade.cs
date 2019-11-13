@@ -6,14 +6,14 @@ using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
-	public interface INetworkContainer
+	public interface INetworkFacade
 	{
 		IPlayerRepository PlayerRepository { get; }
 		IEngineContainer EngineContainer { get; }
 		IMessageBus MessageBus { get; }
-		ISocketContainer SocketContainer { get; }
+		ISocketFacade SocketContainer { get; }
 		void ChangeEngineContainer(IEngineContainer engineContainer);
-		void ChangeSocketContainer(ISocketContainer socketContainer);
+		void ChangeSocketContainer(ISocketFacade socketContainer);
 		void SendMessage(IMessage message, Guid playerId);
 		void SendMessage(IMessage message, INetPlayer player);
 	}
