@@ -20,8 +20,9 @@ namespace Forge.Networking.Unity
 		private INetworkContainer _networkContainer;
 		private IMessageRepository _messageRepository;
 
-		private void Start()
+		public void Prepare()
 		{
+			//TODO: Move this
 			_messageRepository = AbstractFactory.Get<IFactory>().GetNew<IMessageRepository>();
 			_entityRepo = AbstractFactory.Get<IFactory>().GetNew<IEntityRepository>();
 			_entityRepo.onEntityAdded += OnEntityAdded;

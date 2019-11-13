@@ -1,4 +1,5 @@
-﻿using Forge.Engine;
+﻿using System;
+using Forge.Engine;
 using Forge.Factory;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Forge.Networking.Unity
 
 		private IEngineContainer _engineContainer;
 		private IUDPServerConstructor _serverHostConstructor;
+		private INetworkContainer _networkContainer;
 
 		private void Awake()
 		{
@@ -27,12 +29,21 @@ namespace Forge.Networking.Unity
 
 			ThrowIfNull(_engineContainer);
 			ThrowIfNull(_serverHostConstructor);
-			//Host();
+
+			var engineContainer = _engineContainer as UnityEngineContainer;
+			engineContainer.Prepare();
+
+			Host();
+		}
+
+		private void OnDestroy()
+		{
+			_networkContainer.SocketContainer.ShutDown();
 		}
 
 		public void Host()
 		{
-			_serverHostConstructor.CreateAndStartServer(_engineContainer);
+			_networkContainer = _serverHostConstructor.CreateAndStartServer(_engineContainer);
 		}
 
 		private void ThrowIfNull<T>(T obj)
