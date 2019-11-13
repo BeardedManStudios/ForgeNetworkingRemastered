@@ -10,7 +10,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => false;
 		public bool ValidOnServer => true;
 
-		public void Interpret(INetworkFacade netContainer, EndPoint sender, IMessage message)
+		public void Interpret(INetworkMediator netContainer, EndPoint sender, IMessage message)
 		{
 			var response = (IChallengeResponseMessage)message;
 			if (response.ChallengeAttempt.Length <= 1)
@@ -29,7 +29,7 @@ namespace Forge.Networking.Messaging.Interpreters
 				return;
 			try
 			{
-				var serverContainer = (ISocketServerFacade)netContainer.SocketContainer;
+				var serverContainer = (ISocketServerFacade)netContainer.SocketFacade;
 				serverContainer.ChallengeSuccess(netContainer, sender);
 			}
 			catch (PlayerNotFoundException) { }

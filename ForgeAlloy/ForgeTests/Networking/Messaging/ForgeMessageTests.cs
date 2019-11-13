@@ -1,6 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
+using System.Threading;
 using FakeItEasy;
+using Forge.DataStructures;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
@@ -26,7 +27,7 @@ namespace ForgeTests.Networking.Messaging
 					var mockInterpreter = A.Fake<IMessageInterpreter>();
 					A.CallTo(() => mockInterpreter.ValidOnClient).Returns(true);
 					A.CallTo(() => mockInterpreter.ValidOnServer).Returns(true);
-					A.CallTo(() => mockInterpreter.Interpret(A<INetworkFacade>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
+					A.CallTo(() => mockInterpreter.Interpret(A<INetworkMediator>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
 					{
 						interpretedMessage = (ForgeMessage)ctx.Arguments[2];
 						ItWorked = true;
@@ -62,9 +63,9 @@ namespace ForgeTests.Networking.Messaging
 		[Test]
 		public void MessageSerialization_ShouldMatch()
 		{
-			var host = A.Fake<INetworkFacade>();
+			var mediator = A.Fake<INetworkMediator>();
 			var receipt = new ForgeMessageReceipt();
-			receipt.Signature = Guid.NewGuid();
+			receipt.Signature = null;
 
 			var mock = new ForgeMessageMock();
 			mock.MockString = "This is a test message";
@@ -78,11 +79,49 @@ namespace ForgeTests.Networking.Messaging
 				bin = (byte[])ctx.Arguments[1];
 			});
 			var bus = new ForgeMessageBus();
+			bus.SetMediator(mediator);
 			bus.SendMessage(mock, sender, receiver.EndPoint);
 			Assert.IsNotNull(bin);
 
-			bus.ReceiveMessageBuffer(host, receiver, sender.EndPoint, bin);
+			bus.ReceiveMessageBuffer(receiver, sender.EndPoint, bin);
 
+			Assert.IsNull(interpretedMessage.Receipt);
+
+			var res = (ForgeMessageMock)interpretedMessage;
+			Assert.IsTrue(res.ItWorked);
+			Assert.AreEqual(mock.MockString, res.MockString);
+			Assert.AreNotEqual(mock.ItWorked, res.ItWorked);
+		}
+
+		[Test]
+		public void ReliableMessageSerialization_ShouldMatch()
+		{
+			var mediator = A.Fake<INetworkMediator>();
+			var tokenSource = new CancellationTokenSource();
+			A.CallTo(() => mediator.SocketFacade.CancellationSource).Returns(tokenSource);
+			var receipt = new ForgeMessageReceipt();
+			receipt.Signature = new ForgeSignature();
+
+			var mock = new ForgeMessageMock();
+			mock.MockString = "This is a test message";
+			mock.Receipt = receipt;
+
+			byte[] bin = null;
+			var receiver = A.Fake<ISocket>();
+			var sender = A.Fake<ISocket>();
+			A.CallTo(() => sender.Send(A<EndPoint>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
+			{
+				bin = (byte[])ctx.Arguments[1];
+			});
+			var bus = new ForgeMessageBus();
+			bus.SetMediator(mediator);
+			bus.SendReliableMessage(mock, sender, receiver.EndPoint);
+			tokenSource.Cancel();
+			Assert.IsNotNull(bin);
+
+			bus.ReceiveMessageBuffer(receiver, sender.EndPoint, bin);
+
+			Assert.IsNotNull(interpretedMessage.Receipt);
 			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
 
 			var res = (ForgeMessageMock)interpretedMessage;

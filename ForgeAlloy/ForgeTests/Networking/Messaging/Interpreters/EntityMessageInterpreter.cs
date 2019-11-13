@@ -18,7 +18,7 @@ namespace ForgeTests.Networking.Messaging.Interpreters
 			var entity = A.Fake<IEntity>();
 			var engine = A.Fake<IEngineContainer>();
 			var entityMessage = new ForgeEntityMessage();
-			var network = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetworkFacade>();
+			var network = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetworkMediator>();
 			network.ChangeEngineContainer(engine);
 
 			A.CallTo(() => engine.EntityRepository.GetEntityById(A<int>._)).Returns(entity);

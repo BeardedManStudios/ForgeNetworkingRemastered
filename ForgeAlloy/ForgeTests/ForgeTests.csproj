@@ -67,6 +67,7 @@
     <Compile Include="Networking\Messaging\Interpreters\MessageReceiptAcknowledgementTests.cs" />
     <Compile Include="Networking\Messaging\MessageBusTests.cs" />
     <Compile Include="Networking\Messaging\MessageReceiptTests.cs" />
+    <Compile Include="Networking\Messaging\MessageRepeaterTests.cs" />
     <Compile Include="Networking\Messaging\Messages\EntityMessageTests.cs" />
     <Compile Include="Networking\Messaging\Messages\ReceiptAcknowledgementMessageTests.cs" />
     <Compile Include="Networking\Messaging\Paging\MessageBufferInterpreterTests.cs" />

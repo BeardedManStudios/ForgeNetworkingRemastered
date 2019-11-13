@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Forge.DataStructures;
 
 namespace Forge.Networking.Messaging
 {
 	public interface IMessageReceipt
 	{
-		Guid Signature { get; set; }
+		ISignature Signature { get; set; }
 	}
 }

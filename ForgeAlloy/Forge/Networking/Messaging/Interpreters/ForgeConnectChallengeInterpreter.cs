@@ -9,7 +9,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => false;
 
-		public void Interpret(INetworkFacade netHost, EndPoint sender, IMessage message)
+		public void Interpret(INetworkMediator netHost, EndPoint sender, IMessage message)
 		{
 			var challenge = (IChallengeMessage)message;
 			var response = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeResponseMessage>();
@@ -19,7 +19,7 @@ namespace Forge.Networking.Messaging.Interpreters
 				response.ChallengeAttempt[i] = challenge.Challenge[i];
 				response.ChallengeAttempt[response.ChallengeAttempt.Length - i - 1] = challenge.Challenge[i];
 			}
-			netHost.MessageBus.SendReliableMessage(response, netHost.SocketContainer.ManagedSocket, sender);
+			netHost.MessageBus.SendReliableMessage(response, netHost.SocketFacade.ManagedSocket, sender);
 		}
 	}
 }

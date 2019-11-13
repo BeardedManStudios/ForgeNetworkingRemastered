@@ -25,14 +25,13 @@ namespace Forge.Networking.Sockets
 			_challengedPlayers = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 		}
 
-		public void StartServer(ushort port, int maxPlayers, INetworkFacade netContainer)
+		public void StartServer(ushort port, int maxPlayers, INetworkMediator netContainer)
 		{
 			// TODO:  Use maxPlayers
-			this.netContainer = netContainer;
+			this.networkMediator = netContainer;
 			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
 			_newConnectionsTokenSource = new CancellationTokenSource();
-			readTokenSource = new CancellationTokenSource();
-			Task.Run(ReadNetwork, readTokenSource.Token);
+			Task.Run(ReadNetwork, CancellationSource.Token);
 		}
 
 		public override void ShutDown()
@@ -41,7 +40,7 @@ namespace Forge.Networking.Sockets
 			base.ShutDown();
 		}
 
-		public void ChallengeSuccess(INetworkFacade netContainer, EndPoint endpoint)
+		public void ChallengeSuccess(INetworkMediator netContainer, EndPoint endpoint)
 		{
 			INetPlayer player = _challengedPlayers.GetPlayer(endpoint);
 			var netIdentity = new ForgeNetworkIdentityMessage
@@ -57,7 +56,7 @@ namespace Forge.Networking.Sockets
 		{
 			if (_bannedEndpoints.Contains(data.Endpoint))
 				return;
-			else if (!netContainer.PlayerRepository.Exists(data.Endpoint))
+			else if (!networkMediator.PlayerRepository.Exists(data.Endpoint))
 			{
 				var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
 				newPlayer.EndPoint = data.Endpoint;

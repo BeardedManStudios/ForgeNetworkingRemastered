@@ -4,7 +4,7 @@ namespace Forge.Networking.Sockets
 {
 	public interface ISocketServerFacade : ISocketFacade
 	{
-		void StartServer(ushort port, int maxPlayers, INetworkFacade netContainer);
-		void ChallengeSuccess(INetworkFacade netContainer, EndPoint endpoint);
+		void StartServer(ushort port, int maxPlayers, INetworkMediator netContainer);
+		void ChallengeSuccess(INetworkMediator netContainer, EndPoint endpoint);
 	}
 }

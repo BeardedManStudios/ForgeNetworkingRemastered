@@ -6,6 +6,6 @@ namespace Forge.Networking.Messaging
 	{
 		bool ValidOnClient { get; }
 		bool ValidOnServer { get; }
-		void Interpret(INetworkFacade netContainer, EndPoint sender, IMessage message);
+		void Interpret(INetworkMediator netContainer, EndPoint sender, IMessage message);
 	}
 }

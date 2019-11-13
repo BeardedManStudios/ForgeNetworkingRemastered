@@ -1,7 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using FakeItEasy;
+using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Messaging;
 using NUnit.Framework;
@@ -16,10 +16,10 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = new Guid();
+			message.Receipt.Signature = A.Fake<ISignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
-			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
+			Assert.IsTrue(repo.Exists(message.Receipt));
 		}
 
 		[Test]
@@ -28,7 +28,7 @@ namespace ForgeTests.Networking.Messaging
 			var message = A.Fake<IMessage>();
 			message.Receipt = null;
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
-			Assert.Throws<MessageRepositoryMissingGuidOnMessageException>(() => repo.AddMessage(message, A.Fake<EndPoint>()));
+			Assert.Throws<MessageRepositoryMissingReceiptOnMessageException>(() => repo.AddMessage(message, A.Fake<EndPoint>()));
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = new Guid();
+			message.Receipt.Signature = A.Fake<ISignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
 			Assert.Throws<MessageWithReceiptSignatureAlreadyExistsException>(() => repo.AddMessage(message, A.Fake<EndPoint>()));
@@ -45,7 +45,7 @@ namespace ForgeTests.Networking.Messaging
 		[Test]
 		public void CheckForMessage_ShouldNotExist()
 		{
-			Guid fake = new Guid();
+			var fake = A.Fake<IMessageReceipt>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			Assert.IsFalse(repo.Exists(fake));
 		}
@@ -55,16 +55,16 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = new Guid();
+			message.Receipt.Signature = A.Fake<ISignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
-			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
-			repo.RemoveMessage(message.Receipt.Signature);
-			Assert.IsFalse(repo.Exists(message.Receipt.Signature));
+			Assert.IsTrue(repo.Exists(message.Receipt));
+			repo.RemoveMessage(message.Receipt);
+			Assert.IsFalse(repo.Exists(message.Receipt));
 			repo.AddMessage(message, A.Fake<EndPoint>());
-			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
+			Assert.IsTrue(repo.Exists(message.Receipt));
 			repo.RemoveMessage(message);
-			Assert.IsFalse(repo.Exists(message.Receipt.Signature));
+			Assert.IsFalse(repo.Exists(message.Receipt));
 		}
 
 		[Test, MaxTime(50)]
@@ -72,16 +72,16 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var message = A.Fake<IMessage>();
 			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = new Guid();
+			message.Receipt.Signature = A.Fake<ISignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>(), 3);
-			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
+			Assert.IsTrue(repo.Exists(message.Receipt));
 			Thread.Sleep(1);
-			Assert.IsTrue(repo.Exists(message.Receipt.Signature));
+			Assert.IsTrue(repo.Exists(message.Receipt));
 			bool removed = false;
 			do
 			{
-				removed = repo.Exists(message.Receipt.Signature);
+				removed = repo.Exists(message.Receipt);
 			} while (!removed);
 			Assert.IsTrue(removed);
 		}
@@ -102,5 +102,6 @@ namespace ForgeTests.Networking.Messaging
 
 		// TODO:  Validate the endpoint on the messages
 		// TODO:  Validate the iterator of the messages
+		// TODO:  Validate the RemoveAllFor of the messages
 	}
 }

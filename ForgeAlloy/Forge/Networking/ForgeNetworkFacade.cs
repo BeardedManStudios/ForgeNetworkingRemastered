@@ -7,12 +7,12 @@ using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
-	public class ForgeNetworkFacade : INetworkFacade
+	public class ForgeNetworkFacade : INetworkMediator
 	{
 		public IPlayerRepository PlayerRepository { get; private set; }
 		public IEngineContainer EngineContainer { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
-		public ISocketFacade SocketContainer { get; private set; }
+		public ISocketFacade SocketFacade { get; private set; }
 
 		public ForgeNetworkFacade()
 		{
@@ -27,7 +27,7 @@ namespace Forge.Networking
 
 		public void ChangeSocketContainer(ISocketFacade socketContainer)
 		{
-			SocketContainer = socketContainer;
+			SocketFacade = socketContainer;
 		}
 
 		public void SendMessage(IMessage message, Guid playerId)
@@ -38,7 +38,7 @@ namespace Forge.Networking
 
 		public void SendMessage(IMessage message, INetPlayer player)
 		{
-			MessageBus.SendMessage(message, SocketContainer.ManagedSocket, player.EndPoint);
+			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, player.EndPoint);
 		}
 	}
 }

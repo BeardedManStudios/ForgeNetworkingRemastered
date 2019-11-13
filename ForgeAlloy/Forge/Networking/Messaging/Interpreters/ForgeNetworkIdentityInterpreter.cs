@@ -9,13 +9,13 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => false;
 
-		public void Interpret(INetworkFacade netHost, EndPoint sender, IMessage message)
+		public void Interpret(INetworkMediator netHost, EndPoint sender, IMessage message)
 		{
 			var identityMessage = (ForgeNetworkIdentityMessage)message;
-			var clientContainer = (ISocketClientFacade)netHost.SocketContainer;
+			var clientContainer = (ISocketClientFacade)netHost.SocketFacade;
 			clientContainer.NetPlayerId = identityMessage.Identity;
 			var engineReadyMessage = new ForgeReadyForEngineMessage();
-			netHost.MessageBus.SendReliableMessage(engineReadyMessage, netHost.SocketContainer.ManagedSocket, sender);
+			netHost.MessageBus.SendReliableMessage(engineReadyMessage, netHost.SocketFacade.ManagedSocket, sender);
 		}
 	}
 }

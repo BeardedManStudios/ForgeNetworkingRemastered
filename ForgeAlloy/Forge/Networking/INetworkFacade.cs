@@ -6,12 +6,12 @@ using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
-	public interface INetworkFacade
+	public interface INetworkMediator
 	{
 		IPlayerRepository PlayerRepository { get; }
 		IEngineContainer EngineContainer { get; }
 		IMessageBus MessageBus { get; }
-		ISocketFacade SocketContainer { get; }
+		ISocketFacade SocketFacade { get; }
 		void ChangeEngineContainer(IEngineContainer engineContainer);
 		void ChangeSocketContainer(ISocketFacade socketContainer);
 		void SendMessage(IMessage message, Guid playerId);

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
+using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
@@ -10,13 +10,20 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
+		private IMessageRepeater _messageRepeater;
 		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
 		private readonly IMessageDestructor _messageDestructor;
+		private INetworkMediator _networkMediator;
 
 		public ForgeMessageBus()
 		{
 			MessageBufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
 			_messageDestructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
+		}
+
+		public void SetMediator(INetworkMediator networkMediator)
+		{
+			_networkMediator = networkMediator;
 		}
 
 		private static int GetMessageCode(IMessage message)
@@ -30,7 +37,7 @@ namespace Forge.Networking.Messaging
 			buffer.SetArraySize(128);
 			buffer.Append(
 				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationStrategy.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+				ForgeSerializationStrategy.Instance.Serialize(new byte[0])
 			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
@@ -40,23 +47,29 @@ namespace Forge.Networking.Messaging
 
 		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
-			var receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
-			receipt.Signature = Guid.NewGuid();
-			message.Receipt = receipt;
+			message.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
 			buffer.Append(
 				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationStrategy.Instance.Serialize(message.Receipt?.Signature.ToString() ?? "")
+				ForgeSerializationStrategy.Instance.Serialize(message.Receipt.Signature)
 			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			byte[] messageBuffer = pm.Buffer.CompressBytes();
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
-			return receipt;
+
+			if (_messageRepeater == null)
+			{
+				_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
+				_messageRepeater.Start(_networkMediator);
+			}
+
+			_messageRepeater.AddMessageToRepeat(message, receiver);
+			return message.Receipt;
 		}
 
-		public void ReceiveMessageBuffer(INetworkFacade netContainer, ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
+		public void ReceiveMessageBuffer(ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
@@ -68,13 +81,13 @@ namespace Forge.Networking.Messaging
 				m.Deserialize(constructor.MessageBuffer);
 
 				// TODO:  I don't like this type check and if branching in here...
-				bool isServer = netContainer.SocketContainer is ISocketServerFacade;
+				bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
 
 				var interpreter = m.Interpreter;
 				if (interpreter.ValidOnClient && !isServer)
-					interpreter.Interpret(netContainer, messageSender, m);
+					interpreter.Interpret(_networkMediator, messageSender, m);
 				else if (interpreter.ValidOnServer && isServer)
-					interpreter.Interpret(netContainer, messageSender, m);
+					interpreter.Interpret(_networkMediator, messageSender, m);
 			}
 		}
 
@@ -86,12 +99,13 @@ namespace Forge.Networking.Messaging
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)
 		{
-			string guid = buffer.GetBasicType<string>();
-			if (guid.Length == 0)
-				return;
-			m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
-			m.Receipt.Signature = Guid.Parse(guid);
-			SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = guid }, readingSocket, messageSender);
+			ISignature sig = ForgeSerializationStrategy.Instance.Deserialize<ISignature>(buffer);
+			if (sig != null)
+			{
+				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
+				m.Receipt.Signature = sig;
+				SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = sig }, readingSocket, messageSender);
+			}
 		}
 	}
 }

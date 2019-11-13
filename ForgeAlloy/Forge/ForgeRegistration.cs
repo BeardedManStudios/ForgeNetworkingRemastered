@@ -1,4 +1,5 @@
-﻿using Forge.Factory;
+﻿using Forge.DataStructures;
+using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
 using Forge.Serialization;
@@ -46,6 +47,7 @@ namespace Forge
 			ForgeSerializationStrategy.Instance.AddSerializer<bool>(new BoolSerializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<string>(new StringSerializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<ISignature>(new ForgeSignatureSerializer());
 		}
 	}
 }

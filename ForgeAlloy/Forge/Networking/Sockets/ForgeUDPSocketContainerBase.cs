@@ -9,8 +9,8 @@ namespace Forge.Networking.Sockets
 	{
 		public abstract ISocket ManagedSocket { get; }
 
-		protected INetworkFacade netContainer;
-		protected CancellationTokenSource readTokenSource;
+		protected INetworkMediator networkMediator;
+		public CancellationTokenSource CancellationSource { get; }
 		protected SynchronizationContext synchronizationContext;
 
 		public ForgeUDPSocketContainerBase()
@@ -20,7 +20,7 @@ namespace Forge.Networking.Sockets
 
 		public virtual void ShutDown()
 		{
-			readTokenSource.Cancel();
+			CancellationSource.Cancel();
 			ManagedSocket.Close();
 		}
 
@@ -29,7 +29,7 @@ namespace Forge.Networking.Sockets
 			EndPoint readEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
 			var buffer = new BMSByte();
 			buffer.SetArraySize(2048);
-			while (!readTokenSource.Token.IsCancellationRequested)
+			while (!CancellationSource.Token.IsCancellationRequested)
 			{
 				buffer.Clear();
 				ManagedSocket.Receive(buffer, ref readEp);
@@ -48,8 +48,8 @@ namespace Forge.Networking.Sockets
 
 		protected virtual void ProcessMessageRead(SocketContainerSynchronizationReadData data)
 		{
-			INetPlayer player = netContainer.PlayerRepository.GetPlayer(data.Endpoint);
-			netContainer.MessageBus.ReceiveMessageBuffer(netContainer, ManagedSocket,
+			INetPlayer player = networkMediator.PlayerRepository.GetPlayer(data.Endpoint);
+			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
 				player.EndPoint, data.Buffer);
 		}
 	}

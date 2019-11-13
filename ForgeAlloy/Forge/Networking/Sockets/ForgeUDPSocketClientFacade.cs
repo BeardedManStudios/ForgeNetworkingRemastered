@@ -15,11 +15,11 @@ namespace Forge.Networking.Sockets
 			_socket = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
 		}
 
-		public void StartClient(string address, ushort port, INetworkFacade netContainer)
+		public void StartClient(string address, ushort port, INetworkMediator netContainer)
 		{
-			this.netContainer = netContainer;
+			this.networkMediator = netContainer;
 			_socket.Connect(address, port);
-			Task.Run(ReadNetwork, readTokenSource.Token);
+			Task.Run(ReadNetwork, CancellationSource.Token);
 		}
 	}
 }
