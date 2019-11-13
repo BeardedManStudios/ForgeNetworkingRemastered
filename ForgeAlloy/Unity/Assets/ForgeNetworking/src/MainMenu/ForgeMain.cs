@@ -1,19 +1,33 @@
 ﻿using Forge.Engine;
+using Forge.Factory;
 using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
 	public class ForgeMain : MonoBehaviour
 	{
-		[Forge(typeof(IEngineContainer))]
+		//TODO: Make this work
+//		[Forge(typeof(IEngineContainer))]
+//		private IEngineContainer _engineContainer;
+//		[Forge(typeof(IUDPServerConstructor))]
+//		private IUDPServerConstructor _serverHostConstructor;
+
 		private IEngineContainer _engineContainer;
-		[Forge(typeof(IUDPServerConstructor))]
 		private IUDPServerConstructor _serverHostConstructor;
 
 		private void Awake()
 		{
+			AbstractFactory.Register<IFactory, ForgeTypeFactory>();
+			var factory = AbstractFactory.Get<IFactory>();
+			factory.Register<IUDPServerConstructor, UDPServerConstructor>();
+			factory.Register<IEngineContainer, UnityEngineContainer>();
+
+			_engineContainer = GetComponent<IEngineContainer>();
+			_serverHostConstructor = GetComponent<IUDPServerConstructor>();
+
 			ThrowIfNull(_engineContainer);
 			ThrowIfNull(_serverHostConstructor);
+			//Host();
 		}
 
 		public void Host()

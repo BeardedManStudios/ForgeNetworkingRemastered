@@ -1,4 +1,5 @@
 ﻿using Forge.Engine;
+using Forge.Factory;
 using Forge.Networking.Sockets;
 using UnityEngine;
 
@@ -16,8 +17,9 @@ namespace Forge.Networking.Unity
 
 		public INetworkContainer CreateAndStartServer(IEngineContainer engineContainer)
 		{
-			var socketServerContainer = ForgeTypeFactory.GetNew<ISocketServerContainer>();
-			var networkContainer = ForgeTypeFactory.GetNew<INetworkContainer>();
+			var factory = AbstractFactory.Get<IFactory>();
+			var socketServerContainer = factory.GetNew<ISocketServerContainer>();
+			var networkContainer = factory.GetNew<INetworkContainer>();
 
 			networkContainer.ChangeSocketContainer(socketServerContainer);
 			networkContainer.ChangeEngineContainer(engineContainer);
