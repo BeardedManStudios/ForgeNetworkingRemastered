@@ -19,7 +19,7 @@ namespace Forge.Networking.Unity
 
 		public INetworkContainer CreateAndStartServer(IEngineContainer engineContainer)
 		{
-			var factory = AbstractFactory.Get<IFactory>();
+			var factory = AbstractFactory.Get<INetworkTypeFactory>();
 			_socketContainer = factory.GetNew<ISocketServerContainer>();
 			var networkContainer = factory.GetNew<INetworkContainer>();
 

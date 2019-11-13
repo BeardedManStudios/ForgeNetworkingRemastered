@@ -23,8 +23,8 @@ namespace Forge.Networking.Unity
 		public void Prepare()
 		{
 			//TODO: Move this
-			_messageRepository = AbstractFactory.Get<IFactory>().GetNew<IMessageRepository>();
-			_entityRepo = AbstractFactory.Get<IFactory>().GetNew<IEntityRepository>();
+			_messageRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
+			_entityRepo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IEntityRepository>();
 			_entityRepo.onEntityAdded += OnEntityAdded;
 		}
 

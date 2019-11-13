@@ -19,8 +19,8 @@ namespace Forge.Networking.Unity
 
 		private void Awake()
 		{
-			AbstractFactory.Register<IFactory, ForgeTypeFactory>();
-			var factory = AbstractFactory.Get<IFactory>();
+			AbstractFactory.Register<INetworkTypeFactory, ForgeTypeFactory>();
+			var factory = AbstractFactory.Get<INetworkTypeFactory>();
 			factory.Register<IUDPServerConstructor, UDPServerConstructor>();
 			factory.Register<IEngineContainer, UnityEngineContainer>();
 
