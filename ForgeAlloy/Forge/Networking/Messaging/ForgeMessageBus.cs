@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
@@ -45,14 +44,14 @@ namespace Forge.Networking.Messaging
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
 		}
 
-		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
+		public IMessageReceiptSignature SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
-			message.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
+			message.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
 			buffer.Append(
 				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationStrategy.Instance.Serialize(message.Receipt.Signature)
+				ForgeSerializationStrategy.Instance.Serialize(message.Receipt)
 			);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
@@ -99,12 +98,12 @@ namespace Forge.Networking.Messaging
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)
 		{
-			ISignature sig = ForgeSerializationStrategy.Instance.Deserialize<ISignature>(buffer);
+			var sig = ForgeSerializationStrategy.Instance.Deserialize<IMessageReceiptSignature>(buffer);
 			if (sig != null)
 			{
-				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
-				m.Receipt.Signature = sig;
-				SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = sig }, readingSocket, messageSender);
+				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
+				m.Receipt = sig;
+				SendMessage(new ForgeReceiptAcknowledgement { ReceiptSignature = sig }, readingSocket, messageSender);
 			}
 		}
 	}

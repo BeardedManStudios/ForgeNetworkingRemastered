@@ -9,10 +9,10 @@ namespace Forge.Networking.Messaging
 		void AddMessage(IMessage message, EndPoint sender, int ttlMilliseconds);
 		void RemoveAllFor(EndPoint sender);
 		void RemoveMessage(IMessage message);
-		void RemoveMessage(IMessageReceipt receipt);
-		bool Exists(IMessageReceipt receipt);
-		KeyValuePair<EndPoint, IMessage> Get(IMessageReceipt receipt);
-		Dictionary<IMessageReceipt, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator();
+		void RemoveMessage(IMessageReceiptSignature receipt);
+		bool Exists(IMessageReceiptSignature receipt);
+		KeyValuePair<EndPoint, IMessage> Get(IMessageReceiptSignature receipt);
+		Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator();
 		void Clear();
 	}
 }

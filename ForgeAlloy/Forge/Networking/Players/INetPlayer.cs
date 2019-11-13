@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
 namespace Forge.Networking.Players
 {
@@ -19,7 +18,7 @@ namespace Forge.Networking.Players
 		/// Is:  A unique id for the player that is created and assigned by
 		/// the host. This id can be stored for looking up this instance of the player
 		/// </summary>
-		Guid Id { get; set; }
+		IPlayerSignature Id { get; set; }
 
 		/// <summary>
 		/// Is:  A fairly common thing in most systems for the player to have a non-unique

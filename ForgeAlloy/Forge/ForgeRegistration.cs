@@ -1,7 +1,7 @@
-﻿using Forge.DataStructures;
-using Forge.Factory;
+﻿using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Players;
 using Forge.Serialization;
 using Forge.Serialization.Serializers;
 
@@ -47,7 +47,8 @@ namespace Forge
 			ForgeSerializationStrategy.Instance.AddSerializer<bool>(new BoolSerializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<string>(new StringSerializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<ISignature>(new ForgeSignatureSerializer());
+			ForgeSerializationStrategy.Instance.AddSerializer<IMessageReceiptSignature>(new ForgeSignatureSerializer<IMessageReceiptSignature>());
+			ForgeSerializationStrategy.Instance.AddSerializer<IPlayerSignature>(new ForgeSignatureSerializer<IPlayerSignature>());
 		}
 	}
 }

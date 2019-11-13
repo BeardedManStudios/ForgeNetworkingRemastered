@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
 namespace Forge.Networking.Players
 {
@@ -46,7 +45,7 @@ namespace Forge.Networking.Players
 		void AddPlayer(INetPlayer player);
 
 		/// <summary>
-		/// Should:  Remove the player who's ID matches the Guid supplied to this
+		/// Should:  Remove the player who's ID matches the IPlayerSignature supplied to this
 		/// function. This should also make the Count of the repository reflect this
 		/// change as well as have the correct behavior of Exists returning false
 		/// on the same ID immediately after this function is invoked
@@ -54,7 +53,7 @@ namespace Forge.Networking.Players
 		/// <param name="id">
 		/// The unique id that is the INetPlayer id of a player in this repository
 		/// </param>
-		void RemovePlayer(Guid id);
+		void RemovePlayer(IPlayerSignature id);
 
 		/// <summary>
 		/// Should:  Remove the player who matches the reference supplied to this
@@ -75,7 +74,7 @@ namespace Forge.Networking.Players
 		/// <exception cref="PlayerNotFoundException">
 		/// Thrown if the player is not contained within this repository (could not be located)
 		/// </exception>
-		INetPlayer GetPlayer(Guid id);
+		INetPlayer GetPlayer(IPlayerSignature id);
 
 		/// <summary>
 		/// Should:  Match a player in the repository with the supplied endpoint and if found

@@ -2,8 +2,8 @@
 
 namespace Forge.Networking.Messaging
 {
-	public interface IMessageReceipt
+	public interface IMessageReceiptSignature : ISignature
 	{
-		ISignature Signature { get; set; }
+
 	}
 }

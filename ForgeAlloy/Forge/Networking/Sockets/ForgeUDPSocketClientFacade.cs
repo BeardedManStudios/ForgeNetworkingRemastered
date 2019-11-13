@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Forge.Factory;
+using Forge.Networking.Players;
 
 namespace Forge.Networking.Sockets
 {
 	public class ForgeUDPSocketClientFacade : ForgeUDPSocketContainerBase, ISocketClientFacade
 	{
-		public Guid NetPlayerId { get; set; }
+		public IPlayerSignature NetPlayerId { get; set; }
 		private readonly IClientSocket _socket;
 		public override ISocket ManagedSocket => _socket;
 

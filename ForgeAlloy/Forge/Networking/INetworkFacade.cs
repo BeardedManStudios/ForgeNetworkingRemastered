@@ -1,5 +1,4 @@
-﻿using System;
-using Forge.Engine;
+﻿using Forge.Engine;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
 using Forge.Networking.Sockets;
@@ -14,7 +13,7 @@ namespace Forge.Networking
 		ISocketFacade SocketFacade { get; }
 		void ChangeEngineContainer(IEngineContainer engineContainer);
 		void ChangeSocketContainer(ISocketFacade socketContainer);
-		void SendMessage(IMessage message, Guid playerId);
+		void SendMessage(IMessage message, IPlayerSignature playerId);
 		void SendMessage(IMessage message, INetPlayer player);
 	}
 }

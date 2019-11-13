@@ -36,7 +36,7 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public void RemoveRepeatingMessage(IMessageReceipt messageReceipt)
+		public void RemoveRepeatingMessage(IMessageReceiptSignature messageReceipt)
 		{
 			lock (_messageRepository)
 			{

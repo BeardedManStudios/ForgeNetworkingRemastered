@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Forge.DataStructures;
 using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging;
@@ -30,7 +30,7 @@ namespace Forge.Networking
 			SocketFacade = socketContainer;
 		}
 
-		public void SendMessage(IMessage message, Guid playerId)
+		public void SendMessage(IMessage message, IPlayerSignature playerId)
 		{
 			INetPlayer player = PlayerRepository.GetPlayer(playerId);
 			SendMessage(message, player);

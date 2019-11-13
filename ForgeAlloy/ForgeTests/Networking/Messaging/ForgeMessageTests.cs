@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Threading;
 using FakeItEasy;
-using Forge.DataStructures;
+using Forge.Factory;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
@@ -64,8 +64,8 @@ namespace ForgeTests.Networking.Messaging
 		public void MessageSerialization_ShouldMatch()
 		{
 			var mediator = A.Fake<INetworkMediator>();
-			var receipt = new ForgeMessageReceipt();
-			receipt.Signature = null;
+			var receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
+			receipt = null;
 
 			var mock = new ForgeMessageMock();
 			mock.MockString = "This is a test message";
@@ -99,8 +99,7 @@ namespace ForgeTests.Networking.Messaging
 			var mediator = A.Fake<INetworkMediator>();
 			var tokenSource = new CancellationTokenSource();
 			A.CallTo(() => mediator.SocketFacade.CancellationSource).Returns(tokenSource);
-			var receipt = new ForgeMessageReceipt();
-			receipt.Signature = new ForgeSignature();
+			var receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
 
 			var mock = new ForgeMessageMock();
 			mock.MockString = "This is a test message";
@@ -122,7 +121,7 @@ namespace ForgeTests.Networking.Messaging
 			bus.ReceiveMessageBuffer(receiver, sender.EndPoint, bin);
 
 			Assert.IsNotNull(interpretedMessage.Receipt);
-			Assert.AreEqual(mock.Receipt.Signature, interpretedMessage.Receipt.Signature);
+			Assert.AreEqual(mock.Receipt, interpretedMessage.Receipt);
 
 			var res = (ForgeMessageMock)interpretedMessage;
 			Assert.IsTrue(res.ItWorked);

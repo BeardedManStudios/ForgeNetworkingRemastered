@@ -1,22 +1,21 @@
-﻿using Forge.DataStructures;
-using Forge.Networking.Messaging.Interpreters;
+﻿using Forge.Networking.Messaging.Interpreters;
 using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
 	public class ForgeReceiptAcknowledgement : ForgeMessage
 	{
-		public ISignature ReceiptGuid { get; set; }
+		public IMessageReceiptSignature ReceiptSignature { get; set; }
 		public override IMessageInterpreter Interpreter => new ForgeReceiptAcknolegementInterpreter();
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			ReceiptGuid = ForgeSerializationStrategy.Instance.Deserialize<ISignature>(buffer);
+			ReceiptSignature = ForgeSerializationStrategy.Instance.Deserialize<IMessageReceiptSignature>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(ReceiptGuid));
+			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(ReceiptSignature));
 		}
 	}
 }

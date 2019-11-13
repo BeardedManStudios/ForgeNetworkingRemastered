@@ -15,7 +15,7 @@ namespace Forge.Factory
 			Register<IPlayerRepository, ForgePlayerRepository>();
 			Register<INetworkMediator, ForgeNetworkFacade>();
 			Register<IEntityRepository, ForgeEntityRepository>();
-			Register<IMessageReceipt, ForgeMessageReceipt>();
+			Register<IMessageReceiptSignature, ForgeMessageReceipt>();
 			Register<IMessageBus, ForgeMessageBus>();
 			Register<IMessageRepository, ForgeMessageRepository>();
 			Register<IMessagePage, ForgeMessagePage>();
@@ -32,6 +32,7 @@ namespace Forge.Factory
 			Register<IChallengeMessage, ForgeConnectChallengeMessage>();
 			Register<IChallengeResponseMessage, ForgeConnectChallengeResponseMessage>();
 			Register<IMessageRepeater, ForgeMessageRepeater>();
+			Register<IPlayerSignature, ForgePlayerSignature>();
 		}
 	}
 }

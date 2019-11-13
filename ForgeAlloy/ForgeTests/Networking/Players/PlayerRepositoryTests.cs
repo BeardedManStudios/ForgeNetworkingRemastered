@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using FakeItEasy;
+using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Players;
 using NUnit.Framework;
@@ -13,7 +14,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void AddPlayer_ShouldGetSamePlayer()
 		{
-			var id = Guid.NewGuid();
+			var id = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
@@ -29,7 +30,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void RemovePlayer_ShouldRemoveSamePlayer()
 		{
-			var id = Guid.NewGuid();
+			var id = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
@@ -51,18 +52,18 @@ namespace ForgeTests.Networking.Player
 		public void GettingPlayerFromEmptyRepo_ShouldThrow()
 		{
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
-			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
+			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>()));
 		}
 
 		[Test]
 		public void GettingPlayerThatDoesNotExist_ShouldThrow()
 		{
-			var id = Guid.NewGuid();
+			var id = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
-			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
+			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>()));
 		}
 
 		[Test]
@@ -93,7 +94,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void AddingPlayer_ShouldHaveGuidAssigned()
 		{
-			var initialId = Guid.NewGuid();
+			var initialId = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			var player = A.Fake<INetPlayer>();
 			player.Id = initialId;
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();

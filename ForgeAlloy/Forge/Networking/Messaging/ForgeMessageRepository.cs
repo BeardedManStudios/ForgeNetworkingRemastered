@@ -18,7 +18,7 @@ namespace Forge.Networking.Messaging
 		}
 
 		private readonly List<StoredMessage> _messagesWithTTL = new List<StoredMessage>();
-		private readonly Dictionary<IMessageReceipt, KeyValuePair<EndPoint, IMessage>> _messages = new Dictionary<IMessageReceipt, KeyValuePair<EndPoint, IMessage>>();
+		private readonly Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>> _messages = new Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>();
 
 		public void Clear()
 		{
@@ -105,13 +105,13 @@ namespace Forge.Networking.Messaging
 			RemoveMessage(message.Receipt);
 		}
 
-		public void RemoveMessage(IMessageReceipt guid)
+		public void RemoveMessage(IMessageReceiptSignature guid)
 		{
 			RemoveFromMessageLookup(guid);
 			RemoveFromTTLWithGuid(guid);
 		}
 
-		private void RemoveFromMessageLookup(IMessageReceipt receipt)
+		private void RemoveFromMessageLookup(IMessageReceiptSignature receipt)
 		{
 			lock (_messages)
 			{
@@ -119,7 +119,7 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public bool Exists(IMessageReceipt receipt)
+		public bool Exists(IMessageReceiptSignature receipt)
 		{
 			lock (_messages)
 			{
@@ -127,7 +127,7 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		private void RemoveFromTTLWithGuid(IMessageReceipt receipt)
+		private void RemoveFromTTLWithGuid(IMessageReceiptSignature receipt)
 		{
 			lock (_messagesWithTTL)
 			{
@@ -142,12 +142,12 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public KeyValuePair<EndPoint, IMessage> Get(IMessageReceipt receipt)
+		public KeyValuePair<EndPoint, IMessage> Get(IMessageReceiptSignature receipt)
 		{
 			return _messages[receipt];
 		}
 
-		public Dictionary<IMessageReceipt, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator()
+		public Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator()
 		{
 			return _messages.Values;
 		}

@@ -15,8 +15,7 @@ namespace ForgeTests.Networking.Messaging
 		public void AddMessage_ShouldExist()
 		{
 			var message = A.Fake<IMessage>();
-			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = A.Fake<ISignature>();
+			message.Receipt = A.Fake<IMessageReceiptSignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
 			Assert.IsTrue(repo.Exists(message.Receipt));
@@ -35,8 +34,7 @@ namespace ForgeTests.Networking.Messaging
 		public void AddMessageWithSameGuid_ShouldThrow()
 		{
 			var message = A.Fake<IMessage>();
-			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = A.Fake<ISignature>();
+			message.Receipt = A.Fake<IMessageReceiptSignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
 			Assert.Throws<MessageWithReceiptSignatureAlreadyExistsException>(() => repo.AddMessage(message, A.Fake<EndPoint>()));
@@ -45,7 +43,7 @@ namespace ForgeTests.Networking.Messaging
 		[Test]
 		public void CheckForMessage_ShouldNotExist()
 		{
-			var fake = A.Fake<IMessageReceipt>();
+			var fake = A.Fake<IMessageReceiptSignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			Assert.IsFalse(repo.Exists(fake));
 		}
@@ -54,8 +52,7 @@ namespace ForgeTests.Networking.Messaging
 		public void RemoveMessage_ShouldBeRemoved()
 		{
 			var message = A.Fake<IMessage>();
-			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = A.Fake<ISignature>();
+			message.Receipt = A.Fake<IMessageReceiptSignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>());
 			Assert.IsTrue(repo.Exists(message.Receipt));
@@ -71,8 +68,7 @@ namespace ForgeTests.Networking.Messaging
 		public void MessageAfterTTL_ShouldBeRemoved()
 		{
 			var message = A.Fake<IMessage>();
-			message.Receipt = A.Fake<IMessageReceipt>();
-			message.Receipt.Signature = A.Fake<ISignature>();
+			message.Receipt = A.Fake<IMessageReceiptSignature>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			repo.AddMessage(message, A.Fake<EndPoint>(), 3);
 			Assert.IsTrue(repo.Exists(message.Receipt));
