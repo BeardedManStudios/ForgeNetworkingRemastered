@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 
 namespace Forge.Networking.Messaging.Interpreters
@@ -11,7 +12,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		public void Interpret(INetworkContainer netHost, EndPoint sender, IMessage message)
 		{
 			var challenge = (IChallengeMessage)message;
-			var response = ForgeTypeFactory.GetNew<IChallengeResponseMessage>();
+			var response = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeResponseMessage>();
 			response.ChallengeAttempt = new byte[challenge.Challenge.Length * 2];
 			for (int i = 0; i < challenge.Challenge.Length; i++)
 			{

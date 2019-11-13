@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Forge.Factory;
 
 namespace Forge.Networking.Sockets
 {
@@ -11,7 +12,7 @@ namespace Forge.Networking.Sockets
 
 		public ForgeUDPSocketClientContainer() : base()
 		{
-			_socket = ForgeTypeFactory.GetNew<IClientSocket>();
+			_socket = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
 		}
 
 		public void StartClient(string address, ushort port, INetworkContainer netContainer)

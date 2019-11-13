@@ -2,6 +2,7 @@
 using FakeItEasy;
 using Forge;
 using Forge.Engine;
+using Forge.Factory;
 using Forge.Networking;
 using Forge.Networking.Messaging.Messages;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace ForgeTests.Networking.Messaging.Interpreters
 			var entity = A.Fake<IEntity>();
 			var engine = A.Fake<IEngineContainer>();
 			var entityMessage = new ForgeEntityMessage();
-			var network = ForgeTypeFactory.GetNew<INetworkContainer>();
+			var network = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetworkContainer>();
 			network.ChangeEngineContainer(engine);
 
 			A.CallTo(() => engine.EntityRepository.GetEntityById(A<int>._)).Returns(entity);

@@ -14,6 +14,5 @@ namespace Forge.Networking.Messaging
 		KeyValuePair<EndPoint, IMessage> Get(Guid guid);
 		Dictionary<Guid, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator();
 		void Clear();
-		// TODO:  Will need a way to either group messages or get all of them to re-send
 	}
 }

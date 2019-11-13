@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
 
@@ -13,13 +15,14 @@ namespace Forge.Networking.Sockets
 		private readonly IServerSocket _socket;
 		public override ISocket ManagedSocket => _socket;
 		private CancellationTokenSource _newConnectionsTokenSource;
+		private readonly List<EndPoint> _bannedEndpoints = new List<EndPoint>();
 
 		private IPlayerRepository _challengedPlayers;
 
 		public ForgeUDPSocketServerContainer()
 		{
-			_socket = ForgeTypeFactory.GetNew<IServerSocket>();
-			_challengedPlayers = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			_socket = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IServerSocket>();
+			_challengedPlayers = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 		}
 
 		public void StartServer(ushort port, int maxPlayers, INetworkContainer netContainer)
@@ -52,10 +55,11 @@ namespace Forge.Networking.Sockets
 
 		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
 		{
-			// TODO:  Check if the player has been banned and only do the following if not
-			if (!netContainer.PlayerRepository.Exists(data.Endpoint))
+			if (_bannedEndpoints.Contains(data.Endpoint))
+				return;
+			else if (!netContainer.PlayerRepository.Exists(data.Endpoint))
 			{
-				var newPlayer = ForgeTypeFactory.GetNew<INetPlayer>();
+				var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
 				newPlayer.EndPoint = data.Endpoint;
 				_challengedPlayers.AddPlayer(newPlayer);
 			}

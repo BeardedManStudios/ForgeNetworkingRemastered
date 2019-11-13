@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Forge.Factory;
 using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Paging
@@ -21,7 +22,7 @@ namespace Forge.Networking.Messaging.Paging
 
 		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, Guid guid)
 		{
-			var constructor = ForgeTypeFactory.GetNew<IMessageConstructor>();
+			var constructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageConstructor>();
 			constructor.ReconstructMessagePage(buffer);
 			if (!constructor.MessageReconstructed)
 				_messageConstructors.Add(guid, constructor);

@@ -1,5 +1,6 @@
 ﻿using System;
 using Forge.Engine;
+using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
 using Forge.Networking.Sockets;
@@ -15,8 +16,8 @@ namespace Forge.Networking
 
 		public ForgeNetworkContainer()
 		{
-			PlayerRepository = ForgeTypeFactory.GetNew<IPlayerRepository>();
-			MessageBus = ForgeTypeFactory.GetNew<IMessageBus>();
+			PlayerRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
+			MessageBus = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBus>();
 		}
 
 		public void ChangeEngineContainer(IEngineContainer engineContainer)

@@ -108,6 +108,14 @@ namespace Forge.DataStructures
 			return base.GetHashCode();
 		}
 
-		// TODO:  Override the sum and difference opperators
+		public static Vector3D operator +(Vector3D current, Vector3D other)
+		{
+			return new Vector3D(current.X + other.X, current.Y + other.Y, current.Z + other.Z);
+		}
+
+		public static Vector3D operator -(Vector3D current, Vector3D other)
+		{
+			return new Vector3D(current.X - other.X, current.Y - other.Y, current.Z - other.Z);
+		}
 	}
 }

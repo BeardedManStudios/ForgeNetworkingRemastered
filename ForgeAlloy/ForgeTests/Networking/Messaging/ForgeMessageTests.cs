@@ -24,6 +24,8 @@ namespace ForgeTests.Networking.Messaging
 				get
 				{
 					var mockInterpreter = A.Fake<IMessageInterpreter>();
+					A.CallTo(() => mockInterpreter.ValidOnClient).Returns(true);
+					A.CallTo(() => mockInterpreter.ValidOnServer).Returns(true);
 					A.CallTo(() => mockInterpreter.Interpret(A<INetworkContainer>._, A<EndPoint>._, A<IMessage>._)).Invokes((ctx) =>
 					{
 						interpretedMessage = (ForgeMessage)ctx.Arguments[2];

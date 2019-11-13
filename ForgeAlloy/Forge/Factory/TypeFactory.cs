@@ -1,38 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Forge
+namespace Forge.Factory
 {
-	public static class ForgeTypeFactory
+	public abstract class TypeFactory : IFactory
 	{
-		private readonly static Dictionary<Type, Func<object>> _typeLookup = new Dictionary<Type, Func<object>>();
+		private readonly Dictionary<Type, Func<object>> _typeLookup = new Dictionary<Type, Func<object>>();
 
-		public static void Register<T>(Func<object> factoryMethod)
+		public abstract void PrimeRegistry();
+
+		public void Register<T>(Func<object> factoryMethod)
 		{
 			var t = typeof(T);
 			if (_typeLookup.ContainsKey(t))
-			{
 				throw new Exception($"The type ({t}) is already registered");
-			}
 			_typeLookup.Add(t, factoryMethod);
 		}
 
-		public static void Register<TInterface, TActual>() where TActual : TInterface, new()
+		public void Register<TInterface, TActual>() where TActual : TInterface, new()
 		{
 			var t = typeof(TInterface);
 			if (_typeLookup.ContainsKey(t))
-			{
 				throw new Exception($"The type ({t}) is already registered");
-			}
 			_typeLookup.Add(t, () => new TActual());
 		}
 
-		public static void Unregister<T>()
+		public void Unregister<T>()
 		{
 			_typeLookup.Remove(typeof(T));
 		}
 
-		public static T GetNew<T>()
+		public T GetNew<T>()
 		{
 			var t = typeof(T);
 			if (!_typeLookup.TryGetValue(t, out var factoryMethod))
@@ -42,7 +40,7 @@ namespace Forge
 			return (T)factoryMethod();
 		}
 
-		public static void Clear()
+		public void Clear()
 		{
 			_typeLookup.Clear();
 		}

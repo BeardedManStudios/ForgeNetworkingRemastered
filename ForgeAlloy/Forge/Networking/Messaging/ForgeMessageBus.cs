@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Sockets;
@@ -14,8 +15,8 @@ namespace Forge.Networking.Messaging
 
 		public ForgeMessageBus()
 		{
-			MessageBufferInterpreter = ForgeTypeFactory.GetNew<IMessageBufferInterpreter>();
-			_messageDestructor = ForgeTypeFactory.GetNew<IMessageDestructor>();
+			MessageBufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
+			_messageDestructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 		}
 
 		private static int GetMessageCode(IMessage message)
@@ -39,7 +40,7 @@ namespace Forge.Networking.Messaging
 
 		public IMessageReceipt SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
-			var receipt = ForgeTypeFactory.GetNew<IMessageReceipt>();
+			var receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
 			receipt.Signature = Guid.NewGuid();
 			message.Receipt = receipt;
 			var buffer = new BMSByte();
@@ -88,7 +89,7 @@ namespace Forge.Networking.Messaging
 			string guid = buffer.GetBasicType<string>();
 			if (guid.Length == 0)
 				return;
-			m.Receipt = ForgeTypeFactory.GetNew<IMessageReceipt>();
+			m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceipt>();
 			m.Receipt.Signature = Guid.Parse(guid);
 			SendMessage(new ForgeReceiptAcknowledgement { ReceiptGuid = guid }, readingSocket, messageSender);
 		}

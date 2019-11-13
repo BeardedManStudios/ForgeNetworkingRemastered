@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using FakeItEasy;
-using Forge;
+using Forge.Factory;
 using Forge.Networking.Players;
 using NUnit.Framework;
 
@@ -16,7 +16,7 @@ namespace ForgeTests.Networking.Player
 			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			Assert.AreEqual(0, repo.Count);
 			repo.AddPlayer(player);
 			Assert.AreEqual(1, repo.Count);
@@ -32,7 +32,7 @@ namespace ForgeTests.Networking.Player
 			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 
 			// Test using the reference to the player
 			repo.AddPlayer(player);
@@ -50,7 +50,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void GettingPlayerFromEmptyRepo_ShouldThrow()
 		{
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
 		}
 
@@ -60,7 +60,7 @@ namespace ForgeTests.Networking.Player
 			var id = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.Id).Returns(id);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(Guid.NewGuid()));
 		}
@@ -71,7 +71,7 @@ namespace ForgeTests.Networking.Player
 			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			var found = repo.GetPlayer(ep);
 			Assert.AreEqual(player, found);
@@ -85,7 +85,7 @@ namespace ForgeTests.Networking.Player
 			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3515);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			Assert.Throws<PlayerNotFoundException>(() => repo.GetPlayer(wrongEp));
 		}
@@ -96,7 +96,7 @@ namespace ForgeTests.Networking.Player
 			var initialId = Guid.NewGuid();
 			var player = A.Fake<INetPlayer>();
 			player.Id = initialId;
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			Assert.AreNotEqual(initialId, player.Id);
 			Assert.AreNotEqual(new Guid(), player.Id);
@@ -106,7 +106,7 @@ namespace ForgeTests.Networking.Player
 		public void AddingPlayer_ShouldInvokeTheAddedPlayerEventAndMatch()
 		{
 			var player = A.Fake<INetPlayer>();
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			var evt = A.Fake<PlayerAddedToRepository>();
 			repo.onPlayerAdded += evt;
 			repo.AddPlayer(player);
@@ -119,7 +119,7 @@ namespace ForgeTests.Networking.Player
 			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			bool exists = repo.Exists(player.EndPoint);
 			Assert.IsTrue(exists);
@@ -129,7 +129,7 @@ namespace ForgeTests.Networking.Player
 		public void EmptyRepositoryPlayerExist_ShouldReturnFalse()
 		{
 			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			bool exists = repo.Exists(ep);
 			Assert.IsFalse(exists);
 		}
@@ -141,7 +141,7 @@ namespace ForgeTests.Networking.Player
 			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3574);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
-			var repo = ForgeTypeFactory.GetNew<IPlayerRepository>();
+			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			repo.AddPlayer(player);
 			bool exists = repo.Exists(wrongEp);
 			Assert.IsFalse(exists);

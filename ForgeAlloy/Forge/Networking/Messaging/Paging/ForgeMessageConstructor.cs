@@ -14,12 +14,14 @@ namespace Forge.Networking.Messaging.Paging
 			if (MessageReconstructed)
 				return;
 
-			// TODO:  Throw or catch when page.Size == 0
+			if (page.Size == 0)
+				throw new ArgumentException($"The input page buffer had an invalid size of 0");
 
 			var pageNumber = page.GetBasicType<int>();
 			var totalSize = page.GetBasicType<int>();
 
-			// TODO:  Throw or catch when page.Size == 0
+			if (page.Size == 0)
+				throw new ArgumentException($"The input page buffer had an invalid size of 0");
 
 			if (page.Size + page.StartPointer == totalSize)
 			{
@@ -50,9 +52,7 @@ namespace Forge.Networking.Messaging.Paging
 			foreach (var p in _pages)
 			{
 				if (p == null)
-				{
 					return false;
-				}
 			}
 			return true;
 		}
