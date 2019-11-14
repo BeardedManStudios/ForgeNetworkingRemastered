@@ -67,6 +67,8 @@
     <Compile Include="Assets\ForgeNetworking\src\MainMenu\ForgeMain.cs" />
     <Compile Include="Assets\ForgeNetworking\src\MainMenu\IUDPServerConstructor.cs" />
     <Compile Include="Assets\ForgeNetworking\src\MainMenu\UDPServerConstructor.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\UI\IUIButton.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\UI\UIButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UnityEngineContainer.cs" />
     <None Include="Assets\ForgeNetworking\Plugins\README.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
