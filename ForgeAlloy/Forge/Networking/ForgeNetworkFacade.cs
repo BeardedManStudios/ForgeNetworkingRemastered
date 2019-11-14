@@ -9,7 +9,7 @@ namespace Forge.Networking
 	public class ForgeNetworkMediator : INetworkMediator
 	{
 		public IPlayerRepository PlayerRepository { get; private set; }
-		public IEngineProxy EngineContainer { get; private set; }
+		public IEngineProxy EngineProxy { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
 		public ISocketFacade SocketFacade { get; private set; }
 		private readonly IPlayerTimeoutBridge _timeoutBridge;
@@ -21,9 +21,9 @@ namespace Forge.Networking
 			_timeoutBridge = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerTimeoutBridge>();
 		}
 
-		public void ChangeEngineFacade(IEngineProxy engineContainer)
+		public void ChangeEngineProxy(IEngineProxy engineProxy)
 		{
-			EngineContainer = engineContainer;
+			EngineProxy = engineProxy;
 		}
 
 		public void StartServer(ushort port, int maxPlayers)

@@ -8,10 +8,10 @@ namespace Forge.Networking
 	public interface INetworkMediator
 	{
 		IPlayerRepository PlayerRepository { get; }
-		IEngineProxy EngineContainer { get; }
+		IEngineProxy EngineProxy { get; }
 		IMessageBus MessageBus { get; }
 		ISocketFacade SocketFacade { get; }
-		void ChangeEngineFacade(IEngineProxy engineContainer);
+		void ChangeEngineProxy(IEngineProxy engineProxy);
 		void StartServer(ushort port, int maxPlayers);
 		void StartClient(string hostAddress, ushort port);
 		void SendMessage(IMessage message, IPlayerSignature playerId);

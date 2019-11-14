@@ -14,12 +14,12 @@ namespace Forge.Networking.Messaging.Interpreters
 			var eMessage = (IEntityMessage)message;
 			try
 			{
-				IEntity entity = netContainer.EngineContainer.EntityRepository.GetEntityById(eMessage.EntityId);
+				IEntity entity = netContainer.EngineProxy.EntityRepository.GetEntityById(eMessage.EntityId);
 				entity.ProcessNetworkMessage(eMessage);
 			}
 			catch (EngineEntityNotFoundException)
 			{
-				netContainer.EngineContainer.ProcessUnavailableEntityMessage(eMessage, sender);
+				netContainer.EngineProxy.ProcessUnavailableEntityMessage(eMessage, sender);
 			}
 		}
 	}

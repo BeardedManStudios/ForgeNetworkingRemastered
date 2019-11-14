@@ -16,7 +16,7 @@ namespace Forge.Networking.Messaging.Interpreters
 				if (!player.IsInEngine)
 				{
 					player.IsInEngine = true;
-					netHost.EngineContainer.PlayerJoined(player);
+					netHost.EngineProxy.PlayerJoined(player);
 				}
 			}
 			catch (PlayerNotFoundException) { }

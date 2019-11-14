@@ -21,7 +21,7 @@ namespace ForgeServerRegistryService
 			factory.Replace<INetPlayer, NetworkPlayer>();
 
 			var networkMediator = factory.GetNew<INetworkMediator>();
-			networkMediator.ChangeEngineFacade(new ServerRegistryEngine());
+			networkMediator.ChangeEngineProxy(new ServerRegistryEngine());
 			networkMediator.StartServer(15940, 100);
 
 			while (!networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
