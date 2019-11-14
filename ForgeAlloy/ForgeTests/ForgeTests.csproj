@@ -1,131 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Forge\packages\NUnit3TestAdapter.3.15.1\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\Forge\packages\NUnit3TestAdapter.3.15.1\build\net35\NUnit3TestAdapter.props')" />
-  <Import Project="..\Forge\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\Forge\packages\NUnit.3.12.0\build\NUnit.props')" />
-  <Import Project="..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{581F80AD-C489-4A2C-AE34-D7DD83C30AB4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ForgeTests</RootNamespace>
-    <AssemblyName>ForgeTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=5.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\Forge\packages\FakeItEasy.5.4.0\lib\net45\FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\Forge\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\Forge\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\Forge\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
+    <PackageReference Include="FakeItEasy" Version="5.4.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="DataStructures\VectorTests.cs" />
-    <Compile Include="Engine\EntityRepositoryTests.cs" />
-    <Compile Include="Factory\AbstractFactoryTests.cs" />
-    <Compile Include="Factory\TypeFactoryTests.cs" />
-    <Compile Include="Networking\Messaging\Interpreters\MessageReceiptAcknowledgementTests.cs" />
-    <Compile Include="Networking\Messaging\MessageBusTests.cs" />
-    <Compile Include="Networking\Messaging\MessageReceiptTests.cs" />
-    <Compile Include="Networking\Messaging\MessageRepeaterTests.cs" />
-    <Compile Include="Networking\Messaging\Messages\EntityMessageTests.cs" />
-    <Compile Include="Networking\Messaging\Messages\ReceiptAcknowledgementMessageTests.cs" />
-    <Compile Include="Networking\Messaging\Paging\MessageBufferInterpreterTests.cs" />
-    <Compile Include="Networking\Messaging\Paging\MessagePageTests.cs" />
-    <Compile Include="Networking\Messaging\Paging\PagenatedMessageTests.cs" />
-    <Compile Include="Networking\NetworkContainerTests.cs" />
-    <Compile Include="Networking\Players\PlayerTests.cs" />
-    <Compile Include="Networking\Socket\SocketClientContainerTests.cs" />
-    <Compile Include="Networking\Socket\UDPSocketTests.cs" />
-    <Compile Include="Reflection\TypeReflectionRepositoryTests.cs" />
-    <Compile Include="Serialization\BMSByteTests.cs" />
-    <Compile Include="ForgeNetworkingTest.cs" />
-    <Compile Include="Networking\Messaging\ForgeMessageTests.cs" />
-    <Compile Include="Networking\Messaging\Interpreters\EntityMessageInterpreter.cs" />
-    <Compile Include="Networking\Messaging\MessageRepositoryTests.cs" />
-    <Compile Include="Networking\Messaging\Paging\MessageConstructorTests.cs" />
-    <Compile Include="Networking\Messaging\Paging\MessageDestructorTests.cs" />
-    <Compile Include="Networking\Players\PlayerRepositoryTests.cs" />
-    <Compile Include="Networking\Socket\SocketServerContainerTests.cs" />
-    <Compile Include="Networking\Socket\TCPSocketTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\SerializationContainerTests.cs" />
-    <Compile Include="Serialization\Serializers\BoolSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\ByteArraySerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\ByteSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\DoubleSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\FloatSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\IntSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\LongSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\SByteSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\ShortSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\StringSerializationTests.cs" />
-    <Compile Include="Serialization\Serializers\TypeSerializerTestsBase.cs" />
-    <Compile Include="Serialization\Serializers\UIntSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\ULongSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\UShortSerializerTests.cs" />
-    <Compile Include="Serialization\Serializers\Vector3DSerializerTests.cs" />
+    <ProjectReference Include="..\ForgeServerRegistryService\ForgeServerRegistryService.csproj" />
+    <ProjectReference Include="..\Forge\Forge.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forge\Forge.csproj">
-      <Project>{94dae1ff-aa9a-42da-8327-f2c3c0ad1539}</Project>
-      <Name>Forge</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets'))" />
-    <Error Condition="!Exists('..\Forge\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\Forge\packages\NUnit.3.12.0\build\NUnit.props'))" />
-    <Error Condition="!Exists('..\Forge\packages\NUnit3TestAdapter.3.15.1\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\Forge\packages\NUnit3TestAdapter.3.15.1\build\net35\NUnit3TestAdapter.props'))" />
-  </Target>
-  <Import Project="..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\Forge\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" />
+
 </Project>

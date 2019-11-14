@@ -9,7 +9,7 @@ namespace Forge.Networking.Messaging
 		public IMessageReceiptSignature Receipt
 		{
 			get => _receipt;
-			set { _receipt = (IMessageReceiptSignature)value; }
+			set { _receipt = value; }
 		}
 
 		public abstract IMessageInterpreter Interpreter { get; }

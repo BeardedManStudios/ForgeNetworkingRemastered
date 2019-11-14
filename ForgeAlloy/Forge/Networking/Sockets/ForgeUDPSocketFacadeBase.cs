@@ -5,7 +5,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
-	public abstract class ForgeUDPSocketContainerBase
+	public abstract class ForgeUDPSocketFacadeBase
 	{
 		public abstract ISocket ManagedSocket { get; }
 
@@ -13,7 +13,7 @@ namespace Forge.Networking.Sockets
 		public CancellationTokenSource CancellationSource { get; }
 		protected SynchronizationContext synchronizationContext;
 
-		public ForgeUDPSocketContainerBase()
+		public ForgeUDPSocketFacadeBase()
 		{
 			synchronizationContext = SynchronizationContext.Current;
 		}

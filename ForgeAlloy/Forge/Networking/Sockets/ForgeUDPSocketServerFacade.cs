@@ -8,7 +8,7 @@ using Forge.Networking.Players;
 
 namespace Forge.Networking.Sockets
 {
-	public class ForgeUDPSocketServerFacade : ForgeUDPSocketContainerBase, ISocketServerFacade
+	public class ForgeUDPSocketServerFacade : ForgeUDPSocketFacadeBase, ISocketServerFacade
 	{
 		private const int MAX_PARALLEL_CONNECTION_REQUEST = 64;
 

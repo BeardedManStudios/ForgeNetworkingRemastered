@@ -4,6 +4,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
+	[MessageContract(1, typeof(ForgeConnectChallengeMessage))]
 	public class ForgeConnectChallengeMessage : ForgeMessage, IChallengeMessage
 	{
 		public byte[] Challenge { get; private set; }

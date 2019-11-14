@@ -82,6 +82,7 @@ namespace Forge.Networking.Messaging
 				// TODO:  I don't like this type check and if branching in here...
 				bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
 
+				// TODO:  There might not be an interpreter
 				var interpreter = m.Interpreter;
 				if (interpreter.ValidOnClient && !isServer)
 					interpreter.Interpret(_networkMediator, messageSender, m);
@@ -103,7 +104,7 @@ namespace Forge.Networking.Messaging
 			{
 				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
 				m.Receipt = sig;
-				SendMessage(new ForgeReceiptAcknowledgement { ReceiptSignature = sig }, readingSocket, messageSender);
+				SendMessage(new ForgeReceiptAcknowledgementMessage { ReceiptSignature = sig }, readingSocket, messageSender);
 			}
 		}
 	}

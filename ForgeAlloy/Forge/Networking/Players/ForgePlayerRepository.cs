@@ -52,5 +52,10 @@ namespace Forge.Networking.Players
 		{
 			return _playerAddressLookup.TryGetValue(endpoint, out _);
 		}
+
+		public IEnumerator<INetPlayer> GetEnumerator()
+		{
+			return _playerLookup.Values.GetEnumerator();
+		}
 	}
 }

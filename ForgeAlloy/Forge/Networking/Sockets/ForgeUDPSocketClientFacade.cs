@@ -4,7 +4,7 @@ using Forge.Networking.Players;
 
 namespace Forge.Networking.Sockets
 {
-	public class ForgeUDPSocketClientFacade : ForgeUDPSocketContainerBase, ISocketClientFacade
+	public class ForgeUDPSocketClientFacade : ForgeUDPSocketFacadeBase, ISocketClientFacade
 	{
 		public IPlayerSignature NetPlayerId { get; set; }
 		private readonly IClientSocket _socket;

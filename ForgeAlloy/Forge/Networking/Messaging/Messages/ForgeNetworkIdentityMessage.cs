@@ -4,6 +4,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
+	[MessageContract(4, typeof(ForgeNetworkIdentityMessage))]
 	public class ForgeNetworkIdentityMessage : ForgeMessage
 	{
 		public IPlayerSignature Identity { get; set; }

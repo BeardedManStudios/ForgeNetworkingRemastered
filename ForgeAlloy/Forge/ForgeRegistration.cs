@@ -1,9 +1,10 @@
 ﻿using Forge.Factory;
 using Forge.Networking.Messaging;
-using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
 using Forge.Serialization;
 using Forge.Serialization.Serializers;
+using Forge.ServerRegistry.DataStructures;
+using Forge.ServerRegistry.Serializers;
 
 namespace Forge
 {
@@ -12,7 +13,7 @@ namespace Forge
 		public static void Initialize()
 		{
 			AbstractFactory.Register<INetworkTypeFactory, ForgeTypeFactory>();
-			RegisterMessageCodes();
+			ForgeMessageCodes.Register();
 			SetupSerializers();
 		}
 
@@ -21,15 +22,6 @@ namespace Forge
 			AbstractFactory.Clear();
 			ForgeMessageCodes.Clear();
 			ForgeSerializationStrategy.Instance.Clear();
-		}
-
-		private static void RegisterMessageCodes()
-		{
-			ForgeMessageCodes.Register<ForgeReceiptAcknowledgement>();
-			ForgeMessageCodes.Register<ForgeEntityMessage>();
-			ForgeMessageCodes.Register<ForgeRequestIdentityMessage>();
-			ForgeMessageCodes.Register<ForgeNetworkIdentityMessage>();
-			ForgeMessageCodes.Register<ForgeReadyForEngineMessage>();
 		}
 
 		private static void SetupSerializers()
@@ -49,6 +41,8 @@ namespace Forge
 			ForgeSerializationStrategy.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<IMessageReceiptSignature>(new ForgeSignatureSerializer<IMessageReceiptSignature>());
 			ForgeSerializationStrategy.Instance.AddSerializer<IPlayerSignature>(new ForgeSignatureSerializer<IPlayerSignature>());
+
+			ForgeSerializationStrategy.Instance.AddSerializer<ServerListingEntry[]>(new ServerListingEntryArraySerializer());
 		}
 	}
 }

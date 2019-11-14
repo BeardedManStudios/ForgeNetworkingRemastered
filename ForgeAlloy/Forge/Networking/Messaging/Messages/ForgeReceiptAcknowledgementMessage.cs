@@ -3,7 +3,8 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
-	public class ForgeReceiptAcknowledgement : ForgeMessage
+	[MessageContract(6, typeof(ForgeReceiptAcknowledgementMessage))]
+	public class ForgeReceiptAcknowledgementMessage : ForgeMessage
 	{
 		public IMessageReceiptSignature ReceiptSignature { get; set; }
 		public override IMessageInterpreter Interpreter => new ForgeReceiptAcknolegementInterpreter();

@@ -1,0 +1,14 @@
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.exe
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.deps.json
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.runtimeconfig.json
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.runtimeconfig.dev.json
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.dll
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\ForgeServerRegistryService.pdb
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\Forge.dll
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\bin\Debug\netcoreapp3.0\Forge.pdb
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.csprojAssemblyReference.cache
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.AssemblyInfoInputs.cache
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.AssemblyInfo.cs
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.csproj.CopyComplete
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.dll
+F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeServerRegistryService\obj\Debug\netcoreapp3.0\ForgeServerRegistryService.pdb

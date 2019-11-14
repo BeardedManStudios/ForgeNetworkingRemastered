@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using FakeItEasy;
-using Forge;
 using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking;
@@ -16,10 +15,10 @@ namespace ForgeTests.Networking.Messaging.Interpreters
 		public void EntityMessage_ShouldReachEntity()
 		{
 			var entity = A.Fake<IEntity>();
-			var engine = A.Fake<IEngineContainer>();
+			var engine = A.Fake<IEngineProxy>();
 			var entityMessage = new ForgeEntityMessage();
 			var network = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetworkMediator>();
-			network.ChangeEngineContainer(engine);
+			network.ChangeEngineFacade(engine);
 
 			A.CallTo(() => engine.EntityRepository.GetEntityById(A<int>._)).Returns(entity);
 			entityMessage.Interpreter.Interpret(network, A.Fake<EndPoint>(), entityMessage);

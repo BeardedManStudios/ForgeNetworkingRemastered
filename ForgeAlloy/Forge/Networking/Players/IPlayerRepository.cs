@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 
 namespace Forge.Networking.Players
 {
@@ -99,5 +100,12 @@ namespace Forge.Networking.Players
 		/// </param>
 		/// <returns>True if the player matching the endpoint was found, otherwise false</returns>
 		bool Exists(EndPoint endpoint);
+
+		/// <summary>
+		/// Used to get the internal enumerator of the repository
+		/// so that client code is able to iterate through all players
+		/// </summary>
+		/// <returns>The enumerator containing the collection of INetPlayer</returns>
+		IEnumerator<INetPlayer> GetEnumerator();
 	}
 }

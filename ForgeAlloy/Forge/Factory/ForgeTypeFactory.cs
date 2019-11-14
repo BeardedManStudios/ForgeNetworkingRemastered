@@ -1,4 +1,5 @@
-﻿using Forge.Engine;
+﻿using Forge.DataStructures;
+using Forge.Engine;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
@@ -29,10 +30,12 @@ namespace Forge.Factory
 			Register<ISocketServerFacade, ForgeUDPSocketServerFacade>();
 			Register<INetPlayer, ForgePlayer>();
 			Register<IEntityMessage, ForgeEntityMessage>();
-			Register<IChallengeMessage, ForgeConnectChallengeMessage>();
-			Register<IChallengeResponseMessage, ForgeConnectChallengeResponseMessage>();
 			Register<IMessageRepeater, ForgeMessageRepeater>();
 			Register<IPlayerSignature, ForgePlayerSignature>();
+			Register<ISignature, ForgeSignature>();
+
+			Register<IChallengeMessage, ForgeConnectChallengeMessage>();
+			Register<IChallengeResponseMessage, ForgeConnectChallengeResponseMessage>();
 		}
 	}
 }

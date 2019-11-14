@@ -4,7 +4,7 @@ using Forge.Networking.Players;
 
 namespace Forge.Engine
 {
-	public interface IEngineContainer
+	public interface IEngineProxy
 	{
 		IEntityRepository EntityRepository { get; set; }
 		void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender);

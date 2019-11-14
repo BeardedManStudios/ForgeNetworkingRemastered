@@ -3,6 +3,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
+	[MessageContract(2, typeof(ForgeConnectChallengeResponseMessage))]
 	public class ForgeConnectChallengeResponseMessage : ForgeMessage, IChallengeResponseMessage
 	{
 		public byte[] ChallengeAttempt { get; set; }

@@ -3,7 +3,7 @@
 namespace ForgeTests.Serialization
 {
 	[TestFixture]
-	public class SerializationContainerTests
+	public class SerializationStrategyTests
 	{
 		// TODO:  Create tests for SerializationContainerTests
 	}

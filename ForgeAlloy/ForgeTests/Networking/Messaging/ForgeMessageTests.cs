@@ -15,6 +15,7 @@ namespace ForgeTests.Networking.Messaging
 	{
 		private static IMessage interpretedMessage = null;
 
+		[UnitTestingMessageContract(1, typeof(ForgeMessageMock))]
 		public class ForgeMessageMock : ForgeMessage
 		{
 			public string MockString { get; set; } = "";
@@ -47,16 +48,9 @@ namespace ForgeTests.Networking.Messaging
 			}
 		}
 
-		public override void Setup()
-		{
-			base.Setup();
-			ForgeMessageCodes.Register<ForgeMessageMock>();
-		}
-
 		public override void Teardown()
 		{
 			base.Teardown();
-			ForgeMessageCodes.Unregister(typeof(ForgeMessageMock));
 			interpretedMessage = null;
 		}
 

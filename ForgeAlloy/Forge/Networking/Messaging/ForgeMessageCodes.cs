@@ -1,41 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Forge.Networking.Messaging
 {
 	public static partial class ForgeMessageCodes
 	{
-		private static readonly List<Type> _messageTypes = new List<Type>();
+		private static readonly Dictionary<int, Type> _messageTypes = new Dictionary<int, Type>();
+		private static readonly Dictionary<Type, int> _messageCodes = new Dictionary<Type, int>();
 
-		public static void Register<T>()
+		public static void Register()
 		{
-			var t = typeof(T);
-			if (_messageTypes.IndexOf(t) >= 0)
-				throw new DuplicateMessageTypeRegistrationException(t);
-			_messageTypes.Add(t);
+			Type baseType = typeof(IMessage);
+			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				try
+				{
+					var types = asm.GetTypes().Where(t => baseType.IsAssignableFrom(t) && !t.IsInterface);
+					foreach (var t in types)
+					{
+						var attrs = (MessageContractAttribute[])t.GetCustomAttributes(typeof(MessageContractAttribute), true);
+						foreach (var a in attrs)
+							Register(a.GetId(), a.GetClassType());
+					}
+				}
+				catch { /* TODO:  Make sure this is a load assembly only exception */ }
+			}
 		}
 
-		public static void Unregister(Type t)
+		private static void Register(int code, Type type)
 		{
-			_messageTypes.Remove(t);
-		}
-
-		public static void Unregister(int code)
-		{
-			_messageTypes.RemoveAt(code);
+			// TODO:  This error needs to include both code, type and colliding type
+			if (_messageTypes.ContainsKey(code))
+				throw new DuplicateMessageTypeRegistrationException(type);
+			else if (_messageCodes.ContainsKey(type))
+				throw new DuplicateMessageTypeRegistrationException(type);
+			_messageTypes.Add(code, type);
+			_messageCodes.Add(type, code);
 		}
 
 		public static object Instantiate(int code)
 		{
-			if (code < 0 || code >= _messageTypes.Count)
+			if (!_messageTypes.TryGetValue(code, out var type))
 				throw new MessageCodeNotFoundException(code);
-			return Activator.CreateInstance(_messageTypes[code]);
+			return Activator.CreateInstance(type);
 		}
 
 		public static int GetCodeFromType(Type type)
 		{
-			int code = _messageTypes.IndexOf(type);
-			if (code < 0)
+			if (!_messageCodes.TryGetValue(type, out var code))
 				throw new MessageTypeNotFoundException(type);
 			return code;
 		}
