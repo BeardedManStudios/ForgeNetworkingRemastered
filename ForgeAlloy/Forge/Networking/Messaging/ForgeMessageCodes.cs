@@ -56,6 +56,7 @@ namespace Forge.Networking.Messaging
 		public static void Clear()
 		{
 			_messageTypes.Clear();
+			_messageCodes.Clear();
 		}
 	}
 }

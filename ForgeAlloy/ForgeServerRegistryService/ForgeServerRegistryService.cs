@@ -1,9 +1,11 @@
 ﻿using Forge;
 using Forge.Factory;
 using Forge.Networking;
+using Forge.Networking.Players;
 using Forge.ServerRegistry.Messaging.Interpreters;
 using ForgeServerRegistryService.Engine;
 using ForgeServerRegistryService.Messaging.Interpreters;
+using ForgeServerRegistryService.Networking.Players;
 
 namespace ForgeServerRegistryService
 {
@@ -15,6 +17,7 @@ namespace ForgeServerRegistryService
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
 			factory.Register<IRegisterAsServerInterpreter, RegisterAsServerInterpreter>();
 			factory.Register<IGetServerRegistryInterpreter, GetServerRegistryInterpreter>();
+			factory.Replace<INetPlayer, NetworkPlayer>();
 
 			var networkMediator = factory.GetNew<INetworkMediator>();
 			networkMediator.ChangeEngineFacade(new ServerRegistryEngine());

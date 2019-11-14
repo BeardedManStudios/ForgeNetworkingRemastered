@@ -44,5 +44,19 @@ namespace Forge.Factory
 		{
 			_typeLookup.Clear();
 		}
+
+		public void Replace<T>(Func<object> factoryMethod)
+		{
+			var t = typeof(T);
+			_typeLookup.Remove(t);
+			_typeLookup.Add(t, factoryMethod);
+		}
+
+		public void Replace<TInterface, TActual>() where TActual : TInterface, new()
+		{
+			var t = typeof(TInterface);
+			_typeLookup.Remove(t);
+			_typeLookup.Add(t, () => new TActual());
+		}
 	}
 }

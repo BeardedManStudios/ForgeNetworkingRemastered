@@ -1,9 +1,11 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.ServerRegistry.DataStructures;
 using Forge.ServerRegistry.Messaging.Interpreters;
 using Forge.ServerRegistry.Messaging.Messages;
+using ForgeServerRegistryService.Networking.Players;
 
 namespace ForgeServerRegistryService.Messaging.Interpreters
 {
@@ -22,24 +24,27 @@ namespace ForgeServerRegistryService.Messaging.Interpreters
 
 		private static ServerListingEntry[] GetEntriesArrayFromCurrentPlayers(INetworkMediator netContainer)
 		{
-			var entries = new ServerListingEntry[netContainer.PlayerRepository.Count];
-			if (entries.Length > 0)
+			var entries = new List<ServerListingEntry>();
+			if (netContainer.PlayerRepository.Count > 0)
 			{
 				using (var e = netContainer.PlayerRepository.GetEnumerator())
 				{
-					int idx = 0;
 					while (e.MoveNext())
 					{
-						var ep = (IPEndPoint)e.Current.EndPoint;
-						entries[idx++] = new ServerListingEntry
+						var player = (NetworkPlayer)e.Current;
+						if (player.IsRegisteredServer)
 						{
-							Address = ep.Address.ToString(),
-							Port = (ushort)ep.Port
-						};
+							var ep = (IPEndPoint)player.EndPoint;
+							entries.Add(new ServerListingEntry
+							{
+								Address = ep.Address.ToString(),
+								Port = (ushort)ep.Port
+							});
+						}
 					}
 				}
 			}
-			return entries;
+			return entries.ToArray();
 		}
 	}
 }
