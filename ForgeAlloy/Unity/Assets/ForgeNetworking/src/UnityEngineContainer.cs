@@ -17,7 +17,7 @@ namespace Forge.Networking.Unity
 			set { _entityRepo = value; }
 		}
 
-		private INetworkContainer _networkContainer;
+		private INetworkMediator _networkMediator;
 		private IMessageRepository _messageRepository;
 
 		public void Prepare()

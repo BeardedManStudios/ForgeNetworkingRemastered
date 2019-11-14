@@ -15,7 +15,7 @@ namespace Forge.Networking.Unity
 
 		private IEngineContainer _engineContainer;
 		private IUDPServerConstructor _serverHostConstructor;
-		private INetworkContainer _networkContainer;
+		private INetworkMediator _networkMediator;
 
 		private void Awake()
 		{
@@ -38,12 +38,12 @@ namespace Forge.Networking.Unity
 
 		private void OnDestroy()
 		{
-			_networkContainer.SocketContainer.ShutDown();
+			_networkMediator.SocketFacade.ShutDown();
 		}
 
 		public void Host()
 		{
-			_networkContainer = _serverHostConstructor.CreateAndStartServer(_engineContainer);
+			_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineContainer);
 		}
 
 		private void ThrowIfNull<T>(T obj)

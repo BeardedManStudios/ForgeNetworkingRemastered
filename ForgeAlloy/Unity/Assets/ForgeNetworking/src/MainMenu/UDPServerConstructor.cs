@@ -15,21 +15,21 @@ namespace Forge.Networking.Unity
 		private int _maxPlayers;
 		public int MaxPlayers => _maxPlayers;
 
-		private ISocketServerContainer _socketContainer;
+		private ISocketServerFacade _socketFacade;
 
-		public INetworkContainer CreateAndStartServer(IEngineContainer engineContainer)
+		public INetworkMediator CreateAndStartServer(IEngineContainer engineContainer)
 		{
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
-			_socketContainer = factory.GetNew<ISocketServerContainer>();
-			var networkContainer = factory.GetNew<INetworkContainer>();
+			_socketFacade = factory.GetNew<ISocketServerFacade>();
+			var networkMediator = factory.GetNew<INetworkMediator>();
 
-			networkContainer.ChangeSocketContainer(_socketContainer);
-			networkContainer.ChangeEngineContainer(engineContainer);
+			networkMediator.ChangeSocketContainer(_socketFacade);
+			networkMediator.ChangeEngineContainer(engineContainer);
 
 			//TODO: Catch exception if port is already being used (will not be caught in this function)
-			_socketContainer.StartServer(Port, MaxPlayers, networkContainer);
+			_socketFacade.StartServer(Port, MaxPlayers, networkMediator);
 
-			return networkContainer;
+			return networkMediator;
 		}
 	}
 }
