@@ -1,4 +1,5 @@
-﻿using Forge.Networking.Messaging;
+﻿using Forge.Factory;
+using Forge.Networking.Messaging;
 using Forge.Serialization;
 using Forge.ServerRegistry.DataStructures;
 using Forge.ServerRegistry.Messaging.Interpreters;
@@ -9,7 +10,8 @@ namespace Forge.ServerRegistry.Messaging.Messages
 	public class ForgeServerRegistryMessage : ForgeMessage
 	{
 		public ServerListingEntry[] Entries { get; set; }
-		public override IMessageInterpreter Interpreter => new ForgeServerRegistryInterpreter();
+		public override IMessageInterpreter Interpreter =>
+			AbstractFactory.Get<INetworkTypeFactory>().GetNew<IServerRegistryInterpreter>();
 
 		public override void Deserialize(BMSByte buffer)
 		{

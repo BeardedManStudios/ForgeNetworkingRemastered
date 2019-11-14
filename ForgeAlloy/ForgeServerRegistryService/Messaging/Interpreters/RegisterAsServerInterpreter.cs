@@ -1,8 +1,8 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.ServerRegistry.Messaging.Interpreters;
+using ForgeServerRegistryService.Networking.Players;
 
 namespace ForgeServerRegistryService.Messaging.Interpreters
 {
@@ -13,8 +13,8 @@ namespace ForgeServerRegistryService.Messaging.Interpreters
 
 		public void Interpret(INetworkMediator netContainer, EndPoint sender, IMessage message)
 		{
-			// TODO:  Register this sender as a server in the players
-			throw new NotImplementedException();
+			var player = (NetworkPlayer)netContainer.PlayerRepository.GetPlayer(sender);
+			player.IsRegisteredServer = true;
 		}
 	}
 }
