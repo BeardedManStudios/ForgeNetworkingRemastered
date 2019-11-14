@@ -1,6 +1,7 @@
 ﻿using System;
 using Forge.Engine;
 using Forge.Factory;
+using Forge.Networking.Unity.UI;
 using UnityEngine;
 
 namespace Forge.Networking.Unity
@@ -15,7 +16,8 @@ namespace Forge.Networking.Unity
 
 		private IEngineContainer _engineContainer;
 		private IUDPServerConstructor _serverHostConstructor;
-		private INetworkContainer _networkContainer;
+		private INetworkMediator _networkMediator;
+		private IUIButton _hostBtn;
 
 		private void Awake()
 		{
@@ -24,6 +26,7 @@ namespace Forge.Networking.Unity
 			factory.Register<IUDPServerConstructor, UDPServerConstructor>();
 			factory.Register<IEngineContainer, UnityEngineContainer>();
 
+			//TODO: Serializable field, these can be on different objects
 			_engineContainer = GetComponent<IEngineContainer>();
 			_serverHostConstructor = GetComponent<IUDPServerConstructor>();
 
@@ -33,17 +36,46 @@ namespace Forge.Networking.Unity
 			var engineContainer = _engineContainer as UnityEngineContainer;
 			engineContainer.Prepare();
 
-			Host();
+			_hostBtn.RegisterCallback(Host);
 		}
 
 		private void OnDestroy()
 		{
-			_networkContainer.SocketContainer.ShutDown();
+			if (_networkMediator != null)
+			{
+				_networkMediator.SocketFacade.ShutDown();
+				Debug.Log("Stopped Hosting");
+			}
+		}
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.H))
+			{
+				Host();
+			}
+			else if (Input.GetKeyDown(KeyCode.C))
+			{
+				Connect();
+			}
 		}
 
 		public void Host()
 		{
-			_networkContainer = _serverHostConstructor.CreateAndStartServer(_engineContainer);
+			if (_networkMediator == null)
+			{
+				_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineContainer);
+				Debug.Log("Hosting");
+			}
+			else
+			{
+				Debug.LogError("Already Hosting");
+			}
+		}
+
+		public void Connect()
+		{
+			//TODO: Connect
 		}
 
 		private void ThrowIfNull<T>(T obj)

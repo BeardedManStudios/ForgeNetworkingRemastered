@@ -2,34 +2,43 @@
 using Forge.Factory;
 using Forge.Networking.Sockets;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Forge.Networking.Unity
 {
 	public class UDPServerConstructor : MonoBehaviour, IUDPServerConstructor
 	{
 		[SerializeField]
-		private ushort _port;
+		private ushort _port = 15937;
 		public ushort Port => _port;
 
 		[SerializeField]
-		private int _maxPlayers;
+		private int _maxPlayers = 32;
 		public int MaxPlayers => _maxPlayers;
 
-		private ISocketServerContainer _socketContainer;
+		[SerializeField]
+		private Text _hostLabel;
 
-		public INetworkContainer CreateAndStartServer(IEngineContainer engineContainer)
+		private ISocketServerFacade _socketFacade;
+
+		private void Awake()
+		{
+			_hostLabel.text = $"(h) Host (127.0.0.1:{ _port })";
+		}
+
+		public INetworkMediator CreateAndStartServer(IEngineContainer engineContainer)
 		{
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
-			_socketContainer = factory.GetNew<ISocketServerContainer>();
-			var networkContainer = factory.GetNew<INetworkContainer>();
+			_socketFacade = factory.GetNew<ISocketServerFacade>();
+			var networkMediator = factory.GetNew<INetworkMediator>();
 
-			networkContainer.ChangeSocketContainer(_socketContainer);
-			networkContainer.ChangeEngineContainer(engineContainer);
+			networkMediator.ChangeSocketContainer(_socketFacade);
+			networkMediator.ChangeEngineContainer(engineContainer);
 
 			//TODO: Catch exception if port is already being used (will not be caught in this function)
-			_socketContainer.StartServer(Port, MaxPlayers, networkContainer);
+			_socketFacade.StartServer(Port, MaxPlayers, networkMediator);
 
-			return networkContainer;
+			return networkMediator;
 		}
 	}
 }

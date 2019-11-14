@@ -10,7 +10,7 @@ namespace Forge.Networking.Sockets
 		public abstract ISocket ManagedSocket { get; }
 
 		protected INetworkMediator networkMediator;
-		public CancellationTokenSource CancellationSource { get; }
+		public CancellationTokenSource CancellationSource { get; protected set; }
 		protected SynchronizationContext synchronizationContext;
 
 		public ForgeUDPSocketFacadeBase()
