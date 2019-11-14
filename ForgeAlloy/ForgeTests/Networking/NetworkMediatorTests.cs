@@ -3,7 +3,7 @@
 namespace ForgeTests.Networking
 {
 	[TestFixture]
-	public class NetworkContainerTests
+	public class NetworkMediatorTests
 	{
 		// TODO:  Create tests for NetworkContainerTests
 	}

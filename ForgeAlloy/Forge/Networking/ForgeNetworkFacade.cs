@@ -6,17 +6,19 @@ using Forge.Networking.Sockets;
 
 namespace Forge.Networking
 {
-	public class ForgeNetworkFacade : INetworkMediator
+	public class ForgeNetworkMediator : INetworkMediator
 	{
 		public IPlayerRepository PlayerRepository { get; private set; }
 		public IEngineProxy EngineContainer { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
 		public ISocketFacade SocketFacade { get; private set; }
+		private readonly IPlayerTimeoutBridge _timeoutBridge;
 
-		public ForgeNetworkFacade()
+		public ForgeNetworkMediator()
 		{
 			PlayerRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			MessageBus = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBus>();
+			_timeoutBridge = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerTimeoutBridge>();
 		}
 
 		public void ChangeEngineFacade(IEngineProxy engineContainer)
@@ -29,6 +31,7 @@ namespace Forge.Networking
 			var server = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketServerFacade>();
 			SocketFacade = server;
 			server.StartServer(port, maxPlayers, this);
+			_timeoutBridge.StartWatching(this);
 		}
 
 		public void StartClient(string hostAddress, ushort port)

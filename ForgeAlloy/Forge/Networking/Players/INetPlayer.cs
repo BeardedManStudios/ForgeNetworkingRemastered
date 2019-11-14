@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace Forge.Networking.Players
 {
@@ -35,5 +36,11 @@ namespace Forge.Networking.Players
 		/// ForgeReadyForEngineInterpreter
 		/// </summary>
 		bool IsInEngine { get; set; }
+
+		/// <summary>
+		/// This handles the last time that we communicated with this player, this is useful
+		/// for timeouts and checking network health on a given player
+		/// </summary>
+		DateTime LastCommunication { get; set; }
 	}
 }

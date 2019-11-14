@@ -11,14 +11,8 @@ namespace Forge.Networking.Messaging.Interpreters
 
 		public void Interpret(INetworkMediator netHost, EndPoint sender, IMessage message)
 		{
-			var challenge = (IChallengeMessage)message;
 			var response = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeResponseMessage>();
-			response.ChallengeAttempt = new byte[challenge.Challenge.Length * 2];
-			for (int i = 0; i < challenge.Challenge.Length; i++)
-			{
-				response.ChallengeAttempt[i] = challenge.Challenge[i];
-				response.ChallengeAttempt[response.ChallengeAttempt.Length - i - 1] = challenge.Challenge[i];
-			}
+			response.GenerateResponse((IChallengeMessage)message);
 			netHost.MessageBus.SendReliableMessage(response, netHost.SocketFacade.ManagedSocket, sender);
 		}
 	}

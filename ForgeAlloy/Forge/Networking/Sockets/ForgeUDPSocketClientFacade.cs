@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Forge.Factory;
 using Forge.Networking.Players;
 
@@ -15,10 +16,11 @@ namespace Forge.Networking.Sockets
 			_socket = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
 		}
 
-		public void StartClient(string address, ushort port, INetworkMediator netContainer)
+		public void StartClient(string address, ushort port, INetworkMediator netMediator)
 		{
-			this.networkMediator = netContainer;
+			networkMediator = netMediator;
 			_socket.Connect(address, port);
+			CancellationSource = new CancellationTokenSource();
 			Task.Run(ReadNetwork, CancellationSource.Token);
 		}
 	}

@@ -11,6 +11,7 @@ namespace Forge.Networking.Players
 
 		public event PlayerAddedToRepository onPlayerAdded;
 
+		public int TimeoutMilliseconds { get; set; } = 10000;
 		public int Count { get => _playerLookup.Count; }
 
 		public void AddPlayer(INetPlayer player)

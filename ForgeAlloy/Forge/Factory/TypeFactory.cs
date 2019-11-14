@@ -34,9 +34,7 @@ namespace Forge.Factory
 		{
 			var t = typeof(T);
 			if (!_typeLookup.TryGetValue(t, out var factoryMethod))
-			{
 				throw new Exception($"The type ({t}) is not registered");
-			}
 			return (T)factoryMethod();
 		}
 

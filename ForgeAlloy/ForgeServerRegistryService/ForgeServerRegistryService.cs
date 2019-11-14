@@ -1,4 +1,5 @@
-﻿using Forge;
+﻿using System;
+using Forge;
 using Forge.Factory;
 using Forge.Networking;
 using Forge.Networking.Players;
@@ -25,7 +26,17 @@ namespace ForgeServerRegistryService
 
 			while (!networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
 			{
-				// TODO:  Listen for exit command and call cancel
+				string line = Console.ReadLine();
+				switch (line)
+				{
+					case "exit":
+					case "quit":
+						networkMediator.SocketFacade.CancellationSource.Cancel();
+						break;
+					default:
+						Console.WriteLine($"This command isn't supported yet");
+						break;
+				}
 			}
 		}
 	}

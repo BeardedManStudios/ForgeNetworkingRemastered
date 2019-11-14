@@ -60,6 +60,8 @@ namespace Forge.Networking.Sockets
 				var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
 				newPlayer.EndPoint = data.Endpoint;
 				_challengedPlayers.AddPlayer(newPlayer);
+				var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
+				networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, data.Endpoint);
 			}
 			else
 				base.ProcessMessageRead(data);

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Forge.Networking.Players;
 
 namespace ForgeServerRegistryService.Networking.Players
@@ -10,5 +11,6 @@ namespace ForgeServerRegistryService.Networking.Players
 		public string Name { get; set; }
 		public bool IsInEngine { get; set; }
 		public bool IsRegisteredServer { get; set; }
+		public DateTime LastCommunication { get; set; }
 	}
 }
