@@ -14,7 +14,6 @@ namespace Forge.Networking.Sockets
 
 		private readonly IServerSocket _socket;
 		public override ISocket ManagedSocket => _socket;
-		private CancellationTokenSource _newConnectionsTokenSource;
 		private readonly List<EndPoint> _bannedEndpoints = new List<EndPoint>();
 
 		private IPlayerRepository _challengedPlayers;
@@ -30,13 +29,13 @@ namespace Forge.Networking.Sockets
 			// TODO:  Use maxPlayers
 			this.networkMediator = netContainer;
 			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
-			_newConnectionsTokenSource = new CancellationTokenSource();
+			CancellationSource = new CancellationTokenSource();
 			Task.Run(ReadNetwork, CancellationSource.Token);
 		}
 
 		public override void ShutDown()
 		{
-			_newConnectionsTokenSource.Cancel();
+			CancellationSource.Cancel();
 			base.ShutDown();
 		}
 
