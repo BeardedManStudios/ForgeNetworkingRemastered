@@ -2,6 +2,7 @@
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
+using Forge.Networking.Players;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
 
@@ -22,7 +23,17 @@ namespace Forge.Networking.Messaging
 
 		public void SetMediator(INetworkMediator networkMediator)
 		{
+			// TODO:  If a mediator is already set, then throw an exception
+			if (_networkMediator != null)
+				_networkMediator.PlayerRepository.onPlayerRemovedSubscription -= PlayerRemovedFromRepository;
 			_networkMediator = networkMediator;
+			_networkMediator.PlayerRepository.onPlayerRemovedSubscription += PlayerRemovedFromRepository;
+		}
+
+		private void PlayerRemovedFromRepository(INetPlayer player)
+		{
+			MessageBufferInterpreter.ClearBufferFor(player);
+			throw new System.NotImplementedException();
 		}
 
 		private static int GetMessageCode(IMessage message)
@@ -72,7 +83,7 @@ namespace Forge.Networking.Messaging
 		{
 			var buffer = new BMSByte();
 			buffer.Clone(messageBuffer);
-			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer);
+			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer, messageSender);
 			if (constructor.MessageReconstructed)
 			{
 				var m = CreateMessageTypeFromBuffer(constructor.MessageBuffer);

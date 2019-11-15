@@ -1,5 +1,10 @@
-﻿using Forge.Factory;
+﻿using System;
+using System.Linq;
+using System.Net;
+using FakeItEasy;
+using Forge.Factory;
 using Forge.Networking.Messaging.Paging;
+using Forge.Networking.Players;
 using Forge.Serialization;
 using NUnit.Framework;
 
@@ -32,7 +37,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
-			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer);
+			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer, A.Fake<EndPoint>());
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -54,7 +59,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			var beforeBuffer = new BMSByte();
 			beforeBuffer.Clone(buffer);
 			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
-			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer);
+			IMessageConstructor constructor = bufferInterpreter.ReconstructPacketPage(pm.Buffer, A.Fake<EndPoint>());
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
@@ -80,7 +85,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -108,7 +113,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -136,13 +141,77 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
 			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
 			for (int i = 0; i < beforeBuffer.Size; i++)
 				Assert.AreEqual(beforeBuffer[i], constructor.MessageBuffer[i]);
+		}
+
+		[Test]
+		public void ExactTripplePageSizeInRandomOrder_ShouldBeSame()
+		{
+			var buffer = new BMSByte();
+			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
+			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
+			buffer.AugmentSize(destructor.MaxPageLength * 3);
+			buffer.PointToEnd();
+			for (int i = 0; i < buffer.Size; i++)
+				buffer[i] = (byte)(i % byte.MaxValue);
+			var beforeBuffer = new BMSByte();
+			beforeBuffer.Clone(buffer);
+			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			IMessageConstructor constructor = null;
+			int[] indexes = new int[pm.Pages.Count];
+			for (int i = 0; i < indexes.Length; i++)
+				indexes[i] = i;
+			Random rnd = new Random();
+			indexes = indexes.OrderBy(x => rnd.Next()).ToArray();
+			for (int i = 0; i < indexes.Length; i++)
+			{
+				BMSByte pageBuffer = GetPageSection(buffer, pm, indexes[i]);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
+			}
+			Assert.IsNotNull(constructor);
+			Assert.IsTrue(constructor.MessageReconstructed);
+			Assert.AreEqual(beforeBuffer.Size, constructor.MessageBuffer.Size);
+			for (int i = 0; i < beforeBuffer.Size; i++)
+				Assert.AreEqual(beforeBuffer[i], constructor.MessageBuffer[i]);
+		}
+
+		[Test]
+		public void RemovingAPlayer_ShouldRemoveBufferedMessages()
+		{
+			var ep = A.Fake<EndPoint>();
+			var player = A.Fake<INetPlayer>();
+			A.CallTo(() => player.EndPoint).Returns(ep);
+			var buffer = new BMSByte();
+			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
+			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
+			buffer.AugmentSize(destructor.MaxPageLength + destructor.MaxPageLength / 2);
+			buffer.PointToEnd();
+			for (int i = 0; i < buffer.Size; i++)
+			{
+				buffer[i] = (byte)(i % byte.MaxValue);
+			}
+			var beforeBuffer = new BMSByte();
+			beforeBuffer.Clone(buffer);
+			IPagenatedMessage pm = destructor.BreakdownMessage(buffer);
+			IMessageConstructor constructor = null;
+			for (int i = 0; i < pm.Pages.Count - 1; i++)
+			{
+				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, ep);
+			}
+			bufferInterpreter.ClearBufferFor(player);
+			Assert.IsNotNull(constructor);
+			Assert.IsFalse(constructor.MessageReconstructed);
+
+			BMSByte pbuf = GetPageSection(buffer, pm, pm.Pages.Count - 1);
+			constructor = bufferInterpreter.ReconstructPacketPage(pbuf, ep);
+			Assert.IsFalse(constructor.MessageReconstructed);
 		}
 	}
 }

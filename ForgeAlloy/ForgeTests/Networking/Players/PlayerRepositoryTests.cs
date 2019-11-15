@@ -109,7 +109,7 @@ namespace ForgeTests.Networking.Player
 			var player = A.Fake<INetPlayer>();
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			var evt = A.Fake<PlayerAddedToRepository>();
-			repo.onPlayerAdded += evt;
+			repo.onPlayerAddedSubscription += evt;
 			repo.AddPlayer(player);
 			A.CallTo(() => evt(player)).MustHaveHappenedOnceExactly();
 		}

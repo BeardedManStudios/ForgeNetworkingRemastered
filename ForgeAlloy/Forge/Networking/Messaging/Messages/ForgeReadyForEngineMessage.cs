@@ -3,7 +3,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
-	[MessageContract(5, typeof(ForgeReadyForEngineMessage))]
+	[MessageContract(6, typeof(ForgeReadyForEngineMessage))]
 	public class ForgeReadyForEngineMessage : ForgeMessage
 	{
 		public override IMessageInterpreter Interpreter => new ForgeReadyForEngineInterpreter();

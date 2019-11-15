@@ -3,10 +3,10 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Messages
 {
-	[MessageContract(8, typeof(ForgeRequestIdentityMessage))]
-	public class ForgeRequestIdentityMessage : ForgeMessage
+	[MessageContract(5, typeof(ForgePingMessage))]
+	public class ForgePingMessage : ForgeMessage
 	{
-		public override IMessageInterpreter Interpreter => new ForgeRequestIdentityInterpreter();
+		public override IMessageInterpreter Interpreter => new ForgePingInterpreter();
 
 		public override void Deserialize(BMSByte buffer)
 		{
