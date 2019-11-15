@@ -168,14 +168,14 @@
 									"left": 60,
 									"top": 80,
 									"width": 1,
-									"height": 315
+									"height": 321
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 24,
 							"top": 40,
 							"width": 72.736328125,
-							"height": 355,
+							"height": 361,
 							"nameCompartment": {
 								"$ref": "AAAAAAFuXNhl4Vczf+0="
 							},
@@ -281,14 +281,14 @@
 									"left": 548,
 									"top": 80,
 									"width": 1,
-									"height": 315
+									"height": 321
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 488,
 							"top": 40,
 							"width": 119.71533203125,
-							"height": 355,
+							"height": 361,
 							"nameCompartment": {
 								"$ref": "AAAAAAFuXNitzFd0Uaw="
 							},
@@ -526,8 +526,8 @@
 								"$ref": "AAAAAAFuXNg+K1cjsQo="
 							},
 							"font": "Arial;13;0",
-							"left": 96,
-							"top": 392,
+							"left": 80,
+							"top": 344,
 							"width": 209,
 							"height": 57,
 							"text": "All of these messages are being sent reliably to ensure delivery"
@@ -539,8 +539,8 @@
 								"$ref": "AAAAAAFuXNg+K1cjsQo="
 							},
 							"font": "Arial;13;0",
-							"left": 464,
-							"top": 392,
+							"left": 456,
+							"top": 400,
 							"width": 177,
 							"height": 73,
 							"text": "All messages on this lifeline are checked to make sure the player exists and is not banned"
@@ -787,9 +787,9 @@
 										"$ref": "AAAAAAFuXTbQQlknecI="
 									},
 									"font": "Arial;13;0",
-									"left": 240,
+									"left": 220,
 									"top": 284,
-									"width": 127.181640625,
+									"width": 167.62890625,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 10,
@@ -797,7 +797,7 @@
 										"$ref": "AAAAAAFuXTbQQlko8Ds="
 									},
 									"edgePosition": 1,
-									"text": "5 : Challenge success"
+									"text": "5 : Network Identity Message"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -878,117 +878,6 @@
 							"activation": {
 								"$ref": "AAAAAAFuXTbQQlksM3M="
 							}
-						},
-						{
-							"_type": "UMLSeqMessageView",
-							"_id": "AAAAAAFuXTc5o1lBdyE=",
-							"_parent": {
-								"$ref": "AAAAAAFuXNg+K1cjsQo="
-							},
-							"model": {
-								"$ref": "AAAAAAFuXTc5o1lAF6o="
-							},
-							"subViews": [
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAFuXTc5o1lCqF4=",
-									"_parent": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"model": {
-										"$ref": "AAAAAAFuXTc5o1lAF6o="
-									},
-									"font": "Arial;13;0",
-									"left": 242,
-									"top": 336,
-									"width": 117.076171875,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 10,
-									"hostEdge": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"edgePosition": 1,
-									"text": "6 : Ready for engine"
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAFuXTc5pFlD4xM=",
-									"_parent": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"model": {
-										"$ref": "AAAAAAFuXTc5o1lAF6o="
-									},
-									"visible": false,
-									"font": "Arial;13;0",
-									"left": 300,
-									"top": 321,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 25,
-									"hostEdge": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"edgePosition": 1
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAFuXTc5pFlELfU=",
-									"_parent": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"model": {
-										"$ref": "AAAAAAFuXTc5o1lAF6o="
-									},
-									"visible": false,
-									"font": "Arial;13;0",
-									"left": 300,
-									"top": 356,
-									"height": 13,
-									"alpha": -1.5707963267948966,
-									"distance": 10,
-									"hostEdge": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"edgePosition": 1
-								},
-								{
-									"_type": "UMLActivationView",
-									"_id": "AAAAAAFuXTc5pFlFoKs=",
-									"_parent": {
-										"$ref": "AAAAAAFuXTc5o1lBdyE="
-									},
-									"model": {
-										"$ref": "AAAAAAFuXTc5o1lAF6o="
-									},
-									"font": "Arial;13;0",
-									"left": 541,
-									"top": 352,
-									"width": 14,
-									"height": 29
-								}
-							],
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAFuXNitzFd5h1I="
-							},
-							"tail": {
-								"$ref": "AAAAAAFuXNhl4Vc4l7U="
-							},
-							"points": "60:352;541:352",
-							"nameLabel": {
-								"$ref": "AAAAAAFuXTc5o1lCqF4="
-							},
-							"stereotypeLabel": {
-								"$ref": "AAAAAAFuXTc5pFlD4xM="
-							},
-							"propertyLabel": {
-								"$ref": "AAAAAAFuXTc5pFlELfU="
-							},
-							"activation": {
-								"$ref": "AAAAAAFuXTc5pFlFoKs="
-							}
 						}
 					]
 				}
@@ -1057,7 +946,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFuXNg+K1cidwE="
 					},
-					"name": "Challenge success",
+					"name": "Network Identity Message",
 					"source": {
 						"$ref": "AAAAAAFuXNitzFdyIqo="
 					},
@@ -1065,20 +954,6 @@
 						"$ref": "AAAAAAFuXNhl4Vcxou0="
 					},
 					"messageSort": "reply"
-				},
-				{
-					"_type": "UMLMessage",
-					"_id": "AAAAAAFuXTc5o1lAF6o=",
-					"_parent": {
-						"$ref": "AAAAAAFuXNg+K1cidwE="
-					},
-					"name": "Ready for engine",
-					"source": {
-						"$ref": "AAAAAAFuXNhl4Vcxou0="
-					},
-					"target": {
-						"$ref": "AAAAAAFuXNitzFdyIqo="
-					}
 				}
 			],
 			"participants": [

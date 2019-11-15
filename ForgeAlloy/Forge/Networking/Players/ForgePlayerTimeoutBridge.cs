@@ -50,12 +50,8 @@ namespace Forge.Networking.Players
 					if (itr.Current != null)
 						_previousPlayerSet.Add(itr.Current);
 				}
-
 				foreach (var player in _timedOutPlayers)
-				{
-					// TODO:  Remove any buffers for this player
 					_networkMediator.PlayerRepository.RemovePlayer(player);
-				}
 			}
 		}
 	}

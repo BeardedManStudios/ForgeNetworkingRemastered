@@ -24,10 +24,9 @@ namespace Forge.Networking.Sockets
 			_challengedPlayers = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 		}
 
-		public void StartServer(ushort port, int maxPlayers, INetworkMediator netContainer)
+		public void StartServer(ushort port, int maxPlayers, INetworkMediator netMediator)
 		{
-			// TODO:  Use maxPlayers
-			this.networkMediator = netContainer;
+			networkMediator = netMediator;
 			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
 			CancellationSource = new CancellationTokenSource();
 			Task.Run(ReadNetwork, CancellationSource.Token);

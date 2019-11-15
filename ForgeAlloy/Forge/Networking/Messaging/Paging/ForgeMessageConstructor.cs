@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Net;
 using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Paging
 {
 	public class ForgeMessageConstructor : IMessageConstructor
 	{
+		public EndPoint Sender { get; private set; }
 		public bool MessageReconstructed { get; private set; } = false;
 		public BMSByte MessageBuffer { get; private set; } = new BMSByte();
 		private byte[][] _pages;
 
-		public void ReconstructMessagePage(BMSByte page)
+		public void ReconstructMessagePage(BMSByte page, EndPoint sender)
 		{
+			Sender = sender;
 			if (MessageReconstructed)
 				return;
 

@@ -22,7 +22,9 @@ namespace Forge.Networking.Players
 		/// log messages or instantiating objects to represent the player that
 		/// just was added to this repository
 		/// </summary>
-		event PlayerAddedToRepository onPlayerAdded;
+		event PlayerAddedToRepository onPlayerAddedSubscription;
+
+		event PlayerAddedToRepository onPlayerRemovedSubscription;
 
 		/// <summary>
 		/// Is:  The number of players that are currently held within this

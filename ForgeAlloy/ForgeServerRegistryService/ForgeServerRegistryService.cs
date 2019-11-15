@@ -26,7 +26,7 @@ namespace ForgeServerRegistryService
 
 			while (!networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
 			{
-				string line = Console.ReadLine();
+				string line = Console.ReadLine().Trim();
 				switch (line)
 				{
 					case "exit":

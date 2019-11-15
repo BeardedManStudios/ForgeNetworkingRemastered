@@ -9,7 +9,8 @@ namespace Forge.Networking.Players
 		private readonly Dictionary<IPlayerSignature, INetPlayer> _playerLookup = new Dictionary<IPlayerSignature, INetPlayer>();
 		private readonly Dictionary<EndPoint, INetPlayer> _playerAddressLookup = new Dictionary<EndPoint, INetPlayer>();
 
-		public event PlayerAddedToRepository onPlayerAdded;
+		public event PlayerAddedToRepository onPlayerAddedSubscription;
+		public event PlayerAddedToRepository onPlayerRemovedSubscription;
 
 		public int TimeoutMilliseconds { get; set; } = 10000;
 		public int Count { get => _playerLookup.Count; }
@@ -19,7 +20,7 @@ namespace Forge.Networking.Players
 			player.Id = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			_playerLookup.Add(player.Id, player);
 			_playerAddressLookup.Add(player.EndPoint, player);
-			onPlayerAdded?.Invoke(player);
+			onPlayerAddedSubscription?.Invoke(player);
 		}
 
 		public INetPlayer GetPlayer(IPlayerSignature id)
@@ -33,6 +34,7 @@ namespace Forge.Networking.Players
 		{
 			_playerLookup.Remove(player.Id);
 			_playerAddressLookup.Remove(player.EndPoint);
+			onPlayerRemovedSubscription?.Invoke(player);
 		}
 
 		public void RemovePlayer(IPlayerSignature id)
@@ -40,6 +42,7 @@ namespace Forge.Networking.Players
 			var player = _playerLookup[id];
 			_playerLookup.Remove(id);
 			_playerAddressLookup.Remove(player.EndPoint);
+			onPlayerRemovedSubscription?.Invoke(player);
 		}
 
 		public INetPlayer GetPlayer(EndPoint endpoint)

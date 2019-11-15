@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForgeServerRegistryService", "..\ForgeServerRegistryService\ForgeServerRegistryService.csproj", "{A7E94095-DB36-4BCD-850B-95D25D1F91FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeTests", "..\ForgeTests\ForgeTests.csproj", "{B298E544-73B4-4B35-AE4E-2F1CBD83488A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForgeTests", "..\ForgeTests\ForgeTests.csproj", "{B298E544-73B4-4B35-AE4E-2F1CBD83488A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeSampleGameServer", "..\ForgeSampleGameServer\ForgeSampleGameServer.csproj", "{80FC5FB2-047E-4B62-AEF7-A4FE8640B0E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNatHolePunch", "..\ForgeNatHolePunch\ForgeNatHolePunch.csproj", "{5B81490F-3EBC-42B2-8D48-88B30FB6C28C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{B298E544-73B4-4B35-AE4E-2F1CBD83488A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B298E544-73B4-4B35-AE4E-2F1CBD83488A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B298E544-73B4-4B35-AE4E-2F1CBD83488A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80FC5FB2-047E-4B62-AEF7-A4FE8640B0E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80FC5FB2-047E-4B62-AEF7-A4FE8640B0E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80FC5FB2-047E-4B62-AEF7-A4FE8640B0E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80FC5FB2-047E-4B62-AEF7-A4FE8640B0E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B81490F-3EBC-42B2-8D48-88B30FB6C28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B81490F-3EBC-42B2-8D48-88B30FB6C28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B81490F-3EBC-42B2-8D48-88B30FB6C28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B81490F-3EBC-42B2-8D48-88B30FB6C28C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
