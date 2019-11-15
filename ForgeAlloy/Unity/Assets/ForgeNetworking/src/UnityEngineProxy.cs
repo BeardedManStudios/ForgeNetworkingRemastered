@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
-	public class UnityEngineContainer : MonoBehaviour, IEngineContainer
+	public class UnityEngineProxy : MonoBehaviour, IEngineProxy
 	{
 		private IEntityRepository _entityRepo;
 		public IEntityRepository EntityRepository

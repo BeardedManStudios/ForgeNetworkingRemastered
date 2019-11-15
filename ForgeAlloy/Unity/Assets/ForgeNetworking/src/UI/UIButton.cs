@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Forge.Networking.Unity.UI
 {
-	public class UIButton : MonoBehaviour, IUIButton
+	public class UIButton : UIElement, IUIButton
 	{
 		private Action _callback;
 
@@ -19,5 +19,7 @@ namespace Forge.Networking.Unity.UI
 				_callback();
 			}
 		}
+
+		public override bool Visible { get; set; }
 	}
 }

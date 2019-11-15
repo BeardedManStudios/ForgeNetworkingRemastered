@@ -8,6 +8,6 @@ namespace Forge.Networking.Unity
 
 		int MaxPlayers { get; }
 
-		INetworkMediator CreateAndStartServer(IEngineContainer engineContainer);
+		INetworkMediator CreateAndStartServer(IEngineProxy engineContainer);
 	}
 }
