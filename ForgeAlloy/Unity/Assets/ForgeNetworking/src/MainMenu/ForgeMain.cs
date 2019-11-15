@@ -8,33 +8,32 @@ namespace Forge.Networking.Unity
 {
 	public class ForgeMain : MonoBehaviour
 	{
-		//TODO: Make this work
-//		[Forge(typeof(IEngineContainer))]
-//		private IEngineContainer _engineContainer;
-//		[Forge(typeof(IUDPServerConstructor))]
-//		private IUDPServerConstructor _serverHostConstructor;
+		[SerializeField]
+		[Forge(typeof(IEngineProxy))]
+		private UnityEngineProxy _engineProxy;
 
-		private IEngineContainer _engineContainer;
-		private IUDPServerConstructor _serverHostConstructor;
+		[SerializeField]
+		[Forge(typeof(IUDPServerConstructor))]
+		private UDPServerConstructor _serverHostConstructor;
+
+		[SerializeField]
+		[Forge(typeof(IUIButton))]
+		private UIButton _hostBtn;
+
 		private INetworkMediator _networkMediator;
-		private IUIButton _hostBtn;
 
 		private void Awake()
 		{
 			AbstractFactory.Register<INetworkTypeFactory, ForgeTypeFactory>();
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
 			factory.Register<IUDPServerConstructor, UDPServerConstructor>();
-			factory.Register<IEngineContainer, UnityEngineContainer>();
+			factory.Register<IEngineProxy, UnityEngineProxy>();
 
-			//TODO: Serializable field, these can be on different objects
-			_engineContainer = GetComponent<IEngineContainer>();
-			_serverHostConstructor = GetComponent<IUDPServerConstructor>();
-
-			ThrowIfNull(_engineContainer);
+			ThrowIfNull(_engineProxy);
 			ThrowIfNull(_serverHostConstructor);
 
-			var engineContainer = _engineContainer as UnityEngineContainer;
-			engineContainer.Prepare();
+			var engineProxy = _engineProxy as UnityEngineProxy;
+			engineProxy.Prepare();
 
 			_hostBtn.RegisterCallback(Host);
 		}
@@ -64,7 +63,7 @@ namespace Forge.Networking.Unity
 		{
 			if (_networkMediator == null)
 			{
-				_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineContainer);
+				_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineProxy);
 				Debug.Log("Hosting");
 			}
 			else

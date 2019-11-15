@@ -19,24 +19,20 @@ namespace Forge.Networking.Unity
 		[SerializeField]
 		private Text _hostLabel;
 
-		private ISocketServerFacade _socketFacade;
-
 		private void Awake()
 		{
 			_hostLabel.text = $"(h) Host (127.0.0.1:{ _port })";
 		}
 
-		public INetworkMediator CreateAndStartServer(IEngineContainer engineContainer)
+		public INetworkMediator CreateAndStartServer(IEngineProxy engineProxy)
 		{
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
-			_socketFacade = factory.GetNew<ISocketServerFacade>();
 			var networkMediator = factory.GetNew<INetworkMediator>();
 
-			networkMediator.ChangeSocketContainer(_socketFacade);
-			networkMediator.ChangeEngineContainer(engineContainer);
+			networkMediator.ChangeEngineProxy(engineProxy);
 
 			//TODO: Catch exception if port is already being used (will not be caught in this function)
-			_socketFacade.StartServer(Port, MaxPlayers, networkMediator);
+			networkMediator.StartServer(Port, MaxPlayers);
 
 			return networkMediator;
 		}

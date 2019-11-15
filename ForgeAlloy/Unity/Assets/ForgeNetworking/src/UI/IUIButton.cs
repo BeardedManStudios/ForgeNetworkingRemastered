@@ -2,7 +2,7 @@
 
 namespace Forge.Networking.Unity.UI
 {
-	public interface IUIButton
+	public interface IUIButton : IUIElement
 	{
 		void RegisterCallback(Action callback);
 	}
