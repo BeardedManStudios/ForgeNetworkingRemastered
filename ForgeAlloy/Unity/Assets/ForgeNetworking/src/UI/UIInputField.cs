@@ -10,21 +10,18 @@ namespace Forge.Networking.Unity.UI
 		public override bool Visible { get; set; }
 		private InputField _inputField;
 
-		private string _text;
 		public string Text
 		{
-			get { return _text; }
+			get { return _inputField.text; }
 			set
 			{
-				_text = value;
-				_inputField.text = _text;
+				_inputField.text = value;
 			}
 		}
 
 		protected override void Awake()
 		{
 			_inputField = GetComponent<InputField>();
-			_text = _inputField.text;
 		}
 	}
 }
