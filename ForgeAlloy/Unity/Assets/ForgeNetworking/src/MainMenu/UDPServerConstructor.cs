@@ -36,5 +36,18 @@ namespace Forge.Networking.Unity
 
 			return networkMediator;
 		}
+
+		public INetworkMediator ConnectToServer(IEngineProxy engineProxy, string host, ushort port)
+		{
+			var factory = AbstractFactory.Get<INetworkTypeFactory>();
+			var networkMediator = factory.GetNew<INetworkMediator>();
+
+			networkMediator.ChangeEngineProxy(engineProxy);
+
+			//TODO: Catch exception if connection fails
+			networkMediator.StartClient(host, port);
+
+			return networkMediator;
+		}
 	}
 }

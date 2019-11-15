@@ -1,5 +1,4 @@
-﻿using System;
-using Forge.Engine;
+﻿using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Unity.UI;
 using UnityEngine;
@@ -9,16 +8,22 @@ namespace Forge.Networking.Unity
 	public class ForgeMain : MonoBehaviour
 	{
 		[SerializeField]
-		[Forge(typeof(IEngineProxy))]
 		private UnityEngineProxy _engineProxy;
 
 		[SerializeField]
-		[Forge(typeof(IUDPServerConstructor))]
 		private UDPServerConstructor _serverHostConstructor;
 
 		[SerializeField]
-		[Forge(typeof(IUIButton))]
 		private UIButton _hostBtn;
+
+		[SerializeField]
+		private UIInputField _ip;
+
+		[SerializeField]
+		private UIInputField _port;
+
+		[SerializeField]
+		private UIButton _connectBtn;
 
 		private INetworkMediator _networkMediator;
 
@@ -32,10 +37,11 @@ namespace Forge.Networking.Unity
 			ThrowIfNull(_engineProxy);
 			ThrowIfNull(_serverHostConstructor);
 
-			var engineProxy = _engineProxy as UnityEngineProxy;
+			var engineProxy = _engineProxy;
 			engineProxy.Prepare();
 
 			_hostBtn.RegisterCallback(Host);
+			_connectBtn.RegisterCallback(Connect);
 		}
 
 		private void OnDestroy()
@@ -74,7 +80,14 @@ namespace Forge.Networking.Unity
 
 		public void Connect()
 		{
-			//TODO: Connect
+			if (!string.IsNullOrEmpty(_ip.Text) && ushort.TryParse(_port.Text, out ushort port))
+			{
+				_networkMediator = _serverHostConstructor.ConnectToServer(_engineProxy, _ip.Text, port);
+			}
+			else
+			{
+				Debug.LogError($"{ (string.IsNullOrEmpty(_ip.Text) ? "Host Address Not Provided" : "Port Invalid") }");
+			}
 		}
 
 		private void ThrowIfNull<T>(T obj)

@@ -517,6 +517,7 @@ GameObject:
   - component: {fileID: 845038662}
   - component: {fileID: 845038661}
   - component: {fileID: 845038659}
+  - component: {fileID: 845038663}
   m_Layer: 5
   m_Name: Port Number
   m_TagString: Untagged
@@ -644,6 +645,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 845038658}
   m_CullTransparentMesh: 0
+--- !u!114 &845038663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 845038658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3ca676aec1e24b108057735c270b561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &914295614
 GameObject:
   m_ObjectHideFlags: 0
@@ -1153,6 +1166,9 @@ MonoBehaviour:
   _engineProxy: {fileID: 1266123782}
   _serverHostConstructor: {fileID: 1266123781}
   _hostBtn: {fileID: 1920631500}
+  _ip: {fileID: 1926933007}
+  _port: {fileID: 845038663}
+  _connectBtn: {fileID: 2104711877}
 --- !u!114 &1266123781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1970,6 +1986,7 @@ GameObject:
   - component: {fileID: 1926933006}
   - component: {fileID: 1926933005}
   - component: {fileID: 1926933003}
+  - component: {fileID: 1926933007}
   m_Layer: 5
   m_Name: IP Address
   m_TagString: Untagged
@@ -2097,6 +2114,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1926933002}
   m_CullTransparentMesh: 0
+--- !u!114 &1926933007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926933002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3ca676aec1e24b108057735c270b561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1944495345
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,6 +2325,7 @@ GameObject:
   - component: {fileID: 2104711875}
   - component: {fileID: 2104711874}
   - component: {fileID: 2104711873}
+  - component: {fileID: 2104711877}
   m_Layer: 5
   m_Name: Connect Button
   m_TagString: Untagged
@@ -2413,3 +2443,15 @@ RectTransform:
   m_AnchoredPosition: {x: 245.00002, y: -212}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2104711877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104711872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3de460548b3ea4cbfdfa53b7374848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
