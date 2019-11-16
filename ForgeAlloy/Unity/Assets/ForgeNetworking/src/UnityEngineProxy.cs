@@ -55,5 +55,10 @@ namespace Forge.Networking.Unity
 //				}
 //			}
 		}
+
+		public void NetworkingEstablished()
+		{
+			Debug.Log("Netowrk Estabilished");
+		}
 	}
 }

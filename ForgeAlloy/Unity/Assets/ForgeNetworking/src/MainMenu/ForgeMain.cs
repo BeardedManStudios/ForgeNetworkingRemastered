@@ -48,8 +48,8 @@ namespace Forge.Networking.Unity
 		{
 			if (_networkMediator != null)
 			{
-				_networkMediator.SocketFacade.ShutDown();
 				Debug.Log("Stopped Hosting");
+				_networkMediator.SocketFacade.ShutDown();
 			}
 		}
 
@@ -69,8 +69,8 @@ namespace Forge.Networking.Unity
 		{
 			if (_networkMediator == null)
 			{
-				_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineProxy);
 				Debug.Log("Hosting");
+				_networkMediator = _serverHostConstructor.CreateAndStartServer(_engineProxy);
 			}
 			else
 			{
