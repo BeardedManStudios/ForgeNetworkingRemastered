@@ -93,6 +93,12 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
 		public >:[i]:<Behavior Instantiate>:[i]:<(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
+			if (>:[i]:<NetworkObject.Length <= index)
+			{
+				Debug.Log("Prefab(s) missing for: >:[i]:<. Add them at the NetworkManager prefab.");
+				return null;
+			}
+			
 			var go = Instantiate(>:[i]:<NetworkObject[index]);
 			var netBehavior = go.GetComponent<>:[i]:<Behavior>();
 
