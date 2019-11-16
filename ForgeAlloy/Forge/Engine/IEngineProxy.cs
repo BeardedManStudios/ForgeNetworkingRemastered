@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using Forge.Networking.Messaging.Messages;
-using Forge.Networking.Players;
 
 namespace Forge.Engine
 {
@@ -8,6 +7,6 @@ namespace Forge.Engine
 	{
 		IEntityRepository EntityRepository { get; set; }
 		void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender);
-		void PlayerJoined(INetPlayer newPlayer);
+		void NetworkingEstablished();
 	}
 }

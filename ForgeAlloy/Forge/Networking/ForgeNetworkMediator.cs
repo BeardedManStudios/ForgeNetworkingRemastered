@@ -33,6 +33,7 @@ namespace Forge.Networking
 			SocketFacade = server;
 			server.StartServer(port, maxPlayers, this);
 			_timeoutBridge.StartWatching(this);
+			EngineProxy.NetworkingEstablished();
 		}
 
 		public void StartClient(string hostAddress, ushort port)
