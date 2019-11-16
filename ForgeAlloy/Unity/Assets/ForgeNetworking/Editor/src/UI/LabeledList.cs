@@ -21,5 +21,14 @@ namespace Forge.Editor.UI
 				EditorGUILayout.EndHorizontal();
 			}
 		}
+
+		public void FilterDraw(string text)
+		{
+			foreach (var e in _elements)
+			{
+				if (e.Text.ToLower().Contains(text.ToLower()))
+					e.Draw();
+			}
+		}
 	}
 }

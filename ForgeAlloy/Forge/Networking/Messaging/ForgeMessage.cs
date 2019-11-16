@@ -4,14 +4,7 @@ namespace Forge.Networking.Messaging
 {
 	public abstract class ForgeMessage : IMessage
 	{
-		private IMessageReceiptSignature _receipt;
-
-		public IMessageReceiptSignature Receipt
-		{
-			get => _receipt;
-			set { _receipt = value; }
-		}
-
+		public IMessageReceiptSignature Receipt { get; set; }
 		public abstract IMessageInterpreter Interpreter { get; }
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);

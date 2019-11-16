@@ -3,5 +3,6 @@
 	public interface ILabeledList : IEditorUI
 	{
 		void AddElement(ILabeledEditorUI element);
+		void FilterDraw(string text);
 	}
 }

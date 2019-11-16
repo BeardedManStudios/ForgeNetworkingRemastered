@@ -1,15 +1,14 @@
-﻿using System;
-using Forge.Networking.Messaging;
+﻿using Forge.Networking.Messaging;
 using Forge.Reflection;
-using UnityEngine;
+using UnityEditor;
 
 namespace Forge.Editor.UI.WIndows
 {
 	public class MessageListWindow : IEditorWindow
 	{
 		private readonly TypeReflectionRepository _reflectionRepository;
-		private readonly IFoldout _messageListFoldout = new Foldout();
-		private readonly ILabeledList _buttonList = new LabeledList();
+		private readonly ILabeledList _labelList = new LabeledList();
+		private readonly ILabeledEditorUI _searchBox = new TextInput();
 
 		public MessageListWindow()
 		{
@@ -19,26 +18,18 @@ namespace Forge.Editor.UI.WIndows
 			var messages = _reflectionRepository.GetTypesFor<IMessage>();
 			foreach (var message in messages)
 			{
-				_buttonList.AddElement(new Button<Type>
+				_labelList.AddElement(new Label
 				{
-					Label = message.Name,
-					State = message,
-					Callback = SelectMessageType
+					Text = message.Name
 				});
 			}
 		}
 
 		public void Draw()
 		{
-			_messageListFoldout.Draw();
-			if (!_messageListFoldout.IsUnfolded)
-				return;
-			_buttonList.Draw();
-		}
-
-		private void SelectMessageType(Type type)
-		{
-			Debug.Log($"You have clicked on the type {type}");
+			_searchBox.Draw();
+			EditorGUILayout.Space();
+			_labelList.FilterDraw(_searchBox.Text);
 		}
 	}
 }

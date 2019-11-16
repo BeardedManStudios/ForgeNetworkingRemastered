@@ -4,10 +4,11 @@ namespace Forge.Networking.Messaging
 {
 	public class MessageContractAttribute : Attribute
 	{
-		internal const int SERVER_LISTING_CODE_OFFSET = 50000;
-		internal const int NAT_HOLE_PUNCH_CODE_OFFSET = 60000;
-		internal const int CLIENT_CODE_OFFSET = 10000000;
+		internal const int SERVER_LISTING_CODE_OFFSET = 0x7FFFFFFF - 3000;
+		internal const int NAT_HOLE_PUNCH_CODE_OFFSET = 0x7FFFFFFF - 2000;
+		internal const int UNITE_TEST_CODE_OFFSET = 0x7FFFFFFF - 1000;
 
+		protected int inputId;
 		protected int id;
 		protected Type type;
 
@@ -18,30 +19,31 @@ namespace Forge.Networking.Messaging
 			this.type = type;
 		}
 		internal int GetId() => id;
+		internal int GetInputId() => inputId;
 		internal Type GetClassType() => type;
 	}
 
-	public class ServerListingMessageContractAttribute : MessageContractAttribute
+	public sealed class UnitTestingMessageContract : MessageContractAttribute
+	{
+		public UnitTestingMessageContract(int id, Type type)
+			: base(id + UNITE_TEST_CODE_OFFSET, type) { inputId = id; }
+	}
+
+	public sealed class ServerListingMessageContractAttribute : MessageContractAttribute
 	{
 		public ServerListingMessageContractAttribute(int id, Type type)
-			: base(id + SERVER_LISTING_CODE_OFFSET, type) { }
+			: base(id + SERVER_LISTING_CODE_OFFSET, type) { inputId = id; }
 	}
 
-	public class UnitTestingMessageContractAttribute : MessageContractAttribute
-	{
-		public UnitTestingMessageContractAttribute(int id, Type type)
-			: base(-id, type) { }
-	}
-
-	public class NatHolePunchMessageContractAttribute : MessageContractAttribute
+	public sealed class NatHolePunchMessageContractAttribute : MessageContractAttribute
 	{
 		public NatHolePunchMessageContractAttribute(int id, Type type)
-			: base(id + NAT_HOLE_PUNCH_CODE_OFFSET, type) { }
+			: base(id + NAT_HOLE_PUNCH_CODE_OFFSET, type) { inputId = id; }
 	}
 
-	public class EngineMessageContractAttribute : MessageContractAttribute
+	public sealed class EngineMessageContractAttribute : MessageContractAttribute
 	{
 		public EngineMessageContractAttribute(int id, Type type)
-			: base(id + NAT_HOLE_PUNCH_CODE_OFFSET, type) { }
+			: base(-id, type) { inputId = id; }
 	}
 }

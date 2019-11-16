@@ -6,9 +6,9 @@ namespace Forge.Editor
 {
 	public class ForgeEditor : EditorWindow
 	{
-		private readonly IEditorWindow _messageListWindow = new MessageListWindow();
+		private readonly IEditorWindow _mainWindow = new MainWindow();
 
-		[MenuItem("Window/Forge/Editor")]
+		[MenuItem("Window/Forge/Networking Editor")]
 		public static void Init()
 		{
 			var window = GetWindow<ForgeEditor>();
@@ -18,12 +18,12 @@ namespace Forge.Editor
 
 		public void Initialize()
 		{
-			this.titleContent = new GUIContent("Forge");
+			this.titleContent = new GUIContent("Forge: Networking");
 		}
 
 		public void OnGUI()
 		{
-			_messageListWindow.Draw();
+			_mainWindow.Draw();
 		}
 	}
 }

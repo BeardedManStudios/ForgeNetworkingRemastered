@@ -2,6 +2,6 @@
 {
 	public interface ILabeledEditorUI : IEditorUI
 	{
-		string Label { get; set; }
+		string Text { get; set; }
 	}
 }
