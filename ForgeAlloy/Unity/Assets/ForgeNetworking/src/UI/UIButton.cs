@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Forge.Networking.Unity.UI
 {
@@ -8,6 +8,14 @@ namespace Forge.Networking.Unity.UI
 	public class UIButton : UIElement, IUIButton
 	{
 		private Action _callback;
+
+		public override bool Visible { get; set; }
+
+		protected override void Awake()
+		{
+			//Guarenteed because of the RequireComponent attribute
+			GetComponent<Button>().onClick.AddListener(Raise);
+		}
 
 		public void RegisterCallback(Action callback)
 		{
@@ -21,7 +29,5 @@ namespace Forge.Networking.Unity.UI
 				_callback();
 			}
 		}
-
-		public override bool Visible { get; set; }
 	}
 }

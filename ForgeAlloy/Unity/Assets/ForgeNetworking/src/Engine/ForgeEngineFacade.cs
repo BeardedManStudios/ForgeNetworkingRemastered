@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
-	public class UnityEngineProxy : MonoBehaviour, IEngineProxy
+	public class ForgeEngineFacade : MonoBehaviour, IEngineFacade
 	{
 		private IEntityRepository _entityRepo;
 		public IEntityRepository EntityRepository
@@ -18,15 +18,20 @@ namespace Forge.Networking.Unity
 		}
 
 		private INetworkMediator _networkMediator;
-		private IMessageRepository _messageRepository;
 
-		public void Prepare()
+		private void Awake()
+		{
+			DontDestroyOnLoad(gameObject);
+		}
+
+		private void Start()
 		{
 			//TODO: Move this
-			_messageRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
+			//_messageRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			_entityRepo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IEntityRepository>();
 			_entityRepo.onEntityAdded += OnEntityAdded;
 		}
+		//private IMessageRepository _messageRepository;
 
 		public void PlayerJoined(INetPlayer newPlayer)
 		{
@@ -36,7 +41,7 @@ namespace Forge.Networking.Unity
 
 		public void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender)
 		{
-			_messageRepository.AddMessage(message, sender);
+			//_messageRepository.AddMessage(message, sender);
 		}
 
 		private void OnEntityAdded(IEntity entity)
@@ -58,7 +63,7 @@ namespace Forge.Networking.Unity
 
 		public void NetworkingEstablished()
 		{
-			Debug.Log("Netowrk Estabilished");
+			Debug.Log("Network Established");
 		}
 	}
 }
