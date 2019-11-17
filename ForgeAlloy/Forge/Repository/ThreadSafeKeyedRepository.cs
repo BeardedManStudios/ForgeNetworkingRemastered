@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Forge.DataStructures.Repository
+namespace Forge.Repository
 {
-	public class ThreadSafeKeyedRepository<TKey, TObject> : IRepository<TKey, TObject>
+	public sealed class ThreadSafeKeyedRepository<TKey, TObject> : IRepository<TKey, TObject>
 	{
 		public event RepositoryChanged<TObject> onAdd;
 		public event RepositoryChanged<TObject> onRemove;

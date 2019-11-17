@@ -2,7 +2,6 @@
 using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
-using Forge.Networking.Players;
 
 namespace ForgeServerRegistryService.Engine
 {
@@ -15,13 +14,13 @@ namespace ForgeServerRegistryService.Engine
 			EntityRepository = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IEntityRepository>();
 		}
 
-		public void PlayerJoined(INetPlayer newPlayer)
+		public void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender)
 		{
-			// We will handle the player joining event on the player repository
+			// Not expecting to have any entities on the server registry engine
 			return;
 		}
 
-		public void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender)
+		public void NetworkingEstablished()
 		{
 			// Not expecting to have any entities on the server registry engine
 			return;
