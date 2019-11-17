@@ -19,6 +19,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		private uint waitingForNetworkObjectOffset;
 
 		public event NetworkBehaviorEvent networkStarted;
+		public Action<NetworkObject> registerCustomRPCs;
 
 		protected virtual void NetworkStart()
 		{
@@ -32,6 +33,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public abstract void Initialize(NetworkObject obj);
 		public abstract void Initialize(NetWorker networker, byte[] metadata = null);
+
+		protected virtual void RegisterCustomRPCs(NetworkObject networkObject)
+		{
+			registerCustomRPCs?.Invoke(networkObject);
+		}
 
 		public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
 		{
