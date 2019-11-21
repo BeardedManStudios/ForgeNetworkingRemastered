@@ -63,7 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ForgeNetworking\Editor\src\ForgeAttributeEditor.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\ForgeEditor.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Button.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Foldout.cs" />

@@ -15,7 +15,7 @@ namespace Forge.Networking.Messaging.Interpreters
 			try
 			{
 				IEntity entity = netContainer.EngineProxy.EntityRepository.GetEntityById(eMessage.EntityId);
-				entity.ProcessNetworkMessage(eMessage);
+				eMessage.ProcessUsing(entity);
 			}
 			catch (EngineEntityNotFoundException)
 			{
