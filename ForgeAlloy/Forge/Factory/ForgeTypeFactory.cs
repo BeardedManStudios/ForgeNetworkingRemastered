@@ -30,7 +30,6 @@ namespace Forge.Factory
 			Register<ISocketServerFacade, ForgeUDPSocketServerFacade>();
 			Register<ISocketClientFacade, ForgeUDPSocketClientFacade>();
 			Register<INetPlayer, ForgePlayer>();
-			Register<IEntityMessage, ForgeEntityMessage>();
 			Register<IMessageRepeater, ForgeMessageRepeater>();
 			Register<IPlayerSignature, ForgePlayerSignature>();
 			Register<ISignature, ForgeSignature>();

@@ -1,5 +1,6 @@
 ﻿using Forge.Factory;
 using Forge.Networking.Unity.UI;
+using Forge.Serialization;
 using UnityEngine;
 
 namespace Forge.Networking.Unity
@@ -28,12 +29,20 @@ namespace Forge.Networking.Unity
 		private IEngineFacade _engineFacade;
 		private INetworkMediator _networkMediator;
 
-		private void Awake()
+		/// <summary>
+		/// TODO: Move this to a better location
+		/// </summary>
+		private void Startup()
 		{
+			ForgeRegistration.Initialize();
 			AbstractFactory.Register<INetworkTypeFactory, ForgeTypeFactory>();
 			var factory = AbstractFactory.Get<INetworkTypeFactory>();
 			factory.Register<IEngineFacade, ForgeEngineFacade>();
+			ForgeSerializationStrategy.Instance.AddSerializer<Vector3>(new Vector3Serializer());
+		}
 
+		private void Awake()
+		{
 			_engineFacade = FindObjectOfType<ForgeEngineFacade>();
 
 			ThrowIfNull(_engineFacade);
