@@ -6,28 +6,28 @@ namespace Forge.Networking.Unity.Menu
 {
 	public class ConnectButton : UIButton<IMenuMediator>
 	{
-		public override IMenuMediator Mediator { get; set; }
+		public override IMenuMediator State { get; set; }
 
 		public override void Invoke()
 		{
-			if (Mediator.EngineFacade.NetworkMediator != null)
+			if (State.EngineFacade.NetworkMediator != null)
 			{
 				Debug.LogError("Already (Hosting | Connecting)");
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(Mediator.AddressInput.Text) && ushort.TryParse(Mediator.PortInput.Text, out ushort port))
+			if (!string.IsNullOrEmpty(State.AddressInput.Text) && ushort.TryParse(State.PortInput.Text, out ushort port))
 			{
 				var factory = AbstractFactory.Get<INetworkTypeFactory>();
-				Mediator.EngineFacade.NetworkMediator = factory.GetNew<INetworkMediator>();
+				State.EngineFacade.NetworkMediator = factory.GetNew<INetworkMediator>();
 
-				Mediator.EngineFacade.NetworkMediator.ChangeEngineProxy(Mediator.EngineFacade);
+				State.EngineFacade.NetworkMediator.ChangeEngineProxy(State.EngineFacade);
 
 				//TODO: Catch exception if connection fails
-				Mediator.EngineFacade.NetworkMediator.StartClient(Mediator.AddressInput.Text, port);
+				State.EngineFacade.NetworkMediator.StartClient(State.AddressInput.Text, port);
 			}
 			else
-				Debug.LogError($"{ (string.IsNullOrEmpty(Mediator.AddressInput.Text) ? "Host Address Not Provided" : "Port Invalid") }");
+				Debug.LogError($"{ (string.IsNullOrEmpty(State.AddressInput.Text) ? "Host Address Not Provided" : "Port Invalid") }");
 		}
 
 		private void Update()

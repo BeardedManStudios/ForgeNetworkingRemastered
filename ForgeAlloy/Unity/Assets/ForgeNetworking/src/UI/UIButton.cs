@@ -6,7 +6,7 @@ namespace Forge.Networking.Unity.UI
 	[RequireComponent(typeof(Button))]
 	public abstract class UIButton<T> : UIElement, IUIButton<T>
 	{
-		public abstract T Mediator { get; set; }
+		public abstract T State { get; set; }
 		public override bool Visible { get; set; } = true;
 
 		public abstract void Invoke();

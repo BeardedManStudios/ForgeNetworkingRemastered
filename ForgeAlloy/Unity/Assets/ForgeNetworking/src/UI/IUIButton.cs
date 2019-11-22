@@ -2,7 +2,7 @@
 {
 	public interface IUIButton<T> : IUIElement
 	{
-		T Mediator { get; set; }
+		T State { get; set; }
 		void Invoke();
 	}
 }
