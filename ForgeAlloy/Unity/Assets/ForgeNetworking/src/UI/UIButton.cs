@@ -13,7 +13,7 @@ namespace Forge.Networking.Unity.UI
 
 		protected override void Awake()
 		{
-			//Guarenteed because of the RequireComponent attribute
+			// Guarenteed because of the RequireComponent attribute
 			GetComponent<Button>().onClick.AddListener(Invoke);
 		}
 	}

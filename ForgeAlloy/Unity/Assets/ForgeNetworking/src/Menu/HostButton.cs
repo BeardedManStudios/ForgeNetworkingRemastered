@@ -18,7 +18,7 @@ namespace Forge.Networking.Unity.Menu
 
 				State.EngineFacade.NetworkMediator.ChangeEngineProxy(State.EngineFacade);
 
-				//TODO: Catch exception if port is already being used (will not be caught in this function)
+				// TODO:  Catch exception if port is already being used (will not be caught in this function)
 				State.EngineFacade.NetworkMediator.StartServer(ushort.Parse(State.PortInput.Text), State.MaxPlayers);
 			}
 			else

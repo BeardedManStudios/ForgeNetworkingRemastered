@@ -23,7 +23,7 @@ namespace Forge.Networking.Unity.Menu
 
 				State.EngineFacade.NetworkMediator.ChangeEngineProxy(State.EngineFacade);
 
-				//TODO: Catch exception if connection fails
+				// TODO:  Catch exception if connection fails
 				State.EngineFacade.NetworkMediator.StartClient(State.AddressInput.Text, port);
 			}
 			else

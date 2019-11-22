@@ -1,6 +1,6 @@
 ﻿using Forge.Networking.Unity.UI;
 
-namespace Forge.Networking.Unity
+namespace Forge.Networking.Unity.Menu
 {
 	public interface IMenuMediator
 	{
