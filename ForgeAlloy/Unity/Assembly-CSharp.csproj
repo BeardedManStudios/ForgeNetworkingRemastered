@@ -63,10 +63,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\CubeEntity.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Engine\EntityStartupMessage.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\IEngineFacade.cs" />
-    <Compile Include="Assets\ForgeNetworking\src\Menu\IMenuBridge.cs" />
-    <Compile Include="Assets\ForgeNetworking\src\Menu\MenuBridge.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Menu\ConnectButton.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Menu\HostButton.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Menu\IMenuMediator.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Menu\MenuMediator.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Serialization\Vector3Serializer.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UI\IUIButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UI\IUIElement.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UI\IUIInputField.cs" />

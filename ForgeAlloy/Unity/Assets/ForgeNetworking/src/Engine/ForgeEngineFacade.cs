@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using Forge.Engine;
 using Forge.Factory;
-using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
+using Forge.Serialization;
 using UnityEngine;
 
 namespace Forge.Networking.Unity
@@ -17,11 +17,14 @@ namespace Forge.Networking.Unity
 			set { _entityRepo = value; }
 		}
 
-		private INetworkMediator _networkMediator;
+		public INetworkMediator NetworkMediator { get; set; }
 
 		private void Awake()
 		{
 			DontDestroyOnLoad(gameObject);
+
+			ForgeRegistration.Initialize();
+			ForgeSerializationStrategy.Instance.AddSerializer<Vector3>(new Vector3Serializer());
 		}
 
 		private void Start()
@@ -46,24 +49,33 @@ namespace Forge.Networking.Unity
 
 		private void OnEntityAdded(IEntity entity)
 		{
-//			var messages = _messageRepository.GetAll();
-//
-//			//Be in a separate class that handles the messages exclusively
-//			// for no entities that have messages
-//			for (int i = 0; i < messages.Length; ++i)
-//			{
-//				var msg = (IEntityMessage)messages[i];
-//				if (msg.EntityId == entity.Id)
-//				{
-//					_messageRepository.RemoveMessage(msg);
-//					msg.Interpret(_networkContainer);
-//				}
-//			}
+			//			var messages = _messageRepository.GetAll();
+			//
+			//			//Be in a separate class that handles the messages exclusively
+			//			// for no entities that have messages
+			//			for (int i = 0; i < messages.Length; ++i)
+			//			{
+			//				var msg = (IEntityMessage)messages[i];
+			//				if (msg.EntityId == entity.Id)
+			//				{
+			//					_messageRepository.RemoveMessage(msg);
+			//					msg.Interpret(_networkContainer);
+			//				}
+			//			}
 		}
 
 		public void NetworkingEstablished()
 		{
 			Debug.Log("Network Established");
+		}
+
+		private void OnDestroy()
+		{
+			if (NetworkMediator != null)
+			{
+				Debug.Log("Stopped Hosting");
+				NetworkMediator.SocketFacade.ShutDown();
+			}
 		}
 	}
 }

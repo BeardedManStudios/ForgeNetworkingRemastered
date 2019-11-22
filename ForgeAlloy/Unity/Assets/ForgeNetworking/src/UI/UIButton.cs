@@ -5,29 +5,19 @@ using UnityEngine.UI;
 namespace Forge.Networking.Unity.UI
 {
 	[RequireComponent(typeof(Button))]
-	public class UIButton : UIElement, IUIButton
+	public abstract class UIButton<T> : UIElement, IUIButton<T>
 	{
 		private Action _callback;
 
-		public override bool Visible { get; set; }
+		public abstract T State { get; set; }
+		public override bool Visible { get; set; } = true;
+
+		public abstract void Invoke();
 
 		protected override void Awake()
 		{
 			//Guarenteed because of the RequireComponent attribute
-			GetComponent<Button>().onClick.AddListener(Raise);
-		}
-
-		public void RegisterCallback(Action callback)
-		{
-			_callback = callback;
-		}
-
-		public void Raise()
-		{
-			if (_callback != null)
-			{
-				_callback();
-			}
+			GetComponent<Button>().onClick.AddListener(Invoke);
 		}
 	}
 }
