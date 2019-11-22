@@ -1,9 +1,8 @@
-﻿using System;
-
-namespace Forge.Networking.Unity.UI
+﻿namespace Forge.Networking.Unity.UI
 {
-	public interface IUIButton : IUIElement
+	public interface IUIButton<T> : IUIElement
 	{
-		void RegisterCallback(Action callback);
+		T State { get; set; }
+		void Invoke();
 	}
 }
