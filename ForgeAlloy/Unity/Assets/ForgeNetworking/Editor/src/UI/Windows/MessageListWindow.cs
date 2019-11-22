@@ -2,10 +2,11 @@
 using Forge.Reflection;
 using UnityEditor;
 
-namespace Forge.Editor.UI.WIndows
+namespace Forge.Editor.UI.Windows
 {
 	public class MessageListWindow : IEditorWindow
 	{
+		public string Name => "Forge: Networking Message List";
 		private readonly TypeReflectionRepository _reflectionRepository;
 		private readonly ILabeledList _labelList = new LabeledList();
 		private readonly ILabeledEditorUI _searchBox = new TextInput();

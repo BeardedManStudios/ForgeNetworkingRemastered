@@ -57,19 +57,24 @@ namespace Forge.Networking.Messaging
 			// This starts when a reliable message is first created, so because of that
 			// we should wait by the interval when we first enter this method
 			Thread.Sleep(RepeatMillisecondsInterval);
-			while (!_socketTokenSourceRef.IsCancellationRequested)
+			try
 			{
-				lock (_messageRepository)
+				while (true)
 				{
-					var messageIterator = _messageRepository.GetIterator();
-					foreach (var kv in messageIterator)
+					_socketTokenSourceRef.Token.ThrowIfCancellationRequested();
+					lock (_messageRepository)
 					{
-						_networkMediator.MessageBus.SendReliableMessage(kv.Value,
-							_networkMediator.SocketFacade.ManagedSocket, kv.Key);
+						var messageIterator = _messageRepository.GetIterator();
+						foreach (var kv in messageIterator)
+						{
+							_networkMediator.MessageBus.SendReliableMessage(kv.Value,
+								_networkMediator.SocketFacade.ManagedSocket, kv.Key);
+						}
 					}
+					Thread.Sleep(RepeatMillisecondsInterval);
 				}
-				Thread.Sleep(RepeatMillisecondsInterval);
 			}
+			catch (OperationCanceledException) { }
 		}
 	}
 }

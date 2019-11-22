@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace Forge.Networking.Sockets
 {
 	public class ForgeUDPSocketServerFacade : ForgeUDPSocketFacadeBase, ISocketServerFacade
 	{
+		private const int CHALLENGED_PLAYER_TTL = 5000;
 		private const int MAX_PARALLEL_CONNECTION_REQUEST = 64;
 
 		private readonly IServerSocket _socket;
@@ -56,14 +58,32 @@ namespace Forge.Networking.Sockets
 				return;
 			else if (!networkMediator.PlayerRepository.Exists(data.Endpoint))
 			{
+				CleanupOldChallengedPlayers();
 				var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
 				newPlayer.EndPoint = data.Endpoint;
+				newPlayer.LastCommunication = DateTime.Now;
 				_challengedPlayers.AddPlayer(newPlayer);
 				var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
 				networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, data.Endpoint);
 			}
 			else
 				base.ProcessMessageRead(data);
+		}
+
+		private void CleanupOldChallengedPlayers()
+		{
+			var now = DateTime.Now;
+			var players = _challengedPlayers.GetEnumerator();
+			List<INetPlayer> removals = new List<INetPlayer>();
+			while (players.MoveNext())
+			{
+				var p = players.Current;
+				TimeSpan len = now - p.LastCommunication;
+				if (len.TotalMilliseconds >= CHALLENGED_PLAYER_TTL)
+					removals.Add(p);
+			}
+			foreach (var p in removals)
+				_challengedPlayers.RemovePlayer(p);
 		}
 	}
 }

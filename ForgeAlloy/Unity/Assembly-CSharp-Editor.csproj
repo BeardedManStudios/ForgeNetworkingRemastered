@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ForgeNetworking\Editor\src\EditorStringExtensions.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\ForgeEditor.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Button.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Foldout.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Label.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\LabeledList.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\TextInput.cs" />
+    <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Windows\ContributingWindow.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Windows\IEditorWindow.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Windows\MainWindow.cs" />
     <Compile Include="Assets\ForgeNetworking\Editor\src\UI\Windows\MessageCheckingWindow.cs" />
@@ -84,6 +86,7 @@
     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\StandAloneNetworkBehaviorTemplate.txt" />
     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\NetworkManagerTemplate.txt" />
     <None Include="Assets\ForgeNetworking\Editor\Resources\BMS_Forge_Editor\version.txt" />
+    <None Include="Assets\ForgeNetworking\Editor\Resources\html\contributing.txt" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>

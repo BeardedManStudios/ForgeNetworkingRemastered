@@ -23,11 +23,16 @@ namespace Forge.Networking
 
 		private void PingAtInterval()
 		{
-			while (!_networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
+			try
 			{
-				_sourceSyncCtx.Post(SendPingToServer, null);
-				Thread.Sleep(PingInterval);
+				while (true)
+				{
+					_networkMediator.SocketFacade.CancellationSource.Token.ThrowIfCancellationRequested();
+					_sourceSyncCtx.Post(SendPingToServer, null);
+					Thread.Sleep(PingInterval);
+				}
 			}
+			catch (OperationCanceledException) { }
 		}
 
 		private void SendPingToServer(object state)

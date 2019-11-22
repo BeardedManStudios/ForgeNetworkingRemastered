@@ -22,21 +22,26 @@ namespace Forge.Networking.Players
 
 		private void WatchForTimeouts()
 		{
-			while (!_networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
+			try
 			{
-				var now = DateTime.Now;
-				lock (_previousPlayerSet)
+				while (true)
 				{
-					foreach (var player in _previousPlayerSet)
+					_networkMediator.SocketFacade.CancellationSource.Token.ThrowIfCancellationRequested();
+					var now = DateTime.Now;
+					lock (_previousPlayerSet)
 					{
-						var span = now - player.LastCommunication;
-						if (span.TotalMilliseconds >= TimeoutMilliseconds)
-							_timedOutPlayers.Add(player);
+						foreach (var player in _previousPlayerSet)
+						{
+							var span = now - player.LastCommunication;
+							if (span.TotalMilliseconds >= TimeoutMilliseconds)
+								_timedOutPlayers.Add(player);
+						}
 					}
+					_sourceSyncCtx.Post(ProcessPlayerLists, null);
+					Thread.Sleep(TimeoutMilliseconds);
 				}
-				_sourceSyncCtx.Post(ProcessPlayerLists, null);
-				Thread.Sleep(TimeoutMilliseconds);
 			}
+			catch (OperationCanceledException) { }
 		}
 
 		private void ProcessPlayerLists(object state)

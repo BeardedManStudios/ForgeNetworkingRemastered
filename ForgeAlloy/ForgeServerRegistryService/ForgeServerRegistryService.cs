@@ -24,20 +24,25 @@ namespace ForgeServerRegistryService
 			networkMediator.ChangeEngineProxy(new ServerRegistryEngine());
 			networkMediator.StartServer(15940, 100);
 
-			while (!networkMediator.SocketFacade.CancellationSource.IsCancellationRequested)
+			try
 			{
-				string line = Console.ReadLine().Trim();
-				switch (line)
+				while (true)
 				{
-					case "exit":
-					case "quit":
-						networkMediator.SocketFacade.CancellationSource.Cancel();
-						break;
-					default:
-						Console.WriteLine($"This command isn't supported yet");
-						break;
+					networkMediator.SocketFacade.CancellationSource.Token.ThrowIfCancellationRequested();
+					string line = Console.ReadLine().Trim();
+					switch (line)
+					{
+						case "exit":
+						case "quit":
+							networkMediator.SocketFacade.CancellationSource.Cancel();
+							break;
+						default:
+							Console.WriteLine($"This command isn't supported yet");
+							break;
+					}
 				}
 			}
+			catch (OperationCanceledException) { }
 		}
 	}
 }

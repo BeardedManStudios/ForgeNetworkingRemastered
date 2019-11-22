@@ -35,25 +35,30 @@ namespace Forge.Networking.Messaging
 
 		private void TTLBackground()
 		{
-			while (!_ttlBackgroundToken.IsCancellationRequested)
+			try
 			{
-				var now = DateTime.UtcNow;
-				lock (_messagesWithTTL)
+				while (true)
 				{
-					for (int i = 0; i < _messagesWithTTL.Count; i++)
+					_ttlBackgroundToken.Token.ThrowIfCancellationRequested();
+					var now = DateTime.UtcNow;
+					lock (_messagesWithTTL)
 					{
-						if (_messagesWithTTL[i].ttl <= now)
+						for (int i = 0; i < _messagesWithTTL.Count; i++)
 						{
-							RemoveFromMessageLookup(_messagesWithTTL[i].message.Receipt);
-							_messagesWithTTL.RemoveAt(i--);
+							if (_messagesWithTTL[i].ttl <= now)
+							{
+								RemoveFromMessageLookup(_messagesWithTTL[i].message.Receipt);
+								_messagesWithTTL.RemoveAt(i--);
+							}
 						}
-					}
 
-					if (_messagesWithTTL.Count == 0)
-						break;
+						if (_messagesWithTTL.Count == 0)
+							break;
+					}
+					Thread.Sleep(10);
 				}
-				Thread.Sleep(10);
 			}
+			catch (OperationCanceledException) { }
 		}
 
 		public void AddMessage(IMessage message, EndPoint sender)

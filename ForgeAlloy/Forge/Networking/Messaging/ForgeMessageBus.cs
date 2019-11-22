@@ -10,7 +10,7 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
-		private IMessageRepeater _messageRepeater;
+		private readonly IMessageRepeater _messageRepeater;
 		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
 		private readonly IMessageDestructor _messageDestructor;
 		private INetworkMediator _networkMediator;
@@ -19,21 +19,20 @@ namespace Forge.Networking.Messaging
 		{
 			MessageBufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
 			_messageDestructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
+			_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
 		}
 
 		public void SetMediator(INetworkMediator networkMediator)
 		{
 			// TODO:  If a mediator is already set, then throw an exception
-			if (_networkMediator != null)
-				_networkMediator.PlayerRepository.onPlayerRemovedSubscription -= PlayerRemovedFromRepository;
 			_networkMediator = networkMediator;
 			_networkMediator.PlayerRepository.onPlayerRemovedSubscription += PlayerRemovedFromRepository;
+			_messageRepeater.Start(_networkMediator);
 		}
 
 		private void PlayerRemovedFromRepository(INetPlayer player)
 		{
 			MessageBufferInterpreter.ClearBufferFor(player);
-			throw new System.NotImplementedException();
 		}
 
 		private static int GetMessageCode(IMessage message)
@@ -45,10 +44,11 @@ namespace Forge.Networking.Messaging
 		{
 			var buffer = new BMSByte();
 			buffer.SetArraySize(128);
-			buffer.Append(
-				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationStrategy.Instance.Serialize(new byte[0])
-			);
+			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)));
+			if (message.Receipt != null)
+				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(message.Receipt));
+			else
+				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(new byte[0]));
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			byte[] messageBuffer = pm.Buffer.CompressBytes();
@@ -58,23 +58,7 @@ namespace Forge.Networking.Messaging
 		public IMessageReceiptSignature SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
 			message.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
-			var buffer = new BMSByte();
-			buffer.SetArraySize(128);
-			buffer.Append(
-				ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)),
-				ForgeSerializationStrategy.Instance.Serialize(message.Receipt)
-			);
-			message.Serialize(buffer);
-			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
-			byte[] messageBuffer = pm.Buffer.CompressBytes();
-			sender.Send(receiver, messageBuffer, messageBuffer.Length);
-
-			if (_messageRepeater == null)
-			{
-				_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
-				_messageRepeater.Start(_networkMediator);
-			}
-
+			SendMessage(message, sender, receiver);
 			_messageRepeater.AddMessageToRepeat(message, receiver);
 			return message.Receipt;
 		}
@@ -86,26 +70,24 @@ namespace Forge.Networking.Messaging
 			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer, messageSender);
 			if (constructor.MessageReconstructed)
 			{
-				var m = CreateMessageTypeFromBuffer(constructor.MessageBuffer);
-				ProcessMessageSignature(readingSocket, messageSender, constructor.MessageBuffer, m);
-				m.Deserialize(constructor.MessageBuffer);
-
-				// TODO:  I don't like this type check and if branching in here...
-				bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
-
-				// TODO:  There might not be an interpreter
-				var interpreter = m.Interpreter;
-				if (interpreter.ValidOnClient && !isServer)
-					interpreter.Interpret(_networkMediator, messageSender, m);
-				else if (interpreter.ValidOnServer && isServer)
-					interpreter.Interpret(_networkMediator, messageSender, m);
+				try
+				{
+					var m = (IMessage)ForgeMessageCodes.Instantiate(constructor.MessageBuffer.GetBasicType<int>());
+					ProcessMessageSignature(readingSocket, messageSender, constructor.MessageBuffer, m);
+					m.Deserialize(constructor.MessageBuffer);
+					var interpreter = m.Interpreter;
+					if (interpreter != null)
+					{
+						// TODO:  I don't like this type check and if branching in here...
+						bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
+						if (interpreter.ValidOnClient && !isServer)
+							interpreter.Interpret(_networkMediator, messageSender, m);
+						else if (interpreter.ValidOnServer && isServer)
+							interpreter.Interpret(_networkMediator, messageSender, m);
+					}
+				}
+				catch (MessageCodeNotFoundException) { }
 			}
-		}
-
-		private static IMessage CreateMessageTypeFromBuffer(BMSByte buffer)
-		{
-			int code = buffer.GetBasicType<int>();
-			return (IMessage)ForgeMessageCodes.Instantiate(code);
 		}
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)

@@ -1,0 +1,128 @@
+<h2>Code standards</h2>
+<p>We have a worldwide community and respect everyones backgrounds and languages, however Forge Networking is primarily developed by English (US) speakers. Because of this the variables, names, functions, comments, and everything else for this code base should be exclusively in English (US).</p>
+<h2>.editorconfig</h2>
+<p>We use .editorconfig to help with conforming to our coding conventions. Please make sure your chosen editor has this enabled. Check <a href="https://editorconfig.org/#download">editorconfig.org</a> to see if you need to install a plugin or your IDE has this built in.</p>
+<p><strong>Anything not listed here should follow the <a href="https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/naming-guidelines">C# standard</a></strong></p>
+<h2>Tabs vs spaces?</h2>
+<p>Sorry space fans, we are tabs. Though I know that this is an age old argument in computer science, we had to go with one or the other.</p>
+<h2>Accessors</h2>
+<p>Yes, we are aware that if you do not provide an accessor that it will default to <i>private</i>. However, we like knowing that others are doing what they do on purpose. For this reason you are required to put private in front of your <i>private</i> members.</p>
+<p>Member fields are to be camel case starting with an alpha character. For the most part people don't write C# in notepad so do not worry about any prefixes with underscores, or special things like <i>b_</i> or any of that</p>
+<code>
+| public int myNumber;
+| protected bool canHas;
+| private string catName;
+</code>
+<p>Member properties are to be pascal case starting with an alpha character. Also their brackets are to be on 1 line if the behavior is simple. Otherwise you are to use the hanging brackets coding standards</p>
+<code>
+| public int MyNumber { get; private set; }
+| public bool CanHas { get { return MyNumber > 0; } }
+| private string CatName
+| {
+|     get
+|     {
+|         if (MyNumber > 5)
+|             return "Pickles";
+|         else if (CanHas)
+|             return "Sure";
+|         else
+|             return "George?";
+|     }
+| }
+</code>
+<h2>Brackets</h2>
+<p>For single line conditional statements we do not have any brackets, just the line. Preferrably we put the code on the line following the if statement but for simple things like a return a single line is acceptable</p>
+<code>
+| if (1 == 1)
+|     DoSomethingFancy();
+</code>
+<p>For multiple line conditional statements we put "hanging brackets" only"</p>
+<code>
+| if (1 == 1)
+| {
+|     FirstThing();
+|     LastThing();
+| }
+</code>
+<p>For infinite loops, while loops, and do-while loops, we need these to be exceptionally clear. So in the case of any of these we will use hanging brackets.</p>
+<code>
+| while (true)
+| {
+|     DoSomethingFancy();
+| }
+| 
+| do
+| {
+|     DoSomethingFancy();
+| } while(true);
+| 
+| for(;;)
+| {
+|     DoSomethingFancy();
+| }
+</code>
+<p>For lambda expressions we have hanging brackets</p>
+<code>
+| Call(() =>
+| {
+|     InnerCode();
+| });
+</code>
+<p>For initializer lists we have hanging brackets (no parenthisis needed)</p>
+<code>
+| MyClass thing = new MyClass
+| {
+|     a = 1,
+|     b = 2,
+|     c = 3
+| };
+</code>
+<h2>Comments</h2>
+<p>Single line comments should include a space after the slashes</p>
+<code>
+| // Notice the space after the two slashes
+</code>
+<p>Commenting out code should not include a space after the slashes</p>
+<code>
+| //noSpace.Code();
+</code>
+<p>TODO comments should include the space after the slashes and then 2 spaces after the colon following the TODO</p>
+<code>
+| // TODO:  Notice the space after the slashes and the 2 spaces after the colon of todo
+</code>
+<h2>Line length</h2>
+<p>We try to keep our line lengths short, try to stick around 90 characters maximum in the horizontal space and do not go any further than 120 characters. Or goals are to prevent any kind of horizontal scrolling or automatic line wrapping.</p>
+<h2>Var vs type name</h2>
+<p>Though we accept code with <i>var</i> being used, it is hard to code review things listed as just <i>var</i> especially if they are the result of a function. If you are creating a new instance of something you can use <i>var</i> since the type name is in the line of declariation, otherwise please try to type the explicit type of the variable when it is the result of a function.</p>
+<h2>Function length</h2>
+<p>We prefer very small, descriptive functions over long monolythic functions. Try to keep your functions to something around 4-9 lines. If your functions are longer than 9 lines, it probably is a good chance for breaking it into smaller local private methods or turning what is being processed into a <i>class</i> and handling the logic more inside of there. This is not only for code clarity and readability, but also it makes it much easier to debug knowing the names of functions and produces clear stack traces.</p>
+<h2>Testing and TDD</h2>
+<p>We are currently trying out the Unity unit testing tools and they look promising so far. My hope is that we will be able to fall more into the TDD (<a href="https://en.wikipedia.org/wiki/Test-driven_development">test driven development</a>) flow of programming so that we have many tests for the code to make sure it continues to work as expected for all of the functionality. Of course, I know it is very difficult to unit test a multi-threaded, network based application, but it is important for us to try as much as possible to achieve a full test coverage of the system.</p>
+<p>Please make sure that you either create a new file in the <a href="https://github.com/BeardedManStudios/ForgeNetworkingRemastered/tree/develop/ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests">ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests</a> folder. Or if you are adding new tests that are either missing or covering new functionality of a class, feel free to update existing tests.</p>
+<h2>Naming</h2>
+<p>When contributing to Forge, we want to make sure to convey the ideas through names. One of the easiest ways to do so is to describe the design pattern you are attempting to use in the code as part of the name. Below is a list of design pattern names (with personal descriptions) that are you free to use.</p>
+<p><strong>Abstract factory</strong><dash />This is a factory for creating other factories</p>
+<p><strong>Factory</strong><dash />This is a class responsible for returning a class for handing the same data in different ways (implementing the same interface or extending the same base type)</p>
+<p><strong>Iterator</strong><dash />A class that is able to iterate through a collection of data using some interface methods or Properties</p>
+<p><strong>Singleton</strong><dash />A way for a type to have one globally access able reference to itself for other types to access</p>
+<p><strong>Decorator</strong><dash />A type that wraps another type to extend the behavior or add to an existing method without having to derive from the target type</p>
+<p><strong>Observable</strong><dash />A relationship of subscriber and source. When the source makes a change, it will notify the subscribers of the change</p>
+<p><strong>Repository</strong><dash />The abstraction of data storage to allow for multiple different implementations where only one is selected but not known about by the repository user</p>
+<p><strong>Unit of work</strong><dash />This is a class that is responsible for keeping running modifications to commit to a repository in memory. When ready, the unit of work can be committed all in a single transaction. A unit of work can be thought of as a ledger/transaction for work done by a single request</p>
+<p><strong>Builder</strong><dash />This is similar to the factory pattern, but where the factory pattern works with a family of objects and returns one of them, a builder works on constructing a single complex type</p>
+<p><strong>Adapter</strong><dash />This is the process of wrapping a class (3rd party or legacy) in a way that it can be accessed by your system with little to no modification of your existing system. This is very similar to the decorator pattern, but is more about translating existing types/collections more than adding to it's functionality</p>
+<p><strong>Composite</strong><dash /></p>
+<p><strong>Chain of responsibility</strong><dash />When objects pass off a request to a successor until the request is able to be processed. These successors usually implement the same interface or abstract class to chain the calls to the successor. Objects know of a single successor to send the request to</p>
+<p><strong>Command</strong><dash />A command is a type that is responsible for doing some work. It should be able to be stored, executed, and undone</p>
+<p><strong>Interpreter</strong><dash />When a grammar needs to be parsed through a form of syntax tree. This is best thought of as a translation or translator. The syntax tree is built and used to parse the subject</p>
+<p><strong>Mediator</strong><dash />When you want objects to communicate with each other without knowing each other's structure you would use a mediator object. The various objects would communicate to the mediator and the mediator will delegate the message to the appropriate object</p>
+<p><strong>Visitor</strong><dash />objects that are able to mutate other objects so that you do not have to violate the open closed principle and change the original object. You will supply the object to be operated on to the visitor object</p>
+<p><strong>Prototype</strong><dash />Creating a new object based on another object. This will usually copy all possible fields (and their values) from the source object to the new object</p>
+<p><strong>Bridge</strong><dash />Used to facilitate communication between two systems where one message can be modified without having to change other messages in the system that share behavior</p>
+<p><strong>Façade</strong><dash />when you want to hide implementation details from the caller. This is what an API endpoint on a web service is an example of. You may also do this in the same code base through a class that accepts a type to do operations based on</p>
+<p><strong>Flyweight</strong><dash />A method of reducing memory usage by reusing existing data by sharing as much similar data as possible with similar objects. Often a factory will produce an object with that shared data. This allows for a large amount of objects with minimal memory usage</p>
+<p><strong>Proxy</strong><dash />An object that is acting as an interface to something else. C# interfaces can be used as these proxies, but a proxy object can also be used to communicate with internal behaviors/objects in a DLL</p>
+<p><strong>Memento</strong><dash />The process of being able to store the state an object so that it is enough to restore the object to that state at a later time in the case of an undo or a restore operation</p>
+<p><strong>State</strong><dash />Using objects as state and allow the object to change its type to another while maintaining its internal state. This can be more easily done by using a base class or interface that describes the state data and deriving the state behaviors from that object</p>
+<p><strong>Strategy</strong><dash />Writing in a way that an algorithm can be easily replaced at any time to change the way that the system runs. An example of this would be to have an interface for "Sort" and implementing that interface for different sort algorithms, then being able to swap out the sort algorithm at any time</p>
+<p><strong>Template method</strong><dash />C# abstract or virtual functions are the execution of this pattern. When you derive a class and override a function to change the objects execution behavior</p>

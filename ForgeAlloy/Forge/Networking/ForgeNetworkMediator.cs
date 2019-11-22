@@ -13,7 +13,6 @@ namespace Forge.Networking
 		public IMessageBus MessageBus { get; private set; }
 		public ISocketFacade SocketFacade { get; private set; }
 		private readonly IPlayerTimeoutBridge _timeoutBridge;
-		private readonly ForgePinger _pinger = new ForgePinger();
 
 		public ForgeNetworkMediator()
 		{
@@ -41,7 +40,6 @@ namespace Forge.Networking
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketClientFacade>();
 			SocketFacade = client;
 			client.StartClient(hostAddress, port, this);
-			_pinger.StartPinging(this);
 		}
 
 		public void SendMessage(IMessage message, IPlayerSignature playerId)

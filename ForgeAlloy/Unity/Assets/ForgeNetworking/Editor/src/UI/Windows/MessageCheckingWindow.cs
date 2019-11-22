@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Forge.Reflection.Networking.Messaging;
 using UnityEditor;
 
-namespace Forge.Editor.UI.WIndows
+namespace Forge.Editor.UI.Windows
 {
 	public class MessageCheckingWindow : IEditorWindow
 	{
+		public string Name => "Forge: Network Message Checkup";
 		private readonly MessageContractChecker _checker;
 		private readonly Dictionary<Type, string> _errors;
 

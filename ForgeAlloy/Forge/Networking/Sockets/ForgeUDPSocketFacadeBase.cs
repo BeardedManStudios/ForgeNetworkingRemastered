@@ -30,16 +30,21 @@ namespace Forge.Networking.Sockets
 			EndPoint readEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
 			var buffer = new BMSByte();
 			buffer.SetArraySize(2048);
-			while (!CancellationSource.Token.IsCancellationRequested)
+			try
 			{
-				buffer.Clear();
-				ManagedSocket.Receive(buffer, ref readEp);
-				synchronizationContext.Post(SynchronizedMessageRead, new SocketContainerSynchronizationReadData
+				while (true)
 				{
-					Buffer = buffer.CompressBytes(),
-					Endpoint = readEp
-				});
+					CancellationSource.Token.ThrowIfCancellationRequested();
+					buffer.Clear();
+					ManagedSocket.Receive(buffer, ref readEp);
+					synchronizationContext.Post(SynchronizedMessageRead, new SocketContainerSynchronizationReadData
+					{
+						Buffer = buffer.CompressBytes(),
+						Endpoint = readEp
+					});
+				}
 			}
+			catch (OperationCanceledException) { }
 		}
 
 		protected void SynchronizedMessageRead(object state)
