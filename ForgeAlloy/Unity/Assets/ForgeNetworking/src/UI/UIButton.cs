@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Forge.Networking.Unity.UI
@@ -7,9 +6,7 @@ namespace Forge.Networking.Unity.UI
 	[RequireComponent(typeof(Button))]
 	public abstract class UIButton<T> : UIElement, IUIButton<T>
 	{
-		private Action _callback;
-
-		public abstract T State { get; set; }
+		public abstract T Mediator { get; set; }
 		public override bool Visible { get; set; } = true;
 
 		public abstract void Invoke();

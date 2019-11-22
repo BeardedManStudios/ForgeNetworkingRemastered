@@ -32,9 +32,9 @@ namespace Forge.Networking.Unity.Menu
 			EngineFacade = FindObjectOfType<ForgeEngineFacade>();
 			if (EngineFacade == null)
 				throw new System.Exception($"Expected to find {typeof(ForgeEngineFacade)} but found nothing");
-			HostButton.State = this;
+			HostButton.Mediator = this;
 			HostButton.Visible = true;
-			ConnectButton.State = this;
+			ConnectButton.Mediator = this;
 			ConnectButton.Visible = true;
 		}
 	}
