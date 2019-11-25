@@ -57,8 +57,14 @@ namespace Forge.Networking.Sockets
 			// TODO:  Should check if player is banned
 			INetPlayer player = networkMediator.PlayerRepository.GetPlayer(data.Endpoint);
 			player.LastCommunication = DateTime.Now;
+			ProcessPlayerMessageRead(player, data.Buffer);
+		}
+
+		protected virtual void ProcessPlayerMessageRead(INetPlayer player, byte[] buffer)
+		{
+			player.LastCommunication = DateTime.Now;
 			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
-				player.EndPoint, data.Buffer);
+				player.EndPoint, buffer);
 		}
 	}
 }

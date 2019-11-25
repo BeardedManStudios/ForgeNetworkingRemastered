@@ -56,15 +56,20 @@ namespace Forge.Networking.Sockets
 		{
 			if (_bannedEndpoints.Contains(data.Endpoint))
 				return;
-			else if (!networkMediator.PlayerRepository.Exists(data.Endpoint) && !_challengedPlayers.Exists(data.Endpoint))
+			else if (!networkMediator.PlayerRepository.Exists(data.Endpoint))
 			{
 				CleanupOldChallengedPlayers();
-				var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
-				newPlayer.EndPoint = data.Endpoint;
-				newPlayer.LastCommunication = DateTime.Now;
-				_challengedPlayers.AddPlayer(newPlayer);
-				var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
-				networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, data.Endpoint);
+				if (!_challengedPlayers.Exists(data.Endpoint))
+				{
+					var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
+					newPlayer.EndPoint = data.Endpoint;
+					newPlayer.LastCommunication = DateTime.Now;
+					_challengedPlayers.AddPlayer(newPlayer);
+					var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
+					networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, data.Endpoint);
+				}
+				else
+					ProcessPlayerMessageRead(_challengedPlayers.GetPlayer(data.Endpoint), data.Buffer);
 			}
 			else
 				base.ProcessMessageRead(data);
