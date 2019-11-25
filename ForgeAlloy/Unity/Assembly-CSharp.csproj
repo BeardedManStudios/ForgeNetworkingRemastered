@@ -64,13 +64,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\CubeEntity.cs" />
+    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\IPrefabManager.cs" />
+    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\PrefabManager.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\EntityStartupMessage.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\IEngineFacade.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Entity\IUnityEntity.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\ConnectButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\HostButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\IMenuMediator.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\MenuMediator.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\MapLoadRequestInterpreter.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\MapLoadResponseInterpreter.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\MapLoadRequestMessage.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\MapLoadResponseMessage.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Serialization\Vector3Serializer.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UI\IUIButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\UI\IUIElement.cs" />
@@ -80,61 +87,31 @@
     <Compile Include="Assets\ForgeNetworking\src\UI\UIInputField.cs" />
     <None Include="Assets\ForgeNetworking\Plugins\README.txt" />
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-weaver.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/com.unity.multiplayer-weaver.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.XR.LegacyInputHelpers">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Tilemap.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.SpatialTracking">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.SpatialTracking">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.XR.LegacyInputHelpers">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.12f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -314,16 +291,13 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.12f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Forge">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Assets/ForgeNetworking/Plugins/Forge.dll</HintPath>
+      <HintPath>G:/Work/BeardedManStudios/ForgeNetworkingRemastered/ForgeAlloy/Unity/Assets/ForgeNetworking/Plugins/Forge.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.12f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.Editor">
-      <HintPath>F:/git/ForgeNetworkingRemastered/ForgeAlloy/Unity/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
+    <Reference Include="UnityEditor.iOS.Extensions.Common">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.12f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.12f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

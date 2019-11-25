@@ -3,6 +3,7 @@ using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
+using Forge.Networking.Unity.Messages;
 using Forge.Serialization;
 using UnityEngine;
 
@@ -67,6 +68,9 @@ namespace Forge.Networking.Unity
 		public void NetworkingEstablished()
 		{
 			Debug.Log("Network Established");
+			NetworkMediator.MessageBus.SendReliableMessage(new MapLoadRequestMessage(),
+				NetworkMediator.SocketFacade.ManagedSocket,
+				NetworkMediator.SocketFacade.ManagedSocket.EndPoint);
 		}
 
 		private void OnDestroy()
