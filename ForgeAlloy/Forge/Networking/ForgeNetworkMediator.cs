@@ -33,6 +33,7 @@ namespace Forge.Networking
 			server.StartServer(port, maxPlayers, this);
 			_timeoutBridge.StartWatching(this);
 			EngineProxy.NetworkingEstablished();
+			MessageBus.SetMediator(this);
 		}
 
 		public void StartClient(string hostAddress, ushort port)
@@ -40,6 +41,7 @@ namespace Forge.Networking
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketClientFacade>();
 			SocketFacade = client;
 			client.StartClient(hostAddress, port, this);
+			MessageBus.SetMediator(this);
 		}
 
 		public void SendMessage(IMessage message, IPlayerSignature playerId)

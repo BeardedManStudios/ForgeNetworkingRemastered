@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Threading;
 using FakeItEasy;
-using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Messaging;
 using NUnit.Framework;

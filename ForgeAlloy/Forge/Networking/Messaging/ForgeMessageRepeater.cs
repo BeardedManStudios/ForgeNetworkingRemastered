@@ -28,29 +28,20 @@ namespace Forge.Networking.Messaging
 
 		public void AddMessageToRepeat(IMessage message, EndPoint receiver)
 		{
-			lock (_messageRepository)
+			if (!_messageRepository.Exists(message.Receipt))
 			{
-				if (!_messageRepository.Exists(message.Receipt))
-				{
-					_messageRepository.AddMessage(message, receiver);
-				}
+				_messageRepository.AddMessage(message, receiver);
 			}
 		}
 
 		public void RemoveRepeatingMessage(IMessageReceiptSignature messageReceipt)
 		{
-			lock (_messageRepository)
-			{
-				_messageRepository.RemoveMessage(messageReceipt);
-			}
+			_messageRepository.RemoveMessage(messageReceipt);
 		}
 
 		public void RemoveAllFor(EndPoint receiver)
 		{
-			lock (_messageRepository)
-			{
-				_messageRepository.RemoveAllFor(receiver);
-			}
+			_messageRepository.RemoveAllFor(receiver);
 		}
 
 		private void RepeatInBackground()
@@ -63,19 +54,17 @@ namespace Forge.Networking.Messaging
 				while (true)
 				{
 					_socketTokenSourceRef.Token.ThrowIfCancellationRequested();
-					lock (_messageRepository)
-					{
-						var messageIterator = _messageRepository.GetIterator();
-						foreach (var kv in messageIterator)
-						{
-							_networkMediator.MessageBus.SendReliableMessage(kv.Value,
-								_networkMediator.SocketFacade.ManagedSocket, kv.Key);
-						}
-					}
+					_messageRepository.Iterate(ResendMessage);
 					Thread.Sleep(RepeatMillisecondsInterval);
 				}
 			}
 			catch (OperationCanceledException) { }
+		}
+
+		private void ResendMessage(EndPoint endpoint, IMessage message)
+		{
+			_networkMediator.MessageBus.SendReliableMessage(message,
+				_networkMediator.SocketFacade.ManagedSocket, endpoint);
 		}
 	}
 }

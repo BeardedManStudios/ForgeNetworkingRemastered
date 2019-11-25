@@ -3,6 +3,8 @@ using System.Net;
 
 namespace Forge.Networking.Messaging
 {
+	public delegate void MessageRepositoryIterator(EndPoint endpoint, IMessage message);
+
 	public interface IMessageRepository
 	{
 		void AddMessage(IMessage message, EndPoint sender);
@@ -12,7 +14,7 @@ namespace Forge.Networking.Messaging
 		void RemoveMessage(IMessageReceiptSignature receipt);
 		bool Exists(IMessageReceiptSignature receipt);
 		KeyValuePair<EndPoint, IMessage> Get(IMessageReceiptSignature receipt);
-		Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator();
+		void Iterate(MessageRepositoryIterator iterator);
 		void Clear();
 	}
 }

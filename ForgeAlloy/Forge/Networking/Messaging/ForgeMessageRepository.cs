@@ -101,7 +101,18 @@ namespace Forge.Networking.Messaging
 		{
 			lock (_messages)
 			{
-				throw new NotImplementedException();
+				var removals = new List<IMessageReceiptSignature>();
+				foreach (var kv in _messages)
+				{
+					if (kv.Value.Key == sender)
+					{
+						removals.Add(kv.Key);
+					}
+				}
+				foreach (var key in removals)
+				{
+					_messages.Remove(key);
+				}
 			}
 		}
 
@@ -152,9 +163,18 @@ namespace Forge.Networking.Messaging
 			return _messages[receipt];
 		}
 
-		public Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>.ValueCollection GetIterator()
+		public void Iterate(MessageRepositoryIterator iterator)
 		{
-			return _messages.Values;
+			var copy = new List<KeyValuePair<EndPoint, IMessage>>();
+			lock (_messages)
+			{
+				foreach (var kv in _messages)
+				{
+					copy.Add(kv.Value);
+				}
+			}
+			foreach (var kv in copy)
+				iterator(kv.Key, kv.Value);
 		}
 	}
 }

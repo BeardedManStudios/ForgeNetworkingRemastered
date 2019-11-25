@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
+using Forge.Networking.Messaging.Messages;
 
 namespace Forge.Networking.Messaging.Interpreters
 {
@@ -10,7 +10,8 @@ namespace Forge.Networking.Messaging.Interpreters
 
 		public void Interpret(INetworkMediator netHost, EndPoint sender, IMessage message)
 		{
-			throw new NotImplementedException();
+			var m = (ForgeReceiptAcknowledgementMessage)message;
+			netHost.MessageBus.MessageConfirmed(m.ReceiptSignature);
 		}
 	}
 }

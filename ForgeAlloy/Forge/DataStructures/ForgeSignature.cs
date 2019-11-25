@@ -18,7 +18,6 @@ namespace Forge.DataStructures
 
 		public void Deserialize(byte[] data)
 		{
-
 			_guid = new Guid(data);
 		}
 

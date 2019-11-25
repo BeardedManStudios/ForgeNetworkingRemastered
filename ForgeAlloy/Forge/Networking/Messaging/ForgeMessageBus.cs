@@ -100,5 +100,10 @@ namespace Forge.Networking.Messaging
 				SendMessage(new ForgeReceiptAcknowledgementMessage { ReceiptSignature = sig }, readingSocket, messageSender);
 			}
 		}
+
+		public void MessageConfirmed(IMessageReceiptSignature messageReceipt)
+		{
+			_messageRepeater.RemoveRepeatingMessage(messageReceipt);
+		}
 	}
 }
