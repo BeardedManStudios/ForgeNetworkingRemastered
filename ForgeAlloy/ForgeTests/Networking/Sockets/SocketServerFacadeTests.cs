@@ -47,7 +47,6 @@ namespace ForgeTests.Networking.Socket
 			var serverFacade = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketServerFacade>();
 			serverFacade.StartServer(15937, 10, netContainerServer);
 			var clientFacade = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketClientFacade>();
-			clientFacade.StartClient("127.0.0.1", 15937, netContainerClient);
 			bool done = false;
 			A.CallTo(() => netContainerServer.MessageBus.SendReliableMessage(A<IChallengeMessage>._,
 				A<ISocket>._, A<EndPoint>._)).Invokes((ctx) =>
@@ -59,8 +58,7 @@ namespace ForgeTests.Networking.Socket
 					done = true;
 				});
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
-			client.Connect("127.0.0.1", 15937);
-			client.Send(client.EndPoint, new byte[] { 1 }, 1);
+			clientFacade.StartClient("127.0.0.1", 15937, netContainerClient);
 			Thread.Sleep(50);
 			Assert.IsTrue(done);
 			client.Close();
@@ -70,38 +68,35 @@ namespace ForgeTests.Networking.Socket
 		[Test]
 		public void ConnectingPlayer_ShouldRespondToAChallengeAndBeCorrect()
 		{
-			var netContainerServer = A.Fake<INetworkMediator>();
+			var serverMediator = A.Fake<INetworkMediator>();
 			var serverFake = A.Fake<ISocketServerFacade>();
-			var netContainerClient = A.Fake<INetworkMediator>();
+			var clientMediator = A.Fake<INetworkMediator>();
 			var serverFacade = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketServerFacade>();
-			serverFacade.StartServer(15937, 10, netContainerServer);
+			serverFacade.StartServer(15937, 10, serverMediator);
 			var clientFacade = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketClientFacade>();
-			clientFacade.StartClient("127.0.0.1", 15937, netContainerClient);
-			A.CallTo(() => netContainerServer.SocketFacade).Returns(serverFake);
-			A.CallTo(() => netContainerClient.SocketFacade).Returns(clientFacade);
+			A.CallTo(() => serverMediator.SocketFacade).Returns(serverFake);
+			A.CallTo(() => clientMediator.SocketFacade).Returns(clientFacade);
 			bool done = false;
-			A.CallTo(() => netContainerClient.MessageBus.SendReliableMessage(A<IChallengeResponseMessage>._,
+			A.CallTo(() => clientMediator.MessageBus.SendReliableMessage(A<IChallengeResponseMessage>._,
 				A<ISocket>._, A<EndPoint>._)).Invokes((ctx) =>
 				{
 					Assert.IsTrue(((IChallengeResponseMessage)ctx.Arguments[0]).ValidateResponse());
 					var finalInterpreter = new ForgeConnectChallengeResponseInterpreter();
-					finalInterpreter.Interpret(netContainerServer, A.Fake<EndPoint>(), (IMessage)ctx.Arguments[0]);
+					finalInterpreter.Interpret(serverMediator, A.Fake<EndPoint>(), (IMessage)ctx.Arguments[0]);
 					A.CallTo(() => serverFake.ChallengeSuccess(A<INetworkMediator>._, A<EndPoint>._)).MustHaveHappenedOnceExactly();
 					done = true;
 				});
-			A.CallTo(() => netContainerServer.MessageBus.SendReliableMessage(A<IChallengeMessage>._,
+			A.CallTo(() => serverMediator.MessageBus.SendReliableMessage(A<IChallengeMessage>._,
 				A<ISocket>._, A<EndPoint>._)).Invokes((ctx) =>
 				{
 					var interpreter = new ForgeConnectChallengeInterpreter();
-					interpreter.Interpret(netContainerClient, A.Fake<EndPoint>(), (IChallengeMessage)ctx.Arguments[0]);
+					interpreter.Interpret(clientMediator, A.Fake<EndPoint>(), (IChallengeMessage)ctx.Arguments[0]);
 				});
-			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
-			client.Connect("127.0.0.1", 15937);
-			client.Send(client.EndPoint, new byte[] { 1 }, 1);
+			clientFacade.StartClient("127.0.0.1", 15937, clientMediator);
 			Thread.Sleep(50);
 			Assert.IsTrue(done);
-			client.Close();
 			serverFacade.ShutDown();
+			clientFacade.ShutDown();
 		}
 	}
 }

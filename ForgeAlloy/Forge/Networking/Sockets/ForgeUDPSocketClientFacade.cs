@@ -22,6 +22,7 @@ namespace Forge.Networking.Sockets
 			_socket.Connect(address, port);
 			CancellationSource = new CancellationTokenSource();
 			Task.Run(ReadNetwork, CancellationSource.Token);
+			_socket.Send(_socket.EndPoint, new byte[1] { 1 }, 1);
 		}
 	}
 }
