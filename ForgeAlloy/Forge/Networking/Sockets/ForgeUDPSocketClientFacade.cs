@@ -24,5 +24,11 @@ namespace Forge.Networking.Sockets
 			Task.Run(ReadNetwork, CancellationSource.Token);
 			_socket.Send(_socket.EndPoint, new byte[1] { 1 }, 1);
 		}
+
+		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
+		{
+			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
+				data.Endpoint, data.Buffer);
+		}
 	}
 }

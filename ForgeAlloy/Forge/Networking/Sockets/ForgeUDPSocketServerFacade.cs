@@ -75,6 +75,20 @@ namespace Forge.Networking.Sockets
 				base.ProcessMessageRead(data);
 		}
 
+		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
+		{
+			// TODO:  Should check if player is banned
+			INetPlayer player = networkMediator.PlayerRepository.GetPlayer(data.Endpoint);
+			ProcessPlayerMessageRead(player, data.Buffer);
+		}
+
+		protected void ProcessPlayerMessageRead(INetPlayer player, byte[] buffer)
+		{
+			player.LastCommunication = DateTime.Now;
+			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
+				player.EndPoint, buffer);
+		}
+
 		private void CleanupOldChallengedPlayers()
 		{
 			var now = DateTime.Now;

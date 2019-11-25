@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using Forge.Networking.Players;
 using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
@@ -52,19 +51,6 @@ namespace Forge.Networking.Sockets
 			ProcessMessageRead((SocketContainerSynchronizationReadData)state);
 		}
 
-		protected virtual void ProcessMessageRead(SocketContainerSynchronizationReadData data)
-		{
-			// TODO:  Should check if player is banned
-			INetPlayer player = networkMediator.PlayerRepository.GetPlayer(data.Endpoint);
-			player.LastCommunication = DateTime.Now;
-			ProcessPlayerMessageRead(player, data.Buffer);
-		}
-
-		protected virtual void ProcessPlayerMessageRead(INetPlayer player, byte[] buffer)
-		{
-			player.LastCommunication = DateTime.Now;
-			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
-				player.EndPoint, buffer);
-		}
+		protected abstract void ProcessMessageRead(SocketContainerSynchronizationReadData data);
 	}
 }
