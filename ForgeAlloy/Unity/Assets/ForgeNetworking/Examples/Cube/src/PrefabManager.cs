@@ -20,8 +20,8 @@ namespace Forge.Networking.Unity.Examples
 
 				_registeredEntities.Add(entity);
 			}
-		}
 
+		}
 
 		public IUnityEntity GetEntityById(int id)
 		{

@@ -10,18 +10,13 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 	{
 		public bool ValidOnClient => true;
 
-		public bool ValidOnServer => true;
+		public bool ValidOnServer => false;
 
 		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
 		{
 			var responseMessage = (MapLoadResponseMessage)message;
 			Debug.Log($"Map Load Response Received - { responseMessage.MapId }");
 			SceneManager.LoadScene(responseMessage.MapId);
-			//var clientContainer = (ISocketClientFacade)netMediator.SocketFacade;
-			//clientContainer.NetPlayerId = identityMessage.Identity;
-			//var mapLoadMessage = new MapLoadMessage();
-			//netMediator.EngineProxy.NetworkingEstablished();
-			//netMediator.MessageBus.SendReliableMessage(engineReadyMessage, netMediator.SocketFacade.ManagedSocket, sender);
 		}
 	}
 }

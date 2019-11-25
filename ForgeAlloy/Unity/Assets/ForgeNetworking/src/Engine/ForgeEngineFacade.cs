@@ -3,9 +3,11 @@ using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
+using Forge.Networking.Sockets;
 using Forge.Networking.Unity.Messages;
 using Forge.Serialization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Forge.Networking.Unity
 {
@@ -68,9 +70,13 @@ namespace Forge.Networking.Unity
 		public void NetworkingEstablished()
 		{
 			Debug.Log("Network Established");
-			NetworkMediator.MessageBus.SendReliableMessage(new MapLoadRequestMessage(),
-				NetworkMediator.SocketFacade.ManagedSocket,
-				NetworkMediator.SocketFacade.ManagedSocket.EndPoint);
+
+			if (NetworkMediator.SocketFacade is ISocketServerFacade)
+				SceneManager.LoadScene("Cube");
+			else
+				NetworkMediator.MessageBus.SendReliableMessage(new MapLoadRequestMessage(),
+					NetworkMediator.SocketFacade.ManagedSocket,
+					NetworkMediator.SocketFacade.ManagedSocket.EndPoint);
 		}
 
 		private void OnDestroy()
