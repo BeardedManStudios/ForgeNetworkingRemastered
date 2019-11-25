@@ -39,12 +39,6 @@ namespace Forge.Networking.Unity
 		}
 		//private IMessageRepository _messageRepository;
 
-		public void PlayerJoined(INetPlayer newPlayer)
-		{
-			//Helper for unity, to spawn cubes or do stuff for this new player
-			Debug.Log("Player joined: " + newPlayer.Name);
-		}
-
 		public void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender)
 		{
 			//_messageRepository.AddMessage(message, sender);

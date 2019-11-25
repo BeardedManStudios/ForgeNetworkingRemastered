@@ -15,6 +15,7 @@ namespace Forge.Networking.Unity.Menu
 				Debug.Log("Hosting");
 				var factory = AbstractFactory.Get<INetworkTypeFactory>();
 				State.EngineFacade.NetworkMediator = factory.GetNew<INetworkMediator>();
+				State.EngineFacade.NetworkMediator.PlayerRepository.onPlayerAddedSubscription += onPlayerAdded;
 
 				State.EngineFacade.NetworkMediator.ChangeEngineProxy(State.EngineFacade);
 
@@ -23,6 +24,11 @@ namespace Forge.Networking.Unity.Menu
 			}
 			else
 				Debug.LogError("Already (Hosting | Connecting)");
+		}
+
+		private void onPlayerAdded(Players.INetPlayer player)
+		{
+			Debug.Log($"Player connected: { player.EndPoint }");
 		}
 
 		private void Update()
