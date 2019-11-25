@@ -28,7 +28,6 @@ namespace ForgeTests.Networking.Sockets
 			clientMediator.ChangeEngineProxy(clientEngine);
 			serverMediator.StartServer(15937, 64);
 			clientMediator.StartClient("127.0.0.1", 15937);
-
 			bool done = false;
 			A.CallTo(() => serverEngine.NetworkingEstablished()).MustHaveHappenedOnceExactly();
 			A.CallTo(() => clientEngine.NetworkingEstablished()).Invokes((ctx) =>
