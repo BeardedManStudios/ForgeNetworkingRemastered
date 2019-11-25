@@ -1,4 +1,5 @@
-﻿using Forge.Factory;
+﻿using System;
+using Forge.Factory;
 using Forge.Networking.Unity.UI;
 using UnityEngine;
 
@@ -24,7 +25,15 @@ namespace Forge.Networking.Unity.Menu
 				State.EngineFacade.NetworkMediator.ChangeEngineProxy(State.EngineFacade);
 
 				// TODO:  Catch exception if connection fails
-				State.EngineFacade.NetworkMediator.StartClient(State.AddressInput.Text, port);
+				try
+				{
+					State.EngineFacade.NetworkMediator.StartClient(State.AddressInput.Text, port);
+					var socket = State.EngineFacade.NetworkMediator.SocketFacade;
+				}
+				catch (Exception ex)
+				{
+					Debug.LogError($"{ ex.Message }");
+				}
 			}
 			else
 				Debug.LogError($"{ (string.IsNullOrEmpty(State.AddressInput.Text) ? "Host Address Not Provided" : "Port Invalid") }");
