@@ -10,7 +10,10 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
+		private const int TIME_TO_LIVE_STORED_MESSAGES = 10000;
+
 		private readonly IMessageRepeater _messageRepeater;
+		private readonly IMessageRepository _storedMessages;
 		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
 		private readonly IMessageDestructor _messageDestructor;
 		private INetworkMediator _networkMediator;
@@ -20,6 +23,7 @@ namespace Forge.Networking.Messaging
 			MessageBufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
 			_messageDestructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
+			_storedMessages = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 		}
 
 		public void SetMediator(INetworkMediator networkMediator)
@@ -74,6 +78,15 @@ namespace Forge.Networking.Messaging
 				{
 					var m = (IMessage)ForgeMessageCodes.Instantiate(constructor.MessageBuffer.GetBasicType<int>());
 					ProcessMessageSignature(readingSocket, messageSender, constructor.MessageBuffer, m);
+
+					if (m.Receipt != null)
+					{
+						if (_storedMessages.Exists(m.Receipt))
+							return;
+
+						_storedMessages.AddMessage(m, messageSender, TIME_TO_LIVE_STORED_MESSAGES);
+					}
+
 					m.Deserialize(constructor.MessageBuffer);
 					var interpreter = m.Interpreter;
 					if (interpreter != null)

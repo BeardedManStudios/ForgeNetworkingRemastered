@@ -3,7 +3,7 @@ using Forge.Networking.Messaging.Messages;
 
 namespace Forge.Networking.Messaging.Interpreters
 {
-	public class ForgeReceiptAcknolegementInterpreter : IMessageInterpreter
+	public class ForgeReceiptAcknowledgementInterpreter : IMessageInterpreter
 	{
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => true;

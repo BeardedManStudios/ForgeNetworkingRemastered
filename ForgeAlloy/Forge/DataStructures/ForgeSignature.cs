@@ -28,7 +28,7 @@ namespace Forge.DataStructures
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+			return _guid.GetHashCode();
 		}
 
 		public override string ToString()

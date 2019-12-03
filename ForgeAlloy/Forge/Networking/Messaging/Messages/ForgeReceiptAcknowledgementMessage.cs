@@ -7,7 +7,7 @@ namespace Forge.Networking.Messaging.Messages
 	public class ForgeReceiptAcknowledgementMessage : ForgeMessage
 	{
 		public IMessageReceiptSignature ReceiptSignature { get; set; }
-		public override IMessageInterpreter Interpreter => new ForgeReceiptAcknolegementInterpreter();
+		public override IMessageInterpreter Interpreter => new ForgeReceiptAcknowledgementInterpreter();
 
 		public override void Deserialize(BMSByte buffer)
 		{

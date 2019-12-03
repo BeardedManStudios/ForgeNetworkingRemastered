@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using Forge.DataStructures;
+using Forge.Networking.Messaging;
+using NUnit.Framework;
 
 namespace ForgeTests.Reflection
 {
