@@ -10,8 +10,6 @@ namespace Forge.Networking.Messaging
 {
 	public class ForgeMessageBus : IMessageBus
 	{
-		private const int TIME_TO_LIVE_STORED_MESSAGES = 10000;
-
 		private readonly IMessageRepeater _messageRepeater;
 		private readonly IMessageRepository _storedMessages;
 		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
@@ -84,7 +82,7 @@ namespace Forge.Networking.Messaging
 						if (_storedMessages.Exists(m.Receipt))
 							return;
 
-						_storedMessages.AddMessage(m, messageSender, TIME_TO_LIVE_STORED_MESSAGES);
+						_storedMessages.AddMessage(m, messageSender, _networkMediator.PlayerTimeout);
 					}
 
 					m.Deserialize(constructor.MessageBuffer);

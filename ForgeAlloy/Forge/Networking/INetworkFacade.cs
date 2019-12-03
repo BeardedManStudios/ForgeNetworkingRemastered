@@ -7,6 +7,7 @@ namespace Forge.Networking
 {
 	public interface INetworkMediator
 	{
+		int PlayerTimeout { get; }
 		IPlayerRepository PlayerRepository { get; }
 		IEngineProxy EngineProxy { get; }
 		IMessageBus MessageBus { get; }

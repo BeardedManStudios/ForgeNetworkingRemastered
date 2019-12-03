@@ -8,6 +8,7 @@ namespace Forge.Networking
 {
 	public class ForgeNetworkMediator : INetworkMediator
 	{
+		public int PlayerTimeout => _timeoutBridge.TimeoutMilliseconds;
 		public IPlayerRepository PlayerRepository { get; private set; }
 		public IEngineProxy EngineProxy { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
