@@ -68,7 +68,7 @@ namespace Forge.Networking.Unity
 			if (NetworkMediator.SocketFacade is ISocketServerFacade)
 				SceneManager.LoadScene("Cube");
 			else
-				NetworkMediator.MessageBus.SendMessage(new MapLoadRequestMessage(),
+				NetworkMediator.MessageBus.SendReliableMessage(new MapLoadRequestMessage(),
 					NetworkMediator.SocketFacade.ManagedSocket,
 					NetworkMediator.SocketFacade.ManagedSocket.EndPoint);
 		}

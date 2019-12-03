@@ -63,7 +63,7 @@ namespace Forge.Networking.Messaging
 
 		private void ResendMessage(EndPoint endpoint, IMessage message)
 		{
-			_networkMediator.MessageBus.SendReliableMessage(message,
+			_networkMediator.MessageBus.SendMessage(message,
 				_networkMediator.SocketFacade.ManagedSocket, endpoint);
 		}
 	}
