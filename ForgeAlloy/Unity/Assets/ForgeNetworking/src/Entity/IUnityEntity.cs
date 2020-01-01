@@ -1,9 +1,10 @@
 ﻿using Forge.Engine;
+using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
 	public interface IUnityEntity : IEntity
 	{
-		int CreationId { get; set; }
+		GameObject OwnerGameObject { get; }
 	}
 }

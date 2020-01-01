@@ -10,19 +10,19 @@ namespace Forge.Networking.Unity.Menu
 		public int MaxPlayers => _maxPlayers;
 
 		[SerializeField]
-		private HostButton _hostBtn;
+		private HostButton _hostBtn = null;
 		public IUIButton<IMenuMediator> HostButton => _hostBtn;
 
 		[SerializeField]
-		private ConnectButton _connectBtn;
+		private ConnectButton _connectBtn = null;
 		public IUIButton<IMenuMediator> ConnectButton => _connectBtn;
 
 		[SerializeField]
-		private UIInputField _addressField;
+		private UIInputField _addressField = null;
 		public IUIInputField AddressInput => _addressField;
 
 		[SerializeField]
-		private UIInputField _portField;
+		private UIInputField _portField = null;
 		public IUIInputField PortInput => _portField;
 
 		public IEngineFacade EngineFacade { get; private set; }
@@ -31,7 +31,7 @@ namespace Forge.Networking.Unity.Menu
 		{
 			EngineFacade = FindObjectOfType<ForgeEngineFacade>();
 			if (EngineFacade == null)
-				throw new System.Exception($"Expected to find {typeof(ForgeEngineFacade)} but found nothing");
+				throw new System.Exception($"Expected to find {typeof(ForgeEngineFacade)} in the scene but found nothing");
 			HostButton.State = this;
 			HostButton.Visible = true;
 			ConnectButton.State = this;

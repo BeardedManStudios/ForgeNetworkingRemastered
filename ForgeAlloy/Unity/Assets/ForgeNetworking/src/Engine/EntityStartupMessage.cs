@@ -1,10 +1,12 @@
 ﻿using Forge.Engine;
+using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
 using Forge.Serialization;
 using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
+	[EngineMessageContract(3, typeof(EntityStartupMessage))]
 	public class EntityStartupMessage : ForgeEntityMessage
 	{
 		public Vector3 Position { get; set; }
