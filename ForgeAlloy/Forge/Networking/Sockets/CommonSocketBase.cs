@@ -5,7 +5,21 @@ namespace Forge.Networking.Sockets
 {
 	public class CommonSocketBase
 	{
+		public const string LOCALHOST = "localhost";
+		public const string LOCAL_IPV4 = "127.0.0.1";
+
 		protected static IPEndPoint GetEndpoint(string address, ushort port)
+		{
+			if (address.ToLower() == LOCALHOST)
+				address = LOCAL_IPV4;
+
+			if (address == LOCAL_IPV4)
+				return new IPEndPoint(IPAddress.Parse(address), port);
+			else
+				return LocateAssociatedIP(address, port);
+		}
+
+		private static IPEndPoint LocateAssociatedIP(string address, ushort port)
 		{
 			string host = string.IsNullOrEmpty(address) ? Dns.GetHostName() : address;
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(host);

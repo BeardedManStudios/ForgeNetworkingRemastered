@@ -1,4 +1,5 @@
-﻿using Forge.Engine;
+﻿using System.Net;
+using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
@@ -45,15 +46,54 @@ namespace Forge.Networking
 			MessageBus.SetMediator(this);
 		}
 
-		public void SendMessage(IMessage message, IPlayerSignature playerId)
+		public void SendMessage(IMessage message)
 		{
-			INetPlayer player = PlayerRepository.GetPlayer(playerId);
-			SendMessage(message, player);
+			if (SocketFacade is ISocketServerFacade)
+			{
+				var itr = PlayerRepository.GetEnumerator();
+				while (itr.MoveNext())
+				{
+					if (itr.Current != null)
+						MessageBus.SendMessage(message, SocketFacade.ManagedSocket, itr.Current.EndPoint);
+				}
+			}
+			else
+				MessageBus.SendMessage(message, SocketFacade.ManagedSocket, SocketFacade.ManagedSocket.EndPoint);
 		}
 
 		public void SendMessage(IMessage message, INetPlayer player)
 		{
 			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, player.EndPoint);
+		}
+
+		public void SendMessage(IMessage message, EndPoint endpoint)
+		{
+			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, endpoint);
+		}
+
+		public void SendReliableMessage(IMessage message)
+		{
+			if (SocketFacade is ISocketServerFacade)
+			{
+				var itr = PlayerRepository.GetEnumerator();
+				while (itr.MoveNext())
+				{
+					if (itr.Current != null)
+						MessageBus.SendReliableMessage(message, SocketFacade.ManagedSocket, itr.Current.EndPoint);
+				}
+			}
+			else
+				MessageBus.SendReliableMessage(message, SocketFacade.ManagedSocket, SocketFacade.ManagedSocket.EndPoint);
+		}
+
+		public void SendReliableMessage(IMessage message, INetPlayer player)
+		{
+			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, player.EndPoint);
+		}
+
+		public void SendReliableMessage(IMessage message, EndPoint endpoint)
+		{
+			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, endpoint);
 		}
 	}
 }

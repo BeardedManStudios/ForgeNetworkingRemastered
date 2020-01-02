@@ -12,7 +12,8 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
 		{
 			Debug.Log("Map Load Request Received");
-			var mapLoadResponseMessage = new MapLoadResponseMessage() { MapId = "Cube" };
+			var e = (IEngineFacade)netMediator.EngineProxy;
+			var mapLoadResponseMessage = new MapLoadResponseMessage() { MapId = e.CurrentMap };
 			netMediator.MessageBus.SendReliableMessage(mapLoadResponseMessage, netMediator.SocketFacade.ManagedSocket, sender);
 		}
 	}

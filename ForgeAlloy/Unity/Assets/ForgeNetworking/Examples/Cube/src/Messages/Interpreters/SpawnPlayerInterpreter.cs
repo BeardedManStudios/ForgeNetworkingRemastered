@@ -25,7 +25,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 			return t.gameObject;
 		}
 
-		private static void SetupNetworkEntity(SpawnPlayerMessage m, IEngineFacade engine, Transform go)
+		private static void SetupNetworkEntity(SpawnPlayerMessage m, IEngineFacade engine, GameObject go)
 		{
 			var e = go.GetComponent<IUnityEntity>();
 			if (e == null)

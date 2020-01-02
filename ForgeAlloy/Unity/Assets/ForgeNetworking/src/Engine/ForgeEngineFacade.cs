@@ -13,6 +13,10 @@ namespace Forge.Networking.Unity
 {
 	public class ForgeEngineFacade : MonoBehaviour, IEngineFacade
 	{
+		[SerializeField]
+		private string _sceneToLoad = "";
+		public string CurrentMap => _sceneToLoad;
+
 		private int _currentEntityId = 0;
 		private IEntityRepository _entityRepo;
 		public IEntityRepository EntityRepository
@@ -72,7 +76,7 @@ namespace Forge.Networking.Unity
 
 		private void ServerStarted()
 		{
-			SceneManager.LoadScene("Cube");
+			SceneManager.LoadScene(_sceneToLoad);
 		}
 
 		private void ClientStarted()

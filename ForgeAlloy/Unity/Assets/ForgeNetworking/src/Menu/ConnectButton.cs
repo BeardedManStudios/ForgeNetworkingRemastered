@@ -28,7 +28,6 @@ namespace Forge.Networking.Unity.Menu
 				try
 				{
 					State.EngineFacade.NetworkMediator.StartClient(State.AddressInput.Text, port);
-					var socket = State.EngineFacade.NetworkMediator.SocketFacade;
 				}
 				catch (Exception ex)
 				{
