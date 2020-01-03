@@ -12,6 +12,7 @@ namespace Forge.Editor
 		private string _messageName;
 		private bool _isClient;
 		private bool _isServer;
+		private bool _useSingletonInterpreter;
 
 		[MenuItem("Assets/Create/Forge Networking/Network Message Script")]
 		private static void CreateWizard()
@@ -38,11 +39,22 @@ namespace Forge.Editor
 
 		private void CreateNewMessageFilesBasedOnTemplate()
 		{
+			if (!_isClient && !_isServer)
+				throw new Exception("The interpreter requires one or both of the check boxes for Client/Server to be enabled");
+
 			var checker = new MessageContractChecker();
 			int nextId = checker.HighestCodeFound + 1;
 
-			var messageTemplate = Resources.Load<TextAsset>("ForgeNetworking/Templates/MessageTemplate");
-			var interpreterTemplate = Resources.Load<TextAsset>("ForgeNetworking/Templates/MessageInterpreterTemplate");
+			string messageTemplatePath = "ForgeNetworking/Templates/MessageTemplate";
+			string interpreterTemplatePath = "ForgeNetworking/Templates/MessageInterpreterTemplate";
+			if (_useSingletonInterpreter)
+			{
+				messageTemplatePath += "Singleton";
+				interpreterTemplatePath += "Singleton";
+			}
+
+			var messageTemplate = Resources.Load<TextAsset>(messageTemplatePath);
+			var interpreterTemplate = Resources.Load<TextAsset>(interpreterTemplatePath);
 
 			string messageCode = string.Format(messageTemplate.text, nextId, _messageName);
 			string interpreterCode = string.Format(interpreterTemplate.text,
@@ -72,6 +84,9 @@ namespace Forge.Editor
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.BeginHorizontal();
 			_isClient = EditorGUILayout.Toggle("Interpret on client:", _isClient);
+			EditorGUILayout.EndHorizontal();
+			EditorGUILayout.BeginHorizontal();
+			_useSingletonInterpreter = EditorGUILayout.Toggle("Singleton Interpreter:", _useSingletonInterpreter);
 			EditorGUILayout.EndHorizontal();
 			return base.DrawWizardGUI();
 		}

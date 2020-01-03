@@ -9,3 +9,13 @@ F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcorea
 F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.AssemblyInfo.cs
 F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.dll
 F:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.pdb
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.exe
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.deps.json
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.runtimeconfig.json
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.runtimeconfig.dev.json
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.dll
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\bin\Debug\netcoreapp3.0\ForgeNatHolePunch.pdb
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.AssemblyInfoInputs.cache
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.AssemblyInfo.cs
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.dll
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.pdb

@@ -10,7 +10,7 @@ namespace Forge.Networking.Unity.Messages
 		public string Name { get; set; }
 		public string Text { get; set; }
 
-		public override IMessageInterpreter Interpreter => new ChatInterpreter();
+		public override IMessageInterpreter Interpreter => ChatInterpreter.Instance;
 
 		public override void Deserialize(BMSByte buffer)
 		{

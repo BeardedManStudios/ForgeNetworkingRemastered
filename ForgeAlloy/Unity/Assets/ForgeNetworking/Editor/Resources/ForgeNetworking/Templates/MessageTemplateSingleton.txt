@@ -1,0 +1,22 @@
+using Forge.Networking.Messaging;
+using Forge.Networking.Unity.Messages.Interpreters;
+using Forge.Serialization;
+
+namespace Forge.Networking.Unity.Messages
+{{
+	[EngineMessageContract({0}, typeof({1}Message))]
+	public class {1}Message : ForgeMessage
+	{{
+		public override IMessageInterpreter Interpreter => {1}Interpreter.Instance;
+
+		public override void Deserialize(BMSByte buffer)
+		{{
+			
+		}}
+
+		public override void Serialize(BMSByte buffer)
+		{{
+			
+		}}
+	}}
+}}

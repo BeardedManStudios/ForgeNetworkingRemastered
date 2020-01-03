@@ -7,6 +7,8 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 {
 	public class ChatInterpreter : IMessageInterpreter
 	{
+		public static ChatInterpreter Instance { get; private set; } = new ChatInterpreter();
+
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => true;
 
