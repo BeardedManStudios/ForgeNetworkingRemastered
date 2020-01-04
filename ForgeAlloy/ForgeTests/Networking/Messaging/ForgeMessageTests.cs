@@ -91,6 +91,7 @@ namespace ForgeTests.Networking.Messaging
 		public void ReliableMessageSerialization_ShouldMatch()
 		{
 			var mediator = A.Fake<INetworkMediator>();
+			A.CallTo(() => mediator.PlayerTimeout).Returns(1);
 			var tokenSource = new CancellationTokenSource();
 			A.CallTo(() => mediator.SocketFacade.CancellationSource).Returns(tokenSource);
 			var receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
