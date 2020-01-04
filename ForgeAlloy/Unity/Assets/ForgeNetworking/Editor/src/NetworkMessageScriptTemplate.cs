@@ -9,10 +9,10 @@ namespace Forge.Editor
 {
 	public class NetworkMessageScriptTemplate : ScriptableWizard
 	{
-		private string _messageName;
-		private bool _isClient;
-		private bool _isServer;
-		private bool _useSingletonInterpreter;
+		private string _messageName = "";
+		private bool _isClient = false;
+		private bool _isServer = false;
+		private bool _useSingletonInterpreter = true;
 
 		[MenuItem("Assets/Create/Forge Networking/Network Message Script")]
 		private static void CreateWizard()

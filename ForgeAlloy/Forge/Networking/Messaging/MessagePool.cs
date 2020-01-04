@@ -5,7 +5,7 @@ namespace Forge.Networking.Messaging
 {
 	public class MessagePool
 	{
-		private struct PoolEntry
+		private class PoolEntry
 		{
 			public bool Available { get; set; }
 			public IMessage Message { get; set; }
@@ -20,13 +20,8 @@ namespace Forge.Networking.Messaging
 			{
 				if (pool[i].Available)
 				{
-					var m = pool[i].Message;
-					pool[i] = new PoolEntry
-					{
-						Available = false,
-						Message = m
-					};
-					return m;
+					pool[i].Available = false;
+					return pool[i].Message;
 				}
 			}
 			return CreateNewMessageForPool<T>(pool);
@@ -39,11 +34,7 @@ namespace Forge.Networking.Messaging
 			{
 				if (pool[i].Message == message)
 				{
-					pool[i] = new PoolEntry
-					{
-						Available = true,
-						Message = message
-					};
+					pool[i].Available = true;
 					break;
 				}
 			}
