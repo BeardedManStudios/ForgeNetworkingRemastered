@@ -19,3 +19,4 @@ C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netc
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.AssemblyInfo.cs
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.dll
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.pdb
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.csprojAssemblyReference.cache

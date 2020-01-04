@@ -27,7 +27,7 @@ namespace Forge.Networking.Messaging
 			return CreateNewMessageForPool<T>(pool);
 		}
 
-		public void Release(IMessage message)
+		private void Release(IMessage message)
 		{
 			List<PoolEntry> pool = GetPool(message.GetType());
 			for (int i = 0; i < pool.Count; i++)
@@ -50,9 +50,10 @@ namespace Forge.Networking.Messaging
 			return pool;
 		}
 
-		private static IMessage CreateNewMessageForPool<T>(List<PoolEntry> pool) where T : IMessage, new()
+		private IMessage CreateNewMessageForPool<T>(List<PoolEntry> pool) where T : IMessage, new()
 		{
 			IMessage m = new T();
+			m.OnMessageSent += Release;
 			pool.Add(new PoolEntry
 			{
 				Available = false,

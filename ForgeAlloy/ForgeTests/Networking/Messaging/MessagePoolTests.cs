@@ -8,20 +8,18 @@ namespace ForgeTests.Networking.Messaging
 	[TestFixture]
 	public class MessagePoolTests
 	{
-		private class DummyMessage : IMessage
+		private class DummyMessage : ForgeMessage
 		{
-			public IMessageReceiptSignature Receipt { get; set; }
-			public IMessageInterpreter Interpreter => throw new NotImplementedException();
-			public void Deserialize(BMSByte buffer) { }
-			public void Serialize(BMSByte buffer) { }
+			public override IMessageInterpreter Interpreter => throw new NotImplementedException();
+			public override void Deserialize(BMSByte buffer) { }
+			public override void Serialize(BMSByte buffer) { }
 		}
 
-		private class AltDummyMessage : IMessage
+		private class AltDummyMessage : ForgeMessage
 		{
-			public IMessageReceiptSignature Receipt { get; set; }
-			public IMessageInterpreter Interpreter => throw new NotImplementedException();
-			public void Deserialize(BMSByte buffer) { }
-			public void Serialize(BMSByte buffer) { }
+			public override IMessageInterpreter Interpreter => throw new NotImplementedException();
+			public override void Deserialize(BMSByte buffer) { }
+			public override void Serialize(BMSByte buffer) { }
 		}
 
 		[Test]
@@ -37,7 +35,7 @@ namespace ForgeTests.Networking.Messaging
 		{
 			var pool = new MessagePool();
 			IMessage d = pool.Get<DummyMessage>();
-			pool.Release(d);
+			d.Sent();
 			IMessage q = pool.Get<DummyMessage>();
 			Assert.AreEqual(d, q);
 		}

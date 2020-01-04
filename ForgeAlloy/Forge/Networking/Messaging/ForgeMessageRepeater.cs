@@ -29,9 +29,7 @@ namespace Forge.Networking.Messaging
 		public void AddMessageToRepeat(IMessage message, EndPoint receiver)
 		{
 			if (!_messageRepository.Exists(message.Receipt))
-			{
 				_messageRepository.AddMessage(message, receiver);
-			}
 		}
 
 		public void RemoveRepeatingMessage(IMessageReceiptSignature messageReceipt)

@@ -55,6 +55,7 @@ namespace Forge.Networking.Messaging
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			byte[] messageBuffer = pm.Buffer.CompressBytes();
 			sender.Send(receiver, messageBuffer, messageBuffer.Length);
+			message.Sent();
 		}
 
 		public IMessageReceiptSignature SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
@@ -81,7 +82,6 @@ namespace Forge.Networking.Messaging
 					{
 						if (_storedMessages.Exists(m.Receipt))
 							return;
-
 						_storedMessages.AddMessage(m, messageSender, _networkMediator.PlayerTimeout);
 					}
 

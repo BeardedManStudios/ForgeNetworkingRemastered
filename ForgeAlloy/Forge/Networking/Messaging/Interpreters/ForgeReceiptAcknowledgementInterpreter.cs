@@ -12,6 +12,7 @@ namespace Forge.Networking.Messaging.Interpreters
 		{
 			var m = (ForgeReceiptAcknowledgementMessage)message;
 			netHost.MessageBus.MessageConfirmed(m.ReceiptSignature);
+			m.Sent();
 		}
 	}
 }
