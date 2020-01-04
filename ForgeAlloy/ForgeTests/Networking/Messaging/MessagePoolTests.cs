@@ -12,32 +12,16 @@ namespace ForgeTests.Networking.Messaging
 		{
 			public IMessageReceiptSignature Receipt { get; set; }
 			public IMessageInterpreter Interpreter => throw new NotImplementedException();
-
-			public void Deserialize(BMSByte buffer)
-			{
-				throw new NotImplementedException();
-			}
-
-			public void Serialize(BMSByte buffer)
-			{
-				throw new NotImplementedException();
-			}
+			public void Deserialize(BMSByte buffer) { }
+			public void Serialize(BMSByte buffer) { }
 		}
 
 		private class AltDummyMessage : IMessage
 		{
 			public IMessageReceiptSignature Receipt { get; set; }
 			public IMessageInterpreter Interpreter => throw new NotImplementedException();
-
-			public void Deserialize(BMSByte buffer)
-			{
-				throw new NotImplementedException();
-			}
-
-			public void Serialize(BMSByte buffer)
-			{
-				throw new NotImplementedException();
-			}
+			public void Deserialize(BMSByte buffer) { }
+			public void Serialize(BMSByte buffer) { }
 		}
 
 		[Test]
