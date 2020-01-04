@@ -1,65 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Forge.Networking.Messaging
 {
-	public class MessagePool
+	public class MessagePool<T> where T : IMessage, new()
 	{
-		private class PoolEntry
+		private readonly List<T> _poolAvailable = new List<T>();
+		private readonly List<T> _poolInUse = new List<T>();
+
+		public T Get()
 		{
-			public bool Available { get; set; }
-			public IMessage Message { get; set; }
+			if (_poolAvailable.Count == 0)
+				return CreateNewPoolEntry();
+			else
+				return GetAvailable();
 		}
 
-		private Dictionary<Type, List<PoolEntry>> _messagePools = new Dictionary<Type, List<PoolEntry>>();
-
-		public IMessage Get<T>() where T : IMessage, new()
+		private T CreateNewPoolEntry()
 		{
-			var pool = GetPool(typeof(T));
-			for (int i = 0; i < pool.Count; i++)
-			{
-				if (pool[i].Available)
-				{
-					pool[i].Available = false;
-					return pool[i].Message;
-				}
-			}
-			return CreateNewMessageForPool<T>(pool);
+			var m = new T();
+			m.OnMessageSent += Release;
+			_poolInUse.Add(m);
+			return m;
+		}
+
+		private T GetAvailable()
+		{
+			var m = _poolAvailable[0];
+			_poolAvailable.RemoveAt(0);
+			_poolInUse.Add(m);
+			return m;
 		}
 
 		private void Release(IMessage message)
 		{
-			List<PoolEntry> pool = GetPool(message.GetType());
-			for (int i = 0; i < pool.Count; i++)
-			{
-				if (pool[i].Message == message)
-				{
-					pool[i].Available = true;
-					break;
-				}
-			}
-		}
-
-		private List<PoolEntry> GetPool(Type type)
-		{
-			if (!_messagePools.TryGetValue(type, out var pool))
-			{
-				pool = new List<PoolEntry>();
-				_messagePools.Add(type, pool);
-			}
-			return pool;
-		}
-
-		private IMessage CreateNewMessageForPool<T>(List<PoolEntry> pool) where T : IMessage, new()
-		{
-			IMessage m = new T();
-			m.OnMessageSent += Release;
-			pool.Add(new PoolEntry
-			{
-				Available = false,
-				Message = m
-			});
-			return m;
+			var m = (T)message;
+			_poolInUse.Remove(m);
+			_poolAvailable.Add(m);
 		}
 	}
 }

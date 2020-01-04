@@ -1,4 +1,5 @@
-﻿using Forge.Networking.Sockets;
+﻿using Forge.Networking.Messaging;
+using Forge.Networking.Sockets;
 using Forge.Networking.Unity;
 using Forge.Networking.Unity.Messages;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class SendButton : MonoBehaviour
 	private IEngineFacade _engine = null;
 	private ISocket _mySocket => _engine.NetworkMediator.SocketFacade.ManagedSocket;
 	private bool _isServer => _engine.NetworkMediator.SocketFacade is ISocketServerFacade;
+
+	private MessagePool<ChatMessage> _chatMessagePool = new MessagePool<ChatMessage>();
 
 	public void Awake()
 	{
@@ -33,11 +36,9 @@ public class SendButton : MonoBehaviour
 
 	private void SendNetworkMessage(string txt)
 	{
-		var m = new ChatMessage
-		{
-			Name = _myName,
-			Text = txt
-		};
+		var m = _chatMessagePool.Get();
+		m.Name = _myName;
+		m.Text = txt;
 		if (_isServer)
 			SendMessageAsServer(m);
 		else

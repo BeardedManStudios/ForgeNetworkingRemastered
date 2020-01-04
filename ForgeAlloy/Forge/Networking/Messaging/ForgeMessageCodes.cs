@@ -8,6 +8,7 @@ namespace Forge.Networking.Messaging
 	{
 		private static readonly Dictionary<int, Type> _messageTypes = new Dictionary<int, Type>();
 		private static readonly Dictionary<Type, int> _messageCodes = new Dictionary<Type, int>();
+		private static readonly MessagePoolMulti _messagePool = new MessagePoolMulti();
 
 		public static void Register()
 		{
@@ -43,7 +44,7 @@ namespace Forge.Networking.Messaging
 		{
 			if (!_messageTypes.TryGetValue(code, out var type))
 				throw new MessageCodeNotFoundException(code);
-			return Activator.CreateInstance(type);
+			return _messagePool.Get(type);
 		}
 
 		public static int GetCodeFromType(Type type)
