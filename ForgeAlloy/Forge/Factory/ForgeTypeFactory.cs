@@ -15,7 +15,6 @@ namespace Forge.Factory
 		{
 			Register<IPlayerRepository, ForgePlayerRepository>();
 			Register<INetworkMediator, ForgeNetworkMediator>();
-			Register<IEntityRepository, ForgeEntityRepository>();
 			Register<IMessageReceiptSignature, ForgeMessageReceipt>();
 			Register<IMessageBus, ForgeMessageBus>();
 			Register<IMessageRepository, ForgeMessageRepository>();

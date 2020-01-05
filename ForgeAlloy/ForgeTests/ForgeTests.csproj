@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Forge\Forge.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Engine\" />
+  </ItemGroup>
+
 </Project>
