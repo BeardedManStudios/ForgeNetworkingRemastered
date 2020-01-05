@@ -1,9 +1,8 @@
-﻿using Forge.Engine;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
-	public interface IUnityEntity : IEntity
+	public interface IUnityEntity
 	{
 		GameObject OwnerGameObject { get; }
 	}

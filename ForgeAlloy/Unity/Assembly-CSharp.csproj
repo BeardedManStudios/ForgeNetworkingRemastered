@@ -68,11 +68,6 @@
     <Compile Include="Assets\ForgeNetworking\Examples\Chat\src\Messages\Interpreters\ChatInterpreter.cs" />
     <Compile Include="Assets\ForgeNetworking\Examples\Chat\src\SendButton.cs" />
     <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\CubeMapLoader.cs" />
-    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\Messages\Interpreters\SpawnPlayerInterpreter.cs" />
-    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\Messages\Interpreters\SpawnPlayerRequestInterpreter.cs" />
-    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\Messages\SpawnPlayerMessage.cs" />
-    <Compile Include="Assets\ForgeNetworking\Examples\Cube\src\Messages\SpawnPlayerRequestMessage.cs" />
-    <Compile Include="Assets\ForgeNetworking\src\Engine\EntityStartupMessage.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\IEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\IUnityEntity.cs" />

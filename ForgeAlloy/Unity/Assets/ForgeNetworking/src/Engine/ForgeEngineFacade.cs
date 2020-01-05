@@ -1,8 +1,6 @@
 ﻿using System.Net;
-using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging;
-using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Sockets;
 using Forge.Networking.Unity.Messages;
 using Forge.Serialization;
@@ -18,12 +16,6 @@ namespace Forge.Networking.Unity
 		public string CurrentMap => _sceneToLoad;
 
 		private int _currentEntityId = 0;
-		private IEntityRepository _entityRepo;
-		public IEntityRepository EntityRepository
-		{
-			get { return _entityRepo; }
-			set { _entityRepo = value; }
-		}
 
 		public INetworkMediator NetworkMediator { get; set; }
 		private ISocketFacade _selfSocket => NetworkMediator.SocketFacade;
@@ -49,11 +41,6 @@ namespace Forge.Networking.Unity
 				ClientStarted();
 		}
 
-		public void ProcessUnavailableEntityMessage(IEntityMessage message, EndPoint sender)
-		{
-
-		}
-
 		private void Awake()
 		{
 			DontDestroyOnLoad(gameObject);
@@ -61,17 +48,6 @@ namespace Forge.Networking.Unity
 			ForgeSerializationStrategy.Instance.AddSerializer<Vector3>(new Vector3Serializer());
 			ForgeSerializationStrategy.Instance.AddSerializer<Quaternion>(new QuaternionSerializer());
 			NewClientMessageBuffer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
-		}
-
-		private void Start()
-		{
-			_entityRepo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IEntityRepository>();
-			_entityRepo.onEntityAdded += OnEntityAdded;
-		}
-
-		private void OnEntityAdded(IEntity entity)
-		{
-
 		}
 
 		private void ServerStarted()
