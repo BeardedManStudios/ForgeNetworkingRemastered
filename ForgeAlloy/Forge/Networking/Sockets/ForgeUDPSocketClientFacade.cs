@@ -10,6 +10,7 @@ namespace Forge.Networking.Sockets
 		public IPlayerSignature NetPlayerId { get; set; }
 		private readonly IClientSocket _socket;
 		public override ISocket ManagedSocket => _socket;
+		private ForgePinger _serverPing = new ForgePinger();
 
 		public ForgeUDPSocketClientFacade() : base()
 		{
@@ -29,6 +30,11 @@ namespace Forge.Networking.Sockets
 		{
 			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
 				data.Endpoint, data.Buffer);
+		}
+
+		public void Established(INetworkMediator netMediator)
+		{
+			_serverPing.StartPinging(netMediator);
 		}
 	}
 }

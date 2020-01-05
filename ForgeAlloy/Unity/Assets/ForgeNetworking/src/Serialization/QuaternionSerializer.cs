@@ -2,7 +2,7 @@
 using Forge.Serialization;
 using UnityEngine;
 
-namespace Forge.Networking.Unity
+namespace Forge.Networking.Unity.Serialization
 {
 	public class QuaternionSerializer : ITypeSerializer
 	{
@@ -17,7 +17,7 @@ namespace Forge.Networking.Unity
 		public byte[] Serialize(object val)
 		{
 			var quat = (Quaternion)val;
-			byte[] bytes = new byte[sizeof(float) * 3];
+			byte[] bytes = new byte[sizeof(float) * 4];
 			Buffer.BlockCopy(BitConverter.GetBytes(quat.x), 0, bytes, 0, sizeof(float));
 			Buffer.BlockCopy(BitConverter.GetBytes(quat.y), 0, bytes, sizeof(float), sizeof(float));
 			Buffer.BlockCopy(BitConverter.GetBytes(quat.z), 0, bytes, sizeof(float) * 2, sizeof(float));

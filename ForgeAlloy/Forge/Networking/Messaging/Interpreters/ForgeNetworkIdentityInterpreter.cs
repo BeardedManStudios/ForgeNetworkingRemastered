@@ -15,6 +15,7 @@ namespace Forge.Networking.Messaging.Interpreters
 			var clientContainer = (ISocketClientFacade)netMediator.SocketFacade;
 			clientContainer.NetPlayerId = identityMessage.Identity;
 			var engineReadyMessage = new ForgeReadyForEngineMessage();
+			netMediator.SocketFacade.Established(netMediator);
 			netMediator.EngineProxy.NetworkingEstablished();
 			netMediator.MessageBus.SendReliableMessage(engineReadyMessage, netMediator.SocketFacade.ManagedSocket, sender);
 		}

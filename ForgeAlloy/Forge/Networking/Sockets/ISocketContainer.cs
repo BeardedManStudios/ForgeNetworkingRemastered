@@ -12,5 +12,6 @@ namespace Forge.Networking.Sockets
 
 		ISocket ManagedSocket { get; }
 		void ShutDown();
+		void Established(INetworkMediator netMediator);
 	}
 }

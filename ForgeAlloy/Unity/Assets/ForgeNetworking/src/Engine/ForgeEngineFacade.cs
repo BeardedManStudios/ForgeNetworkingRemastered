@@ -3,7 +3,6 @@ using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
 using Forge.Networking.Unity.Messages;
-using Forge.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +18,6 @@ namespace Forge.Networking.Unity
 
 		public INetworkMediator NetworkMediator { get; set; }
 		private ISocketFacade _selfSocket => NetworkMediator.SocketFacade;
-		private bool _isServer => _selfSocket is ISocketServerFacade;
 
 		// NOTE:  If the socket is a client socket, then _selfSocket.ManagedSocket.EndPoint
 		// will always be the endpoint of the server for convenience
@@ -30,12 +28,14 @@ namespace Forge.Networking.Unity
 		public IPrefabManager PrefabManager => _prefabManager;
 
 		public IMessageRepository NewClientMessageBuffer { get; private set; }
+		public IEntityRepository EntityRepository { get; private set; }
+		public bool IsServer => NetworkMediator.SocketFacade is ISocketServerFacade;
 
 		public void NetworkingEstablished()
 		{
 			Debug.Log("Network Established");
 
-			if (_isServer)
+			if (IsServer)
 				ServerStarted();
 			else
 				ClientStarted();
@@ -44,15 +44,21 @@ namespace Forge.Networking.Unity
 		private void Awake()
 		{
 			DontDestroyOnLoad(gameObject);
-			ForgeRegistration.Initialize();
-			ForgeSerializationStrategy.Instance.AddSerializer<Vector3>(new Vector3Serializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<Quaternion>(new QuaternionSerializer());
-			NewClientMessageBuffer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
+			ForgeRegistrations.Initialize();
+			var factory = AbstractFactory.Get<INetworkTypeFactory>();
+			NewClientMessageBuffer = factory.GetNew<IMessageRepository>();
+			EntityRepository = factory.GetNew<IEntityRepository>();
 		}
 
 		private void ServerStarted()
 		{
+			NetworkMediator.PlayerRepository.onPlayerAddedSubscription += PlayerJoined;
 			SceneManager.LoadScene(_sceneToLoad);
+		}
+
+		private void PlayerJoined(Players.INetPlayer player)
+		{
+			// TODO:  Go through all entities and their current pos/rot/scale and send it to the new player
 		}
 
 		private void ClientStarted()

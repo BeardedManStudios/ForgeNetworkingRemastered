@@ -6,7 +6,7 @@ namespace Forge.Networking.Messaging.Messages
 	[MessageContract(5, typeof(ForgePingMessage))]
 	public class ForgePingMessage : ForgeMessage
 	{
-		public override IMessageInterpreter Interpreter => new ForgePingInterpreter();
+		public override IMessageInterpreter Interpreter => ForgePingInterpreter.Instance;
 
 		public override void Deserialize(BMSByte buffer)
 		{

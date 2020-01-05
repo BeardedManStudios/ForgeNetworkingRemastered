@@ -4,6 +4,8 @@ namespace Forge.Networking.Messaging.Interpreters
 {
 	public class ForgePingInterpreter : IMessageInterpreter
 	{
+		public static ForgePingInterpreter Instance { get; private set; } = new ForgePingInterpreter();
+
 		public bool ValidOnClient => false;
 		public bool ValidOnServer => true;
 
