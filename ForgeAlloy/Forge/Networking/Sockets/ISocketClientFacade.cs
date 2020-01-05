@@ -6,5 +6,6 @@ namespace Forge.Networking.Sockets
 	{
 		IPlayerSignature NetPlayerId { get; set; }
 		void StartClient(string address, ushort port, INetworkMediator netContainer);
+		void Established(INetworkMediator netMediator);
 	}
 }

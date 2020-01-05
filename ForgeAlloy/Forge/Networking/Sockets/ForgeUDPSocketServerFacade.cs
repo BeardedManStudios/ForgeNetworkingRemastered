@@ -100,10 +100,5 @@ namespace Forge.Networking.Sockets
 			foreach (var p in removals)
 				_challengedPlayers.RemovePlayer(p);
 		}
-
-		public void Established(INetworkMediator netMediator)
-		{
-
-		}
 	}
 }
