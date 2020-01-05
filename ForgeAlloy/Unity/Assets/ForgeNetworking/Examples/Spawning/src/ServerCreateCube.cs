@@ -22,7 +22,7 @@ public class ServerCreateCube : MonoBehaviour
 		if (!_engine.IsServer)
 			return;
 
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.B))
 			SpawnOnServer();
 	}
 

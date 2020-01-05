@@ -15,6 +15,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 
 		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
 		{{
+			var m = ({0}Message)message;
 			throw new NotImplementedException();
 		}}
 	}}

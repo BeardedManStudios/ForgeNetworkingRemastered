@@ -83,6 +83,8 @@
     <Compile Include="Assets\ForgeNetworking\src\Menu\HostButton.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\IMenuMediator.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Menu\MenuMediator.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\GetAllEntitiesRequestMessage.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\GetAllEntitiesRequestInterpreter.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\MapLoadRequestInterpreter.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\MapLoadResponseInterpreter.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Messages\Interpreters\SendEntitiesToNewPlayerInterpreter.cs" />

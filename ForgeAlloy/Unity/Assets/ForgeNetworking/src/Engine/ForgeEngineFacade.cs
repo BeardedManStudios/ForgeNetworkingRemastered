@@ -52,13 +52,7 @@ namespace Forge.Networking.Unity
 
 		private void ServerStarted()
 		{
-			NetworkMediator.PlayerRepository.onPlayerAddedSubscription += PlayerJoined;
 			SceneManager.LoadScene(_sceneToLoad);
-		}
-
-		private void PlayerJoined(Players.INetPlayer player)
-		{
-			// TODO:  Go through all entities and their current pos/rot/scale and send it to the new player
 		}
 
 		private void ClientStarted()

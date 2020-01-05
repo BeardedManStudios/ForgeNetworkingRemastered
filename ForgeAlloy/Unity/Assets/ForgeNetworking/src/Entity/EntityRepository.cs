@@ -4,6 +4,7 @@ namespace Forge.Networking.Unity
 {
 	public class EntityRepository : IEntityRepository
 	{
+		public int Count => _entities.Count;
 		private readonly Dictionary<int, IUnityEntity> _entities = new Dictionary<int, IUnityEntity>();
 
 		public void Add(IUnityEntity entity)
@@ -28,6 +29,11 @@ namespace Forge.Networking.Unity
 		public void Remove(IUnityEntity entity)
 		{
 			_entities.Remove(entity.Id);
+		}
+
+		public IEnumerator<IUnityEntity> GetEnumerator()
+		{
+			return _entities.Values.GetEnumerator();
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace Forge.Networking.Unity.Messages
 	public class MapLoadResponseMessage : ForgeMessage
 	{
 		public string MapId { get; set; }
-		public override IMessageInterpreter Interpreter => new MapLoadResponseInterpreter();
+		public override IMessageInterpreter Interpreter => MapLoadResponseInterpreter.Instance;
 
 		public override void Deserialize(BMSByte buffer)
 		{

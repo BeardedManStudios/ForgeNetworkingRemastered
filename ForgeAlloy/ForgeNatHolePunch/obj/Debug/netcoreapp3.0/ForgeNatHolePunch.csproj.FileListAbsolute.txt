@@ -19,3 +19,4 @@ C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcorea
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.AssemblyInfo.cs
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.dll
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.pdb
+C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeNatHolePunch\obj\Debug\netcoreapp3.0\ForgeNatHolePunch.csprojAssemblyReference.cache

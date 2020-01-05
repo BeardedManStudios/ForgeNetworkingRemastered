@@ -4,10 +4,10 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Unity.Messages
 {
-	[EngineMessageContract(1, typeof(MapLoadRequestMessage))]
-	public class MapLoadRequestMessage : ForgeMessage
+	[EngineMessageContract(9, typeof(GetAllEntitiesRequestMessage))]
+	public class GetAllEntitiesRequestMessage : ForgeMessage
 	{
-		public override IMessageInterpreter Interpreter => MapLoadRequestInterpreter.Instance;
+		public override IMessageInterpreter Interpreter => GetAllEntitiesRequestInterpreter.Instance;
 		public override void Deserialize(BMSByte buffer) { }
 		public override void Serialize(BMSByte buffer) { }
 	}

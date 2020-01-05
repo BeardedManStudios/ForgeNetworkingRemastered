@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Forge.Networking.Messaging;
 
 namespace Forge.Networking.Unity.Messages.Interpreters
@@ -13,8 +12,10 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 
 		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
 		{
-			// TODO:  This new player needs to spawn all the entities being sent
-			throw new NotImplementedException();
+			var m = (SendEntitiesToNewPlayerMessage)message;
+			IEngineFacade engine = (IEngineFacade)netMediator.EngineProxy;
+			for (int i = 0; i < m.EntityCount; i++)
+				EntitySpawnner.SpawnEntityFromData(engine, m.Ids[i], m.PrefabIds[i], m.Positions[i], m.Rotations[i], m.Scales[i]);
 		}
 	}
 }
