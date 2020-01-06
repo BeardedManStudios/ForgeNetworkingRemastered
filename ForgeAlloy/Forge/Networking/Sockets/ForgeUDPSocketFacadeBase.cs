@@ -13,8 +13,6 @@ namespace Forge.Networking.Sockets
 		public CancellationTokenSource CancellationSource { get; protected set; }
 		protected SynchronizationContext synchronizationContext;
 
-		private BMSBytePool _readBufferPool = new BMSBytePool();
-
 		public ForgeUDPSocketFacadeBase()
 		{
 			synchronizationContext = SynchronizationContext.Current;
@@ -38,33 +36,12 @@ namespace Forge.Networking.Sockets
 					CancellationSource.Token.ThrowIfCancellationRequested();
 					buffer.Clear();
 					ManagedSocket.Receive(buffer, ref readEp);
-					BMSByte buff;
-					lock (_readBufferPool)
-					{
-						buff = _readBufferPool.Get(buffer.Size);
-					}
-					buff.Clone(buffer);
-					synchronizationContext.Post(SynchronizedMessageRead, new SocketContainerSynchronizationReadData
-					{
-						Buffer = buff,
-						Endpoint = readEp
-					});
+					ProcessMessageRead(buffer, readEp);
 				}
 			}
 			catch (OperationCanceledException) { }
 		}
 
-		protected void SynchronizedMessageRead(object state)
-		{
-			//SynchronizationContext.SetSynchronizationContext(synchronizationContext);
-			var s = (SocketContainerSynchronizationReadData)state;
-			ProcessMessageRead(s);
-			lock (_readBufferPool)
-			{
-				_readBufferPool.Release(s.Buffer);
-			}
-		}
-
-		protected abstract void ProcessMessageRead(SocketContainerSynchronizationReadData data);
+		protected abstract void ProcessMessageRead(BMSByte buffer, EndPoint sender);
 	}
 }

@@ -48,6 +48,12 @@ namespace ForgeTests.Networking.Messaging
 			}
 		}
 
+		public override void Setup()
+		{
+			base.Setup();
+			SynchronizationContext.SetSynchronizationContext(new ForgeTestSynchronizationContext());
+		}
+
 		public override void Teardown()
 		{
 			base.Teardown();

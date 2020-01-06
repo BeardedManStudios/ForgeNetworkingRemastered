@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
@@ -17,6 +18,7 @@ namespace Forge.Networking.Messaging
 		private INetworkMediator _networkMediator;
 		private BMSBytePool _bufferPool = new BMSBytePool();
 		private MessagePool<ForgeReceiptAcknowledgementMessage> _msgAckPool = new MessagePool<ForgeReceiptAcknowledgementMessage>();
+		private SynchronizationContext _synchronizationContext;
 
 		public ForgeMessageBus()
 		{
@@ -25,6 +27,7 @@ namespace Forge.Networking.Messaging
 			_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
 			_storedMessages = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
 			_messageDestructor.BufferPool = _bufferPool;
+			_synchronizationContext = SynchronizationContext.Current;
 		}
 
 		public void SetMediator(INetworkMediator networkMediator)
@@ -69,6 +72,7 @@ namespace Forge.Networking.Messaging
 			return message.Receipt;
 		}
 
+		// Note:  This is called from the read thread without sync context
 		public void ReceiveMessageBuffer(ISocket readingSocket, EndPoint messageSender, BMSByte buffer)
 		{
 			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer, messageSender);
@@ -90,17 +94,29 @@ namespace Forge.Networking.Messaging
 					var interpreter = m.Interpreter;
 					if (interpreter != null)
 					{
-						// TODO:  I don't like this type check and if branching in here...
-						bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
-						if (interpreter.ValidOnClient && !isServer)
-							interpreter.Interpret(_networkMediator, messageSender, m);
-						else if (interpreter.ValidOnServer && isServer)
-							interpreter.Interpret(_networkMediator, messageSender, m);
+						_synchronizationContext.Post(InterpretWithinContext, new SocketContainerSynchronizationReadData
+						{
+							Interpreter = interpreter,
+							Sender = messageSender,
+							Message = m
+						});
 					}
 				}
 				catch (MessageCodeNotFoundException) { }
 				MessageBufferInterpreter.Release(constructor);
 			}
+		}
+
+		private void InterpretWithinContext(object state)
+		{
+			var s = (SocketContainerSynchronizationReadData)state;
+
+			// TODO:  I don't like this type check and if branching in here...
+			bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
+			if (s.Interpreter.ValidOnClient && !isServer)
+				s.Interpreter.Interpret(_networkMediator, s.Sender, s.Message);
+			else if (s.Interpreter.ValidOnServer && isServer)
+				s.Interpreter.Interpret(_networkMediator, s.Sender, s.Message);
 		}
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)

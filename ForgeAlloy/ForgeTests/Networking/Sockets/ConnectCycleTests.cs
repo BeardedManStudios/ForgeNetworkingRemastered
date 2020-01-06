@@ -11,13 +11,11 @@ namespace ForgeTests.Networking.Sockets
 	[TestFixture]
 	public class ConnectCycleTests : ForgeNetworkingTest
 	{
-		private SynchronizationContext _syncCtx;
 
 		public override void Setup()
 		{
 			base.Setup();
-			_syncCtx = new ForgeTestSynchronizationContext();
-			SynchronizationContext.SetSynchronizationContext(_syncCtx);
+			SynchronizationContext.SetSynchronizationContext(new ForgeTestSynchronizationContext());
 		}
 
 		[Test]

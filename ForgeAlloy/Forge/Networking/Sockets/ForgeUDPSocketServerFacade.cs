@@ -43,40 +43,49 @@ namespace Forge.Networking.Sockets
 
 		public void ChallengeSuccess(INetworkMediator netContainer, EndPoint endpoint)
 		{
-			INetPlayer player = _challengedPlayers.GetPlayer(endpoint);
-			var netIdentity = new ForgeNetworkIdentityMessage
+			INetPlayer player;
+			ForgeNetworkIdentityMessage netIdentity;
+			lock (_challengedPlayers)
 			{
-				Identity = player.Id
-			};
-			_challengedPlayers.RemovePlayer(player);
+				player = _challengedPlayers.GetPlayer(endpoint);
+				netIdentity = new ForgeNetworkIdentityMessage
+				{
+					Identity = player.Id
+				};
+				_challengedPlayers.RemovePlayer(player);
+			}
 			netContainer.PlayerRepository.AddPlayer(player);
 			netContainer.MessageBus.SendReliableMessage(netIdentity, ManagedSocket, endpoint);
 		}
 
-		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
+		protected override void ProcessMessageRead(BMSByte buffer, EndPoint sender)
 		{
-			if (_bannedEndpoints.Contains(data.Endpoint))
+			if (_bannedEndpoints.Contains(sender))
 				return;
-			else if (!networkMediator.PlayerRepository.Exists(data.Endpoint))
+			else if (!networkMediator.PlayerRepository.Exists(sender))
 			{
 				CleanupOldChallengedPlayers();
-				if (!_challengedPlayers.Exists(data.Endpoint))
-				{
-					var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
-					newPlayer.EndPoint = data.Endpoint;
-					newPlayer.LastCommunication = DateTime.Now;
-					_challengedPlayers.AddPlayer(newPlayer);
-					var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
-					networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, data.Endpoint);
-				}
+				if (!_challengedPlayers.Exists(sender))
+					synchronizationContext.Post(CreatePlayer, sender);
 				else
-					ProcessPlayerMessageRead(_challengedPlayers.GetPlayer(data.Endpoint), data.Buffer);
+					ProcessPlayerMessageRead(_challengedPlayers.GetPlayer(sender), buffer);
 			}
 			else
 			{
-				INetPlayer player = networkMediator.PlayerRepository.GetPlayer(data.Endpoint);
-				ProcessPlayerMessageRead(player, data.Buffer);
+				INetPlayer player = networkMediator.PlayerRepository.GetPlayer(sender);
+				ProcessPlayerMessageRead(player, buffer);
 			}
+		}
+
+		private void CreatePlayer(object state)
+		{
+			var sender = (EndPoint)state;
+			var newPlayer = AbstractFactory.Get<INetworkTypeFactory>().GetNew<INetPlayer>();
+			newPlayer.EndPoint = sender;
+			newPlayer.LastCommunication = DateTime.Now;
+			_challengedPlayers.AddPlayer(newPlayer);
+			var challengeMessage = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IChallengeMessage>();
+			networkMediator.MessageBus.SendReliableMessage(challengeMessage, ManagedSocket, sender);
 		}
 
 		protected void ProcessPlayerMessageRead(INetPlayer player, BMSByte buffer)
@@ -87,18 +96,21 @@ namespace Forge.Networking.Sockets
 
 		private void CleanupOldChallengedPlayers()
 		{
-			var now = DateTime.Now;
-			var players = _challengedPlayers.GetEnumerator();
-			List<INetPlayer> removals = new List<INetPlayer>();
-			while (players.MoveNext())
+			lock (_challengedPlayers)
 			{
-				var p = players.Current;
-				TimeSpan len = now - p.LastCommunication;
-				if (len.TotalMilliseconds >= CHALLENGED_PLAYER_TTL)
-					removals.Add(p);
+				var now = DateTime.Now;
+				var players = _challengedPlayers.GetEnumerator();
+				List<INetPlayer> removals = new List<INetPlayer>();
+				while (players.MoveNext())
+				{
+					var p = players.Current;
+					TimeSpan len = now - p.LastCommunication;
+					if (len.TotalMilliseconds >= CHALLENGED_PLAYER_TTL)
+						removals.Add(p);
+				}
+				foreach (var p in removals)
+					_challengedPlayers.RemovePlayer(p);
 			}
-			foreach (var p in removals)
-				_challengedPlayers.RemovePlayer(p);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Forge.Factory;
 using Forge.Networking.Players;
@@ -29,10 +30,9 @@ namespace Forge.Networking.Sockets
 			_socket.Send(_socket.EndPoint, buffer);
 		}
 
-		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)
+		protected override void ProcessMessageRead(BMSByte buffer, EndPoint sender)
 		{
-			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
-				data.Endpoint, data.Buffer);
+			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket, sender, buffer);
 		}
 
 		public void Established(INetworkMediator netMediator)
