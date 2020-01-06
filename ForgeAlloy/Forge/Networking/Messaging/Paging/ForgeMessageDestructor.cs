@@ -6,7 +6,18 @@ namespace Forge.Networking.Messaging.Paging
 {
 	public class ForgeMessageDestructor : IMessageDestructor
 	{
-		public int HeaderLength => GetHeader(new Guid(), 0, 1).Size;
+		private static int _num = 0;
+		private static object _numMutex = new object();
+
+		private static int NextId()
+		{
+			lock (_numMutex)
+			{
+				return _num++;
+			}
+		}
+
+		public int HeaderLength => sizeof(int) * 3;
 		public int MaxPageLength => 1000;
 		public BMSBytePool BufferPool { private get; set; } = new BMSBytePool();
 
@@ -18,13 +29,13 @@ namespace Forge.Networking.Messaging.Paging
 			var pm = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPagenatedMessage>();
 			pm.Buffer = messageBuffer;
 
-			var messageGuid = Guid.NewGuid();
+			int messageId = NextId();
 			int pageCount = ((messageBuffer.Size - 1) / MaxPageLength) + 1;
 			int totalSize = messageBuffer.Size + (pageCount * HeaderLength);
 			messageBuffer.SetArraySize(totalSize);
 			do
 			{
-				BMSByte header = GetHeader(messageGuid, pm.Pages.Count, totalSize);
+				BMSByte header = GetHeader(messageId, pm.Pages.Count, totalSize);
 				var page = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessagePage>();
 				page.StartOffset = offset;
 				page.Length = Math.Min(messageBuffer.Size - offset, MaxPageLength) + header.Size;
@@ -36,11 +47,10 @@ namespace Forge.Networking.Messaging.Paging
 			return pm;
 		}
 
-		private BMSByte GetHeader(Guid messageGuid, int pageNumber, int totalSize)
+		private BMSByte GetHeader(int messageId, int pageNumber, int totalSize)
 		{
-			string guid = messageGuid.ToString();
-			BMSByte header = BufferPool.Get(guid.Length + pageNumber + totalSize);
-			ForgeSerializationStrategy.Instance.Serialize(guid, header);
+			BMSByte header = BufferPool.Get(HeaderLength);
+			ForgeSerializationStrategy.Instance.Serialize(messageId, header);
 			ForgeSerializationStrategy.Instance.Serialize(pageNumber, header);
 			ForgeSerializationStrategy.Instance.Serialize(totalSize, header);
 			return header;

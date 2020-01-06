@@ -69,6 +69,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		[Test]
 		public void ExactDoublePageSize_ShouldBeSame()
 		{
+			var ep = A.Fake<EndPoint>();
 			var buffer = new BMSByte();
 			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
@@ -85,7 +86,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, ep);
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -97,6 +98,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		[Test]
 		public void ExactTripplePageSize_ShouldBeSame()
 		{
+			var ep = A.Fake<EndPoint>();
 			var buffer = new BMSByte();
 			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
@@ -113,7 +115,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, ep);
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -125,6 +127,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		[Test]
 		public void AboveMaxPageSize_ShouldBeSame()
 		{
+			var ep = A.Fake<EndPoint>();
 			var buffer = new BMSByte();
 			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
@@ -141,7 +144,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < pm.Pages.Count; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, i);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, ep);
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);
@@ -153,6 +156,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 		[Test]
 		public void ExactTripplePageSizeInRandomOrder_ShouldBeSame()
 		{
+			var ep = A.Fake<EndPoint>();
 			var buffer = new BMSByte();
 			var destructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			var bufferInterpreter = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageBufferInterpreter>();
@@ -172,7 +176,7 @@ namespace ForgeTests.Networking.Messaging.Paging
 			for (int i = 0; i < indexes.Length; i++)
 			{
 				BMSByte pageBuffer = GetPageSection(buffer, pm, indexes[i]);
-				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, A.Fake<EndPoint>());
+				constructor = bufferInterpreter.ReconstructPacketPage(pageBuffer, ep);
 			}
 			Assert.IsNotNull(constructor);
 			Assert.IsTrue(constructor.MessageReconstructed);

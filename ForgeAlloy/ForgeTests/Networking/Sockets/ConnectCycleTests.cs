@@ -11,10 +11,13 @@ namespace ForgeTests.Networking.Sockets
 	[TestFixture]
 	public class ConnectCycleTests : ForgeNetworkingTest
 	{
+		private SynchronizationContext _syncCtx;
+
 		public override void Setup()
 		{
 			base.Setup();
-			SynchronizationContext.SetSynchronizationContext(new ForgeTestSynchronizationContext());
+			_syncCtx = new ForgeTestSynchronizationContext();
+			SynchronizationContext.SetSynchronizationContext(_syncCtx);
 		}
 
 		[Test]
@@ -35,7 +38,7 @@ namespace ForgeTests.Networking.Sockets
 			{
 				done = true;
 			});
-			Thread.Sleep(100);
+			Thread.Sleep(500);
 			Assert.IsTrue(done);
 			clientMediator.SocketFacade.ShutDown();
 		}

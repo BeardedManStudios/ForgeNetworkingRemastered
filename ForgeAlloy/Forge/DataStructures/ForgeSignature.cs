@@ -1,49 +1,60 @@
-﻿using System;
+﻿using Forge.Serialization;
 
 namespace Forge.DataStructures
 {
 	public class ForgeSignature : ISignature
 	{
-		private Guid _guid;
+		private static int _num = 0;
+		private static object _numMutex = new object();
+
+		private static int NextId()
+		{
+			lock (_numMutex)
+			{
+				return _num++;
+			}
+		}
+
+		private int _id;
 
 		public ForgeSignature()
 		{
-			_guid = Guid.NewGuid();
+			_id = NextId();
 		}
 
-		public byte[] Serialize()
+		public void Serialize(BMSByte buffer)
 		{
-			return _guid.ToByteArray();
+			ForgeSerializationStrategy.Instance.Serialize(_id, buffer);
 		}
 
-		public void Deserialize(byte[] data)
+		public void Deserialize(BMSByte buffer)
 		{
-			_guid = new Guid(data);
+			_id = ForgeSerializationStrategy.Instance.Deserialize<int>(buffer);
 		}
 
 		public override bool Equals(object obj)
 		{
-			return _guid == ((ForgeSignature)obj)._guid;
+			return _id == ((ForgeSignature)obj)._id;
 		}
 
 		public override int GetHashCode()
 		{
-			return _guid.GetHashCode();
+			return _id.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return _guid.ToString();
+			return _id.ToString();
 		}
 
 		public static bool operator ==(ForgeSignature lhs, ForgeSignature rhs)
 		{
-			return lhs._guid == rhs._guid;
+			return lhs._id == rhs._id;
 		}
 
 		public static bool operator !=(ForgeSignature lhs, ForgeSignature rhs)
 		{
-			return lhs._guid != rhs._guid;
+			return lhs._id != rhs._id;
 		}
 	}
 }

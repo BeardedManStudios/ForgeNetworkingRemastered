@@ -9,13 +9,16 @@ namespace Forge.Networking.Messaging.Paging
 		public EndPoint Sender { get; private set; }
 		public bool MessageReconstructed { get; private set; } = false;
 		public BMSByte MessageBuffer { get; private set; } = null;
+		public int Id { get; private set; }
+
 		private BMSByte[] _pages = null;
 		private BMSBytePool _bufferPool = null;
 
-		public void Setup(BMSBytePool bufferPool)
+		public void Setup(BMSBytePool bufferPool, int id)
 		{
 			_bufferPool = bufferPool;
 			MessageBuffer = _bufferPool.Get(1024);
+			Id = id;
 		}
 
 		public void Teardown()

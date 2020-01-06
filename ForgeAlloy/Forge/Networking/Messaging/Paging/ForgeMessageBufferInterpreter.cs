@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using Forge.Factory;
 using Forge.Networking.Players;
@@ -9,47 +8,56 @@ namespace Forge.Networking.Messaging.Paging
 {
 	public class ForgeMessageBufferInterpreter : IMessageBufferInterpreter
 	{
-		private Dictionary<Guid, IMessageConstructor> _messageConstructors = new Dictionary<Guid, IMessageConstructor>();
+		private Dictionary<EndPoint, List<IMessageConstructor>> _messageConstructors = new Dictionary<EndPoint, List<IMessageConstructor>>();
 		private readonly BMSBytePool _bufferPool = new BMSBytePool();
 
 		public IMessageConstructor ReconstructPacketPage(BMSByte buffer, EndPoint sender)
 		{
-			var guid = Guid.Parse(buffer.GetBasicType<string>());
-			IMessageConstructor constructor;
-			if (_messageConstructors.TryGetValue(guid, out constructor))
-				ContinueProcessingExistingConstructor(buffer, guid, constructor, sender);
-			else
-				constructor = ProcessNewConstructor(buffer, guid, sender);
+			int messageId = buffer.GetBasicType<int>();
+			IMessageConstructor constructor = null;
+			if (_messageConstructors.TryGetValue(sender, out var constructors))
+			{
+				foreach (var c in constructors)
+				{
+					if (c.Id == messageId)
+					{
+						constructor = c;
+						ContinueProcessingExistingConstructor(buffer, constructor, sender);
+						break;
+					}
+				}
+			}
+
+			if (constructor == null)
+				constructor = ProcessNewConstructor(buffer, messageId, sender);
 			return constructor;
 		}
 
-		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, Guid guid, EndPoint sender)
+		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, int messageId, EndPoint sender)
 		{
 			var constructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageConstructor>();
-			constructor.Setup(_bufferPool);
+			constructor.Setup(_bufferPool, messageId);
 			constructor.ReconstructMessagePage(buffer, sender);
 			if (!constructor.MessageReconstructed)
-				_messageConstructors.Add(guid, constructor);
+			{
+				if (_messageConstructors.TryGetValue(sender, out var constructors))
+					constructors.Add(constructor);
+				else
+					_messageConstructors.Add(sender, new List<IMessageConstructor>() { constructor });
+			}
 			return constructor;
 		}
 
-		private void ContinueProcessingExistingConstructor(BMSByte buffer, Guid guid, IMessageConstructor constructor, EndPoint sender)
+		private void ContinueProcessingExistingConstructor(BMSByte buffer, IMessageConstructor constructor, EndPoint sender)
 		{
 			constructor.ReconstructMessagePage(buffer, sender);
 			if (constructor.MessageReconstructed)
-				_messageConstructors.Remove(guid);
+				_messageConstructors[sender].Remove(constructor);
 		}
 
 		public void ClearBufferFor(INetPlayer player)
 		{
-			var removeKeys = new List<Guid>();
-			foreach (var kv in _messageConstructors)
-			{
-				if (kv.Value.Sender == player.EndPoint)
-					removeKeys.Add(kv.Key);
-			}
-			foreach (var key in removeKeys)
-				_messageConstructors.Remove(key);
+			_messageConstructors.Remove(player.EndPoint);
 		}
 
 		public void Release(IMessageConstructor constructor)

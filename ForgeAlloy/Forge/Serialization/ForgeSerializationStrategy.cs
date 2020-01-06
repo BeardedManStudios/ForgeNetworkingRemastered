@@ -28,10 +28,10 @@ namespace Forge.Serialization
 			_serializers.Add(t, serializer);
 		}
 
-		public void Serialize<T>(T val, BMSByte buffer)
+		public void Serialize<T>(T val, BMSByte intoBuffer)
 		{
 			var serializer = GetSerializer<T>();
-			serializer.Serialize(val, buffer);
+			serializer.Serialize(val, intoBuffer);
 		}
 
 		public T Deserialize<T>(BMSByte buffer)

@@ -15,7 +15,7 @@ namespace Forge.Serialization
 				return CreateNewBuffer(size);
 			else
 			{
-				BMSByte buff = GetAvailableBuffer(size); ;
+				BMSByte buff = GetAvailableBuffer(size);
 				if (buff.byteArr.Length < size)
 					buff.SetArraySize(size);
 				return buff;
@@ -24,7 +24,18 @@ namespace Forge.Serialization
 
 		public void Release(BMSByte buffer)
 		{
-			if (!_inUseBuffers.Remove(buffer))
+			// TODO:  Figure out why _inUseBuffers.Remove(buffer) is returning false
+			bool found = false;
+			for (int i = 0; i < _inUseBuffers.Count; i++)
+			{
+				if (_inUseBuffers[i] == buffer)
+				{
+					_inUseBuffers.RemoveAt(i);
+					found = true;
+					break;
+				}
+			}
+			if (!found)
 				throw new BMSBytePoolReleaseUnmanagedBufferException();
 			_availableBuffers.Add(buffer);
 			buffer.Clear();

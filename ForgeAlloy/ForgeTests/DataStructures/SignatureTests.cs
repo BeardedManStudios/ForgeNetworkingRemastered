@@ -2,6 +2,7 @@
 using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
+using Forge.Serialization;
 using NUnit.Framework;
 
 namespace ForgeTests.DataStructures
@@ -12,9 +13,11 @@ namespace ForgeTests.DataStructures
 		private void AssertSerialization<T>() where T : ISignature
 		{
 			var sig = AbstractFactory.Get<INetworkTypeFactory>().GetNew<T>();
-			byte[] data = sig.Serialize();
+			BMSByte buffer = new BMSByte();
+			sig.Serialize(buffer);
+			buffer.ResetPointer();
 			var sigRes = AbstractFactory.Get<INetworkTypeFactory>().GetNew<T>();
-			sigRes.Deserialize(data);
+			sigRes.Deserialize(buffer);
 			Assert.AreEqual(sig, sigRes);
 		}
 

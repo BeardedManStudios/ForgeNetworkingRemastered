@@ -16,6 +16,7 @@ namespace Forge.Networking.Messaging
 		private readonly IMessageDestructor _messageDestructor;
 		private INetworkMediator _networkMediator;
 		private BMSBytePool _bufferPool = new BMSBytePool();
+		private MessagePool<ForgeReceiptAcknowledgementMessage> _msgAckPool = new MessagePool<ForgeReceiptAcknowledgementMessage>();
 
 		public ForgeMessageBus()
 		{
@@ -52,7 +53,7 @@ namespace Forge.Networking.Messaging
 			if (message.Receipt != null)
 				ForgeSerializationStrategy.Instance.Serialize(message.Receipt, buffer);
 			else
-				ForgeSerializationStrategy.Instance.Serialize(new byte[0], buffer);
+				ForgeSerializationStrategy.Instance.Serialize(false, buffer);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			sender.Send(receiver, pm.Buffer);
@@ -109,7 +110,9 @@ namespace Forge.Networking.Messaging
 			{
 				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
 				m.Receipt = sig;
-				SendMessage(new ForgeReceiptAcknowledgementMessage { ReceiptSignature = sig }, readingSocket, messageSender);
+				ForgeReceiptAcknowledgementMessage ack = _msgAckPool.Get();
+				ack.ReceiptSignature = sig;
+				SendMessage(ack, readingSocket, messageSender);
 			}
 		}
 

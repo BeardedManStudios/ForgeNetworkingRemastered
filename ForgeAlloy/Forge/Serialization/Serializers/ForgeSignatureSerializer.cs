@@ -7,18 +7,19 @@ namespace Forge.Serialization.Serializers
 	{
 		public object Deserialize(BMSByte buffer)
 		{
-			byte[] data = ForgeSerializationStrategy.Instance.Deserialize<byte[]>(buffer);
-			if (data.Length == 0)
+			bool hasSig = ForgeSerializationStrategy.Instance.Deserialize<bool>(buffer);
+			if (!hasSig)
 				return null;
 			var sig = AbstractFactory.Get<INetworkTypeFactory>().GetNew<T>();
-			sig.Deserialize(data);
+			sig.Deserialize(buffer);
 			return sig;
 		}
 
 		public void Serialize(object val, BMSByte buffer)
 		{
 			var sig = (T)val;
-			ForgeSerializationStrategy.Instance.Serialize(sig.Serialize(), buffer);
+			ForgeSerializationStrategy.Instance.Serialize(true, buffer);
+			sig.Serialize(buffer);
 		}
 	}
 }
