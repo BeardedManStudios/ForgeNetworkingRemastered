@@ -63,7 +63,7 @@ namespace ForgeTests.Networking.Messaging
 			Assert.IsFalse(repo.Exists(message.Receipt));
 		}
 
-		[Test, MaxTime(50)]
+		[Test, MaxTime(1000)]
 		public void MessageAfterTTL_ShouldBeRemoved()
 		{
 			var message = A.Fake<IMessage>();
@@ -73,7 +73,7 @@ namespace ForgeTests.Networking.Messaging
 			Assert.IsTrue(repo.Exists(message.Receipt));
 			Thread.Sleep(1);
 			Assert.IsTrue(repo.Exists(message.Receipt));
-			bool removed = false;
+			bool removed;
 			do
 			{
 				removed = repo.Exists(message.Receipt);

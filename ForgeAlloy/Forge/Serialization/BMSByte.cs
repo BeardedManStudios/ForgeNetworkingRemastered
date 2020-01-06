@@ -61,13 +61,18 @@ namespace Forge.Serialization
 		}
 
 		/// <summary>
-		/// Manually set the interpreted size of the interal byte array (will resize if larger)
+		/// Manually set the interpreted size of the internal byte array (will resize if larger)
 		/// </summary>
 		/// <param name="newSize">The size to be resized to</param>
 		public void SetArraySize(int newSize)
 		{
 			if (byteArr.Length < newSize)
-				Array.Resize<byte>(ref byteArr, newSize);
+			{
+				if (byteArr.Length == 0 || Size == 0)
+					byteArr = new byte[newSize];
+				else
+					Array.Resize<byte>(ref byteArr, newSize);   // Only resize if there is data in here
+			}
 		}
 
 		public void AugmentSize(int augmentedSize)
@@ -115,7 +120,7 @@ namespace Forge.Serialization
 			PointToStart();
 
 			if (byteArr.Length <= count)
-				Array.Resize<byte>(ref byteArr, count + 1);
+				SetArraySize(count + 1);
 
 			Buffer.BlockCopy(input, 0, byteArr, index, count);
 			Size = count;
@@ -135,7 +140,7 @@ namespace Forge.Serialization
 			PointToStart();
 
 			if (byteArr.Length <= otherBytes.Size)
-				Array.Resize<byte>(ref byteArr, otherBytes.Size + 1);
+				SetArraySize(otherBytes.Size + 1);
 
 			Buffer.BlockCopy(otherBytes.byteArr, otherBytes.StartIndex(), byteArr, StartIndex() + index, otherBytes.Size);
 
@@ -152,7 +157,7 @@ namespace Forge.Serialization
 		public void Append(byte[] input)
 		{
 			if (byteArr.Length <= index + input.Length)
-				Array.Resize<byte>(ref byteArr, index + input.Length + 1);
+				SetArraySize(index + input.Length + 1);
 
 			Buffer.BlockCopy(input, 0, byteArr, index, input.Length);
 
@@ -175,7 +180,7 @@ namespace Forge.Serialization
 			}
 
 			if (byteArr.Length <= index + lengthSum)
-				Array.Resize<byte>(ref byteArr, index + lengthSum + 1);
+				SetArraySize(index + lengthSum + 1);
 
 			foreach (byte[] array in input)
 			{
@@ -197,7 +202,7 @@ namespace Forge.Serialization
 				return;
 
 			if (byteArr.Length <= index + input.Size)
-				Array.Resize<byte>(ref byteArr, index + input.Size + 1);
+				SetArraySize(index + input.Size + 1);
 
 			Buffer.BlockCopy(input.byteArr, input.StartIndex(), byteArr, index, input.Size);
 
@@ -219,7 +224,7 @@ namespace Forge.Serialization
 				return;
 
 			if (byteArr.Length <= index + count)
-				Array.Resize<byte>(ref byteArr, count + Size + 1);
+				SetArraySize(count + Size + 1);
 
 			Buffer.BlockCopy(input, start, byteArr, index, count);
 			Size += count;
@@ -238,7 +243,7 @@ namespace Forge.Serialization
 				return;
 
 			if (byteArr.Length <= index + count)
-				Array.Resize<byte>(ref byteArr, Size + count + 1);
+				SetArraySize(Size + count + 1);
 
 			if (obj is string)
 				Buffer.BlockCopy(Encoding.UTF8.GetBytes(((string)obj)), 0, byteArr, index, count);
@@ -292,7 +297,7 @@ namespace Forge.Serialization
 		public void InsertRange(int start, byte[] data)
 		{
 			if (byteArr.Length <= Size + data.Length)
-				Array.Resize<byte>(ref byteArr, data.Length + Size);
+				SetArraySize(data.Length + Size);
 
 			for (int i = byteArr.Length - 1; i > start + data.Length - 1; i--)
 				byteArr[i] = byteArr[i - data.Length];
@@ -313,7 +318,7 @@ namespace Forge.Serialization
 		public void InsertRange(int start, BMSByte data)
 		{
 			if (byteArr.Length <= Size + data.Size)
-				Array.Resize<byte>(ref byteArr, data.Size + Size);
+				SetArraySize(data.Size + Size);
 
 			for (int i = byteArr.Length - 1; i > start + data.Size - 1; i--)
 				byteArr[i] = byteArr[i - data.Size];
