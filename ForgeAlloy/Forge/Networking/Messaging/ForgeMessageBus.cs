@@ -23,6 +23,7 @@ namespace Forge.Networking.Messaging
 			_messageDestructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageDestructor>();
 			_messageRepeater = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepeater>();
 			_storedMessages = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageRepository>();
+			_messageDestructor.BufferPool = _bufferPool;
 		}
 
 		public void SetMediator(INetworkMediator networkMediator)
@@ -97,6 +98,7 @@ namespace Forge.Networking.Messaging
 					}
 				}
 				catch (MessageCodeNotFoundException) { }
+				MessageBufferInterpreter.Release(constructor);
 			}
 		}
 

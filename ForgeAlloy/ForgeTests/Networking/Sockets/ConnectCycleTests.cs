@@ -34,7 +34,7 @@ namespace ForgeTests.Networking.Sockets
 			{
 				done = true;
 			});
-			Thread.Sleep(50);
+			Thread.Sleep(100);
 			Assert.IsTrue(done);
 			clientMediator.SocketFacade.ShutDown();
 		}

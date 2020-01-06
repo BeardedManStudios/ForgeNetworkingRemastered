@@ -8,5 +8,6 @@ namespace Forge.Networking.Messaging.Paging
 	{
 		IMessageConstructor ReconstructPacketPage(BMSByte buffer, EndPoint sender);
 		void ClearBufferFor(INetPlayer player);
+		void Release(IMessageConstructor constructor);
 	}
 }

@@ -8,6 +8,7 @@ namespace Forge.Networking.Messaging.Paging
 	{
 		public int HeaderLength => GetHeader(new Guid(), 0, 1).Size;
 		public int MaxPageLength => 1000;
+		public BMSBytePool BufferPool { private get; set; } = new BMSBytePool();
 
 		public IPagenatedMessage BreakdownMessage(BMSByte messageBuffer)
 		{
@@ -30,14 +31,16 @@ namespace Forge.Networking.Messaging.Paging
 				messageBuffer.InsertRange(offset, header);
 				pm.Pages.Add(page);
 				offset += page.Length;
+				BufferPool.Release(header);
 			} while (offset < messageBuffer.Size);
 			return pm;
 		}
 
 		private BMSByte GetHeader(Guid messageGuid, int pageNumber, int totalSize)
 		{
-			var header = new BMSByte();
-			ForgeSerializationStrategy.Instance.Serialize(messageGuid.ToString(), header);
+			string guid = messageGuid.ToString();
+			BMSByte header = BufferPool.Get(guid.Length + pageNumber + totalSize);
+			ForgeSerializationStrategy.Instance.Serialize(guid, header);
 			ForgeSerializationStrategy.Instance.Serialize(pageNumber, header);
 			ForgeSerializationStrategy.Instance.Serialize(totalSize, header);
 			return header;

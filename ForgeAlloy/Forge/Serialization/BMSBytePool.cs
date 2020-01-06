@@ -41,12 +41,15 @@ namespace Forge.Serialization
 
 		private int LocateAvailableBufferNear(int size)
 		{
+			int idx = 0;
 			for (int i = 0; i < _availableBuffers.Count; i++)
 			{
-				if (Math.Abs(_availableBuffers[i].Size - size) <= APPROX_SIZE_ZONE)
+				if (_availableBuffers[i].Size == size)
 					return i;
+				else if (Math.Abs(_availableBuffers[i].Size - size) <= APPROX_SIZE_ZONE)
+					idx = i;
 			}
-			return 0;
+			return idx;
 		}
 
 		private BMSByte CreateNewBuffer(int size)

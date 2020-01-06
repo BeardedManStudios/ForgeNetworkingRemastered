@@ -26,7 +26,7 @@ namespace Forge.Networking.Messaging.Paging
 		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, Guid guid, EndPoint sender)
 		{
 			var constructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageConstructor>();
-			constructor.SetBufferPool(_bufferPool);
+			constructor.Setup(_bufferPool);
 			constructor.ReconstructMessagePage(buffer, sender);
 			if (!constructor.MessageReconstructed)
 				_messageConstructors.Add(guid, constructor);
@@ -50,6 +50,11 @@ namespace Forge.Networking.Messaging.Paging
 			}
 			foreach (var key in removeKeys)
 				_messageConstructors.Remove(key);
+		}
+
+		public void Release(IMessageConstructor constructor)
+		{
+			_bufferPool.Release(constructor.MessageBuffer);
 		}
 	}
 }
