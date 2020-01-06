@@ -23,7 +23,7 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Challenge));
+			ForgeSerializationStrategy.Instance.Serialize(Challenge, buffer);
 		}
 	}
 }

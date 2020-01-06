@@ -10,14 +10,11 @@ namespace Forge.Serialization.Serializers
 			return buffer.GetBasicType<string>();
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
 			var strBytes = Encoding.UTF8.GetBytes(val == null ? string.Empty : (string)val);
-			byte[] bytes = new byte[strBytes.Length + sizeof(int)];
-			Buffer.BlockCopy(BitConverter.GetBytes(strBytes.Length), 0, bytes, 0, sizeof(int));
-			if (strBytes.Length > 0)
-				Buffer.BlockCopy(strBytes, 0, bytes, sizeof(int), strBytes.Length);
-			return bytes;
+			buffer.Append(BitConverter.GetBytes(strBytes.Length));
+			buffer.Append(strBytes);
 		}
 	}
 }

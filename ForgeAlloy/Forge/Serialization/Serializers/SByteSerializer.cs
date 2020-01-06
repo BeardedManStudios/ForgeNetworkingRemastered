@@ -7,9 +7,9 @@
 			return buffer.GetBasicType<sbyte>();
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
-			return new byte[1] { (byte)((sbyte)val) };
+			buffer.Append(new byte[1] { (byte)((sbyte)val) });
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace Forge.Serialization
 		/// <summary>
 		/// The internal byte array
 		/// </summary>
-		public byte[] byteArr = new byte[1];
+		public byte[] byteArr = new byte[0];
 
 		/// <summary>
 		/// Constructs a BMSByte
@@ -285,35 +285,6 @@ namespace Forge.Serialization
 		}
 
 		/// <summary>
-		/// Compresses the byte array so that it is sent properly across the Network
-		/// This is often used just as you are sending the message
-		/// </summary>
-		/// <returns>Returns this BMSByte object</returns>
-		public BMSByte Compress()
-		{
-			if (StartPointer == 0)
-				return this;
-
-			for (int i = 0; i < byteArr.Length - StartPointer - 1; i++)
-				byteArr[i] = byteArr[StartPointer + i];
-
-			StartPointer = 0;
-
-			return this;
-		}
-
-		/// <summary>
-		/// Pulls a byte array based off of the BMSByte metadata
-		/// </summary>
-		/// <returns>The array of raw byte data</returns>
-		public byte[] CompressBytes()
-		{
-			byte[] data = new byte[Size];
-			Buffer.BlockCopy(byteArr, StartPointer, data, 0, data.Length);
-			return data;
-		}
-
-		/// <summary>
 		/// Inserts a set of bytes at a specified index into the internal byte array
 		/// </summary>
 		/// <param name="start">The index that the new byte array will be inserted from in the internal byte array</param>
@@ -383,14 +354,11 @@ namespace Forge.Serialization
 		/// <summary>
 		/// Clears out the internal byte array
 		/// </summary>
-		public void Clear(bool raw = false)
+		public void Clear()
 		{
 			index = 0;
 			Size = 0;
 			StartPointer = 0;
-
-			if (raw)
-				Append(new byte[] { 1 });
 		}
 
 		/// <summary>

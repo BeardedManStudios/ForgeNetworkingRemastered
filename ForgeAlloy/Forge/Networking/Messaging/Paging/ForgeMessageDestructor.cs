@@ -37,11 +37,9 @@ namespace Forge.Networking.Messaging.Paging
 		private BMSByte GetHeader(Guid messageGuid, int pageNumber, int totalSize)
 		{
 			var header = new BMSByte();
-			header.Append(
-				ForgeSerializationStrategy.Instance.Serialize(messageGuid.ToString()),
-				ForgeSerializationStrategy.Instance.Serialize(pageNumber),
-				ForgeSerializationStrategy.Instance.Serialize(totalSize)
-			);
+			ForgeSerializationStrategy.Instance.Serialize(messageGuid.ToString(), header);
+			ForgeSerializationStrategy.Instance.Serialize(pageNumber, header);
+			ForgeSerializationStrategy.Instance.Serialize(totalSize, header);
 			return header;
 		}
 	}

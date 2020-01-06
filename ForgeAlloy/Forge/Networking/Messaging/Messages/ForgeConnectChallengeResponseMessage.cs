@@ -17,7 +17,7 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(ChallengeAttempt));
+			ForgeSerializationStrategy.Instance.Serialize(ChallengeAttempt, buffer);
 		}
 
 		public void GenerateResponse(IChallengeMessage challenge)

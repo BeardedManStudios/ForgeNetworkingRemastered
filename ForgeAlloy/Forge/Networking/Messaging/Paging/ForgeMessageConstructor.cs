@@ -9,7 +9,13 @@ namespace Forge.Networking.Messaging.Paging
 		public EndPoint Sender { get; private set; }
 		public bool MessageReconstructed { get; private set; } = false;
 		public BMSByte MessageBuffer { get; private set; } = new BMSByte();
-		private byte[][] _pages;
+		private BMSByte[] _pages = null;
+		private BMSBytePool _bufferPool = null;
+
+		public void SetBufferPool(BMSBytePool bufferPool)
+		{
+			_bufferPool = bufferPool;
+		}
 
 		public void ReconstructMessagePage(BMSByte page, EndPoint sender)
 		{
@@ -37,14 +43,21 @@ namespace Forge.Networking.Messaging.Paging
 				{
 					double actualSize = page.StartPointer + page.Size;
 					MessageBuffer.SetArraySize(totalSize);
-					_pages = new byte[(int)Math.Ceiling(totalSize / actualSize)][];
+					int count = (int)Math.Ceiling(totalSize / actualSize);
+					_pages = new BMSByte[count];
 				}
 				if (_pages[pageNumber] == null)
-					_pages[pageNumber] = page.CompressBytes();
+				{
+					_pages[pageNumber] = _bufferPool.Get(page.Size);
+					_pages[pageNumber].Clone(page);
+				}
 				if (IsDone())
 				{
 					foreach (var p in _pages)
+					{
 						MessageBuffer.Append(p);
+						_bufferPool.Release(p);
+					}
 					MessageReconstructed = true;
 				}
 			}

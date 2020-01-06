@@ -22,10 +22,8 @@ namespace Forge.ServerRegistry.Serializers
 			return listing;
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
-			var buffer = new BMSByte();
-			buffer.SetArraySize(512);
 			var listing = (ServerListingEntry[])val;
 			buffer.Append(BitConverter.GetBytes(listing.Length));
 			foreach (var l in listing)
@@ -35,7 +33,6 @@ namespace Forge.ServerRegistry.Serializers
 				buffer.Append(strBuf);
 				buffer.Append(BitConverter.GetBytes(l.Port));
 			}
-			return buffer.CompressBytes();
 		}
 	}
 }

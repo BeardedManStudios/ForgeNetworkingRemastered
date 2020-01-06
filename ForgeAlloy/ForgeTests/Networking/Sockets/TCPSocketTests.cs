@@ -41,10 +41,8 @@ namespace ForgeTests.Networking.Socket
 		[Test]
 		public void SendAndReceiveBuffer_ShouldBeEqual()
 		{
-			byte[] msg = new byte[]
-			{
-				3, 6, 9
-			};
+			BMSByte msg = new BMSByte();
+			msg.Append(new byte[] { 3, 6, 9 });
 			BMSByte buffer = new BMSByte();
 			buffer.SetArraySize(512);
 
@@ -54,7 +52,7 @@ namespace ForgeTests.Networking.Socket
 			Task backgroundThread = Task.Run(() =>
 			{
 				var connectedClient = server.AwaitAccept();
-				connectedClient.Send(A.Fake<EndPoint>(), msg, msg.Length);
+				connectedClient.Send(A.Fake<EndPoint>(), msg);
 			});
 
 			EndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937);
@@ -64,9 +62,9 @@ namespace ForgeTests.Networking.Socket
 			client.Close();
 			server.Close();
 
-			Assert.AreEqual(msg.Length, readLength);
-			Assert.AreEqual(msg.Length, buffer.Size);
-			for (int i = 0; i < msg.Length; ++i)
+			Assert.AreEqual(msg.Size, readLength);
+			Assert.AreEqual(msg.Size, buffer.Size);
+			for (int i = 0; i < msg.Size; ++i)
 			{
 				Assert.AreEqual(msg[i], buffer[i]);
 			}

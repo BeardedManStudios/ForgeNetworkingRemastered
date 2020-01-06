@@ -9,9 +9,9 @@ namespace Forge.Serialization.Serializers
 			return buffer.GetBasicType<double>();
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
-			return BitConverter.GetBytes((double)val);
+			buffer.Append(BitConverter.GetBytes((double)val));
 		}
 	}
 }

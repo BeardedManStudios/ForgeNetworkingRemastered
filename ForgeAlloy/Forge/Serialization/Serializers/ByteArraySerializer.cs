@@ -11,7 +11,7 @@ namespace Forge.Serialization.Serializers
 			return buffer.GetByteRange(length);
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
 			byte[] obj = (byte[])val;
 			using (var stream = new MemoryStream())
@@ -21,7 +21,7 @@ namespace Forge.Serialization.Serializers
 					writer.Write(BitConverter.GetBytes(obj.Length));
 					writer.Write(obj);
 				}
-				return stream.ToArray();
+				buffer.Append(stream.ToArray());
 			}
 		}
 	}

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Players;
+using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
@@ -78,11 +79,10 @@ namespace Forge.Networking.Sockets
 			}
 		}
 
-		protected void ProcessPlayerMessageRead(INetPlayer player, byte[] buffer)
+		protected void ProcessPlayerMessageRead(INetPlayer player, BMSByte buffer)
 		{
 			player.LastCommunication = DateTime.Now;
-			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket,
-				player.EndPoint, buffer);
+			networkMediator.MessageBus.ReceiveMessageBuffer(ManagedSocket, player.EndPoint, buffer);
 		}
 
 		private void CleanupOldChallengedPlayers()

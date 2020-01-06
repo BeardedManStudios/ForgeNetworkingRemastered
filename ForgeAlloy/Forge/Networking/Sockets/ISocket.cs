@@ -22,8 +22,7 @@ namespace Forge.Networking.Sockets
 		/// </summary>
 		/// <param name="target">This is the socket that will recieve the byte data</param>
 		/// <param name="buffer">The array of bytes that are to be sent to the target</param>
-		/// <param name="length">The number of bytes from the array to be sent</param>
-		void Send(EndPoint endpoint, byte[] buffer, int length);
+		void Send(EndPoint endpoint, BMSByte buffer);
 
 		/// <summary>
 		/// Should:  Use the supplied buffer to store the bytes supplied from the remote

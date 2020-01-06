@@ -53,10 +53,10 @@ namespace Forge.Networking.Sockets
 			return length;
 		}
 
-		public void Send(EndPoint endpoint, byte[] buffer, int length)
+		public void Send(EndPoint endpoint, BMSByte buffer)
 		{
 			int offset = 0;
-			_socket.SendTo(buffer, offset, length, SocketFlags.None, endpoint);
+			_socket.SendTo(buffer.byteArr, offset, buffer.Size, SocketFlags.None, endpoint);
 		}
 
 		public void ReportAcceptance(ISocket target)

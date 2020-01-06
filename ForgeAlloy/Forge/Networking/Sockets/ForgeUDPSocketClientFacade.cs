@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Forge.Factory;
 using Forge.Networking.Players;
+using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
@@ -23,7 +24,9 @@ namespace Forge.Networking.Sockets
 			_socket.Connect(address, port);
 			CancellationSource = new CancellationTokenSource();
 			Task.Run(ReadNetwork, CancellationSource.Token);
-			_socket.Send(_socket.EndPoint, new byte[1] { 1 }, 1);
+			BMSByte buffer = new BMSByte();
+			buffer.Append(new byte[] { 1 });
+			_socket.Send(_socket.EndPoint, buffer);
 		}
 
 		protected override void ProcessMessageRead(SocketContainerSynchronizationReadData data)

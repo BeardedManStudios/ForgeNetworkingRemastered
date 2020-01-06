@@ -8,6 +8,7 @@ namespace Forge.Networking.Messaging.Paging
 		EndPoint Sender { get; }
 		bool MessageReconstructed { get; }
 		BMSByte MessageBuffer { get; }
+		void SetBufferPool(BMSBytePool bufferPool);
 		void ReconstructMessagePage(BMSByte page, EndPoint sender);
 	}
 }

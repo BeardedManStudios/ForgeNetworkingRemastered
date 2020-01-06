@@ -20,8 +20,8 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Name));
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Text));
+			ForgeSerializationStrategy.Instance.Serialize(Name, buffer);
+			ForgeSerializationStrategy.Instance.Serialize(Text, buffer);
 		}
 	}
 }

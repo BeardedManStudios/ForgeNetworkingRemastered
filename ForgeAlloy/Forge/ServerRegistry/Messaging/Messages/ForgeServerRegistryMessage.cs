@@ -20,7 +20,7 @@ namespace Forge.ServerRegistry.Messaging.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Entries));
+			ForgeSerializationStrategy.Instance.Serialize(Entries, buffer);
 		}
 	}
 }

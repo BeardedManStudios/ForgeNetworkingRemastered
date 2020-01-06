@@ -37,14 +37,14 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(EntityCount));
+			ForgeSerializationStrategy.Instance.Serialize(EntityCount, buffer);
 			for (int i = 0; i < EntityCount; i++)
 			{
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Ids[i]));
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(PrefabIds[i]));
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Positions[i]));
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Rotations[i]));
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Scales[i]));
+				ForgeSerializationStrategy.Instance.Serialize(Ids[i], buffer);
+				ForgeSerializationStrategy.Instance.Serialize(PrefabIds[i], buffer);
+				ForgeSerializationStrategy.Instance.Serialize(Positions[i], buffer);
+				ForgeSerializationStrategy.Instance.Serialize(Rotations[i], buffer);
+				ForgeSerializationStrategy.Instance.Serialize(Scales[i], buffer);
 			}
 		}
 	}

@@ -44,7 +44,7 @@ namespace ForgeTests.Networking.Messaging
 
 			public override void Serialize(BMSByte buffer)
 			{
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(MockString));
+				ForgeSerializationStrategy.Instance.Serialize(MockString, buffer);
 			}
 		}
 
@@ -65,12 +65,14 @@ namespace ForgeTests.Networking.Messaging
 			mock.MockString = "This is a test message";
 			mock.Receipt = receipt;
 
-			byte[] bin = null;
+			BMSByte bin = null;
 			var receiver = A.Fake<ISocket>();
 			var sender = A.Fake<ISocket>();
-			A.CallTo(() => sender.Send(A<EndPoint>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
+			A.CallTo(() => sender.Send(A<EndPoint>._, A<BMSByte>._)).Invokes((ctx) =>
 			{
-				bin = (byte[])ctx.Arguments[1];
+				var b = (BMSByte)ctx.Arguments[1];
+				bin = new BMSByte();
+				bin.Clone(b);
 			});
 			var bus = new ForgeMessageBus();
 			bus.SetMediator(mediator);
@@ -100,12 +102,14 @@ namespace ForgeTests.Networking.Messaging
 			mock.MockString = "This is a test message";
 			mock.Receipt = receipt;
 
-			byte[] bin = null;
+			BMSByte bin = null;
 			var receiver = A.Fake<ISocket>();
 			var sender = A.Fake<ISocket>();
-			A.CallTo(() => sender.Send(A<EndPoint>._, A<byte[]>._, A<int>._)).Invokes((ctx) =>
+			A.CallTo(() => sender.Send(A<EndPoint>._, A<BMSByte>._)).Invokes((ctx) =>
 			{
-				bin = (byte[])ctx.Arguments[1];
+				var b = (BMSByte)ctx.Arguments[1];
+				bin = new BMSByte();
+				bin.Clone(b);
 			});
 			var bus = new ForgeMessageBus();
 			bus.SetMediator(mediator);

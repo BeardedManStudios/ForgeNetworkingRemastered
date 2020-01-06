@@ -3,7 +3,7 @@
 	public interface ISerializationStrategy
 	{
 		void AddSerializer<T>(ITypeSerializer serializer);
-		byte[] Serialize<T>(T val);
+		void Serialize<T>(T val, BMSByte buffer);
 		T Deserialize<T>(BMSByte buffer);
 		void Clear();
 	}

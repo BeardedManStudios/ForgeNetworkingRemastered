@@ -14,15 +14,13 @@ namespace Forge.Networking.Unity.Serialization
 				buffer.GetBasicType<float>());
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
 			var quat = (Quaternion)val;
-			byte[] bytes = new byte[sizeof(float) * 4];
-			Buffer.BlockCopy(BitConverter.GetBytes(quat.x), 0, bytes, 0, sizeof(float));
-			Buffer.BlockCopy(BitConverter.GetBytes(quat.y), 0, bytes, sizeof(float), sizeof(float));
-			Buffer.BlockCopy(BitConverter.GetBytes(quat.z), 0, bytes, sizeof(float) * 2, sizeof(float));
-			Buffer.BlockCopy(BitConverter.GetBytes(quat.w), 0, bytes, sizeof(float) * 3, sizeof(float));
-			return bytes;
+			buffer.Append(BitConverter.GetBytes(quat.x));
+			buffer.Append(BitConverter.GetBytes(quat.y));
+			buffer.Append(BitConverter.GetBytes(quat.z));
+			buffer.Append(BitConverter.GetBytes(quat.w));
 		}
 	}
 }

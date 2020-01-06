@@ -15,10 +15,10 @@ namespace Forge.Serialization.Serializers
 			return sig;
 		}
 
-		public byte[] Serialize(object val)
+		public void Serialize(object val, BMSByte buffer)
 		{
 			var sig = (T)val;
-			return ForgeSerializationStrategy.Instance.Serialize(sig.Serialize());
+			ForgeSerializationStrategy.Instance.Serialize(sig.Serialize(), buffer);
 		}
 	}
 }

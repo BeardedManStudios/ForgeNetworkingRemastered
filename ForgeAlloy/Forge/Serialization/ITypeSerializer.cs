@@ -2,7 +2,7 @@
 {
 	public interface ITypeSerializer
 	{
-		byte[] Serialize(object val);
+		void Serialize(object val, BMSByte buffer);
 		object Deserialize(BMSByte buffer);
 	}
 }

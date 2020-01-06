@@ -27,11 +27,11 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Id));
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(PrefabId));
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Position));
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Rotation));
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(Scale));
+			ForgeSerializationStrategy.Instance.Serialize(Id, buffer);
+			ForgeSerializationStrategy.Instance.Serialize(PrefabId, buffer);
+			ForgeSerializationStrategy.Instance.Serialize(Position, buffer);
+			ForgeSerializationStrategy.Instance.Serialize(Rotation, buffer);
+			ForgeSerializationStrategy.Instance.Serialize(Scale, buffer);
 		}
 	}
 }

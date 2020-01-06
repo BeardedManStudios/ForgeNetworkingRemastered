@@ -7,6 +7,7 @@ using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Interpreters;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Sockets;
+using Forge.Serialization;
 using NUnit.Framework;
 
 namespace ForgeTests.Networking.Socket
@@ -31,7 +32,9 @@ namespace ForgeTests.Networking.Socket
 			serverFacade.StartServer(15937, 10, netContainer);
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
 			client.Connect("127.0.0.1", 15937);
-			client.Send(client.EndPoint, new byte[] { 1 }, 1);
+			BMSByte buffer = new BMSByte();
+			buffer.Append(new byte[] { 1 });
+			client.Send(client.EndPoint, buffer);
 			Thread.Sleep(50);
 			A.CallTo(() => netContainer.MessageBus.SendReliableMessage(A<IChallengeMessage>._,
 				A<ISocket>._, A<EndPoint>._)).MustHaveHappenedOnceExactly();

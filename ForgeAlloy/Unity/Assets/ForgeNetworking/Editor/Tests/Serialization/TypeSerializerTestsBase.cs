@@ -7,7 +7,7 @@ namespace Forge.Networking.Unity.Tests.Serializers
 		protected T SerializeDeserialize<T>(ITypeSerializer serializer, T value)
 		{
 			var buffer = new BMSByte();
-			buffer.Append(serializer.Serialize(value));
+			serializer.Serialize(value, buffer);
 			buffer.MoveStartIndex(-buffer.StartIndex());
 			return (T)serializer.Deserialize(buffer);
 		}

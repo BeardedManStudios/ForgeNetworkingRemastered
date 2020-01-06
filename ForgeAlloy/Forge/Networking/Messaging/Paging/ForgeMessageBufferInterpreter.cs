@@ -10,6 +10,7 @@ namespace Forge.Networking.Messaging.Paging
 	public class ForgeMessageBufferInterpreter : IMessageBufferInterpreter
 	{
 		private Dictionary<Guid, IMessageConstructor> _messageConstructors = new Dictionary<Guid, IMessageConstructor>();
+		private readonly BMSBytePool _bufferPool = new BMSBytePool();
 
 		public IMessageConstructor ReconstructPacketPage(BMSByte buffer, EndPoint sender)
 		{
@@ -25,6 +26,7 @@ namespace Forge.Networking.Messaging.Paging
 		private IMessageConstructor ProcessNewConstructor(BMSByte buffer, Guid guid, EndPoint sender)
 		{
 			var constructor = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageConstructor>();
+			constructor.SetBufferPool(_bufferPool);
 			constructor.ReconstructMessagePage(buffer, sender);
 			if (!constructor.MessageReconstructed)
 				_messageConstructors.Add(guid, constructor);

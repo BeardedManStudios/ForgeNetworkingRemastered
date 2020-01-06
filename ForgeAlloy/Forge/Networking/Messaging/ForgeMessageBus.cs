@@ -15,6 +15,7 @@ namespace Forge.Networking.Messaging
 		public IMessageBufferInterpreter MessageBufferInterpreter { get; private set; }
 		private readonly IMessageDestructor _messageDestructor;
 		private INetworkMediator _networkMediator;
+		private BMSBytePool _bufferPool = new BMSBytePool();
 
 		public ForgeMessageBus()
 		{
@@ -44,18 +45,18 @@ namespace Forge.Networking.Messaging
 
 		public void SendMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
-			var buffer = new BMSByte();
-			buffer.SetArraySize(128);
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message)));
+			// TODO:  Possibly use the message interface to get the size needed for this
+			BMSByte buffer = _bufferPool.Get(128);
+			ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message), buffer);
 			if (message.Receipt != null)
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(message.Receipt));
+				ForgeSerializationStrategy.Instance.Serialize(message.Receipt, buffer);
 			else
-				buffer.Append(ForgeSerializationStrategy.Instance.Serialize(new byte[0]));
+				ForgeSerializationStrategy.Instance.Serialize(new byte[0], buffer);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
-			byte[] messageBuffer = pm.Buffer.CompressBytes();
-			sender.Send(receiver, messageBuffer, messageBuffer.Length);
+			sender.Send(receiver, pm.Buffer);
 			message.Sent();
+			_bufferPool.Release(buffer);
 		}
 
 		public IMessageReceiptSignature SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
@@ -66,10 +67,8 @@ namespace Forge.Networking.Messaging
 			return message.Receipt;
 		}
 
-		public void ReceiveMessageBuffer(ISocket readingSocket, EndPoint messageSender, byte[] messageBuffer)
+		public void ReceiveMessageBuffer(ISocket readingSocket, EndPoint messageSender, BMSByte buffer)
 		{
-			var buffer = new BMSByte();
-			buffer.Clone(messageBuffer);
 			IMessageConstructor constructor = MessageBufferInterpreter.ReconstructPacketPage(buffer, messageSender);
 			if (constructor.MessageReconstructed)
 			{

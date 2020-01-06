@@ -14,10 +14,9 @@ namespace ForgeTests.Serialization
 			byte[] data = new byte[] { 1, 8, 9, 34, 255, 0, 33, 66, 100, 128 };
 			var cache = new BMSByte();
 			cache.Append(data);
-			byte[] response = cache.CompressBytes();
-			Assert.AreEqual(data.Length, response.Length);
+			Assert.AreEqual(data.Length, cache.Size);
 			for (int i = 0; i < data.Length; i++)
-				Assert.AreEqual(data[i], response[i]);
+				Assert.AreEqual(data[i], cache[i]);
 		}
 
 		[Test]
@@ -27,9 +26,8 @@ namespace ForgeTests.Serialization
 			var cache = new BMSByte();
 			cache.Append(data);
 			cache.RemoveStart(3);
-			byte[] response = cache.CompressBytes();
 			for (int i = 3; i < data.Length; i++)
-				Assert.AreEqual(data[i], response[i - 3]);
+				Assert.AreEqual(data[i], cache[i - 3]);
 		}
 
 		[Test]
@@ -42,14 +40,13 @@ namespace ForgeTests.Serialization
 			cache.RemoveStart(removeSize);
 			byte[] trailer = new byte[] { 9, 3, 9 };
 			cache.Append(trailer);
-			byte[] response = cache.CompressBytes();
 			for (int i = removeSize; i < data.Length; i++)
 			{
-				Assert.AreEqual(data[i], response[i - removeSize]);
+				Assert.AreEqual(data[i], cache[i - removeSize]);
 				Assert.AreEqual(data[i], cache[i - removeSize]);
 			}
 			for (int i = trailer.Length - 1; i >= 0; i--)
-				Assert.AreEqual(trailer[i], response[response.Length - trailer.Length + i]);
+				Assert.AreEqual(trailer[i], cache[cache.Size - trailer.Length + i]);
 		}
 
 		[Test]

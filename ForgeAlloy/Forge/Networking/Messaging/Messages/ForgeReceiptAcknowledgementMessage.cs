@@ -16,7 +16,7 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			buffer.Append(ForgeSerializationStrategy.Instance.Serialize(ReceiptSignature));
+			ForgeSerializationStrategy.Instance.Serialize(ReceiptSignature, buffer);
 		}
 	}
 }
