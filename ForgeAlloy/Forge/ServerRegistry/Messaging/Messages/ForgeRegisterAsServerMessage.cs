@@ -14,12 +14,12 @@ namespace Forge.ServerRegistry.Messaging.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			Port = ForgeSerialization.Instance.Deserialize<ushort>(buffer);
+			Port = ForgeSerializer.Instance.Deserialize<ushort>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerialization.Instance.Serialize(Port, buffer);
+			ForgeSerializer.Instance.Serialize(Port, buffer);
 		}
 	}
 }

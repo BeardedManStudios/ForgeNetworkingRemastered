@@ -14,14 +14,14 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			Name = ForgeSerialization.Instance.Deserialize<string>(buffer);
-			Text = ForgeSerialization.Instance.Deserialize<string>(buffer);
+			Name = ForgeSerializer.Instance.Deserialize<string>(buffer);
+			Text = ForgeSerializer.Instance.Deserialize<string>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerialization.Instance.Serialize(Name, buffer);
-			ForgeSerialization.Instance.Serialize(Text, buffer);
+			ForgeSerializer.Instance.Serialize(Name, buffer);
+			ForgeSerializer.Instance.Serialize(Text, buffer);
 		}
 	}
 }

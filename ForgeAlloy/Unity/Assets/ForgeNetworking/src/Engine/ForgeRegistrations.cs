@@ -22,8 +22,8 @@ namespace Forge.Networking.Unity
 
 		private static void SetupExtraSerializers()
 		{
-			ForgeSerialization.Instance.AddSerializer<Vector3>(new Vector3Serializer());
-			ForgeSerialization.Instance.AddSerializer<Quaternion>(new QuaternionSerializer());
+			ForgeSerializer.Instance.AddSerializer<Vector3>(new Vector3Serializer());
+			ForgeSerializer.Instance.AddSerializer<Quaternion>(new QuaternionSerializer());
 		}
 	}
 }

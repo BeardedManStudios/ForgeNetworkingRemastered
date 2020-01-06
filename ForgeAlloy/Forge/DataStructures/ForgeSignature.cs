@@ -24,12 +24,12 @@ namespace Forge.DataStructures
 
 		public void Serialize(BMSByte buffer)
 		{
-			ForgeSerialization.Instance.Serialize(_id, buffer);
+			ForgeSerializer.Instance.Serialize(_id, buffer);
 		}
 
 		public void Deserialize(BMSByte buffer)
 		{
-			_id = ForgeSerialization.Instance.Deserialize<int>(buffer);
+			_id = ForgeSerializer.Instance.Deserialize<int>(buffer);
 		}
 
 		public override bool Equals(object obj)

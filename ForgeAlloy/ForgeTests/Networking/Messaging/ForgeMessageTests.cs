@@ -44,7 +44,7 @@ namespace ForgeTests.Networking.Messaging
 
 			public override void Serialize(BMSByte buffer)
 			{
-				ForgeSerialization.Instance.Serialize(MockString, buffer);
+				ForgeSerializer.Instance.Serialize(MockString, buffer);
 			}
 		}
 

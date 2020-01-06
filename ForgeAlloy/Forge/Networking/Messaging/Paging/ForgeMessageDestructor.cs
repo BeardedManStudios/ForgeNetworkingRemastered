@@ -50,9 +50,9 @@ namespace Forge.Networking.Messaging.Paging
 		private BMSByte GetHeader(int messageId, int pageNumber, int totalSize)
 		{
 			BMSByte header = BufferPool.Get(HeaderLength);
-			ForgeSerialization.Instance.Serialize(messageId, header);
-			ForgeSerialization.Instance.Serialize(pageNumber, header);
-			ForgeSerialization.Instance.Serialize(totalSize, header);
+			ForgeSerializer.Instance.Serialize(messageId, header);
+			ForgeSerializer.Instance.Serialize(pageNumber, header);
+			ForgeSerializer.Instance.Serialize(totalSize, header);
 			return header;
 		}
 	}

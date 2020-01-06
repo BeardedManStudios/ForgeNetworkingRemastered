@@ -19,7 +19,7 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			EntityCount = ForgeSerialization.Instance.Deserialize<int>(buffer);
+			EntityCount = ForgeSerializer.Instance.Deserialize<int>(buffer);
 			Ids = new int[EntityCount];
 			PrefabIds = new int[EntityCount];
 			Positions = new Vector3[EntityCount];
@@ -27,24 +27,24 @@ namespace Forge.Networking.Unity.Messages
 			Scales = new Vector3[EntityCount];
 			for (int i = 0; i < EntityCount; i++)
 			{
-				Ids[i] = ForgeSerialization.Instance.Deserialize<int>(buffer);
-				PrefabIds[i] = ForgeSerialization.Instance.Deserialize<int>(buffer);
-				Positions[i] = ForgeSerialization.Instance.Deserialize<Vector3>(buffer);
-				Rotations[i] = ForgeSerialization.Instance.Deserialize<Quaternion>(buffer);
-				Scales[i] = ForgeSerialization.Instance.Deserialize<Vector3>(buffer);
+				Ids[i] = ForgeSerializer.Instance.Deserialize<int>(buffer);
+				PrefabIds[i] = ForgeSerializer.Instance.Deserialize<int>(buffer);
+				Positions[i] = ForgeSerializer.Instance.Deserialize<Vector3>(buffer);
+				Rotations[i] = ForgeSerializer.Instance.Deserialize<Quaternion>(buffer);
+				Scales[i] = ForgeSerializer.Instance.Deserialize<Vector3>(buffer);
 			}
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerialization.Instance.Serialize(EntityCount, buffer);
+			ForgeSerializer.Instance.Serialize(EntityCount, buffer);
 			for (int i = 0; i < EntityCount; i++)
 			{
-				ForgeSerialization.Instance.Serialize(Ids[i], buffer);
-				ForgeSerialization.Instance.Serialize(PrefabIds[i], buffer);
-				ForgeSerialization.Instance.Serialize(Positions[i], buffer);
-				ForgeSerialization.Instance.Serialize(Rotations[i], buffer);
-				ForgeSerialization.Instance.Serialize(Scales[i], buffer);
+				ForgeSerializer.Instance.Serialize(Ids[i], buffer);
+				ForgeSerializer.Instance.Serialize(PrefabIds[i], buffer);
+				ForgeSerializer.Instance.Serialize(Positions[i], buffer);
+				ForgeSerializer.Instance.Serialize(Rotations[i], buffer);
+				ForgeSerializer.Instance.Serialize(Scales[i], buffer);
 			}
 		}
 	}
