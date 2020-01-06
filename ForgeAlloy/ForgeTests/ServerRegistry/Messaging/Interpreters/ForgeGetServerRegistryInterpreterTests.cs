@@ -19,8 +19,8 @@ namespace ForgeTests.ServerRegistry.Messaging.Interpreters
 		{
 			var players = new NetworkPlayer[]
 			{
-				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937), IsRegisteredServer = true },
-				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 15938), IsRegisteredServer = true }
+				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 15937), IsRegisteredServer = true },
+				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_ANY_IPV4), 15938), IsRegisteredServer = true }
 			};
 			var net = A.Fake<INetworkMediator>();
 			A.CallTo(() => net.PlayerRepository.Count).Returns(players.Length);
@@ -48,8 +48,8 @@ namespace ForgeTests.ServerRegistry.Messaging.Interpreters
 		{
 			var players = new NetworkPlayer[]
 			{
-				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 15937), IsRegisteredServer = true },
-				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 15938), IsRegisteredServer = true },
+				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 15937), IsRegisteredServer = true },
+				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_ANY_IPV4), 15938), IsRegisteredServer = true },
 				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("5.5.5.5"), 15990), IsRegisteredServer = false },
 				new NetworkPlayer { EndPoint = new IPEndPoint(IPAddress.Parse("128.33.21.0"), 15933), IsRegisteredServer = true },
 			};

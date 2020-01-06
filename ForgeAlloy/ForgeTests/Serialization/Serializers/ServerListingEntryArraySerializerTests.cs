@@ -1,5 +1,4 @@
-﻿using Forge.DataStructures;
-using Forge.Serialization.Serializers;
+﻿using Forge.Networking.Sockets;
 using Forge.ServerRegistry.DataStructures;
 using Forge.ServerRegistry.Serializers;
 using NUnit.Framework;
@@ -21,12 +20,12 @@ namespace ForgeTests.Serialization.Serializers
 				},
 				new ServerListingEntry
 				{
-					 Address = "127.0.0.1",
+					 Address = CommonSocketBase.LOCAL_IPV4,
 					 Port = 15937
 				},
 				new ServerListingEntry
 				{
-					 Address = "0.0.0.0",
+					 Address = CommonSocketBase.LOCAL_ANY_IPV4,
 					 Port = 35719
 				},
 				new ServerListingEntry

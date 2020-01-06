@@ -31,7 +31,7 @@ namespace ForgeTests.Networking.Socket
 			var serverFacade = AbstractFactory.Get<INetworkTypeFactory>().GetNew<ISocketServerFacade>();
 			serverFacade.StartServer(15937, 10, netContainer);
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
-			client.Connect("127.0.0.1", 15937);
+			client.Connect(CommonSocketBase.LOCAL_IPV4, 15937);
 			BMSByte buffer = new BMSByte();
 			buffer.Append(new byte[] { 1 });
 			client.Send(client.EndPoint, buffer);
@@ -61,7 +61,7 @@ namespace ForgeTests.Networking.Socket
 					done = true;
 				});
 			var client = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IClientSocket>();
-			clientFacade.StartClient("127.0.0.1", 15937, netContainerClient);
+			clientFacade.StartClient(CommonSocketBase.LOCAL_IPV4, 15937, netContainerClient);
 			Thread.Sleep(50);
 			Assert.IsTrue(done);
 			client.Close();
@@ -95,7 +95,7 @@ namespace ForgeTests.Networking.Socket
 					var interpreter = new ForgeConnectChallengeInterpreter();
 					interpreter.Interpret(clientMediator, A.Fake<EndPoint>(), (IChallengeMessage)ctx.Arguments[0]);
 				});
-			clientFacade.StartClient("127.0.0.1", 15937, clientMediator);
+			clientFacade.StartClient(CommonSocketBase.LOCAL_IPV4, 15937, clientMediator);
 			Thread.Sleep(50);
 			Assert.IsTrue(done);
 			serverFacade.ShutDown();

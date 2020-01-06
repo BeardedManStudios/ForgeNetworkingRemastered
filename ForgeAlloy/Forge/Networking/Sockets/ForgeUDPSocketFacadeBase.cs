@@ -28,7 +28,7 @@ namespace Forge.Networking.Sockets
 
 		protected void ReadNetwork()
 		{
-			EndPoint readEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
+			EndPoint readEp = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 0);
 			var buffer = new BMSByte();
 			buffer.SetArraySize(2048);
 			try

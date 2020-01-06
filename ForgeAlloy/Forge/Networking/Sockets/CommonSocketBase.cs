@@ -7,6 +7,7 @@ namespace Forge.Networking.Sockets
 	{
 		public const string LOCALHOST = "localhost";
 		public const string LOCAL_IPV4 = "127.0.0.1";
+		public const string LOCAL_ANY_IPV4 = "0.0.0.0";
 
 		protected static IPEndPoint GetEndpoint(string address, ushort port)
 		{

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 using FakeItEasy;
-using Forge.DataStructures;
 using Forge.Factory;
 using Forge.Networking.Players;
+using Forge.Networking.Sockets;
 using NUnit.Framework;
 
 namespace ForgeTests.Networking.Player
@@ -69,7 +69,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void GettingPlayerByEndpoint_ShouldFindPlayer()
 		{
-			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var ep = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 12345);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
@@ -82,8 +82,8 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void GettingPlayerByEndpointThatDoesntExist_ShouldThrow()
 		{
-			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
-			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3515);
+			var ep = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 12345);
+			var wrongEp = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 3515);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
@@ -117,7 +117,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void AddingPlayerAndCheckingExist_ShouldReturnTrue()
 		{
-			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var ep = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 12345);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
@@ -129,7 +129,7 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void EmptyRepositoryPlayerExist_ShouldReturnFalse()
 		{
-			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
+			var ep = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 12345);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();
 			bool exists = repo.Exists(ep);
 			Assert.IsFalse(exists);
@@ -138,8 +138,8 @@ namespace ForgeTests.Networking.Player
 		[Test]
 		public void CheckingExistOnNonAddedPlayerOnNonEmptyRepository_ShouldReturnFalse()
 		{
-			var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
-			var wrongEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3574);
+			var ep = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 12345);
+			var wrongEp = new IPEndPoint(IPAddress.Parse(CommonSocketBase.LOCAL_IPV4), 3574);
 			var player = A.Fake<INetPlayer>();
 			A.CallTo(() => player.EndPoint).Returns(ep);
 			var repo = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerRepository>();

@@ -3,6 +3,7 @@ using FakeItEasy;
 using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking;
+using Forge.Networking.Sockets;
 using NUnit.Framework;
 
 namespace ForgeTests.Networking.Sockets
@@ -27,7 +28,7 @@ namespace ForgeTests.Networking.Sockets
 			var clientMediator = factory.GetNew<INetworkMediator>();
 			clientMediator.ChangeEngineProxy(clientEngine);
 			serverMediator.StartServer(15937, 64);
-			clientMediator.StartClient("127.0.0.1", 15937);
+			clientMediator.StartClient(CommonSocketBase.LOCAL_IPV4, 15937);
 			bool done = false;
 			A.CallTo(() => serverEngine.NetworkingEstablished()).MustHaveHappenedOnceExactly();
 			A.CallTo(() => clientEngine.NetworkingEstablished()).Invokes((ctx) =>
