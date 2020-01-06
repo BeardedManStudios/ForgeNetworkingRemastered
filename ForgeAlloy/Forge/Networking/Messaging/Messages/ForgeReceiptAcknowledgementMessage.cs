@@ -11,12 +11,12 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			ReceiptSignature = ForgeSerializationStrategy.Instance.Deserialize<IMessageReceiptSignature>(buffer);
+			ReceiptSignature = ForgeSerialization.Instance.Deserialize<IMessageReceiptSignature>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerializationStrategy.Instance.Serialize(ReceiptSignature, buffer);
+			ForgeSerialization.Instance.Serialize(ReceiptSignature, buffer);
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerializationStrategy.Instance.Serialize(MapId, buffer);
+			ForgeSerialization.Instance.Serialize(MapId, buffer);
 		}
 	}
 }

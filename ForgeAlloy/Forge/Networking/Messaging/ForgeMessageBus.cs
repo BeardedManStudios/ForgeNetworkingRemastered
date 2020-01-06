@@ -52,11 +52,11 @@ namespace Forge.Networking.Messaging
 		{
 			// TODO:  Possibly use the message interface to get the size needed for this
 			BMSByte buffer = _bufferPool.Get(128);
-			ForgeSerializationStrategy.Instance.Serialize(GetMessageCode(message), buffer);
+			ForgeSerialization.Instance.Serialize(GetMessageCode(message), buffer);
 			if (message.Receipt != null)
-				ForgeSerializationStrategy.Instance.Serialize(message.Receipt, buffer);
+				ForgeSerialization.Instance.Serialize(message.Receipt, buffer);
 			else
-				ForgeSerializationStrategy.Instance.Serialize(false, buffer);
+				ForgeSerialization.Instance.Serialize(false, buffer);
 			message.Serialize(buffer);
 			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			sender.Send(receiver, pm.Buffer);
@@ -121,7 +121,7 @@ namespace Forge.Networking.Messaging
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)
 		{
-			var sig = ForgeSerializationStrategy.Instance.Deserialize<IMessageReceiptSignature>(buffer);
+			var sig = ForgeSerialization.Instance.Deserialize<IMessageReceiptSignature>(buffer);
 			if (sig != null)
 			{
 				m.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();

@@ -13,12 +13,12 @@ namespace Forge.Networking.Messaging.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			Identity = ForgeSerializationStrategy.Instance.Deserialize<IPlayerSignature>(buffer);
+			Identity = ForgeSerialization.Instance.Deserialize<IPlayerSignature>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerializationStrategy.Instance.Serialize(Identity, buffer);
+			ForgeSerialization.Instance.Serialize(Identity, buffer);
 		}
 	}
 }

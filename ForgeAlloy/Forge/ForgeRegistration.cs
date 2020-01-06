@@ -21,28 +21,28 @@ namespace Forge
 		{
 			AbstractFactory.Clear();
 			ForgeMessageCodes.Clear();
-			ForgeSerializationStrategy.Instance.Clear();
+			ForgeSerialization.Instance.Clear();
 		}
 
 		private static void SetupSerializers()
 		{
-			ForgeSerializationStrategy.Instance.AddSerializer<byte>(new ByteSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<sbyte>(new SByteSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<short>(new ShortSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<ushort>(new UShortSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<int>(new IntSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<uint>(new UIntSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<long>(new LongSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<ulong>(new ULongSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<float>(new FloatSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<double>(new DoubleSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<bool>(new BoolSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<string>(new StringSerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
-			ForgeSerializationStrategy.Instance.AddSerializer<IMessageReceiptSignature>(new ForgeSignatureSerializer<IMessageReceiptSignature>());
-			ForgeSerializationStrategy.Instance.AddSerializer<IPlayerSignature>(new ForgeSignatureSerializer<IPlayerSignature>());
+			ForgeSerialization.Instance.AddSerializer<byte>(new ByteSerializer());
+			ForgeSerialization.Instance.AddSerializer<sbyte>(new SByteSerializer());
+			ForgeSerialization.Instance.AddSerializer<short>(new ShortSerializer());
+			ForgeSerialization.Instance.AddSerializer<ushort>(new UShortSerializer());
+			ForgeSerialization.Instance.AddSerializer<int>(new IntSerializer());
+			ForgeSerialization.Instance.AddSerializer<uint>(new UIntSerializer());
+			ForgeSerialization.Instance.AddSerializer<long>(new LongSerializer());
+			ForgeSerialization.Instance.AddSerializer<ulong>(new ULongSerializer());
+			ForgeSerialization.Instance.AddSerializer<float>(new FloatSerializer());
+			ForgeSerialization.Instance.AddSerializer<double>(new DoubleSerializer());
+			ForgeSerialization.Instance.AddSerializer<bool>(new BoolSerializer());
+			ForgeSerialization.Instance.AddSerializer<string>(new StringSerializer());
+			ForgeSerialization.Instance.AddSerializer<byte[]>(new ByteArraySerializer());
+			ForgeSerialization.Instance.AddSerializer<IMessageReceiptSignature>(new ForgeSignatureSerializer<IMessageReceiptSignature>());
+			ForgeSerialization.Instance.AddSerializer<IPlayerSignature>(new ForgeSignatureSerializer<IPlayerSignature>());
 
-			ForgeSerializationStrategy.Instance.AddSerializer<ServerListingEntry[]>(new ServerListingEntryArraySerializer());
+			ForgeSerialization.Instance.AddSerializer<ServerListingEntry[]>(new ServerListingEntryArraySerializer());
 		}
 	}
 }

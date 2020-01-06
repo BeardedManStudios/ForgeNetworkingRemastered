@@ -7,7 +7,7 @@ namespace Forge.Serialization.Serializers
 	{
 		public object Deserialize(BMSByte buffer)
 		{
-			bool hasSig = ForgeSerializationStrategy.Instance.Deserialize<bool>(buffer);
+			bool hasSig = ForgeSerialization.Instance.Deserialize<bool>(buffer);
 			if (!hasSig)
 				return null;
 			var sig = AbstractFactory.Get<INetworkTypeFactory>().GetNew<T>();
@@ -18,7 +18,7 @@ namespace Forge.Serialization.Serializers
 		public void Serialize(object val, BMSByte buffer)
 		{
 			var sig = (T)val;
-			ForgeSerializationStrategy.Instance.Serialize(true, buffer);
+			ForgeSerialization.Instance.Serialize(true, buffer);
 			sig.Serialize(buffer);
 		}
 	}

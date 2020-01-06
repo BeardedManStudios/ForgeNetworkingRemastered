@@ -18,20 +18,20 @@ namespace Forge.Networking.Unity.Messages
 
 		public override void Deserialize(BMSByte buffer)
 		{
-			Id = ForgeSerializationStrategy.Instance.Deserialize<int>(buffer);
-			PrefabId = ForgeSerializationStrategy.Instance.Deserialize<int>(buffer);
-			Position = ForgeSerializationStrategy.Instance.Deserialize<Vector3>(buffer);
-			Rotation = ForgeSerializationStrategy.Instance.Deserialize<Quaternion>(buffer);
-			Scale = ForgeSerializationStrategy.Instance.Deserialize<Vector3>(buffer);
+			Id = ForgeSerialization.Instance.Deserialize<int>(buffer);
+			PrefabId = ForgeSerialization.Instance.Deserialize<int>(buffer);
+			Position = ForgeSerialization.Instance.Deserialize<Vector3>(buffer);
+			Rotation = ForgeSerialization.Instance.Deserialize<Quaternion>(buffer);
+			Scale = ForgeSerialization.Instance.Deserialize<Vector3>(buffer);
 		}
 
 		public override void Serialize(BMSByte buffer)
 		{
-			ForgeSerializationStrategy.Instance.Serialize(Id, buffer);
-			ForgeSerializationStrategy.Instance.Serialize(PrefabId, buffer);
-			ForgeSerializationStrategy.Instance.Serialize(Position, buffer);
-			ForgeSerializationStrategy.Instance.Serialize(Rotation, buffer);
-			ForgeSerializationStrategy.Instance.Serialize(Scale, buffer);
+			ForgeSerialization.Instance.Serialize(Id, buffer);
+			ForgeSerialization.Instance.Serialize(PrefabId, buffer);
+			ForgeSerialization.Instance.Serialize(Position, buffer);
+			ForgeSerialization.Instance.Serialize(Rotation, buffer);
+			ForgeSerialization.Instance.Serialize(Scale, buffer);
 		}
 	}
 }
