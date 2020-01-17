@@ -25,8 +25,6 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 				else
 					SetupEntityAlreadyInScene(sceneEntities, m, i, engine);
 			}
-			var msg = new CreateMyPlayerMessage();
-			netMediator.SendReliableMessage(msg, sender);
 		}
 
 		private static void SetupEntityAlreadyInScene(IUnityEntity[] sceneEntities,
