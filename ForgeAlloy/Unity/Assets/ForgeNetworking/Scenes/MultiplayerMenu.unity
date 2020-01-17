@@ -96,7 +96,6 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
-    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 0
 --- !u!196 &4
@@ -1180,7 +1179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d813b0894ad9674fa430205f3289821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneToLoad: Spawning
+  _sceneToLoad: TestRoom
   _prefabManager: {fileID: 11400000, guid: 199a06a8e37c3784fbfd739f9ffeb3ec, type: 2}
 --- !u!224 &1266123783
 RectTransform:

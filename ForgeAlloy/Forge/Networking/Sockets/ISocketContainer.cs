@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using Forge.Networking.Players;
+using System.Threading;
 
 namespace Forge.Networking.Sockets
 {
@@ -10,6 +11,7 @@ namespace Forge.Networking.Sockets
 		/// </summary>
 		CancellationTokenSource CancellationSource { get; }
 
+		IPlayerSignature NetPlayerId { get; set; }
 		ISocket ManagedSocket { get; }
 		void ShutDown();
 	}

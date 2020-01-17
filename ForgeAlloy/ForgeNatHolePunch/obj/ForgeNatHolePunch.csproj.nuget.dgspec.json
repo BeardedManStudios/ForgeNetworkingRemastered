@@ -1,24 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj": {}
+    "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj": {}
   },
   "projects": {
-    "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj": {
+    "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj",
+        "projectUniqueName": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj",
         "projectName": "ForgeNatHolePunch",
-        "projectPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj",
+        "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\ForgeNatHolePunch.csproj",
         "packagesPath": "C:\\Users\\brent\\.nuget\\packages\\",
-        "outputPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\obj\\",
+        "outputPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeNatHolePunch\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\brent\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.0"

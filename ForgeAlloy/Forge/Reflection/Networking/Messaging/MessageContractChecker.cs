@@ -60,7 +60,7 @@ namespace Forge.Reflection.Networking.Messaging
 
 				if (a.GetType() == typeof(EngineMessageContractAttribute))
 				{
-					HighestCodeFound = Math.Max(HighestCodeFound, a.GetInputId());
+					HighestCodeFound = System.Math.Max(HighestCodeFound, a.GetInputId());
 				}
 			}
 		}

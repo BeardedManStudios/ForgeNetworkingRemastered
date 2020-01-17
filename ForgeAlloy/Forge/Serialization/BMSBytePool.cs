@@ -57,7 +57,7 @@ namespace Forge.Serialization
 			{
 				if (_availableBuffers[i].Size == size)
 					return i;
-				else if (Math.Abs(_availableBuffers[i].Size - size) <= APPROX_SIZE_ZONE)
+				else if (System.Math.Abs(_availableBuffers[i].Size - size) <= APPROX_SIZE_ZONE)
 					idx = i;
 			}
 			return idx;

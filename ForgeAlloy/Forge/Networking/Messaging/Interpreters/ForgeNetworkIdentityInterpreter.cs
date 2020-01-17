@@ -1,11 +1,13 @@
-﻿using System.Net;
-using Forge.Networking.Messaging.Messages;
+﻿using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Sockets;
+using System.Net;
 
 namespace Forge.Networking.Messaging.Interpreters
 {
 	public class ForgeNetworkIdentityInterpreter : IMessageInterpreter
 	{
+		public static ForgeNetworkIdentityInterpreter Instance { get; private set; } = new ForgeNetworkIdentityInterpreter();
+
 		public bool ValidOnClient => true;
 		public bool ValidOnServer => false;
 

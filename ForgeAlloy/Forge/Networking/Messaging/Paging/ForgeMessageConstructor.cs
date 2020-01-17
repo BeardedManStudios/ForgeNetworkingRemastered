@@ -52,7 +52,7 @@ namespace Forge.Networking.Messaging.Paging
 				{
 					double actualSize = page.StartPointer + page.Size;
 					MessageBuffer.SetArraySize(totalSize);
-					int count = (int)Math.Ceiling(totalSize / actualSize);
+					int count = (int)System.Math.Ceiling(totalSize / actualSize);
 					_pages = new BMSByte[count];
 				}
 				if (_pages[pageNumber] == null)

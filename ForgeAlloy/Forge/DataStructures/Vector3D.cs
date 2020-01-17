@@ -16,7 +16,7 @@ namespace Forge.DataStructures
 		/// </summary>
 		public float Magnitude
 		{
-			get { return (float)Math.Sqrt((X * X) + (Y * Y) + (Z * Z)); }
+			get { return (float)System.Math.Sqrt((X * X) + (Y * Y) + (Z * Z)); }
 		}
 
 		public float SqrMagnitude
@@ -86,7 +86,7 @@ namespace Forge.DataStructures
 		/// <returns>The distance between this Vector and the supplied Vector</returns>
 		public float Distance(Vector3D vector)
 		{
-			return (float)Math.Sqrt(((vector.X - X) * (vector.X - X)) + ((Y - vector.Y) * (Y - vector.Y)) + ((Z - vector.Z) * (Z - vector.Z)));
+			return (float)System.Math.Sqrt(((vector.X - X) * (vector.X - X)) + ((Y - vector.Y) * (Y - vector.Y)) + ((Z - vector.Z) * (Z - vector.Z)));
 		}
 
 		public float DistanceSquared(Vector3D vector)

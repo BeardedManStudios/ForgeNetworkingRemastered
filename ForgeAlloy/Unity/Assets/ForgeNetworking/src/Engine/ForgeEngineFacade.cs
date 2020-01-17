@@ -1,8 +1,8 @@
-﻿using System.Net;
-using Forge.Factory;
+﻿using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
 using Forge.Networking.Unity.Messages;
+using System.Net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,8 +33,6 @@ namespace Forge.Networking.Unity
 
 		public void NetworkingEstablished()
 		{
-			Debug.Log("Network Established");
-
 			if (IsServer)
 				ServerStarted();
 			else
@@ -66,10 +64,7 @@ namespace Forge.Networking.Unity
 		private void OnDestroy()
 		{
 			if (NetworkMediator != null)
-			{
-				Debug.Log("Shutting down socket");
 				_selfSocket.ShutDown();
-			}
 		}
 
 		public int GetNewEntityId()

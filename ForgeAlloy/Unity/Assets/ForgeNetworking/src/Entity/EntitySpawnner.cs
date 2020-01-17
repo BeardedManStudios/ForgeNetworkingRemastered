@@ -5,16 +5,16 @@ namespace Forge.Networking.Unity
 {
 	public static class EntitySpawnner
 	{
-		public static void SpawnEntityFromData(IEngineFacade engine, int id, int prefabId, Vector3 pos, Quaternion rot, Vector3 scale)
+		public static IUnityEntity SpawnEntityFromData(IEngineFacade engine, int id, int prefabId, Vector3 pos, Quaternion rot, Vector3 scale)
 		{
 			var go = SpawnGameObjectWithInfo(engine, prefabId, pos, rot, scale);
-			SetupNetworkEntity(engine, go, id, prefabId);
+			return SetupNetworkEntity(engine, go, id, prefabId);
 		}
 
-		public static void SpawnEntityFromMessage(IEngineFacade engine, SpawnEntityMessage message)
+		public static IUnityEntity SpawnEntityFromMessage(IEngineFacade engine, SpawnEntityMessage message)
 		{
 			GameObject go = SpawnGameObject(message, engine);
-			SetupNetworkEntity(engine, go, message.Id, message.PrefabId);
+			return SetupNetworkEntity(engine, go, message.Id, message.PrefabId);
 		}
 
 		private static GameObject SpawnGameObject(SpawnEntityMessage message, IEngineFacade engine)
@@ -30,12 +30,13 @@ namespace Forge.Networking.Unity
 			return t.gameObject;
 		}
 
-		private static void SetupNetworkEntity(IEngineFacade engine, GameObject go, int id, int prefabId)
+		private static IUnityEntity SetupNetworkEntity(IEngineFacade engine, GameObject go, int id, int prefabId)
 		{
 			var entity = go.gameObject.AddComponent<NetworkEntity>();
 			entity.Id = id;
 			entity.PrefabId = prefabId;
 			engine.EntityRepository.Add(entity);
+			return entity;
 		}
 	}
 }

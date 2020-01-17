@@ -14,6 +14,7 @@ namespace Forge.Networking.Unity.Messages
 		public Vector3[] Positions { get; set; }
 		public Quaternion[] Rotations { get; set; }
 		public Vector3[] Scales { get; set; }
+		public string[] SceneIdentifiers { get; set; }
 
 		public override IMessageInterpreter Interpreter => SendEntitiesToNewPlayerInterpreter.Instance;
 
@@ -25,6 +26,7 @@ namespace Forge.Networking.Unity.Messages
 			Positions = new Vector3[EntityCount];
 			Rotations = new Quaternion[EntityCount];
 			Scales = new Vector3[EntityCount];
+			SceneIdentifiers = new string[EntityCount];
 			for (int i = 0; i < EntityCount; i++)
 			{
 				Ids[i] = ForgeSerializer.Instance.Deserialize<int>(buffer);
@@ -32,6 +34,7 @@ namespace Forge.Networking.Unity.Messages
 				Positions[i] = ForgeSerializer.Instance.Deserialize<Vector3>(buffer);
 				Rotations[i] = ForgeSerializer.Instance.Deserialize<Quaternion>(buffer);
 				Scales[i] = ForgeSerializer.Instance.Deserialize<Vector3>(buffer);
+				SceneIdentifiers[i] = ForgeSerializer.Instance.Deserialize<string>(buffer);
 			}
 		}
 
@@ -45,6 +48,7 @@ namespace Forge.Networking.Unity.Messages
 				ForgeSerializer.Instance.Serialize(Positions[i], buffer);
 				ForgeSerializer.Instance.Serialize(Rotations[i], buffer);
 				ForgeSerializer.Instance.Serialize(Scales[i], buffer);
+				ForgeSerializer.Instance.Serialize(SceneIdentifiers[i], buffer);
 			}
 		}
 	}

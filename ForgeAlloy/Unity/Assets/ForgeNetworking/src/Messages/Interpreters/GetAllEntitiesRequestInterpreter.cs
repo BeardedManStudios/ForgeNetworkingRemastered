@@ -1,5 +1,5 @@
-﻿using System.Net;
-using Forge.Networking.Messaging;
+﻿using Forge.Networking.Messaging;
+using System.Net;
 using UnityEngine;
 
 namespace Forge.Networking.Unity.Messages.Interpreters
@@ -22,6 +22,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 			msg.Positions = new Vector3[count];
 			msg.Rotations = new Quaternion[count];
 			msg.Scales = new Vector3[count];
+			msg.SceneIdentifiers = new string[count];
 			int i = 0;
 			var itr = engine.EntityRepository.GetEnumerator();
 			while (itr.MoveNext())
@@ -34,6 +35,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 					msg.Positions[i] = t.position;
 					msg.Rotations[i] = t.rotation;
 					msg.Scales[i] = t.localScale;
+					msg.SceneIdentifiers[i] = itr.Current.SceneIdentifier;
 				}
 				i++;
 			}

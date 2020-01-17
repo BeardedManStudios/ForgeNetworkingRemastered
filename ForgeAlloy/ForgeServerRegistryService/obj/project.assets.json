@@ -28,23 +28,26 @@
   },
   "packageFolders": {
     "C:\\Users\\brent\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
+      "projectUniqueName": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
       "projectName": "ForgeServerRegistryService",
-      "projectPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
+      "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
       "packagesPath": "C:\\Users\\brent\\.nuget\\packages\\",
-      "outputPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\obj\\",
+      "outputPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\brent\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.0"
@@ -56,8 +59,8 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj": {
-              "projectPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj"
+            "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj": {
+              "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj"
             }
           }
         }

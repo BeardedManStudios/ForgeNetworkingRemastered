@@ -9,23 +9,26 @@
   },
   "packageFolders": {
     "C:\\Users\\brent\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\ForgeSampleGameServer.csproj",
+      "projectUniqueName": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\ForgeSampleGameServer.csproj",
       "projectName": "ForgeSampleGameServer",
-      "projectPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\ForgeSampleGameServer.csproj",
+      "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\ForgeSampleGameServer.csproj",
       "packagesPath": "C:\\Users\\brent\\.nuget\\packages\\",
-      "outputPath": "F:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\obj\\",
+      "outputPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeSampleGameServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\brent\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.0"

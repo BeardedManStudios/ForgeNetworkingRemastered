@@ -9,7 +9,7 @@ namespace Forge.Networking.Messaging.Messages
 	{
 		public IPlayerSignature Identity { get; set; }
 
-		public override IMessageInterpreter Interpreter => new ForgeNetworkIdentityInterpreter();
+		public override IMessageInterpreter Interpreter => ForgeNetworkIdentityInterpreter.Instance;
 
 		public override void Deserialize(BMSByte buffer)
 		{

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Forge.Factory;
+using Forge.Networking.Messaging.Messages;
+using Forge.Networking.Players;
+using Forge.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Forge.Factory;
-using Forge.Networking.Messaging.Messages;
-using Forge.Networking.Players;
-using Forge.Serialization;
 
 namespace Forge.Networking.Sockets
 {
@@ -17,6 +17,9 @@ namespace Forge.Networking.Sockets
 
 		private readonly IServerSocket _socket;
 		public override ISocket ManagedSocket => _socket;
+
+		public IPlayerSignature NetPlayerId { get; set; }
+
 		private readonly List<EndPoint> _bannedEndpoints = new List<EndPoint>();
 
 		private IPlayerRepository _challengedPlayers;
@@ -32,6 +35,7 @@ namespace Forge.Networking.Sockets
 			networkMediator = netMediator;
 			_socket.Listen(port, MAX_PARALLEL_CONNECTION_REQUEST);
 			CancellationSource = new CancellationTokenSource();
+			NetPlayerId = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPlayerSignature>();
 			Task.Run(ReadNetwork, CancellationSource.Token);
 		}
 
@@ -48,13 +52,13 @@ namespace Forge.Networking.Sockets
 			lock (_challengedPlayers)
 			{
 				player = _challengedPlayers.GetPlayer(endpoint);
+				netContainer.PlayerRepository.AddPlayer(player);
 				netIdentity = new ForgeNetworkIdentityMessage
 				{
 					Identity = player.Id
 				};
 				_challengedPlayers.RemovePlayer(player);
 			}
-			netContainer.PlayerRepository.AddPlayer(player);
 			netContainer.MessageBus.SendReliableMessage(netIdentity, ManagedSocket, endpoint);
 		}
 

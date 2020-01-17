@@ -3,6 +3,8 @@ using Forge.Networking.Messaging;
 
 namespace Forge.Networking.Unity
 {
+	public delegate void EntitiesLoadedEvent();
+
 	public interface IEngineFacade : IEngineProxy
 	{
 		bool IsServer { get; }

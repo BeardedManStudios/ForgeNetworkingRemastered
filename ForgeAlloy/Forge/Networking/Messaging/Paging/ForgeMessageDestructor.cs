@@ -38,7 +38,7 @@ namespace Forge.Networking.Messaging.Paging
 				BMSByte header = GetHeader(messageId, pm.Pages.Count, totalSize);
 				var page = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessagePage>();
 				page.StartOffset = offset;
-				page.Length = Math.Min(messageBuffer.Size - offset, MaxPageLength) + header.Size;
+				page.Length = System.Math.Min(messageBuffer.Size - offset, MaxPageLength) + header.Size;
 				messageBuffer.InsertRange(offset, header);
 				pm.Pages.Add(page);
 				offset += page.Length;
