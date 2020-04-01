@@ -838,7 +838,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="methodName">The name of the method that is to be registered</param>
 		/// <param name="callback">The callback to fire for this RPC when received a signal for it</param>
 		/// <param name="argumentTypes">The types argument types for validation</param>
-		public void RegisterRpc(string methodName, Action<RpcArgs> callback, params Type[] argumentTypes)
+		/// <returns>The newly registered rpc id</returns>
+		public byte RegisterRpc(string methodName, Action<RpcArgs> callback, params Type[] argumentTypes)
 		{
 			// Make sure that the method name string is unique and not already assigned
 			if (rpcLookup.ContainsKey(methodName))
@@ -848,12 +849,13 @@ namespace BeardedManStudios.Forge.Networking
 			if (Rpcs.Count >= byte.MaxValue)
 				throw new BaseNetworkException("You are only allowed to register " + byte.MaxValue + " Rpc methods per network object");
 
-
 			// The id for this RPC is goign to be the next index in the dictionary
 			byte id = (byte)Rpcs.Count;
 			Rpcs.Add(id, new Rpc(callback, argumentTypes));
 			rpcLookup.Add(methodName, id);
 			inverseRpcLookup.Add(id, methodName);
+
+			return id;
 		}
 
 		/// <summary>
