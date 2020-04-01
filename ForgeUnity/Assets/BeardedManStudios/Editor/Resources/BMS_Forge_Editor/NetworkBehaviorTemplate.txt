@@ -27,6 +27,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			>:FOREVERY rpcs:<
 			networkObject.RegisterRpc(">:[0]:<", >:[0]:<>:[1]:<);
 			>:ENDFOREVERY:<
+			RegisterCustomRPCs(networkObject);
 
 			networkObject.onDestroy += DestroyGameObject;
 

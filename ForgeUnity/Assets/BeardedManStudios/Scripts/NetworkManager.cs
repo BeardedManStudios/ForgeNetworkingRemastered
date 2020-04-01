@@ -123,7 +123,10 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					RegisterOnMasterServer(masterServerRegisterData);
 				}
 
-				Networker.playerAccepted += PlayerAcceptedSceneSetup;
+				if (automaticScenes)
+				{
+					Networker.playerAccepted += PlayerAcceptedSceneSetup;
+				}
 
 #if FN_WEBSERVER
 				string pathToFiles = "fnwww/html";
@@ -574,6 +577,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					loadingScenes.Add(sceneIndex);
 				}
 
+				// Called when the server wants you to change the scene
 				if (networkSceneChanging != null)
 					networkSceneChanging(sceneIndex, mode);
 
