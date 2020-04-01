@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.0": {
+      "ForgeServerRegistryService/1.0.0": {
+        "dependencies": {
+          "Forge": "1.0.0"
+        },
+        "runtime": {
+          "ForgeServerRegistryService.dll": {}
+        }
+      },
+      "Forge/1.0.0": {
+        "runtime": {
+          "Forge.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ForgeServerRegistryService/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Forge/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
