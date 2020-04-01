@@ -36,7 +36,8 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		protected virtual void RegisterCustomRPCs(NetworkObject networkObject)
 		{
-			registerCustomRPCs?.Invoke(networkObject);
+			if (registerCustomRPCs != null)
+				registerCustomRPCs(networkObject);
 		}
 
 		public void AwaitNetworkBind(NetWorker networker, NetworkObject createTarget, uint idOffset)
