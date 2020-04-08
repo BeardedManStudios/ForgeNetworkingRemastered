@@ -20,3 +20,16 @@ C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netc
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.dll
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.pdb
 C:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.csprojAssemblyReference.cache
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.exe
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.deps.json
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.runtimeconfig.json
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.runtimeconfig.dev.json
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.dll
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\bin\Debug\netcoreapp3.0\ForgeSampleGameServer.pdb
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.csprojAssemblyReference.cache
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.csproj.CoreCompileInputs.cache
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.AssemblyInfoInputs.cache
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.AssemblyInfo.cs
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.dll
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.pdb
+K:\git\ForgeNetworkingRemastered\ForgeAlloy\ForgeSampleGameServer\obj\Debug\netcoreapp3.0\ForgeSampleGameServer.genruntimeconfig.cache

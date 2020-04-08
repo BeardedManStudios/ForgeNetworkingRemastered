@@ -1,0 +1,20 @@
+using System;
+using System.Net;
+using Forge.Networking.Messaging;
+using Forge.Networking.Sockets;
+using UnityEngine;
+
+namespace Forge.Networking.Unity.Messages.Interpreters
+{{
+	public class {0}Interpreter : IMessageInterpreter
+	{{
+		public bool ValidOnClient => {1};
+		public bool ValidOnServer => {2};
+
+		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
+		{{
+			var m = ({0}Message)message;
+			throw new NotImplementedException();
+		}}
+	}}
+}}
