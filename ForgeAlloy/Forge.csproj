@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+    <EmbeddedResource Remove="**\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+    <None Remove="**\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ForgeAlloyUnity\Assets\ForgeNetworking\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <Compile Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <EmbeddedResource Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\CharacterControllers\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Editor\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Examples\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\src\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Tweener\**" />
+    <None Remove="ForgeAlloyUnity\Assets\ForgeNetworking\Unity\**" />
+  </ItemGroup>
+
+</Project>

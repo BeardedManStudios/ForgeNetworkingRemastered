@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Forge\Forge.csproj" />
+    <ProjectReference Include="..\Forge.csproj" />
   </ItemGroup>
 
 </Project>

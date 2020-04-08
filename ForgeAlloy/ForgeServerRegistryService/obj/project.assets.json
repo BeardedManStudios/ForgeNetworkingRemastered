@@ -17,8 +17,8 @@
   "libraries": {
     "Forge/1.0.0": {
       "type": "project",
-      "path": "../Forge/Forge.csproj",
-      "msbuildProject": "../Forge/Forge.csproj"
+      "path": "../Forge.csproj",
+      "msbuildProject": "../Forge.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -34,11 +34,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
+      "projectUniqueName": "K:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
       "projectName": "ForgeServerRegistryService",
-      "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
+      "projectPath": "K:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\ForgeServerRegistryService.csproj",
       "packagesPath": "C:\\Users\\brent\\.nuget\\packages\\",
-      "outputPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\obj\\",
+      "outputPath": "K:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\ForgeServerRegistryService\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -59,8 +59,8 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj": {
-              "projectPath": "C:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge\\Forge.csproj"
+            "K:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge.csproj": {
+              "projectPath": "K:\\git\\ForgeNetworkingRemastered\\ForgeAlloy\\Forge.csproj"
             }
           }
         }
@@ -90,7 +90,7 @@
           },
           {
             "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[3.0.1, 3.0.1]"
+            "version": "[3.0.3, 3.0.3]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
@@ -106,7 +106,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
       }
     }
   }
