@@ -314,11 +314,11 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="FakeItEasy">
-      <HintPath>K:/git/ForgeNetworkingRemastered/ForgeAlloy/ForgeAlloyUnity/Assets/ForgeNetworking/Editor/Plugins/FakeItEasy.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>K:/git/ForgeNetworkingRemastered/ForgeAlloy/ForgeAlloyUnity/Assets/ForgeNetworking/Editor/Plugins/Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FakeItEasy">
+      <HintPath>K:/git/ForgeNetworkingRemastered/ForgeAlloy/ForgeAlloyUnity/Assets/ForgeNetworking/Editor/Plugins/FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>K:/git/ForgeNetworkingRemastered/ForgeAlloy/ForgeAlloyUnity/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
