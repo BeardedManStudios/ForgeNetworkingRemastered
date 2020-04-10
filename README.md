@@ -33,16 +33,12 @@ Use the links below to learn how to create your first project with Forge Remaste
 
 [Discord](https://discord.gg/yzZwEYm) - Join us and the growing community, for talking about Forge Networking as well as just networking in general. Even if you don't exactly use Forge Networking in your project you can get a ton of insight from this community :)
 
-[Generated API](https://forgepowered.com/ForgeNetworkingRemasteredAPI/html/index.html)
-
 [YouTube Jumpstart Videos](https://www.youtube.com/playlist?list=PLm1w78-UUlMIi5Vfwy6ckJQIQMHMT-QS5)
 
 ## Ways to support the project
-1) Make pull requests :D
-2) [GitHub Sponsorship](https://github.com/sponsors/BrentFarris)
-3) Any donations are much appreciated <3
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CXPTUZR3KBLU)
+- Make pull requests :D
+- Contribute to tutorials, documentation, and in the Discord community
+- [GitHub Sponsorship](https://github.com/sponsors/BrentFarris)
 
 ## Contributors
 
