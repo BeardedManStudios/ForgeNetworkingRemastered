@@ -99,7 +99,6 @@
     <Compile Include="Assets\Examples\ComplexSample\src\SemaphoreMarkers\MarkerDestroyDelay.cs" />
     <Compile Include="Assets\Examples\ComplexSample\src\SemaphoreMarkers\SemaphoreMarker.cs" />
     <Compile Include="Assets\Examples\ComplexSample\src\SemaphoreMarkers\VisualSemaphore.cs" />
-    <Compile Include="Assets\Examples\Cube\src\CubeMapLoader.cs" />
     <Compile Include="Assets\Examples\Spawning\src\ServerCreateCube.cs" />
     <Compile Include="Assets\ForgeNetworking\DataStructures\ForgeSignature.cs" />
     <Compile Include="Assets\ForgeNetworking\DataStructures\ISignature.cs" />
