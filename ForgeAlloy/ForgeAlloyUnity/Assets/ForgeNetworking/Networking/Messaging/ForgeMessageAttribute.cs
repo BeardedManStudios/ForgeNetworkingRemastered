@@ -6,7 +6,7 @@ namespace Forge.Networking.Messaging
 	{
 		internal const int SERVER_LISTING_CODE_OFFSET = 0x7FFFFFFF - 3000;
 		internal const int NAT_HOLE_PUNCH_CODE_OFFSET = 0x7FFFFFFF - 2000;
-		internal const int UNITE_TEST_CODE_OFFSET = 0x7FFFFFFF - 1000;
+		internal const int UNIT_TEST_CODE_OFFSET = 0x7FFFFFFF - 1000;
 
 		protected int inputId;
 		protected int id;
@@ -26,7 +26,7 @@ namespace Forge.Networking.Messaging
 	public sealed class UnitTestingMessageContract : MessageContractAttribute
 	{
 		public UnitTestingMessageContract(int id, Type type)
-			: base(id + UNITE_TEST_CODE_OFFSET, type) { inputId = id; }
+			: base(id + UNIT_TEST_CODE_OFFSET, type) { inputId = id; }
 	}
 
 	public sealed class ServerListingMessageContractAttribute : MessageContractAttribute
