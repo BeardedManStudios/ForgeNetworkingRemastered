@@ -56,7 +56,10 @@ namespace Forge.Networking.Messaging
 					Thread.Sleep(RepeatMillisecondsInterval);
 				}
 			}
-			catch (OperationCanceledException) { }
+			catch (OperationCanceledException)
+			{
+				_networkMediator.EngineProxy.Logger.Log("Cancelling the message repeater background task");
+			}
 		}
 
 		private void ResendMessage(EndPoint endpoint, IMessage message)

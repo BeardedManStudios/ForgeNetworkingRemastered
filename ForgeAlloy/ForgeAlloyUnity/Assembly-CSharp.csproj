@@ -103,7 +103,9 @@
     <Compile Include="Assets\ForgeNetworking\DataStructures\ForgeSignature.cs" />
     <Compile Include="Assets\ForgeNetworking\DataStructures\ISignature.cs" />
     <Compile Include="Assets\ForgeNetworking\DataStructures\Vector3D.cs" />
+    <Compile Include="Assets\ForgeNetworking\Engine\ForgeConsoleLogger.cs" />
     <Compile Include="Assets\ForgeNetworking\Engine\IEngineProxy.cs" />
+    <Compile Include="Assets\ForgeNetworking\Engine\IForgeLogger.cs" />
     <Compile Include="Assets\ForgeNetworking\Factory\AbstractFactory.cs" />
     <Compile Include="Assets\ForgeNetworking\Factory\CantRegisterTypeIFactoryInAbstractFactoryException.cs" />
     <Compile Include="Assets\ForgeNetworking\Factory\ForgeNetworkingTypeFactory.cs" />
@@ -231,6 +233,7 @@
     <Compile Include="Assets\ForgeNetworking\Unity\UnityExtensions.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeRegistrations.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Engine\ForgeUnityLogger.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Engine\IEngineFacade.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\EntityAlreadyInRepositoryException.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\EntityNotFoundException.cs" />

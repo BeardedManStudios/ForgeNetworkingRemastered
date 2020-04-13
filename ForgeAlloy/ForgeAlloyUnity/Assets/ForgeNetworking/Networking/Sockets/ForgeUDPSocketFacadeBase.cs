@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using Forge.Serialization;
@@ -39,7 +39,10 @@ namespace Forge.Networking.Sockets
 					ProcessMessageRead(buffer, readEp);
 				}
 			}
-			catch (OperationCanceledException) { }
+			catch (OperationCanceledException)
+			{
+				networkMediator.EngineProxy.Logger.Log("Cancelling the background network read task");
+			}
 		}
 
 		protected abstract void ProcessMessageRead(BMSByte buffer, EndPoint sender);

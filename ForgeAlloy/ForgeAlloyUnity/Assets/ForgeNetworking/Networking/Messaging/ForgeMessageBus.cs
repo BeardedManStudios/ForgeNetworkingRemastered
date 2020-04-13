@@ -105,7 +105,10 @@ namespace Forge.Networking.Messaging
 						});
 					}
 				}
-				catch (MessageCodeNotFoundException) { }
+				catch (MessageCodeNotFoundException ex)
+				{
+					_networkMediator.EngineProxy.Logger.LogException(ex);
+				}
 				MessageBufferInterpreter.Release(constructor);
 			}
 		}

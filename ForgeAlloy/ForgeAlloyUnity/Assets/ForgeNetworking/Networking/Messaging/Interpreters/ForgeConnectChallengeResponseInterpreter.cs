@@ -10,17 +10,20 @@ namespace Forge.Networking.Messaging.Interpreters
 		public bool ValidOnClient => false;
 		public bool ValidOnServer => true;
 
-		public void Interpret(INetworkMediator netContainer, EndPoint sender, IMessage message)
+		public void Interpret(INetworkMediator netMediator, EndPoint sender, IMessage message)
 		{
 			var response = (IChallengeResponseMessage)message;
 			if (!response.ValidateResponse())
 				return;
 			try
 			{
-				var serverContainer = (ISocketServerFacade)netContainer.SocketFacade;
-				serverContainer.ChallengeSuccess(netContainer, sender);
+				var serverContainer = (ISocketServerFacade)netMediator.SocketFacade;
+				serverContainer.ChallengeSuccess(netMediator, sender);
 			}
-			catch (PlayerNotFoundException) { }
+			catch (PlayerNotFoundException ex)
+			{
+				netMediator.EngineProxy.Logger.LogException(ex);
+			}
 		}
 	}
 }

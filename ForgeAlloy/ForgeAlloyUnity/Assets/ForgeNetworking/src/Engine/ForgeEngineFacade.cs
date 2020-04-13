@@ -1,7 +1,8 @@
-﻿using Forge.Factory;
+﻿using System.Net;
+using Forge.Engine;
+using Forge.Factory;
 using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
-using System.Net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,9 @@ namespace Forge.Networking.Unity
 {
 	public class ForgeEngineFacade : MonoBehaviour, IEngineFacade
 	{
+		private static readonly IForgeLogger _logger = new ForgeUnityLogger();
+		public IForgeLogger Logger => _logger;
+
 		[SerializeField]
 		private string _sceneToLoad = "";
 		public string CurrentMap => _sceneToLoad;
