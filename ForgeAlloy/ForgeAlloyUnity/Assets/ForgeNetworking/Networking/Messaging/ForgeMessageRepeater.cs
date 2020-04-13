@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,13 +28,13 @@ namespace Forge.Networking.Messaging
 
 		public void AddMessageToRepeat(IMessage message, EndPoint receiver)
 		{
-			if (!_messageRepository.Exists(message.Receipt))
+			if (!_messageRepository.Exists(receiver, message.Receipt))
 				_messageRepository.AddMessage(message, receiver);
 		}
 
-		public void RemoveRepeatingMessage(IMessageReceiptSignature messageReceipt)
+		public void RemoveRepeatingMessage(EndPoint sender, IMessageReceiptSignature messageReceipt)
 		{
-			_messageRepository.RemoveMessage(messageReceipt);
+			_messageRepository.RemoveMessage(sender, messageReceipt);
 		}
 
 		public void RemoveAllFor(EndPoint receiver)
