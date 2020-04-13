@@ -18,7 +18,7 @@ namespace Forge.Networking.Messaging
 		}
 
 		private readonly List<StoredMessage> _messagesWithTTL = new List<StoredMessage>();
-		private readonly Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>> _messages = new Dictionary<IMessageReceiptSignature, KeyValuePair<EndPoint, IMessage>>();
+		private readonly Dictionary<EndPoint, Dictionary<IMessageReceiptSignature, IMessage>> _messages = new Dictionary<EndPoint, Dictionary<IMessageReceiptSignature, IMessage>>();
 
 		public void Clear()
 		{
@@ -47,7 +47,7 @@ namespace Forge.Networking.Messaging
 						{
 							if (_messagesWithTTL[i].ttl <= now)
 							{
-								RemoveFromMessageLookup(_messagesWithTTL[i].message.Receipt);
+								RemoveFromMessageLookup(_messagesWithTTL[i].sender, _messagesWithTTL[i].message.Receipt);
 								_messagesWithTTL.RemoveAt(i--);
 							}
 						}
@@ -65,11 +65,16 @@ namespace Forge.Networking.Messaging
 		{
 			if (message.Receipt == null)
 				throw new MessageRepositoryMissingReceiptOnMessageException();
-			if (Exists(message.Receipt))
+			if (Exists(sender, message.Receipt))
 				throw new MessageWithReceiptSignatureAlreadyExistsException();
 			lock (_messages)
 			{
-				_messages.Add(message.Receipt, new KeyValuePair<EndPoint, IMessage>(sender, message));
+				if (!_messages.TryGetValue(sender, out var kv))
+				{
+					kv = new Dictionary<IMessageReceiptSignature, IMessage>();
+					_messages.Add(sender, kv);
+				}
+				kv.Add(message.Receipt, message);
 			}
 		}
 
@@ -102,45 +107,39 @@ namespace Forge.Networking.Messaging
 			lock (_messages)
 			{
 				var removals = new List<IMessageReceiptSignature>();
-				foreach (var kv in _messages)
-				{
-					if (kv.Value.Key == sender)
-					{
-						removals.Add(kv.Key);
-					}
-				}
-				foreach (var key in removals)
-				{
-					_messages.Remove(key);
-				}
+				_messages.Remove(sender);
 			}
 		}
 
-		public void RemoveMessage(IMessage message)
+		public void RemoveMessage(EndPoint sender, IMessage message)
 		{
-			RemoveMessage(message.Receipt);
+			RemoveMessage(sender, message.Receipt);
 		}
 
-		public void RemoveMessage(IMessageReceiptSignature guid)
+		public void RemoveMessage(EndPoint sender, IMessageReceiptSignature guid)
 		{
-			RemoveFromMessageLookup(guid);
+			RemoveFromMessageLookup(sender, guid);
 			RemoveFromTTLWithGuid(guid);
 		}
 
-		private void RemoveFromMessageLookup(IMessageReceiptSignature receipt)
+		private void RemoveFromMessageLookup(EndPoint sender, IMessageReceiptSignature receipt)
 		{
 			lock (_messages)
 			{
-				_messages.Remove(receipt);
+				if (_messages.TryGetValue(sender, out var kv))
+					kv.Remove(receipt);
 			}
 		}
 
-		public bool Exists(IMessageReceiptSignature receipt)
+		public bool Exists(EndPoint sender, IMessageReceiptSignature receipt)
 		{
+			bool exists = false;
 			lock (_messages)
 			{
-				return _messages.ContainsKey(receipt);
+				if (_messages.TryGetValue(sender, out var kv))
+					exists = kv.ContainsKey(receipt);
 			}
+			return exists;
 		}
 
 		private void RemoveFromTTLWithGuid(IMessageReceiptSignature receipt)
@@ -149,7 +148,7 @@ namespace Forge.Networking.Messaging
 			{
 				for (int i = 0; i < _messagesWithTTL.Count; i++)
 				{
-					if (_messagesWithTTL[i].message.Receipt == receipt)
+					if (_messagesWithTTL[i].message.Receipt.Equals(receipt))
 					{
 						_messagesWithTTL.RemoveAt(i);
 						break;
@@ -158,19 +157,16 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public KeyValuePair<EndPoint, IMessage> Get(IMessageReceiptSignature receipt)
-		{
-			return _messages[receipt];
-		}
-
 		public void Iterate(MessageRepositoryIterator iterator)
 		{
+			// TODO:  Review this for better performance
 			var copy = new List<KeyValuePair<EndPoint, IMessage>>();
 			lock (_messages)
 			{
 				foreach (var kv in _messages)
 				{
-					copy.Add(kv.Value);
+					foreach (var mkv in kv.Value)
+						copy.Add(new KeyValuePair<EndPoint, IMessage>(kv.Key, mkv.Value));
 				}
 			}
 			foreach (var kv in copy)

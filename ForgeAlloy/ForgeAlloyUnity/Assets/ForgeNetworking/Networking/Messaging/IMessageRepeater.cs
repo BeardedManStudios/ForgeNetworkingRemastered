@@ -7,7 +7,7 @@ namespace Forge.Networking.Messaging
 		int RepeatMillisecondsInterval { get; set; }
 		void Start(INetworkMediator networkMediator);
 		void AddMessageToRepeat(IMessage message, EndPoint receiver);
-		void RemoveRepeatingMessage(IMessageReceiptSignature messageReceipt);
+		void RemoveRepeatingMessage(EndPoint sender, IMessageReceiptSignature messageReceipt);
 		void RemoveAllFor(EndPoint receiver);
 	}
 }

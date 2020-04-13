@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d813b0894ad9674fa430205f3289821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneToLoad: MultiplayerLoader
+  _sceneToLoad: Chat
   _prefabManager: {fileID: 11400000, guid: 199a06a8e37c3784fbfd739f9ffeb3ec, type: 2}
 --- !u!224 &1266123783
 RectTransform:
@@ -1282,7 +1282,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 970310614}
   m_HandleRect: {fileID: 970310613}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

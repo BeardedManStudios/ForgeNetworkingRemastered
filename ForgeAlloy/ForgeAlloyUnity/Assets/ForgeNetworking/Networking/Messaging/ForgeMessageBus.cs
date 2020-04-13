@@ -1,11 +1,11 @@
-﻿using Forge.Factory;
+﻿using System.Net;
+using System.Threading;
+using Forge.Factory;
 using Forge.Networking.Messaging.Messages;
 using Forge.Networking.Messaging.Paging;
 using Forge.Networking.Players;
 using Forge.Networking.Sockets;
 using Forge.Serialization;
-using System.Net;
-using System.Threading;
 
 namespace Forge.Networking.Messaging
 {
@@ -88,7 +88,7 @@ namespace Forge.Networking.Messaging
 
 					if (m.Receipt != null)
 					{
-						if (_storedMessages.Exists(m.Receipt))
+						if (_storedMessages.Exists(messageSender, m.Receipt))
 							return;
 						_storedMessages.AddMessage(m, messageSender, _networkMediator.PlayerTimeout);
 					}
@@ -135,9 +135,9 @@ namespace Forge.Networking.Messaging
 			}
 		}
 
-		public void MessageConfirmed(IMessageReceiptSignature messageReceipt)
+		public void MessageConfirmed(EndPoint sender, IMessageReceiptSignature messageReceipt)
 		{
-			_messageRepeater.RemoveRepeatingMessage(messageReceipt);
+			_messageRepeater.RemoveRepeatingMessage(sender, messageReceipt);
 		}
 	}
 }

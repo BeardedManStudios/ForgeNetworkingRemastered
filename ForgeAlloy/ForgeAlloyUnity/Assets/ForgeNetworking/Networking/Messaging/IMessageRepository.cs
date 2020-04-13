@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 
 namespace Forge.Networking.Messaging
 {
@@ -10,10 +9,9 @@ namespace Forge.Networking.Messaging
 		void AddMessage(IMessage message, EndPoint sender);
 		void AddMessage(IMessage message, EndPoint sender, int ttlMilliseconds);
 		void RemoveAllFor(EndPoint sender);
-		void RemoveMessage(IMessage message);
-		void RemoveMessage(IMessageReceiptSignature receipt);
-		bool Exists(IMessageReceiptSignature receipt);
-		KeyValuePair<EndPoint, IMessage> Get(IMessageReceiptSignature receipt);
+		void RemoveMessage(EndPoint sender, IMessage message);
+		void RemoveMessage(EndPoint sender, IMessageReceiptSignature receipt);
+		bool Exists(EndPoint sender, IMessageReceiptSignature receipt);
 		void Iterate(MessageRepositoryIterator iterator);
 		void Clear();
 	}
