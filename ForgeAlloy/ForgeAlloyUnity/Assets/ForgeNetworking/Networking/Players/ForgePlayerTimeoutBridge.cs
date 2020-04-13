@@ -41,9 +41,9 @@ namespace Forge.Networking.Players
 					Thread.Sleep(TimeoutMilliseconds);
 				}
 			}
-			catch (OperationCanceledException ex)
+			catch (OperationCanceledException)
 			{
-				_networkMediator.EngineProxy.Logger.LogException(ex);
+				_networkMediator.EngineProxy.Logger.Log("Cancelling the player timeout listener background task");
 			}
 		}
 

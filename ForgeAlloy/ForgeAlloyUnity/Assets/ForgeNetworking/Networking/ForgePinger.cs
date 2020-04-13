@@ -32,9 +32,9 @@ namespace Forge.Networking
 					Thread.Sleep(PingInterval);
 				}
 			}
-			catch (OperationCanceledException ex)
+			catch (OperationCanceledException)
 			{
-				_networkMediator.EngineProxy.Logger.LogException(ex);
+				_networkMediator.EngineProxy.Logger.Log("Cancelling the background network ping task");
 			}
 		}
 

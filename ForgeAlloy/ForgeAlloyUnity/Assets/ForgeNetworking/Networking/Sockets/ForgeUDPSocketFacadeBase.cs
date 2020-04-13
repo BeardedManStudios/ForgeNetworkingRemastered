@@ -39,9 +39,9 @@ namespace Forge.Networking.Sockets
 					ProcessMessageRead(buffer, readEp);
 				}
 			}
-			catch (OperationCanceledException ex)
+			catch (OperationCanceledException)
 			{
-				networkMediator.EngineProxy.Logger.LogException(ex);
+				networkMediator.EngineProxy.Logger.Log("Cancelling the background network read task");
 			}
 		}
 
