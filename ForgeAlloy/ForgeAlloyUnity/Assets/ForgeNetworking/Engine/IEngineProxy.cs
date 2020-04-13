@@ -2,6 +2,7 @@
 {
 	public interface IEngineProxy
 	{
+		IForgeLogger Logger { get; }
 		void NetworkingEstablished();
 	}
 }

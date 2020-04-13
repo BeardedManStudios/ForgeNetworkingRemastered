@@ -56,7 +56,10 @@ namespace Forge.Networking.Messaging
 					Thread.Sleep(RepeatMillisecondsInterval);
 				}
 			}
-			catch (OperationCanceledException) { }
+			catch (OperationCanceledException ex)
+			{
+				_networkMediator.EngineProxy.Logger.LogException(ex);
+			}
 		}
 
 		private void ResendMessage(EndPoint endpoint, IMessage message)

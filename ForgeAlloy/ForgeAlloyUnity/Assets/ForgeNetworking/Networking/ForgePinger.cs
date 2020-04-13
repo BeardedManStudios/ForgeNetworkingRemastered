@@ -32,7 +32,10 @@ namespace Forge.Networking
 					Thread.Sleep(PingInterval);
 				}
 			}
-			catch (OperationCanceledException) { }
+			catch (OperationCanceledException ex)
+			{
+				_networkMediator.EngineProxy.Logger.LogException(ex);
+			}
 		}
 
 		private void SendPingToServer(object state)

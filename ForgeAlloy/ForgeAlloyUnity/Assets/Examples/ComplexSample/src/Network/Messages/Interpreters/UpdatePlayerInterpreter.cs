@@ -1,8 +1,8 @@
+﻿using System.Net;
 using Forge.CharacterControllers;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Unity;
-using System.Net;
 using UnityEngine;
 
 namespace Puzzle.Networking.Messages.Interpreters
@@ -37,9 +37,10 @@ namespace Puzzle.Networking.Messages.Interpreters
 						Quaternion.Euler(camRot.x, camRot.y, camRot.z));
 				}
 			}
-			catch (EntityNotFoundException)
+			catch (EntityNotFoundException ex)
 			{
 				// TODO:  This is getting called before the entity exists
+				netMediator.EngineProxy.Logger.LogException(ex);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-﻿using Forge.Factory;
+﻿using System;
+using Forge.Factory;
 using Forge.Networking.Unity.UI;
-using System;
 using UnityEngine;
 
 namespace Forge.Networking.Unity.Menu
@@ -13,7 +13,7 @@ namespace Forge.Networking.Unity.Menu
 		{
 			if (State.EngineFacade.NetworkMediator != null)
 			{
-				Debug.LogError("Already (Hosting | Connecting)");
+				State.EngineFacade.Logger.LogError("Already (Hosting | Connecting)");
 				return;
 			}
 
@@ -30,11 +30,11 @@ namespace Forge.Networking.Unity.Menu
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError($"{ ex.Message }");
+					State.EngineFacade.Logger.LogException(ex);
 				}
 			}
 			else
-				Debug.LogError($"{ (string.IsNullOrEmpty(State.AddressInput.Text) ? "Host Address Not Provided" : "Port Invalid") }");
+				State.EngineFacade.Logger.LogError($"{ (string.IsNullOrEmpty(State.AddressInput.Text) ? "Host Address Not Provided" : "Port Invalid") }");
 		}
 
 		private void Update()
