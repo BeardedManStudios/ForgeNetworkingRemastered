@@ -117,12 +117,13 @@ namespace Forge.Networking.Messaging
 		{
 			var s = (SocketContainerSynchronizationReadData)state;
 
-			// TODO:  I don't like this type check and if branching in here...
-			bool isServer = _networkMediator.SocketFacade is ISocketServerFacade;
-			if (s.Interpreter.ValidOnClient && !isServer)
+			if (ShouldInterpret(s))
 				s.Interpreter.Interpret(_networkMediator, s.Sender, s.Message);
-			else if (s.Interpreter.ValidOnServer && isServer)
-				s.Interpreter.Interpret(_networkMediator, s.Sender, s.Message);
+		}
+
+		private bool ShouldInterpret(SocketContainerSynchronizationReadData readData)
+		{
+			return (_networkMediator.IsClient && readData.Interpreter.ValidOnClient) || (_networkMediator.IsServer && readData.Interpreter.ValidOnServer);
 		}
 
 		private void ProcessMessageSignature(ISocket readingSocket, EndPoint messageSender, BMSByte buffer, IMessage m)

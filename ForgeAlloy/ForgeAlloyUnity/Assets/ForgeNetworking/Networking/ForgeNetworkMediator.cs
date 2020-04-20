@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using Forge.Engine;
 using Forge.Factory;
 using Forge.Networking.Messaging;
@@ -14,6 +14,9 @@ namespace Forge.Networking
 		public IEngineProxy EngineProxy { get; private set; }
 		public IMessageBus MessageBus { get; private set; }
 		public ISocketFacade SocketFacade { get; private set; }
+		public bool IsClient => SocketFacade is ISocketClientFacade;
+		public bool IsServer => SocketFacade is ISocketServerFacade;
+
 		private readonly IPlayerTimeoutBridge _timeoutBridge;
 
 		public ForgeNetworkMediator()

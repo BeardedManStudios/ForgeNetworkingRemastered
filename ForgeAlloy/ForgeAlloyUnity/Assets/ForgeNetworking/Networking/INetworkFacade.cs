@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using Forge.Engine;
 using Forge.Networking.Messaging;
 using Forge.Networking.Players;
@@ -13,6 +13,8 @@ namespace Forge.Networking
 		IEngineProxy EngineProxy { get; }
 		IMessageBus MessageBus { get; }
 		ISocketFacade SocketFacade { get; }
+		bool IsClient { get; }
+		bool IsServer { get; }
 		void ChangeEngineProxy(IEngineProxy engineProxy);
 		void StartServer(ushort port, int maxPlayers);
 		void StartClient(string hostAddress, ushort port);
