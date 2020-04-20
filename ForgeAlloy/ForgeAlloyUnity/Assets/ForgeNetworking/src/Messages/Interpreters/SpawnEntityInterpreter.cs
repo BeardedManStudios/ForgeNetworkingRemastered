@@ -14,7 +14,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 		{
 			var msg = (SpawnEntityMessage)message;
 			IEngineFacade engine = (IEngineFacade)netMediator.EngineProxy;
-			EntitySpawnner.SpawnEntityFromMessage(engine, msg);
+			EntitySpawner.SpawnEntityFromMessage(engine, msg);
 		}
 	}
 }

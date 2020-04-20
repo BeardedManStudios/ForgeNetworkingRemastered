@@ -45,7 +45,7 @@ namespace Puzzle.Network
 			if (_engine.IsServer)
 			{
 				CreatePlayerMessage msg = GetPlayerCreateMessage(_engine.NetworkMediator.SocketFacade.NetPlayerId, _entityId++);
-				MyPlayer = EntitySpawnner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
+				MyPlayer = EntitySpawner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
 				MyPlayer.PrefabId = _playerProxyPrefabId;  // This is a hack for when we send out all entities
 				DontDestroyOnLoad(MyPlayer.OwnerGameObject);
 				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -106,7 +106,7 @@ namespace Puzzle.Network
 			// Spawn for ourselves locally
 			CreatePlayerMessage localMsg = GetPlayerCreateMessage(player.Id, entityId);
 			localMsg.PrefabId = _playerProxyPrefabId;
-			EntitySpawnner.SpawnEntityFromMessage(_engine, localMsg);
+			EntitySpawner.SpawnEntityFromMessage(_engine, localMsg);
 		}
 
 		private CreatePlayerMessage GetPlayerCreateMessage(IPlayerSignature playerId, int entityId)
@@ -131,7 +131,7 @@ namespace Puzzle.Network
 			msg.Position = pos;
 			msg.Rotation = Quaternion.Euler(rot);
 			msg.Scale = scale;
-			EntitySpawnner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
+			EntitySpawner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
 			_engine.NetworkMediator.SendReliableMessage(msg);
 		}
 

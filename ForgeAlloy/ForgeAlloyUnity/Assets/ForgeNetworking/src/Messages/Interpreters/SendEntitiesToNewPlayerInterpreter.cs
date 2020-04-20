@@ -24,7 +24,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 				{
 					// Don't load an entity that already exists (from DontDestroyOnLoad)
 					if (!engine.EntityRepository.Exists(m.Ids[i]))
-						EntitySpawnner.SpawnEntityFromData(engine, m.Ids[i], m.PrefabIds[i], m.Positions[i], m.Rotations[i], m.Scales[i]);
+						EntitySpawner.SpawnEntityFromData(engine, m.Ids[i], m.PrefabIds[i], m.Positions[i], m.Rotations[i], m.Scales[i]);
 				}
 				else
 					SetupEntityAlreadyInScene(sceneEntities, m, i, engine);

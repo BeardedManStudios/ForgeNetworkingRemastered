@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Forge.Networking.Unity
 {
-	public static class EntitySpawnner
+	public static class EntitySpawner
 	{
 		public static IUnityEntity SpawnEntityFromData(IEngineFacade engine, int id, int prefabId, Vector3 pos, Quaternion rot, Vector3 scale)
 		{

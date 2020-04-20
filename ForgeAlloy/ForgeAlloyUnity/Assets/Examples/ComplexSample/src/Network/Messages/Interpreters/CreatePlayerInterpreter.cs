@@ -20,7 +20,7 @@ namespace Puzzle.Networking.Messages.Interpreters
 			if (!isMe)
 				m.PrefabId = m.ProxyPrefabId;
 			IEngineFacade engine = (IEngineFacade)netMediator.EngineProxy;
-			var e = EntitySpawnner.SpawnEntityFromMessage(engine, m);
+			var e = EntitySpawner.SpawnEntityFromMessage(engine, m);
 			onPlayerCreated?.Invoke(e, m.OwningPlayer);
 		}
 	}

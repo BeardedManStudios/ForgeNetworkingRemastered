@@ -34,7 +34,7 @@ public class ServerCreateCube : MonoBehaviour
 		msg.Position = new Vector3(Random.Range(-3.0f, 3.0f), Random.Range(-3.0f, 3.0f), Random.Range(-3.0f, 3.0f));
 		msg.Rotation = Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 		msg.Scale = new Vector3(Random.Range(0.5f, 3.0f), Random.Range(0.5f, 3.0f), Random.Range(0.5f, 3.0f));
-		EntitySpawnner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
+		EntitySpawner.SpawnEntityFromMessage(_engine, msg);    // Spawn for ourselves locally
 		_engine.NetworkMediator.SendMessage(msg);
 	}
 }

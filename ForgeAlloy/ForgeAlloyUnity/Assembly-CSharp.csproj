@@ -238,7 +238,7 @@
     <Compile Include="Assets\ForgeNetworking\src\Entity\EntityAlreadyInRepositoryException.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\EntityNotFoundException.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\EntityRepository.cs" />
-    <Compile Include="Assets\ForgeNetworking\src\Entity\EntitySpawnner.cs" />
+    <Compile Include="Assets\ForgeNetworking\src\Entity\EntitySpawner.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\IEntityRepository.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\IUnityEntity.cs" />
     <Compile Include="Assets\ForgeNetworking\src\Entity\NetworkEntity.cs" />
