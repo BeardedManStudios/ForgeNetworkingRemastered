@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Forge.Reflection.Networking.Messaging;
@@ -45,8 +45,8 @@ namespace Forge.Editor
 			var checker = new MessageContractChecker();
 			int nextId = checker.HighestCodeFound + 1;
 
-			string messageTemplatePath = "ForgeNetworking/Templates/MessageTemplate";
-			string interpreterTemplatePath = "ForgeNetworking/Templates/MessageInterpreterTemplate";
+			string messageTemplatePath = "Templates/MessageTemplate";
+			string interpreterTemplatePath = "Templates/MessageInterpreterTemplate";
 			if (_useSingletonInterpreter)
 			{
 				messageTemplatePath += "Singleton";
