@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicStandAloneServer", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgeNetworkingUnityEditor", "..\ForgeNetworkingUnityEditor\ForgeNetworkingUnityEditor.csproj", "{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NatHolePunch_Core", "..\NatHolePunch_Core\NatHolePunch_Core.csproj", "{71962606-2218-4307-9232-562A8D4E8768}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Client|Any CPU = Debug Client|Any CPU
@@ -74,6 +76,12 @@ Global
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BDD215D-6E48-4D61-9C44-A3188EC18DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Debug Client|Any CPU.ActiveCfg = Debug|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Debug Client|Any CPU.Build.0 = Debug|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71962606-2218-4307-9232-562A8D4E8768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
