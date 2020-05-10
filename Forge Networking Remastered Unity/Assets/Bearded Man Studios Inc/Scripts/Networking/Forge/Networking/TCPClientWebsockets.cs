@@ -50,12 +50,13 @@ namespace BeardedManStudios.Forge.Networking
 		[DllImport("__Internal")]
 		private static extern bool CheckSocketConnection();
 
-		public override void Connect(string host, ushort port = DEFAULT_PORT)
+		public override bool Connect(string host, ushort port = DEFAULT_PORT)
 		{
-			//Set the port
 			SetPort(port);
 
 			ForgeConnect(host, port);
+
+			return true;
 		}
 
 		public void CheckConnection()
