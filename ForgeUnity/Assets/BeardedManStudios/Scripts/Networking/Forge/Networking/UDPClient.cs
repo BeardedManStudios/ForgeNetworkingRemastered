@@ -167,12 +167,12 @@ namespace BeardedManStudios.Forge.Networking
 			}
 		}
 
-		private void BindAndConnect(ushort overrideBindingPort, ushort port, string natHost, string host, ushort natPort)
+		private bool BindAndConnect(ushort overrideBindingPort, ushort port, string natHost, string host, ushort natPort)
 		{
 			SetNetworkBindings(overrideBindingPort, port, natHost, host, natPort);
 			CreateTheNetworkingPlayer(host, port);
 			SetupConnectingState();
-			ThreadPool.QueueUserWorkItem(AttemptServerConnection);
+			return ThreadPool.QueueUserWorkItem(AttemptServerConnection);
 		}
 
 		/// <summary>
@@ -183,7 +183,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <param name="natHost">The NAT server host address, if blank NAT will be skipped</param>
 		/// <param name="natPort">The port that the NAT server is hosting on</param>
 		/// <param name="pendCreates">Immidiately set the NetWorker::PendCreates to true</param>
-		public void Connect(string host, ushort port = DEFAULT_PORT, string natHost = "",
+		public bool Connect(string host, ushort port = DEFAULT_PORT, string natHost = "",
 			ushort natPort = NatHolePunch.DEFAULT_NAT_SERVER_PORT, bool pendCreates = false,
 			ushort overrideBindingPort = DEFAULT_PORT + 1)
 		{
@@ -199,7 +199,7 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
-				BindAndConnect(overrideBindingPort, port, natHost, host, natPort);
+				return BindAndConnect(overrideBindingPort, port, natHost, host, natPort);
 			}
 			catch (Exception e)
 			{

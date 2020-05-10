@@ -36,7 +36,7 @@ namespace BeardedManStudios.Forge.Networking
 		protected NetworkingPlayer server = null;
 		public NetworkingPlayer ServerPlayer { get { return server; } }
 
-		public virtual void Connect(string host, ushort port = DEFAULT_PORT)
+		public virtual bool Connect(string host, ushort port = DEFAULT_PORT)
 		{
 			if (Disposed)
 				throw new ObjectDisposedException("TCPClient", "This object has been disposed and can not be used to connect, please use a new TCPClient");
@@ -57,11 +57,13 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					connectAttemptFailed(this);
 				}
-				return;
+				return false;
 			}
 			// If we got this far then the bind was successful
 			OnBindSuccessful();
 			Initialize(host, port);
+
+			return true;
 		}
 		protected virtual void Initialize(string host, ushort port, bool pendCreates = true)
 		{
