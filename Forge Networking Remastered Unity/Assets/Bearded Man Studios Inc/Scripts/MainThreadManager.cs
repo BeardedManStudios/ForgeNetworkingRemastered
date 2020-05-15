@@ -70,6 +70,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			new GameObject("Main Thread Manager").AddComponent<MainThreadManager>();
 		}
 
+		private void OnDestroy()
+		{
+			_instance = null;
+		}
+
 		/// <summary>
 		/// A dictionary of action queues for different updates.
 		/// </summary>
