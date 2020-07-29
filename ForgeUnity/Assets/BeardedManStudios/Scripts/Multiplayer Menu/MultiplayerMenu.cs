@@ -213,16 +213,16 @@ namespace BeardedManStudios.MultiplayerMenu
 		private void Update()
 		{
 #if !ENABLE_INPUT_SYSTEM //if using legacy Input System
-			if (Input.GetKeyDown(KeyCode.H))
-				Host();
-			else if (Input.GetKeyDown(KeyCode.C))
-				Connect();
-			else if (Input.GetKeyDown(KeyCode.L))
-			{
-				NetWorker.localServerLocated -= TestLocalServerFind;
-				NetWorker.localServerLocated += TestLocalServerFind;
-				NetWorker.RefreshLocalUdpListings();
-			}
+		if (Input.GetKeyDown(KeyCode.H))
+			Host();
+		else if (Input.GetKeyDown(KeyCode.C))
+			Connect();
+		else if (Input.GetKeyDown(KeyCode.L))
+		{
+			NetWorker.localServerLocated -= TestLocalServerFind;
+			NetWorker.localServerLocated += TestLocalServerFind;
+			NetWorker.RefreshLocalUdpListings();
+		}
 #endif
 
 #if ENABLE_INPUT_SYSTEM //if using new Input System
