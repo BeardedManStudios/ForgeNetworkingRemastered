@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 #if ENABLE_INPUT_SYSTEM
-    UnityEngine.InputSystem; //Only called if using the new InputSystem
+using UnityEngine.InputSystem; //Only called if using the new InputSystem
 #endif
 
 namespace BeardedManStudios.MultiplayerMenu
