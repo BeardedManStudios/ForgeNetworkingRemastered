@@ -231,7 +231,7 @@ namespace BeardedManStudios.MultiplayerMenu
 			else if (Keyboard.current.cKey.isPressed)
 				Connect();
 			else if (Keyboard.current.lKey.isPressed)
-            {
+			{
 				NetWorker.localServerLocated -= TestLocalServerFind;
 				NetWorker.localServerLocated += TestLocalServerFind;
 				NetWorker.RefreshLocalUdpListings();
