@@ -36,11 +36,6 @@ namespace Forge.DataStructures
 			return _id.ToString();
 		}
 
-		public void Initialize(ISignatureGenerator<int> generator)
-		{
-			throw new System.NotImplementedException();
-		}
-
 		public static bool operator ==(ForgeSignature lhs, ForgeSignature rhs)
 		{
 			return lhs._id == rhs._id;
