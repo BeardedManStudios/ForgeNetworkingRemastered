@@ -4,22 +4,11 @@ namespace Forge.DataStructures
 {
 	public class ForgeSignature : ISignature
 	{
-		private static int _num = 0;
-		private static object _numMutex = new object();
-
-		private static int NextId()
-		{
-			lock (_numMutex)
-			{
-				return _num++;
-			}
-		}
-
 		private int _id;
 
-		public ForgeSignature()
+		public ForgeSignature(ISignatureGenerator<int> generator)
 		{
-			_id = NextId();
+			_id = generator.Generate();
 		}
 
 		public void Serialize(BMSByte buffer)
@@ -45,6 +34,11 @@ namespace Forge.DataStructures
 		public override string ToString()
 		{
 			return _id.ToString();
+		}
+
+		public void Initialize(ISignatureGenerator<int> generator)
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public static bool operator ==(ForgeSignature lhs, ForgeSignature rhs)
