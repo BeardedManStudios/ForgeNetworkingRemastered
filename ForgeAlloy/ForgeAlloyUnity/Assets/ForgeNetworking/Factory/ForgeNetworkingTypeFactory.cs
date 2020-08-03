@@ -1,5 +1,4 @@
 ﻿using Forge.DataStructures;
-using Forge.Engine;
 using Forge.Networking;
 using Forge.Networking.Messaging;
 using Forge.Networking.Messaging.Messages;
@@ -13,9 +12,13 @@ namespace Forge.Factory
 	{
 		public override void PrimeRegistry()
 		{
+			var msgSigGen = new ForgeSignatureIdGenerator();
+			var playerSigGen = new ForgeSignatureIdGenerator();
+			var sigGen = new ForgeSignatureIdGenerator();
+
 			Register<IPlayerRepository, ForgePlayerRepository>();
 			Register<INetworkMediator, ForgeNetworkMediator>();
-			Register<IMessageReceiptSignature, ForgeMessageReceipt>();
+			Register<IMessageReceiptSignature>(() => new ForgeMessageReceipt(msgSigGen));
 			Register<IMessageBus, ForgeMessageBus>();
 			Register<IMessageRepository, ForgeMessageRepository>();
 			Register<IMessagePage, ForgeMessagePage>();
@@ -30,8 +33,8 @@ namespace Forge.Factory
 			Register<ISocketClientFacade, ForgeUDPSocketClientFacade>();
 			Register<INetPlayer, ForgePlayer>();
 			Register<IMessageRepeater, ForgeMessageRepeater>();
-			Register<IPlayerSignature, ForgePlayerSignature>();
-			Register<ISignature, ForgeSignature>();
+			Register<IPlayerSignature>(() => new ForgePlayerSignature(playerSigGen));
+			Register<ISignature>(() => new ForgeSignature(sigGen));
 			Register<IPlayerTimeoutBridge, ForgePlayerTimeoutBridge>();
 
 			Register<IChallengeMessage, ForgeConnectChallengeMessage>();
