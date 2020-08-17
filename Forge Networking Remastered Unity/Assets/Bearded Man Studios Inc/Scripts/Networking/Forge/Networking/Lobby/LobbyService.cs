@@ -1,8 +1,11 @@
 ﻿using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking.Unity.Lobby;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Lobby
 {
@@ -18,9 +21,10 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 		public const byte RPC_PLAYER_JOINED = 8;
 		public const byte RPC_PLAYER_LEFT = 9;
 		public const byte RPC_PLAYER_SYNC = 10;
+        public const byte RPC_SYNC_ALL_PLAYERS = 11;
 
-		#region Private Data
-		private LobbyServiceNetworkObject networkObject = null;
+        #region Private Data
+        private LobbyServiceNetworkObject networkObject = null;
 		private bool _initialized;
 		#endregion
 
@@ -479,7 +483,8 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			networkObject.RegisterRpc("PlayerJoined", PlayerJoined, typeof(uint));
 			networkObject.RegisterRpc("PlayerLeft", PlayerLeft, typeof(uint));
 			networkObject.RegisterRpc("SyncPlayer", SyncPlayer, typeof(uint), typeof(string), typeof(int), typeof(int));
-			networkObject.RegistrationComplete();
+			networkObject.RegisterRpc("SyncAllPlayers", SyncAllPlayers);
+            networkObject.RegistrationComplete();
 			_initialized = true;
 
 			//Logging.BMSLog.Log("SERVICE ID: " + networkObject.NetworkId);
@@ -571,7 +576,7 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 
 			player.AvatarID = avatarId;
 			MasterLobby.OnFNAvatarIDChanged(player);
-		}
+        }
 		/// <summary>
 		/// Arguments:
 		/// uint playerid
@@ -632,7 +637,32 @@ namespace BeardedManStudios.Forge.Networking.Lobby
 			MasterLobby.OnFNPlayerSync(player);
 		}
 
-		private IClientMockPlayer CreateClientMockPlayer(uint playerId, string playerName)
+        public void SendSyncAllPlayers()
+        {
+            networkObject.SendRpc(RPC_SYNC_ALL_PLAYERS, Receivers.All);
+        }
+
+        private void SyncAllPlayers(RpcArgs args)
+        {
+            if (networkObject.IsServer)
+            {
+                for (int i = 0; i < MasterLobby.LobbyPlayers.Count; i++)
+                {
+                    networkObject.Networker.IteratePlayers((player) =>
+                    {
+                        IClientMockPlayer lobbyPlayer = MasterLobby.LobbyPlayers.First(x => x.NetworkId == player.NetworkId);
+
+                        if (player == MasterLobby.LobbyPlayers[i])
+                            return;
+
+                        networkObject.SendRpc(networkObject.Networker.Players[i], RPC_PLAYER_JOINED, player.NetworkId);
+                        networkObject.SendRpc(networkObject.Networker.Players[i], RPC_PLAYER_SYNC, player.NetworkId, lobbyPlayer.Name, lobbyPlayer.TeamID, lobbyPlayer.AvatarID);
+                    });
+                }
+            }
+        }
+
+        private IClientMockPlayer CreateClientMockPlayer(uint playerId, string playerName)
 		{
 			var player = new DummyPlayer(playerId, playerName, 0, 0);
 			return player;
