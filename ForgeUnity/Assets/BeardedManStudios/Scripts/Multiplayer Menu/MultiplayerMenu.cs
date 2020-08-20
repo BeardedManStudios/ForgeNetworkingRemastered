@@ -7,6 +7,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem; //Only called if using the new InputSystem
+#endif
 
 namespace BeardedManStudios.MultiplayerMenu
 {
@@ -209,6 +212,7 @@ namespace BeardedManStudios.MultiplayerMenu
 
 		private void Update()
 		{
+#if !ENABLE_INPUT_SYSTEM //if using legacy Input System
 			if (Input.GetKeyDown(KeyCode.H))
 				Host();
 			else if (Input.GetKeyDown(KeyCode.C))
@@ -219,6 +223,20 @@ namespace BeardedManStudios.MultiplayerMenu
 				NetWorker.localServerLocated += TestLocalServerFind;
 				NetWorker.RefreshLocalUdpListings();
 			}
+#endif
+
+#if ENABLE_INPUT_SYSTEM //if using new Input System
+			if (Keyboard.current.hKey.isPressed)
+				Host();
+			else if (Keyboard.current.cKey.isPressed)
+				Connect();
+			else if (Keyboard.current.lKey.isPressed)
+			{
+				NetWorker.localServerLocated -= TestLocalServerFind;
+				NetWorker.localServerLocated += TestLocalServerFind;
+				NetWorker.RefreshLocalUdpListings();
+			}
+#endif
 		}
 
 		private void TestLocalServerFind(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
