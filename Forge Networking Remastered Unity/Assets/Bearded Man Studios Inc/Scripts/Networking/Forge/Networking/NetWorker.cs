@@ -1112,6 +1112,31 @@ namespace BeardedManStudios.Forge.Networking
 			List<IPAddress> ipList = new List<IPAddress>();
 
 			foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
+
+#if UNITY_ANDROID
+			switch (nic.Name)
+			{
+				case "lo": // Localhost
+				case "wlan0": // Wifi
+					break;
+				default:
+					continue;
+			}
+
+			switch (nic.OperationalStatus)
+			{
+				case OperationalStatus.Up:
+				case OperationalStatus.Testing:
+				case OperationalStatus.Unknown:
+				case OperationalStatus.Dormant:
+					break;
+				case OperationalStatus.Down:
+				case OperationalStatus.NotPresent:
+				case OperationalStatus.LowerLayerDown:
+				default:
+					continue;
+			}
+#else
 				switch (nic.NetworkInterfaceType) {
 					case NetworkInterfaceType.Wireless80211:
 					case NetworkInterfaceType.Ethernet:
@@ -1121,7 +1146,7 @@ namespace BeardedManStudios.Forge.Networking
 				}
 
 				if (nic.OperationalStatus != OperationalStatus.Up) continue;
-
+#endif
 				foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
 					if (ip.Address.AddressFamily == AddressFamily.InterNetwork) {
 						ipList.Add(ip.Address);
