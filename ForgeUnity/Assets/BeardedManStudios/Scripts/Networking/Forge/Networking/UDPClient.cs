@@ -108,12 +108,14 @@ namespace BeardedManStudios.Forge.Networking
 			// This is a typical Websockets accept header to be validated
 			byte[] connectHeader = Websockets.ConnectionHeader(headerHash, Port);
 
+			Client.IgnoreICMPErrors(true);
 			do
 			{
 				// Send the accept headers to the server to validate
 				Client.Send(connectHeader, connectHeader.Length, ServerPlayer.IPEndPointHandle);
 				Thread.Sleep(3000);
 			} while (!initialConnectHeaderExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
+			Client.IgnoreICMPErrors(false);
 
 			if (connectCounter >= CONNECT_TRIES && connectAttemptFailed != null)
 				connectAttemptFailed(this);

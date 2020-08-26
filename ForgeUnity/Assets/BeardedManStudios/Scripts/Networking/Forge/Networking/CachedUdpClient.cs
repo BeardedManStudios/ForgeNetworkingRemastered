@@ -21,10 +21,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -46,6 +46,17 @@ namespace BeardedManStudios.Forge.Networking
 {
 	public class CachedUdpClient : IDisposable
 	{
+		/// <summary>
+		/// Winsock ioctl code for controlling whether the ICMP Port unreachable error should be disregarded or not.
+		/// </summary>
+		/// http://msdn.microsoft.com/en-us/library/cc242275.aspx
+		/// http://msdn.microsoft.com/en-us/library/bb736550(VS.85).aspx
+		/// https://stackoverflow.com/questions/7201862/an-existing-connection-was-forcibly-closed-by-the-remote-host/7478498#7478498
+		/// uint IOC_IN = 0x80000000;
+		/// uint IOC_VENDOR = 0x18000000;
+		/// uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
+		private const int SIO_UDP_CONNRESET = -1744830452;
+
 		public const char HOST_PORT_CHARACTER_SEPARATOR = '+';
 		private bool disposed = false;
 		private bool active = false;
@@ -143,6 +154,7 @@ namespace BeardedManStudios.Forge.Networking
 			recBuffer.SetSize(65536);
 		}
 
+
 		#region Close
 		public void Close()
 		{
@@ -226,6 +238,17 @@ namespace BeardedManStudios.Forge.Networking
 				}
 			}
 		}
+
+		/// <summary>
+		/// Enable/disable whether the socket should disregard ICMP Port unreachable errors
+		/// </summary>
+		/// <param name="enabled"></param>
+		public void IgnoreICMPErrors(bool enabled)
+		{
+			// set socket to disregard ICMP errors.
+			socket.IOControl(SIO_UDP_CONNRESET, new byte[] {Convert.ToByte(!enabled)}, null);
+		}
+
 		#endregion
 		#region Multicast methods
 		public void DropMulticastGroup(IPAddress multicastAddr)
