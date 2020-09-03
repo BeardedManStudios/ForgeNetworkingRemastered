@@ -153,7 +153,7 @@ namespace BeardedManStudios.Forge.Networking
 						// Send the accept headers to the server to validate
 						Client.Send(connectHeader, connectHeader.Length, hostId, EP2PSend.k_EP2PSendUnreliable);
 						Thread.Sleep(3000);
-					} while (!initialConnectHeaderExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
+					} while (!initialConnectHeaderExchanged && IsActiveSession && ++connectCounter < CONNECT_TRIES);
 
 					if (connectCounter >= CONNECT_TRIES)
 					{

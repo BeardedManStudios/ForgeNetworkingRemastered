@@ -211,16 +211,16 @@ namespace BeardedManStudios.Forge.Networking
 				Port = (ushort)IPEndPointHandle.Port;
 			}
 
-			ThreadPool.QueueUserWorkItem(BackgroundServerPing);
+			Task.Queue(BackgroundServerPing);
 		}
 
-		private void BackgroundServerPing(object _)
+		private void BackgroundServerPing()
 		{
 			// There is no reason for the server to ping itself
 			if ((Networker is IServer))
 				return;
 
-			int waitTime = 0, currentPingWait = 0;
+			int waitTime = 100, currentPingWait = 0;
 			while (Networker.IsActiveSession)
 			{
 				Task.Sleep(waitTime);

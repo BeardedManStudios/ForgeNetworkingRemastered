@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
@@ -101,7 +100,7 @@ namespace BeardedManStudios.Forge.Networking
 			return clientPort;
 		}
 
-		private void AttemptServerConnection(object _)
+		private void AttemptServerConnection()
 		{
 			int connectCounter = 0;
 
@@ -112,8 +111,8 @@ namespace BeardedManStudios.Forge.Networking
 			{
 				// Send the accept headers to the server to validate
 				Client.Send(connectHeader, connectHeader.Length, ServerPlayer.IPEndPointHandle);
-				Thread.Sleep(3000);
-			} while (!initialConnectHeaderExchanged && IsBound && ++connectCounter < CONNECT_TRIES);
+				Task.Sleep(3000);
+			} while (!initialConnectHeaderExchanged && IsActiveSession && ++connectCounter < CONNECT_TRIES);
 
 			if (connectCounter >= CONNECT_TRIES && connectAttemptFailed != null)
 				connectAttemptFailed(this);
@@ -172,7 +171,7 @@ namespace BeardedManStudios.Forge.Networking
 			SetNetworkBindings(overrideBindingPort, port, natHost, host, natPort);
 			CreateTheNetworkingPlayer(host, port);
 			SetupConnectingState();
-			ThreadPool.QueueUserWorkItem(AttemptServerConnection);
+			Task.Queue(AttemptServerConnection);
 		}
 
 		/// <summary>
@@ -245,7 +244,7 @@ namespace BeardedManStudios.Forge.Networking
 		{
 			try
 			{
-				while (IsBound)
+				while (IsActiveSession)
 				{
 					// If the read has been flagged to be canceled then break from this loop
 					if (IsReadThreadCancelPending)
