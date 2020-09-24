@@ -10,7 +10,7 @@ namespace Forge.Editor.UI.Windows
 
 		public ContributingWindow()
 		{
-			var asset = Resources.Load<TextAsset>("ForgeNetworking/html/contributing");
+			var asset = Resources.Load<TextAsset>("html/contributing");
 			lines = asset.text.Replace("\r", "").Split('\n');
 			for (int i = 0; i < lines.Length; i++)
 				lines[i] = lines[i].ToUnityUiHtml();
