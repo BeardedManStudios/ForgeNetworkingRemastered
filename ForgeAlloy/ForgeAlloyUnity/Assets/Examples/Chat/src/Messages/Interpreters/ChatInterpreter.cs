@@ -18,7 +18,7 @@ namespace Forge.Networking.Unity.Messages.Interpreters
 			var cl = GameObject.FindObjectOfType<ChatListener>();
 			cl.PrintMessage(m.Name, m.Text);
 			if (netMediator.IsServer)
-				netMediator.ForwardToClients(sender, message);
+				netMediator.ForwardToOtherClients(sender, message);
 		}
 	}
 }

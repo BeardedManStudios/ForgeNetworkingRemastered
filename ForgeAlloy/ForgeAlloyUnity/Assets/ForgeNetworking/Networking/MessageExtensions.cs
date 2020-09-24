@@ -5,7 +5,7 @@ namespace Forge.Networking
 {
 	public static class MessageExtensions
 	{
-		public static void ForwardToClients(this INetworkMediator netMediator,
+		public static void ForwardToOtherClients(this INetworkMediator netMediator,
 			EndPoint sender, IMessage message)
 		{
 			if (!netMediator.IsServer)
