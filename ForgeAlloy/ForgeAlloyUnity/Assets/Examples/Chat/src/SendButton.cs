@@ -1,4 +1,5 @@
-﻿using Forge.Networking.Messaging;
+﻿using Forge.Networking;
+using Forge.Networking.Messaging;
 using Forge.Networking.Sockets;
 using Forge.Networking.Unity;
 using Forge.Networking.Unity.Messages;
@@ -30,8 +31,6 @@ public class SendButton : MonoBehaviour
 		if (string.IsNullOrEmpty(txt))
 			return;
 		SendNetworkMessage(txt);
-		var cl = GameObject.FindObjectOfType<ChatListener>();
-		cl.PrintMessage(_myName, txt);
 	}
 
 	private void SendNetworkMessage(string txt)
@@ -43,6 +42,7 @@ public class SendButton : MonoBehaviour
 			SendMessageAsServer(m);
 		else
 			SendMessageAsClient(m);
+		_engine.NetworkMediator.RunMessageLocally(m);
 	}
 
 	private void SendMessageAsClient(ChatMessage m)

@@ -20,5 +20,23 @@ namespace Forge.Networking
 					netMediator.SendReliableMessage(message, itr.Current.EndPoint);
 			}
 		}
+
+		public static void RunMessageLocally(
+			this INetworkMediator netMediator, IMessage message)
+		{
+			var interpreter = message.Interpreter;
+			if (ShouldInterpret(netMediator, interpreter))
+			{
+				interpreter.Interpret(netMediator,
+					netMediator.SocketFacade.ManagedSocket.EndPoint, message);
+			}
+		}
+
+		private static bool ShouldInterpret(
+			INetworkMediator mediator, IMessageInterpreter interpreter)
+		{
+			return (mediator.IsClient && interpreter.ValidOnClient)
+				|| (mediator.IsServer && interpreter.ValidOnServer);
+		}
 	}
 }
