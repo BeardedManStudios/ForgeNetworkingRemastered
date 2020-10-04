@@ -26,6 +26,7 @@ namespace Forge
 
 		private static void SetupSerializers()
 		{
+			ForgeSerializer.Instance.Clear();
 			ForgeSerializer.Instance.AddSerializer<byte>(new ByteSerializer());
 			ForgeSerializer.Instance.AddSerializer<sbyte>(new SByteSerializer());
 			ForgeSerializer.Instance.AddSerializer<short>(new ShortSerializer());
