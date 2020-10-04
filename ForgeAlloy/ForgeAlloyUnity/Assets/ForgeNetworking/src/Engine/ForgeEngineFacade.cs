@@ -79,6 +79,7 @@ namespace Forge.Networking.Unity
 		{
 			NetworkMediator.SocketFacade.ShutDown();
 			SceneManager.LoadScene(_sceneToDisconnectTo);
+			NetworkMediator = null;
 		}
 	}
 }
