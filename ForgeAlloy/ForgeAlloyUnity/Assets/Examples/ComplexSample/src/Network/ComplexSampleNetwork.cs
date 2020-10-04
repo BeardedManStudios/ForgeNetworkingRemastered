@@ -33,8 +33,8 @@ namespace Puzzle.Network
 
 		private void Awake()
 		{
-			AbstractFactory.Register<IGameplayTypeFactory, GameplayTypeFactory>();
-
+			if (!AbstractFactory.Exists<IGameplayTypeFactory>())
+				AbstractFactory.Register<IGameplayTypeFactory, GameplayTypeFactory>();
 			DontDestroyOnLoad(transform.parent);
 		}
 

@@ -14,5 +14,6 @@ namespace Forge.Networking.Unity
 		IPrefabManager PrefabManager { get; }
 		IEntityRepository EntityRepository { get; }
 		int GetNewEntityId();
+		void ShutDown();
 	}
 }

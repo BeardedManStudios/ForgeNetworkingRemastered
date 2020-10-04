@@ -15,6 +15,9 @@ namespace Forge.Networking.Unity
 
 		[SerializeField]
 		private string _sceneToLoad = "";
+		[SerializeField]
+		private string _sceneToDisconnectTo = "";
+
 		public string CurrentMap => _sceneToLoad;
 
 		private int _currentEntityId = 0;
@@ -70,6 +73,12 @@ namespace Forge.Networking.Unity
 		public int GetNewEntityId()
 		{
 			return _currentEntityId++;
+		}
+
+		public void ShutDown()
+		{
+			NetworkMediator.SocketFacade.ShutDown();
+			SceneManager.LoadScene(_sceneToDisconnectTo);
 		}
 	}
 }
