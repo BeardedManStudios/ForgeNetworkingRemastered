@@ -9,6 +9,7 @@ namespace Forge.Networking.Unity
 	{
 		public static void Initialize()
 		{
+			AbstractFactory.Clear();
 			ForgeRegistration.Initialize();
 			RegisterFactoryInterfaces();
 			SetupExtraSerializers();

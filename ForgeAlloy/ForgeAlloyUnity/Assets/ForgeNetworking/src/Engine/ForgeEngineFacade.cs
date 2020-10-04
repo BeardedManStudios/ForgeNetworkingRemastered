@@ -77,9 +77,9 @@ namespace Forge.Networking.Unity
 
 		public void ShutDown()
 		{
-			NetworkMediator.SocketFacade.ShutDown();
+			// This will trigger OnDestroy which will shut down the socket
+			Destroy(gameObject);
 			SceneManager.LoadScene(_sceneToDisconnectTo);
-			NetworkMediator = null;
 		}
 	}
 }
