@@ -34,7 +34,6 @@ namespace Puzzle.Network
 		private void Awake()
 		{
 			AbstractFactory.Register<IGameplayTypeFactory, GameplayTypeFactory>();
-
 			DontDestroyOnLoad(transform.parent);
 		}
 

@@ -7,6 +7,11 @@ namespace Forge.Factory
 	{
 		private static readonly Dictionary<Type, IFactory> _factories = new Dictionary<Type, IFactory>();
 
+		public static bool Exists<TInterface>() where TInterface : IFactory
+		{
+			return _factories.ContainsKey(typeof(TInterface));
+		}
+
 		public static void Register<TInterface, TActual>() where TActual : TInterface, IFactory, new()
 		{
 			if (typeof(TInterface) == typeof(IFactory))
