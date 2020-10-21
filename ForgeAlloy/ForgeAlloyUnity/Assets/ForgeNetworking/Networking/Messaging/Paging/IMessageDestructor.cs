@@ -7,6 +7,6 @@ namespace Forge.Networking.Messaging.Paging
 		int HeaderLength { get; }
 		int MaxPageLength { get; }
 		BMSBytePool BufferPool { set; }
-		IPagenatedMessage BreakdownMessage(BMSByte messageBuffer);
+		IPaginatedMessage BreakdownMessage(BMSByte messageBuffer);
 	}
 }

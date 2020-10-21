@@ -21,12 +21,12 @@ namespace Forge.Networking.Messaging.Paging
 		public int MaxPageLength => 1000;
 		public BMSBytePool BufferPool { private get; set; } = new BMSBytePool();
 
-		public IPagenatedMessage BreakdownMessage(BMSByte messageBuffer)
+		public IPaginatedMessage BreakdownMessage(BMSByte messageBuffer)
 		{
 			if (messageBuffer.Size == 0)
 				throw new CantBreakdownEmptyMessageException();
 			int offset = 0;
-			var pm = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPagenatedMessage>();
+			var pm = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IPaginatedMessage>();
 			pm.Buffer = messageBuffer;
 
 			int messageId = NextId();
