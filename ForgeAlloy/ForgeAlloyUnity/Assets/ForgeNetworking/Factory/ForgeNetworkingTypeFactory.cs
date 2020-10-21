@@ -22,7 +22,7 @@ namespace Forge.Factory
 			Register<IMessageBus, ForgeMessageBus>();
 			Register<IMessageRepository, ForgeMessageRepository>();
 			Register<IMessagePage, ForgeMessagePage>();
-			Register<IPagenatedMessage, ForgePagenatedMessage>();
+			Register<IPaginatedMessage, ForgePaginatedMessage>();
 			Register<IMessageDestructor, ForgeMessageDestructor>();
 			Register<IMessageConstructor, ForgeMessageConstructor>();
 			Register<IMessageBufferInterpreter, ForgeMessageBufferInterpreter>();

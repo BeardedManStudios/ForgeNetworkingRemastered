@@ -61,7 +61,7 @@ namespace Forge.Networking.Messaging
 			else
 				ForgeSerializer.Instance.Serialize(false, buffer);
 			message.Serialize(buffer);
-			IPagenatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
+			IPaginatedMessage pm = _messageDestructor.BreakdownMessage(buffer);
 			sender.Send(receiver, pm.Buffer);
 			message.Sent();
 			_bufferPool.Release(buffer);

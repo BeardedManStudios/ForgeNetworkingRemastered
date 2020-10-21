@@ -3,7 +3,7 @@ using Forge.Serialization;
 
 namespace Forge.Networking.Messaging.Paging
 {
-	public class ForgePagenatedMessage : IPagenatedMessage
+	public class ForgePaginatedMessage : IPaginatedMessage
 	{
 		public BMSByte Buffer { get; set; }
 		public int TotalSize => Buffer.Size;
