@@ -41,8 +41,18 @@ namespace Forge.Reflection.Networking.Messaging
 			return _errors;
 		}
 
+		private bool CanCreateInstanceUsingDefaultConstructor(Type t)
+		{
+			return t.IsValueType || !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null;
+		}
+
 		private void FindErrorsForMessage(Dictionary<int, Type> validated, Type message, MessageContractAttribute a)
 		{
+			if (!CanCreateInstanceUsingDefaultConstructor(message))
+			{
+				_errors.Add(message, $"[Constructor Error]:  The message {message} is missing a parameterless " +
+					$"constructor.  The message pool requires this.");
+			}
 			if (!a.GetClassType().IsAssignableFrom(message))
 			{
 				_errors.Add(message, $"[Type Error]:  The type used as an argument to the EngineMessageContract " +
