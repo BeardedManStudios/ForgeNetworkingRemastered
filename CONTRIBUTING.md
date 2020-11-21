@@ -121,3 +121,56 @@ We prefer very small, descriptive functions over long monolythic functions. Try 
 We are currently trying out the Unity unit testing tools and they look promising so far. My hope is that we will be able to fall more into the TDD ([test driven development](https://en.wikipedia.org/wiki/Test-driven_development)) flow of programming so that we have many tests for the code to make sure it continues to work as expected for all of the functionality. Of course, I know it is very difficult to unit test a multi-threaded, network based application, but it is important for us to try as much as possible to achieve a full test coverage of the system.
 
 Please make sure that you either create a new file in the [ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests](https://github.com/BeardedManStudios/ForgeNetworkingRemastered/tree/develop/ForgeUnity/Assets/BeardedManStudios/Scripts/Editor/Tests) folder. Or if you are adding new tests that are either missing or covering new functionality of a class, feel free to update existing tests.
+
+### Naming
+When contributing to Forge, we want to make sure to convey the ideas through names. One of the easiest ways to do so is to describe the design pattern you are attempting to use in the code as part of the name. Below is a list of design pattern names (with personal descriptions) that are you free to use.
+
+<strong>Abstract factory</strong> - Provide an interface for creating families of related or dependent objects without specifying their concrete classes.
+
+<strong>Builder</strong> - Separate the construction of a complex object from its representation so that the same construction process can create different representations.
+
+<strong>Factory Method</strong> - Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
+
+<strong>Prototype</strong> - Specify the kinds of objects to create using a prototypical instance, and create new objects by copying this prototype.
+
+<strong>Singleton</strong> - Ensure a class only has one instance, and provide a global point of access to it.
+
+<strong>Adapter</strong> - Convert the interface of a class into another interface clients expect. Adapter lets classes work together that couldn't otherwise because of incompatible interfaces.
+
+<strong>Bridge</strong> - Decouple an abstraction from its implementation so that the two can vary independently.
+
+<strong>Composite</strong> - Compose objects into tree structures to represent part-whole hierarchies. Composite lets clients treat individual objects and compositions of objects uniformly.
+
+<strong>Decorator</strong> - Attach additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.
+
+<strong>Façade</strong> - Provide a unified interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.
+
+<strong>Flyweight</strong> - Use sharing to support large numbers of fine-graned objects efficiently.
+
+<strong>Proxy</strong> - Provide a surrogate or placeholder for another object to control access to it.
+
+<strong>Repository</strong> - The abstraction of data storage to allow for multiple different implementations where only one is selected but not known about by the repository user.
+
+<strong>Chain of responsibility</strong> - Avoid coupling the sender of a request to its receiver by giving more than one object a chance to handle the request. Chain the receiving objects and pass the request along the chain until an object handles it.
+
+<strong>Command</strong> - Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.
+
+<strong>Interpreter</strong> - Given a language, define a representation for its grammar along with an interpreter that uses the representation to interpret sentences in the language.
+
+<strong>Iterator</strong> - Provide a way to access the elements of an aggregate object sequentially without exposing its underlying representation.
+
+<strong>Mediator</strong> - Define an object that encapsulates how a set of objects interact. Mediator promotes loose coupling by keeping objects from referring to each other explicitly, and it lets you vary their interaction independently.
+
+<strong>Memento</strong> - Without violating encapsulation, capture and externalize an object's internal state so that the object can be restored to this state later.
+
+<strong>Observer</strong> - Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+
+<strong>State</strong> - Allow an object to alter its behavior when its internal state changes. The object will appear to change its class.
+
+<strong>Strategy</strong> - Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.
+
+<strong>Template method</strong> - Define the skeleton of an algorithm in a operation, deferring some steps to subclasses. Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm's structure.
+
+<strong>Visitor</strong> - Represent an operation to be performed on the elements of an object structure. Visitor lets you define a new operation without changing the classes of the elements on which it operates.
+
+<strong>Unit of work</strong> - This is a class that is responsible for keeping running modifications to commit to a repository in memory. When ready, the unit of work can be committed all in a single transaction. A unit of work can be thought of as a ledger/transaction for work done by a single request
