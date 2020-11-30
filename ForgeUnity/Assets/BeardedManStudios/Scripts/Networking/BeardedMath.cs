@@ -1,4 +1,4 @@
-﻿namespace BeardedManStudios
+namespace BeardedManStudios
 {
 	/// <summary>
 	/// A class that is to be extended to support math models that are not currently available in any 
@@ -21,7 +21,7 @@
 
 		public static T Lerp<T>(T a0, T a1, float t)
 		{
-			return a0;
+			return t == 0f ? a0 : a1;
 		}
 
 		/// <summary>
