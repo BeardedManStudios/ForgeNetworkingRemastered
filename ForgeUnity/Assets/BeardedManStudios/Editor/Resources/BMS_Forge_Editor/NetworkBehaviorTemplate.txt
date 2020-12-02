@@ -101,6 +101,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.SnapInterpolations();
 		}
 
+		private void OnDestroy()
+		{
+			networkObject.Destroy();
+			networkObject = null;
+		}
+
 		>:FOREVERY rpcs:<
 		/// <summary>
 		/// Arguments:
