@@ -29,6 +29,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				if (_>:[1]:< == value)
 					return;
 
+				// Target is not used on the owner, as it does not interpolate, but we must still keep it up to date in
+				// case the owner changes, so we don't start interpolating from an old value from before we were owner.
+				>:[1]:<Interpolation.target = value;
+
 				// Mark the field as dirty for the network to transmit
 				_dirtyFields[>:[6]:<] |= >:[5]:<;
 				_>:[1]:< = value;
