@@ -1,4 +1,6 @@
-﻿namespace BeardedManStudios
+﻿using System;
+
+namespace BeardedManStudios
 {
 	public partial struct Float3
 	{
@@ -38,6 +40,24 @@
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
+		}
+
+		public static Float3 Lerp(Float3 a0, Float3 a1, float t)
+		{
+			return new Float3(
+				BeardedMath.Lerp(a0.x, a1.x, t),
+				BeardedMath.Lerp(a0.y, a1.y, t),
+				BeardedMath.Lerp(a0.z, a1.z, t)
+			);
+		}
+
+		public static float Distance(Float3 a, Float3 b)
+		{
+			return (float)Math.Sqrt((double)(
+				Math.Pow(a.x - b.x, 2) +
+				Math.Pow(a.y - b.y, 2) +
+				Math.Pow(a.z - b.z, 2)
+			));
 		}
 	}
 }

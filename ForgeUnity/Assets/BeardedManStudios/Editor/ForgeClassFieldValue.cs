@@ -170,6 +170,15 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				case ForgeAcceptableFieldTypes.QUATERNION:
 					returnValue = "InterpolateQuaternion";
 					break;
+				case ForgeAcceptableFieldTypes.FLOAT2:
+					returnValue = "InterpolateFloat2";
+					break;
+				case ForgeAcceptableFieldTypes.FLOAT3:
+					returnValue = "InterpolateFloat3";
+					break;
+				case ForgeAcceptableFieldTypes.FLOAT4:
+					returnValue = "InterpolateFloat4";
+					break;
 				default:
 					returnValue = "Interpolated<" + baseTypeString + ">";
 					break;
@@ -188,6 +197,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				case ForgeAcceptableFieldTypes.VECTOR2:
 				case ForgeAcceptableFieldTypes.VECTOR3:
 				case ForgeAcceptableFieldTypes.VECTOR4:
+				case ForgeAcceptableFieldTypes.FLOAT2:
+				case ForgeAcceptableFieldTypes.FLOAT3:
+				case ForgeAcceptableFieldTypes.FLOAT4:
 				case ForgeAcceptableFieldTypes.QUATERNION:
 					returnValue = true;
 					break;
