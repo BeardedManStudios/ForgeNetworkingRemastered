@@ -57,6 +57,21 @@
 			return target.Between(other - distance, other + distance);
 		}
 
+		public static bool Near(this Float2 target, Float2 other, float distance)
+		{
+			return Float2.Distance(target, other) <= distance;
+		}
+
+		public static bool Near(this Float3 target, Float3 other, float distance)
+		{
+			return Float3.Distance(target, other) <= distance;
+		}
+
+		public static bool Near(this Float4 target, Float4 other, float distance)
+		{
+			return Float4.Distance(target, other) <= distance;
+		}
+
 		public static bool Near<T>(this T target, T other, float distance)
 		{
 			return target.Equals(other);
