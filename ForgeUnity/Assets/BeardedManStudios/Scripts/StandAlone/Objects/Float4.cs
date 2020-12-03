@@ -31,6 +31,11 @@
 			return x == other.x && y == other.y && z == other.z && w == other.w;
 		}
 
+		public override string ToString()
+		{
+			return string.Format("({0}, {1}, {2}, {3})", x, y, z, w);
+		}
+
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
