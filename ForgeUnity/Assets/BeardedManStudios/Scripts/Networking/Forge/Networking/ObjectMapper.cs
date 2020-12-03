@@ -43,6 +43,12 @@ namespace BeardedManStudios.Forge.Networking
 				obj = stream.GetBasicType<string>();
 			else if (type == typeof(Vector))
 				obj = stream.GetBasicType<Vector>();
+			if (type == typeof(Float2))
+				obj = MapFloat2(stream);
+			else if (type == typeof(Float3))
+				obj = MapFloat3(stream);
+			else if (type == typeof(Float4))
+				obj = MapFloat4(stream);
 			else if (type.IsArray)
 				obj = MapArray(type, stream);
 			else if (type == typeof(BMSByte))
@@ -70,6 +76,12 @@ namespace BeardedManStudios.Forge.Networking
 				obj = stream.GetBasicType<string>();
 			else if (genericType == typeof(Vector))
 				obj = stream.GetBasicType<Vector>();
+			else if (genericType == typeof(Float2))
+				obj = MapFloat2(stream);
+			else if (genericType == typeof(Float3))
+				obj = MapFloat3(stream);
+			else if (genericType == typeof(Float4))
+				obj = MapFloat4(stream);
 			else if (genericType.IsArray)
 				obj = MapArray(genericType, stream);
 			else if (genericType == typeof(BMSByte))
@@ -244,6 +256,24 @@ namespace BeardedManStudios.Forge.Networking
 				bytes.Append(BitConverter.GetBytes(vec.y));
 				bytes.Append(BitConverter.GetBytes(vec.z));
 			}
+			else if (type == typeof(Float2))
+			{
+				bytes.Append(BitConverter.GetBytes(((Float2)o).x));
+				bytes.Append(BitConverter.GetBytes(((Float2)o).y));
+			}
+			else if (type == typeof(Float3))
+			{
+				bytes.Append(BitConverter.GetBytes(((Float3)o).x));
+				bytes.Append(BitConverter.GetBytes(((Float3)o).y));
+				bytes.Append(BitConverter.GetBytes(((Float3)o).z));
+			}
+			else if (type == typeof(Float4))
+			{
+				bytes.Append(BitConverter.GetBytes(((Float4)o).x));
+				bytes.Append(BitConverter.GetBytes(((Float4)o).y));
+				bytes.Append(BitConverter.GetBytes(((Float4)o).z));
+				bytes.Append(BitConverter.GetBytes(((Float4)o).w));
+			}
 			else if (type == null) //TODO: Check if this causes other issues
 				bytes.Append(new byte[1] { 0 });
 			else if (type == typeof(sbyte))
@@ -357,6 +387,30 @@ namespace BeardedManStudios.Forge.Networking
 				Buffer.BlockCopy(BitConverter.GetBytes(vec.z), 0, bytes, sizeof(float) * 2, sizeof(float));
 				return bytes;
 			}
+			else if (type == typeof(Float2))
+			{
+				byte[] data = new byte[sizeof(float) * 2];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float2)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float2)o).y), 0, data, sizeof(float), sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Float3))
+			{
+				byte[] data = new byte[sizeof(float) * 3];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float3)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float3)o).y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float3)o).z), 0, data, sizeof(float) * 2, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Float4))
+			{
+				byte[] data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float4)o).x), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float4)o).y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float4)o).z), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Float4)o).w), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
 			else if (type == null) //TODO: Check if this causes other issues
 				return new byte[1] { 0 };
 			else if (type == typeof(sbyte))
@@ -465,6 +519,49 @@ namespace BeardedManStudios.Forge.Networking
 			BMSByte data = new BMSByte();
 			Instance.MapBytes(data, argsToMap);
 			return data;
+		}
+
+		/// <summary>
+		/// Get a Vector2 out of a FrameStream
+		/// </summary>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A Vector2 out of the FrameStream</returns>
+		public object MapFloat2(BMSByte stream)
+		{
+			return new Float2(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
+		}
+
+		/// <summary>
+		/// Get a Vector3 out of a FrameStream
+		/// </summary>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A Vector3 out of the FrameStream</returns>
+		public object MapFloat3(BMSByte stream)
+		{
+			return new Float3(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
+		}
+
+		/// <summary>
+		/// Get a Vector4 out of a FrameStream
+		/// </summary>
+		/// <param name="type">Type of object to be mapped</param>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A type of Vector4 (Vector4/Color/Quaternion) out of the FrameStream</returns>
+		public object MapFloat4(BMSByte stream)
+		{
+			return new Float4(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
 		}
 	}
 }
