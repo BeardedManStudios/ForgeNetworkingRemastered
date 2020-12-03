@@ -78,6 +78,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableFieldTypes.VECTOR3;
 			else if (fieldType == typeof(Vector4))
 				type = ForgeAcceptableFieldTypes.VECTOR4;
+			else if (fieldType == typeof(Float2))
+				type = ForgeAcceptableFieldTypes.FLOAT2;
+			else if (fieldType == typeof(Float3))
+				type = ForgeAcceptableFieldTypes.FLOAT3;
+			else if (fieldType == typeof(Float4))
+				type = ForgeAcceptableFieldTypes.FLOAT4;
 			//else if (fieldType == typeof(string))
 			//	type = ForgeAcceptableFieldTypes.STRING; //Unsupported
 			//else if (fieldType == typeof(object[]))
@@ -126,6 +132,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return typeof(Vector3);
 				case ForgeAcceptableFieldTypes.VECTOR4:
 					return typeof(Vector4);
+				case ForgeAcceptableFieldTypes.FLOAT2:
+					return typeof(Float2);
+				case ForgeAcceptableFieldTypes.FLOAT3:
+					return typeof(Float3);
+				case ForgeAcceptableFieldTypes.FLOAT4:
+					return typeof(Float4);
 				//case ForgeAcceptableFieldTypes.STRING: //Unsupported
 				//	return typeof(string);
 				//case ForgeAcceptableFieldTypes.OBJECT_ARRAY: //Unsupported
@@ -220,6 +232,12 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return ForgeAcceptableFieldTypes.VECTOR3;
 				case "vector4":
 					return ForgeAcceptableFieldTypes.VECTOR4;
+				case "float2":
+					return ForgeAcceptableFieldTypes.FLOAT2;
+				case "float3":
+					return ForgeAcceptableFieldTypes.FLOAT3;
+				case "float4":
+					return ForgeAcceptableFieldTypes.FLOAT4;
 				//case "string":
 				//	return ForgeAcceptableFieldTypes.STRING; //Unsupported
 				//case "object[]":

@@ -1,0 +1,42 @@
+using BeardedManStudios.Forge.Networking.Frame;
+using System;
+
+namespace BeardedManStudios.Forge.Networking.Generated
+{
+	public partial class StandAloneNetworkObjectFactory : INetworkObjectFactory
+	{
+		public virtual void NetworkCreateObject(NetWorker networker, int identity, uint id, FrameStream frame, Action<NetworkObject> callback)
+		{
+			if (frame.Sender != null && frame.Sender != networker.Me)
+			{
+				if (!ValidateCreateRequest(networker, identity, id, frame))
+					return;
+			}
+			
+			bool availableCallback = false;
+
+			NetworkObject obj = null;
+			
+			switch (identity)
+			{
+				>:FOREACH networkObjects:<
+				case >:[i]:<.IDENTITY:
+					availableCallback = true;
+					obj = new >:[i]:<(networker, id, frame);
+					break;
+				>:ENDFOREACH:<
+			}
+
+			if (!availableCallback && callback != null)
+				callback(obj);
+		}
+
+		protected virtual bool ValidateCreateRequest(NetWorker networker, int identity, uint id, FrameStream frame)
+		{
+			return true;
+		}
+
+		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
+		// WARNING: THIS IS ONLY FOR USE WITH THE STANDALONE SERVER!
+	}
+}

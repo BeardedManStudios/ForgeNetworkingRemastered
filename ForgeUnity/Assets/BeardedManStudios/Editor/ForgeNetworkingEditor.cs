@@ -200,6 +200,9 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			_referenceVariables.Add(typeof(Vector4).Name, "Vector4");
 			_referenceVariables.Add(typeof(Quaternion).Name, "Quaternion");
 			_referenceVariables.Add(typeof(Color).Name, "Color");
+			_referenceVariables.Add(typeof(Float2).Name, "Float2");
+			_referenceVariables.Add(typeof(Float3).Name, "Float3");
+			_referenceVariables.Add(typeof(Float4).Name, "Float4");
 			_referenceVariables.Add(typeof(object).Name, "object");
 			_referenceVariables.Add(typeof(object[]).Name, "object[]");
 			_referenceVariables.Add(typeof(byte[]).Name, "byte[]");
@@ -710,7 +713,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// <returns>The generated string to save to a file</returns>
 		public string SourceCodeNetworkObject(ForgeClassObject cObj, ForgeEditorButton btn, int identity)
 		{
-			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/NetworkObjectTemplate");
+			string networkObjectPath = string.Empty;
+
+			if (btn.BaseType == ForgeBaseClassType.NetworkBehavior)
+				networkObjectPath = EDITOR_RESOURCES_DIR + "/StandAloneNetworkObjectTemplate";
+			else
+				networkObjectPath = EDITOR_RESOURCES_DIR + "/NetworkObjectTemplate";
+
+			TextAsset asset = Resources.Load<TextAsset>(networkObjectPath);
 			TemplateSystem template = new TemplateSystem(asset.text);
 
 			template.AddVariable("className", btn.StrippedSearchName + "NetworkObject");
@@ -893,6 +903,32 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 
 		/// <summary>
+		/// Generates the code factory for all our custom network objects for standalone use
+		/// </summary>
+		/// <returns>The string for the save file</returns>
+		public string SourceCodeStandAloneFactory()
+		{
+			TextAsset asset = Resources.Load<TextAsset>(EDITOR_RESOURCES_DIR + "/StandAloneNetworkObjectFactoryTemplate");
+			TemplateSystem template = new TemplateSystem(asset.text);
+
+			List<object> networkObjects = new List<object>();
+			for (int i = 0; i < _editorButtons.Count; ++i)
+			{
+				if (!_editorButtons[i].IsNetworkObject)
+					continue;
+
+				string name = _editorButtons[i].StrippedSearchName + "NetworkObject";
+				if (networkObjects.Contains(name))
+					continue;
+
+				networkObjects.Add(name);
+			}
+
+			template.AddVariable("networkObjects", networkObjects.ToArray());
+			return template.Parse();
+		}
+
+		/// <summary>
 		/// Generates the network manager that will allow the instantiation of these new network objects
 		/// </summary>
 		/// <returns>The string to save to a file</returns>
@@ -1045,6 +1081,15 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					sw.Write(networkManagerData);
 				}
 
+				if(ActiveButton.BaseType == ForgeBaseClassType.NetworkBehavior)
+				{
+					string standAloneFactoryData = SourceCodeStandAloneFactory();
+					using (StreamWriter sw = File.CreateText(Path.Combine(_storingPath, "StandAloneNetworkObjectFactory.cs")))
+					{
+						sw.Write(standAloneFactoryData);
+					}
+				}
+				
 				//IFormatter previousSavedState = new BinaryFormatter();
 				//using (Stream s = new FileStream(Path.Combine(Application.persistentDataPath, FN_WIZARD_DATA), FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
 				//{
