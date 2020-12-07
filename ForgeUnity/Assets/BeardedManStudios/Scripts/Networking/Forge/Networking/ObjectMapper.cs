@@ -43,7 +43,7 @@ namespace BeardedManStudios.Forge.Networking
 				obj = stream.GetBasicType<string>();
 			else if (type == typeof(Vector))
 				obj = stream.GetBasicType<Vector>();
-			if (type == typeof(Float2))
+			else if (type == typeof(Float2))
 				obj = MapFloat2(stream);
 			else if (type == typeof(Float3))
 				obj = MapFloat3(stream);
