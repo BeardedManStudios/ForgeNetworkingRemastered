@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using BeardedManStudios.Forge.Networking.Frame;
+﻿using BeardedManStudios.Forge.Networking.Frame;
 using System;
 
 namespace BeardedManStudios.Forge.Networking
