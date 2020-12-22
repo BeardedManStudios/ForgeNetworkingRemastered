@@ -79,3 +79,6 @@ sysinfo.txt
 [cC]onsole[tT]est[pP]rogram/obj/
 
 [dD]ocs/mkdocs/[sS]ite/
+/ForgeAlloy/ForgeServerRegistryService/obj/Debug/netcoreapp3.0
+/ForgeAlloy/ForgeSampleGameServer/obj/Debug/netcoreapp3.0
+/ForgeAlloy/ForgeNatHolePunch/obj/Debug/netcoreapp3.0

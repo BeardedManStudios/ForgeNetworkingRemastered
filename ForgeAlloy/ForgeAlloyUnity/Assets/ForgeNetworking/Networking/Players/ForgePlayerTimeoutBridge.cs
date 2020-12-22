@@ -60,6 +60,7 @@ namespace Forge.Networking.Players
 				}
 				foreach (var player in _timedOutPlayers)
 					_networkMediator.PlayerRepository.RemovePlayer(player);
+				_timedOutPlayers.Clear();
 			}
 		}
 	}
