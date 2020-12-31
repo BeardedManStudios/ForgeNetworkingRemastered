@@ -1,4 +1,4 @@
-using Forge.Serialization;
+﻿using Forge.Serialization;
 
 namespace Forge.Networking.Messaging
 {
@@ -9,9 +9,11 @@ namespace Forge.Networking.Messaging
 		public abstract IMessageInterpreter Interpreter { get; }
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);
+		public bool BlockSent { get; set; } = false;
 		public void Sent()
 		{
-			OnMessageSent?.Invoke(this);
+			if (!BlockSent)
+				OnMessageSent?.Invoke(this);
 		}
 	}
 }
