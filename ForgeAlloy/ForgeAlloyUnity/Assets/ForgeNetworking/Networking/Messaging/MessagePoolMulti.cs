@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Forge.Networking.Messaging
 {
 	public class MessagePoolMulti
 	{
-		private readonly Dictionary<Type, Queue<IMessage>> _messagePools = new Dictionary<Type, Queue<IMessage>>();
+		private readonly Dictionary<Type, ConcurrentQueue<IMessage>> _messagePools = new Dictionary<Type, ConcurrentQueue<IMessage>>();
 
 		public IMessage Get(Type t)
 		{
@@ -13,7 +14,13 @@ namespace Forge.Networking.Messaging
 			if (pool.Count == 0)
 				return CreateNewMessageForPool(t, pool);
 			else
-				return pool.Dequeue();
+			{
+				// Try to dequeue, but if locked default to create new
+				IMessage item;
+				if (pool.TryDequeue(out item))
+					return item;
+				else return CreateNewMessageForPool(t, pool);
+			}
 		}
 
 		public T Get<T>() where T : IMessage, new()
@@ -22,27 +29,33 @@ namespace Forge.Networking.Messaging
 			if (pool.Count == 0)
 				return CreateNewMessageForPool<T>(pool);
 			else
-				return (T)pool.Dequeue();
+			{
+				// Try to dequeue, but if locked default to create new
+				IMessage item;
+				if (pool.TryDequeue(out item))
+					return (T)item;
+				else return CreateNewMessageForPool<T>(pool);
+			}
 		}
 
-		private Queue<IMessage> GetPool(Type type)
+		private ConcurrentQueue<IMessage> GetPool(Type type)
 		{
 			if (!_messagePools.TryGetValue(type, out var pool))
 			{
-				pool = new Queue<IMessage>();
+				pool = new ConcurrentQueue<IMessage>();
 				_messagePools.Add(type, pool);
 			}
 			return pool;
 		}
 
-		private T CreateNewMessageForPool<T>(Queue<IMessage> pool) where T : IMessage, new()
+		private T CreateNewMessageForPool<T>(ConcurrentQueue<IMessage> pool) where T : IMessage, new()
 		{
 			T m = new T();
 			m.OnMessageSent += Release;
 			return m;
 		}
 
-		private IMessage CreateNewMessageForPool(Type t, Queue<IMessage> pool)
+		private IMessage CreateNewMessageForPool(Type t, ConcurrentQueue<IMessage> pool)
 		{
 			IMessage m = (IMessage)Activator.CreateInstance(t);
 			m.OnMessageSent += Release;
@@ -51,7 +64,7 @@ namespace Forge.Networking.Messaging
 
 		private void Release(IMessage message)
 		{
-			Queue<IMessage> pool = GetPool(message.GetType());
+			ConcurrentQueue<IMessage> pool = GetPool(message.GetType());
 			pool.Enqueue(message);
 		}
 	}

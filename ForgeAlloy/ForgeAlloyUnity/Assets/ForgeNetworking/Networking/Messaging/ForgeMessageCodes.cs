@@ -53,6 +53,20 @@ namespace Forge.Networking.Messaging
 			return code;
 		}
 
+		/// <summary>
+		/// Instantiate a message of Type T
+		/// </summary>
+		/// <example>
+		/// var dieMsg = ForgeMessageCodes.Instantiate<NetDieClientMessage>();
+		/// </example>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static T Instantiate<T>()
+		{
+			int code = GetCodeFromType(typeof(T));
+			return (T)Instantiate(code);
+		}
+
 		public static void Clear()
 		{
 			_messageTypes.Clear();
