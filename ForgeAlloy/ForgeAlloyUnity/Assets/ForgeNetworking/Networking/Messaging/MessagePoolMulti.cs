@@ -18,7 +18,10 @@ namespace Forge.Networking.Messaging
 				// Try to dequeue, but if locked default to create new
 				IMessage item;
 				if (pool.TryDequeue(out item))
+				{
+					item.IsPooled = false;
 					return item;
+				}
 				else return CreateNewMessageForPool(t, pool);
 			}
 		}
@@ -33,7 +36,10 @@ namespace Forge.Networking.Messaging
 				// Try to dequeue, but if locked default to create new
 				IMessage item;
 				if (pool.TryDequeue(out item))
+				{
+					item.IsPooled = false;
 					return (T)item;
+				}
 				else return CreateNewMessageForPool<T>(pool);
 			}
 		}
@@ -64,6 +70,8 @@ namespace Forge.Networking.Messaging
 
 		private void Release(IMessage message)
 		{
+			if (message.IsPooled) return; // Message has already been returned to pool
+			message.IsPooled = true;
 			ConcurrentQueue<IMessage> pool = GetPool(message.GetType());
 			pool.Enqueue(message);
 		}

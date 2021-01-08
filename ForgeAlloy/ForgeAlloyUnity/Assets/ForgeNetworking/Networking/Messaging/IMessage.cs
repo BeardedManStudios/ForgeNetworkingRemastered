@@ -1,4 +1,4 @@
-using Forge.Serialization;
+﻿using Forge.Serialization;
 
 namespace Forge.Networking.Messaging
 {
@@ -12,5 +12,6 @@ namespace Forge.Networking.Messaging
 		void Serialize(BMSByte buffer);
 		void Deserialize(BMSByte buffer);
 		void Sent();
+		bool IsPooled { get; set; }
 	}
 }

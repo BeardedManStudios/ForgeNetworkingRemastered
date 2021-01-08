@@ -9,11 +9,10 @@ namespace Forge.Networking.Messaging
 		public abstract IMessageInterpreter Interpreter { get; }
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);
-		public bool BlockSent { get; set; } = false;
+		public bool IsPooled { get; set; } = false;
 		public void Sent()
 		{
-			if (!BlockSent)
-				OnMessageSent?.Invoke(this);
+			OnMessageSent?.Invoke(this);
 		}
 	}
 }
