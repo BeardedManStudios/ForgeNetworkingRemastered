@@ -1,4 +1,7 @@
-﻿namespace BeardedManStudios
+﻿using System;
+using Numerics = System.Numerics;
+
+namespace BeardedManStudios
 {
 	public static class BMSExtensions
 	{
@@ -57,19 +60,33 @@
 			return target.Between(other - distance, other + distance);
 		}
 
-		public static bool Near(this Float2 target, Float2 other, float distance)
+		public static bool Near(this Numerics.Vector2 target, Numerics.Vector2 other, float distance)
 		{
-			return Float2.Distance(target, other) <= distance;
+			return Numerics.Vector2.Distance(target, other) <= distance;
 		}
 
-		public static bool Near(this Float3 target, Float3 other, float distance)
+		public static bool Near(this Numerics.Vector3 target, Numerics.Vector3 other, float distance)
 		{
-			return Float3.Distance(target, other) <= distance;
+			return Numerics.Vector3.Distance(target, other) <= distance;
 		}
 
-		public static bool Near(this Float4 target, Float4 other, float distance)
+		public static bool Near(this Numerics.Vector4 target, Numerics.Vector4 other, float distance)
 		{
-			return Float4.Distance(target, other) <= distance;
+			return Numerics.Vector4.Distance(target, other) <= distance;
+		}
+
+		public static bool Near(this Numerics.Quaternion target, Numerics.Quaternion other, float distance)
+		{
+			const double K_EPSILON = 0.000001;
+			const double RADIANS_TO_DEGREES = 1.0 / (Math.PI / 180.0);
+
+			float dotProduct = Numerics.Quaternion.Dot(target, other);
+
+			double angle = dotProduct <= 1.0 - K_EPSILON ?
+				Math.Acos(Math.Min(Math.Abs(dotProduct), 1.0F)) * 2.0 * RADIANS_TO_DEGREES :
+				0.0;
+
+			return angle <= distance;
 		}
 
 		public static bool Near<T>(this T target, T other, float distance)

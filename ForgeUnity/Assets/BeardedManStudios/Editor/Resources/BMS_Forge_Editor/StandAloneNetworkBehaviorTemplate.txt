@@ -1,6 +1,7 @@
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.StandAlone;
+using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {

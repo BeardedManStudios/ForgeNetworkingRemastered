@@ -10,6 +10,7 @@ using System.Text;
 using BeardedManStudios.Templating;
 using UnityEditor;
 using UnityEngine;
+using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -86,7 +87,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		/// </summary>
 		private Dictionary<object, string> _referenceVariables = new Dictionary<object, string>();
 		/// <summary>
-		/// This is the bitwise 
+		/// This is the bitwise
 		/// </summary>
 		private List<string> _referenceBitWise = new List<string>();
 
@@ -183,29 +184,30 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			_referenceBitWise.Add("0x80");
 
 			_referenceVariables = new Dictionary<object, string>();
-			_referenceVariables.Add(typeof(bool).Name, "bool");
-			_referenceVariables.Add(typeof(byte).Name, "byte");
-			_referenceVariables.Add(typeof(char).Name, "char");
-			_referenceVariables.Add(typeof(short).Name, "short");
-			_referenceVariables.Add(typeof(ushort).Name, "ushort");
-			_referenceVariables.Add(typeof(int).Name, "int");
-			_referenceVariables.Add(typeof(uint).Name, "uint");
-			_referenceVariables.Add(typeof(float).Name, "float");
-			_referenceVariables.Add(typeof(long).Name, "long");
-			_referenceVariables.Add(typeof(ulong).Name, "ulong");
-			_referenceVariables.Add(typeof(double).Name, "double");
-			_referenceVariables.Add(typeof(string).Name, "string");
-			_referenceVariables.Add(typeof(Vector2).Name, "Vector2");
-			_referenceVariables.Add(typeof(Vector3).Name, "Vector3");
-			_referenceVariables.Add(typeof(Vector4).Name, "Vector4");
-			_referenceVariables.Add(typeof(Quaternion).Name, "Quaternion");
-			_referenceVariables.Add(typeof(Color).Name, "Color");
-			_referenceVariables.Add(typeof(Float2).Name, "Float2");
-			_referenceVariables.Add(typeof(Float3).Name, "Float3");
-			_referenceVariables.Add(typeof(Float4).Name, "Float4");
-			_referenceVariables.Add(typeof(object).Name, "object");
-			_referenceVariables.Add(typeof(object[]).Name, "object[]");
-			_referenceVariables.Add(typeof(byte[]).Name, "byte[]");
+			_referenceVariables.Add(typeof(bool).FullName, "bool");
+			_referenceVariables.Add(typeof(byte).FullName, "byte");
+			_referenceVariables.Add(typeof(char).FullName, "char");
+			_referenceVariables.Add(typeof(short).FullName, "short");
+			_referenceVariables.Add(typeof(ushort).FullName, "ushort");
+			_referenceVariables.Add(typeof(int).FullName, "int");
+			_referenceVariables.Add(typeof(uint).FullName, "uint");
+			_referenceVariables.Add(typeof(float).FullName, "float");
+			_referenceVariables.Add(typeof(long).FullName, "long");
+			_referenceVariables.Add(typeof(ulong).FullName, "ulong");
+			_referenceVariables.Add(typeof(double).FullName, "double");
+			_referenceVariables.Add(typeof(string).FullName, "string");
+			_referenceVariables.Add(typeof(Vector2).FullName, "Vector2");
+			_referenceVariables.Add(typeof(Vector3).FullName, "Vector3");
+			_referenceVariables.Add(typeof(Vector4).FullName, "Vector4");
+			_referenceVariables.Add(typeof(Quaternion).FullName, "Quaternion");
+			_referenceVariables.Add(typeof(Color).FullName, "Color");
+			_referenceVariables.Add(typeof(Numerics.Vector2).FullName, "Numerics.Vector2");
+			_referenceVariables.Add(typeof(Numerics.Vector3).FullName, "Numerics.Vector3");
+			_referenceVariables.Add(typeof(Numerics.Vector4).FullName, "Numerics.Vector4");
+			_referenceVariables.Add(typeof(Numerics.Quaternion).FullName, "Numerics.Quaternion");
+			_referenceVariables.Add(typeof(object).FullName, "object");
+			_referenceVariables.Add(typeof(object[]).FullName, "object[]");
+			_referenceVariables.Add(typeof(byte[]).FullName, "byte[]");
 
 			_scrollView = Vector2.zero;
 			_editorButtons = new List<ForgeEditorButton>();
@@ -736,14 +738,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 			for (i = 0, j = 0; i < btn.ClassVariables.Count; ++i)
 			{
 				Type t = ForgeClassFieldValue.GetTypeFromAcceptable(btn.ClassVariables[i].FieldType);
-				interpolateType = ForgeClassFieldValue.GetInterpolateFromAcceptable(_referenceVariables[t.Name], btn.ClassVariables[i].FieldType);
+				interpolateType = ForgeClassFieldValue.GetInterpolateFromAcceptable(_referenceVariables[t.FullName], btn.ClassVariables[i].FieldType);
 
 				if (i != 0 && i % 8 == 0)
 					j++;
 
 				object[] fieldData = new object[]
 				{
-					_referenceVariables[t.Name],						// Data type
+					_referenceVariables[t.FullName],					// Data type
 					btn.ClassVariables[i].FieldName.Replace(" ", string.Empty),	// Field name
 					btn.ClassVariables[i].Interpolate,					// Interpolated
 					interpolateType,									// Interpolate type
@@ -816,20 +818,20 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				{
 					Type t = ForgeClassFieldRPCValue.GetTypeFromAcceptable(btn.RPCVariables[i].FieldTypes[x].Type);
 
-					helperNames.AppendLine("\t\t/// " + _referenceVariables[t.Name] + " " + btn.RPCVariables[i].FieldTypes[x].HelperName);
+					helperNames.AppendLine("\t\t/// " + _referenceVariables[t.FullName] + " " + btn.RPCVariables[i].FieldTypes[x].HelperName);
 
 					string fieldHelper = btn.RPCVariables[i].FieldTypes[x].HelperName;
 					if (x + 1 < btn.RPCVariables[i].ArgumentCount)
 					{
-						innerTypes.Append(", typeof(" + _referenceVariables[t.Name] + ")");
-						innerJSON.Append("\"" + _referenceVariables[t.Name] + "\", ");
+						innerTypes.Append(", typeof(" + _referenceVariables[t.FullName] + ")");
+						innerJSON.Append("\"" + _referenceVariables[t.FullName] + "\", ");
 						innerHelperTypesJSON.Append("\"" + fieldHelper + "\", ");
 
 					}
 					else
 					{
-						innerTypes.Append(", typeof(" + _referenceVariables[t.Name] + ")");
-						innerJSON.Append("\"" + _referenceVariables[t.Name] + "\"");
+						innerTypes.Append(", typeof(" + _referenceVariables[t.FullName] + ")");
+						innerJSON.Append("\"" + _referenceVariables[t.FullName] + "\"");
 						innerHelperTypesJSON.Append("\"" + fieldHelper + "\"");
 					}
 				}

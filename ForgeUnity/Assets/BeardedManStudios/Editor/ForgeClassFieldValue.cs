@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using UnityEngine;
+using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -78,12 +79,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableFieldTypes.VECTOR3;
 			else if (fieldType == typeof(Vector4))
 				type = ForgeAcceptableFieldTypes.VECTOR4;
-			else if (fieldType == typeof(Float2))
-				type = ForgeAcceptableFieldTypes.FLOAT2;
-			else if (fieldType == typeof(Float3))
-				type = ForgeAcceptableFieldTypes.FLOAT3;
-			else if (fieldType == typeof(Float4))
-				type = ForgeAcceptableFieldTypes.FLOAT4;
+			else if (fieldType == typeof(Numerics.Vector2))
+				type = ForgeAcceptableFieldTypes.DOTNET_VECTOR2;
+			else if (fieldType == typeof(Numerics.Vector3))
+				type = ForgeAcceptableFieldTypes.DOTNET_VECTOR3;
+			else if (fieldType == typeof(Numerics.Vector4))
+				type = ForgeAcceptableFieldTypes.DOTNET_VECTOR4;
+			else if (fieldType == typeof(Numerics.Quaternion))
+				type = ForgeAcceptableFieldTypes.DOTNET_QUATERNION;
 			//else if (fieldType == typeof(string))
 			//	type = ForgeAcceptableFieldTypes.STRING; //Unsupported
 			//else if (fieldType == typeof(object[]))
@@ -132,12 +135,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return typeof(Vector3);
 				case ForgeAcceptableFieldTypes.VECTOR4:
 					return typeof(Vector4);
-				case ForgeAcceptableFieldTypes.FLOAT2:
-					return typeof(Float2);
-				case ForgeAcceptableFieldTypes.FLOAT3:
-					return typeof(Float3);
-				case ForgeAcceptableFieldTypes.FLOAT4:
-					return typeof(Float4);
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR2:
+					return typeof(Numerics.Vector2);
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR3:
+					return typeof(Numerics.Vector3);
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR4:
+					return typeof(Numerics.Vector4);
+				case ForgeAcceptableFieldTypes.DOTNET_QUATERNION:
+					return typeof(Numerics.Quaternion);
 				//case ForgeAcceptableFieldTypes.STRING: //Unsupported
 				//	return typeof(string);
 				//case ForgeAcceptableFieldTypes.OBJECT_ARRAY: //Unsupported
@@ -170,14 +175,17 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				case ForgeAcceptableFieldTypes.QUATERNION:
 					returnValue = "InterpolateQuaternion";
 					break;
-				case ForgeAcceptableFieldTypes.FLOAT2:
-					returnValue = "InterpolateFloat2";
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR2:
+					returnValue = "InterpolateDotnetVector2";
 					break;
-				case ForgeAcceptableFieldTypes.FLOAT3:
-					returnValue = "InterpolateFloat3";
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR3:
+					returnValue = "InterpolateDotnetVector3";
 					break;
-				case ForgeAcceptableFieldTypes.FLOAT4:
-					returnValue = "InterpolateFloat4";
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR4:
+					returnValue = "InterpolateDotnetVector4";
+					break;
+				case ForgeAcceptableFieldTypes.DOTNET_QUATERNION:
+					returnValue = "InterpolateDotnetQuaternion";
 					break;
 				default:
 					returnValue = "Interpolated<" + baseTypeString + ">";
@@ -197,10 +205,11 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				case ForgeAcceptableFieldTypes.VECTOR2:
 				case ForgeAcceptableFieldTypes.VECTOR3:
 				case ForgeAcceptableFieldTypes.VECTOR4:
-				case ForgeAcceptableFieldTypes.FLOAT2:
-				case ForgeAcceptableFieldTypes.FLOAT3:
-				case ForgeAcceptableFieldTypes.FLOAT4:
 				case ForgeAcceptableFieldTypes.QUATERNION:
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR2:
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR3:
+				case ForgeAcceptableFieldTypes.DOTNET_VECTOR4:
+				case ForgeAcceptableFieldTypes.DOTNET_QUATERNION:
 					returnValue = true;
 					break;
 			}
@@ -244,12 +253,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return ForgeAcceptableFieldTypes.VECTOR3;
 				case "vector4":
 					return ForgeAcceptableFieldTypes.VECTOR4;
-				case "float2":
-					return ForgeAcceptableFieldTypes.FLOAT2;
-				case "float3":
-					return ForgeAcceptableFieldTypes.FLOAT3;
-				case "float4":
-					return ForgeAcceptableFieldTypes.FLOAT4;
+				case "dotnetvector2":
+					return ForgeAcceptableFieldTypes.DOTNET_VECTOR2;
+				case "dotnetvector3":
+					return ForgeAcceptableFieldTypes.DOTNET_VECTOR3;
+				case "dotnetvector4":
+					return ForgeAcceptableFieldTypes.DOTNET_VECTOR4;
+				case "dotnetquaternion":
+					return ForgeAcceptableFieldTypes.DOTNET_QUATERNION;
 				//case "string":
 				//	return ForgeAcceptableFieldTypes.STRING; //Unsupported
 				//case "object[]":

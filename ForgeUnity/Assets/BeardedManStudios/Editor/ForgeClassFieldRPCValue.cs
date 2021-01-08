@@ -4,6 +4,7 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Templating;
 using SimpleJSONEditor;
 using System;
+using Numerics = System.Numerics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,12 +86,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableRPCTypes.VECTOR3;
 			else if (fieldType == typeof(Vector4))
 				type = ForgeAcceptableRPCTypes.VECTOR4;
-			else if (fieldType == typeof(Float2))
-				type = ForgeAcceptableRPCTypes.FLOAT2;
-			else if (fieldType == typeof(Float3))
-				type = ForgeAcceptableRPCTypes.FLOAT3;
-			else if (fieldType == typeof(Float4))
-				type = ForgeAcceptableRPCTypes.FLOAT4;
+			else if (fieldType == typeof(Numerics.Vector2))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR2;
+			else if (fieldType == typeof(Numerics.Vector3))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR3;
+			else if (fieldType == typeof(Numerics.Vector4))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR4;
+			else if (fieldType == typeof(Numerics.Quaternion))
+				type = ForgeAcceptableRPCTypes.DOTNET_QUATERNION;
 			else if (fieldType == typeof(string))
 				type = ForgeAcceptableRPCTypes.STRING;
 			//else if (fieldType == typeof(object[]))
@@ -139,12 +142,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return typeof(Vector3);
 				case ForgeAcceptableRPCTypes.VECTOR4:
 					return typeof(Vector4);
-				case ForgeAcceptableRPCTypes.FLOAT2:
-					return typeof(Float2);
-				case ForgeAcceptableRPCTypes.FLOAT3:
-					return typeof(Float3);
-				case ForgeAcceptableRPCTypes.FLOAT4:
-					return typeof(Float4);
+				case ForgeAcceptableRPCTypes.DOTNET_VECTOR2:
+					return typeof(Numerics.Vector2);
+				case ForgeAcceptableRPCTypes.DOTNET_VECTOR3:
+					return typeof(Numerics.Vector3);
+				case ForgeAcceptableRPCTypes.DOTNET_VECTOR4:
+					return typeof(Numerics.Vector4);
+				case ForgeAcceptableRPCTypes.DOTNET_QUATERNION:
+					return typeof(Numerics.Quaternion);
 				case ForgeAcceptableRPCTypes.STRING:
 					return typeof(string);
 				//case ForgeAcceptableRPCTypes.OBJECT_ARRAY:
@@ -192,12 +197,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 					return ForgeAcceptableRPCTypes.VECTOR3;
 				case "vector4":
 					return ForgeAcceptableRPCTypes.VECTOR4;
-				case "float2":
-					return ForgeAcceptableRPCTypes.FLOAT2;
-				case "float3":
-					return ForgeAcceptableRPCTypes.FLOAT3;
-				case "float4":
-					return ForgeAcceptableRPCTypes.FLOAT4;
+				case "dotnetvector2":
+					return ForgeAcceptableRPCTypes.DOTNET_VECTOR2;
+				case "dotnetvector3":
+					return ForgeAcceptableRPCTypes.DOTNET_VECTOR3;
+				case "dotnetvector4":
+					return ForgeAcceptableRPCTypes.DOTNET_VECTOR4;
+				case "dotnetquaternion":
+					return ForgeAcceptableRPCTypes.DOTNET_QUATERNION;
 				case "string":
 					return ForgeAcceptableRPCTypes.STRING;
 				//case "object[]":
