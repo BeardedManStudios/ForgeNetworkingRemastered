@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
@@ -67,6 +68,14 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 				type = ForgeAcceptableRPCTypes.VECTOR3;
 			else if (fieldType == typeof(Vector4))
 				type = ForgeAcceptableRPCTypes.VECTOR4;
+			else if (fieldType == typeof(Numerics.Vector2))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR2;
+			else if (fieldType == typeof(Numerics.Vector3))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR3;
+			else if (fieldType == typeof(Numerics.Vector4))
+				type = ForgeAcceptableRPCTypes.DOTNET_VECTOR4;
+			else if (fieldType == typeof(Numerics.Quaternion))
+				type = ForgeAcceptableRPCTypes.DOTNET_QUATERNION;
 			else if (fieldType == typeof(string))
 				type = ForgeAcceptableRPCTypes.STRING;
 			//else if (fieldType == typeof(object[]))

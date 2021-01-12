@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -43,6 +44,14 @@ namespace BeardedManStudios.Forge.Networking
 				obj = stream.GetBasicType<string>();
 			else if (type == typeof(Vector))
 				obj = stream.GetBasicType<Vector>();
+			else if (type == typeof(Numerics.Vector2))
+				obj = MapDotnetVector2(stream);
+			else if (type == typeof(Numerics.Vector3))
+				obj = MapDotnetVector3(stream);
+			else if (type == typeof(Numerics.Vector4))
+				obj = MapDotnetVector4(stream);
+			else if (type == typeof(Numerics.Quaternion))
+				obj = MapDotnetQuaternion(stream);
 			else if (type.IsArray)
 				obj = MapArray(type, stream);
 			else if (type == typeof(BMSByte))
@@ -70,6 +79,14 @@ namespace BeardedManStudios.Forge.Networking
 				obj = stream.GetBasicType<string>();
 			else if (genericType == typeof(Vector))
 				obj = stream.GetBasicType<Vector>();
+			else if (genericType == typeof(Numerics.Vector2))
+				obj = MapDotnetVector2(stream);
+			else if (genericType == typeof(Numerics.Vector3))
+				obj = MapDotnetVector3(stream);
+			else if (genericType == typeof(Numerics.Vector4))
+				obj = MapDotnetVector4(stream);
+			else if (genericType == typeof(Numerics.Quaternion))
+				obj = MapDotnetQuaternion(stream);
 			else if (genericType.IsArray)
 				obj = MapArray(genericType, stream);
 			else if (genericType == typeof(BMSByte))
@@ -244,6 +261,31 @@ namespace BeardedManStudios.Forge.Networking
 				bytes.Append(BitConverter.GetBytes(vec.y));
 				bytes.Append(BitConverter.GetBytes(vec.z));
 			}
+			else if (type == typeof(Numerics.Vector2))
+			{
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector2)o).X));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector2)o).Y));
+			}
+			else if (type == typeof(Numerics.Vector3))
+			{
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector3)o).X));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector3)o).Y));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector3)o).Z));
+			}
+			else if (type == typeof(Numerics.Vector4))
+			{
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector4)o).X));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector4)o).Y));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector4)o).Z));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Vector4)o).W));
+			}
+			else if (type == typeof(Numerics.Quaternion))
+			{
+				bytes.Append(BitConverter.GetBytes(((Numerics.Quaternion)o).X));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Quaternion)o).Y));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Quaternion)o).Z));
+				bytes.Append(BitConverter.GetBytes(((Numerics.Quaternion)o).W));
+			}
 			else if (type == null) //TODO: Check if this causes other issues
 				bytes.Append(new byte[1] { 0 });
 			else if (type == typeof(sbyte))
@@ -357,6 +399,39 @@ namespace BeardedManStudios.Forge.Networking
 				Buffer.BlockCopy(BitConverter.GetBytes(vec.z), 0, bytes, sizeof(float) * 2, sizeof(float));
 				return bytes;
 			}
+			else if (type == typeof(Numerics.Vector2))
+			{
+				byte[] data = new byte[sizeof(float) * 2];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector2)o).X), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector2)o).Y), 0, data, sizeof(float), sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Numerics.Vector3))
+			{
+				byte[] data = new byte[sizeof(float) * 3];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector3)o).X), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector3)o).Y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector3)o).Z), 0, data, sizeof(float) * 2, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Numerics.Vector4))
+			{
+				byte[] data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector4)o).X), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector4)o).Y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector4)o).Z), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Vector4)o).W), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
+			else if (type == typeof(Numerics.Quaternion))
+			{
+				byte[] data = new byte[sizeof(float) * 4];
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Quaternion)o).X), 0, data, 0, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Quaternion)o).Y), 0, data, sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Quaternion)o).Z), 0, data, sizeof(float) * 2, sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(((Numerics.Quaternion)o).W), 0, data, sizeof(float) * 3, sizeof(float));
+				return data;
+			}
 			else if (type == null) //TODO: Check if this causes other issues
 				return new byte[1] { 0 };
 			else if (type == typeof(sbyte))
@@ -465,6 +540,65 @@ namespace BeardedManStudios.Forge.Networking
 			BMSByte data = new BMSByte();
 			Instance.MapBytes(data, argsToMap);
 			return data;
+		}
+
+		/// <summary>
+		/// Get a .NET Vector2 out of a FrameStream
+		/// </summary>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A .NET Vector2 out of the FrameStream</returns>
+		public object MapDotnetVector2(BMSByte stream)
+		{
+			return new Numerics.Vector2(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
+		}
+
+		/// <summary>
+		/// Get a .NET Vector3 out of a FrameStream
+		/// </summary>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A .NET Vector3 out of the FrameStream</returns>
+		public object MapDotnetVector3(BMSByte stream)
+		{
+			return new Numerics.Vector3(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
+		}
+
+		/// <summary>
+		/// Get a .NET Vector4 out of a FrameStream
+		/// </summary>
+		/// <param name="type">Type of object to be mapped</param>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A type of .NET Vector4 (Vector4/Color) out of the FrameStream</returns>
+		public object MapDotnetVector4(BMSByte stream)
+		{
+			return new Numerics.Vector4(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
+		}
+
+		/// <summary>
+		/// Get a .NET Quaternion out of a FrameStream
+		/// </summary>
+		/// <param name="type">Type of object to be mapped</param>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A type of .NET Quaternion out of the FrameStream</returns>
+		public object MapDotnetQuaternion(BMSByte stream)
+		{
+			return new Numerics.Quaternion(
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>(),
+				stream.GetBasicType<float>()
+			);
 		}
 	}
 }

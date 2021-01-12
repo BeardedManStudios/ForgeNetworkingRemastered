@@ -1,8 +1,5 @@
 using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using UnityEngine;
-using Numerics = System.Numerics;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
@@ -71,7 +68,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		protected override BMSByte WritePayload(BMSByte data)
 		{
 			>:FOREVERY variables:<
-			UnityObjectMapper.Instance.MapBytes(data, _>:[1]:<);
+			ObjectMapper.Instance.MapBytes(data, _>:[1]:<);
 			>:ENDFOREVERY:<
 
 			return data;
@@ -80,7 +77,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		protected override void ReadPayload(BMSByte payload, ulong timestep)
 		{
 			>:FOREVERY variables:<
-			_>:[1]:< = UnityObjectMapper.Instance.Map<>:[0]:<>(payload);
+			_>:[1]:< = ObjectMapper.Instance.Map<>:[0]:<>(payload);
 			>:[1]:<Interpolation.current = _>:[1]:<;
 			>:[1]:<Interpolation.target = _>:[1]:<;
 			RunChange_>:[1]:<(timestep);
@@ -94,7 +91,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			>:FOREVERY variables:<
 			if ((>:[5]:< & _dirtyFields[>:[6]:<]) != 0)
-				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _>:[1]:<);
+				ObjectMapper.Instance.MapBytes(dirtyFieldsData, _>:[1]:<);
 			>:ENDFOREVERY:<
 
 			// Reset all the dirty fields
@@ -117,12 +114,12 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			{
 				if (>:[1]:<Interpolation.Enabled)
 				{
-					>:[1]:<Interpolation.target = UnityObjectMapper.Instance.Map<>:[0]:<>(data);
+					>:[1]:<Interpolation.target = ObjectMapper.Instance.Map<>:[0]:<>(data);
 					>:[1]:<Interpolation.Timestep = timestep;
 				}
 				else
 				{
-					_>:[1]:< = UnityObjectMapper.Instance.Map<>:[0]:<>(data);
+					_>:[1]:< = ObjectMapper.Instance.Map<>:[0]:<>(data);
 					RunChange_>:[1]:<(timestep);
 				}
 			}
