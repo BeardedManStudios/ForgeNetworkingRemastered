@@ -3,7 +3,7 @@ using Numerics = System.Numerics;
 
 namespace BeardedManStudios
 {
-    public static class DotnetVector2Unity
+	public static class DotnetVector2Unity
 	{
 		public static Numerics.Vector2 ToDotnetVector(this Vector2 v)
 		{
