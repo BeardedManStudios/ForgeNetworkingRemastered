@@ -49,6 +49,8 @@ namespace BeardedManStudios.Forge.Networking
 				obj = MapBMSByte(stream);
 			else if (type.IsEnum)
 				obj = MapBasicType(Enum.GetUnderlyingType(type), stream);
+			else if (typeof(ISerializable).IsAssignableFrom(type))
+				obj = MapSerializableType(type, stream);
 			else
 				obj = MapBasicType(type, stream);
 
@@ -76,6 +78,8 @@ namespace BeardedManStudios.Forge.Networking
 				obj = MapBMSByte(stream);
 			else if (genericType.IsEnum)
 				obj = MapBasicType(Enum.GetUnderlyingType(genericType), stream);
+			else if (typeof(ISerializable).IsAssignableFrom(typeof(T)))
+				obj = MapSerializableType(genericType, stream);
 			else
 				obj = MapBasicType(genericType, stream);
 
@@ -120,7 +124,10 @@ namespace BeardedManStudios.Forge.Networking
 				return stream.GetBasicType<Vector>();
 			else
 				// TODO:  Make this an object mapper exception
-				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
+				throw new BaseNetworkException(
+					"The type " + type.ToString() + " is not allowed to be sent over the Network (yet). For custom " +
+					"types, you can implement ISerializable."
+				);
 		}
 
 		/// <summary>
@@ -244,6 +251,8 @@ namespace BeardedManStudios.Forge.Networking
 				bytes.Append(BitConverter.GetBytes(vec.y));
 				bytes.Append(BitConverter.GetBytes(vec.z));
 			}
+			else if (typeof(ISerializable).IsAssignableFrom(type))
+				((ISerializable)o).Serialize(bytes);
 			else if (type == null) //TODO: Check if this causes other issues
 				bytes.Append(new byte[1] { 0 });
 			else if (type == typeof(sbyte))
@@ -327,7 +336,10 @@ namespace BeardedManStudios.Forge.Networking
 			else
 			{
 				// TODO:  Make this a more appropriate exception
-				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
+				throw new BaseNetworkException(
+					"The type " + type.ToString() + " is not allowed to be sent over the Network (yet). For custom " +
+					"types, you can implement ISerializable."
+				);
 			}
 		}
 
@@ -356,6 +368,12 @@ namespace BeardedManStudios.Forge.Networking
 				Buffer.BlockCopy(BitConverter.GetBytes(vec.y), 0, bytes, sizeof(float), sizeof(float));
 				Buffer.BlockCopy(BitConverter.GetBytes(vec.z), 0, bytes, sizeof(float) * 2, sizeof(float));
 				return bytes;
+			}
+			else if (typeof(ISerializable).IsAssignableFrom(type))
+			{
+				BMSByte buffer = new BMSByte();
+				((ISerializable)o).Serialize(buffer);
+				return buffer.byteArr;
 			}
 			else if (type == null) //TODO: Check if this causes other issues
 				return new byte[1] { 0 };
@@ -452,8 +470,24 @@ namespace BeardedManStudios.Forge.Networking
 			else
 			{
 				// TODO:  Make this a more appropriate exception
-				throw new BaseNetworkException("The type " + type.ToString() + " is not allowed to be sent over the Network (yet)");
+				throw new BaseNetworkException(
+					"The type " + type.ToString() + " is not allowed to be sent over the Network (yet). For custom " +
+					"types, you can implement ISerializable."
+				);
 			}
+		}
+
+		/// <summary>
+		/// Get a .NET Quaternion out of a FrameStream
+		/// </summary>
+		/// <param name="type">Type of object to be mapped</param>
+		/// <param name="stream">FrameStream to be used</param>
+		/// <returns>A type of .NET Quaternion out of the FrameStream</returns>
+		public object MapSerializableType(Type type, BMSByte stream)
+		{
+			var obj = Activator.CreateInstance(type);
+			((ISerializable)obj).Unserialize(stream);
+			return obj;
 		}
 
 		/// <summary>
