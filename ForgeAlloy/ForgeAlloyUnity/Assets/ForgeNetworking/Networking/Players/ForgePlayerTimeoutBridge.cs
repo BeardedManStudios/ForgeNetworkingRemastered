@@ -30,6 +30,7 @@ namespace Forge.Networking.Players
 					var now = DateTime.Now;
 					lock (_previousPlayerSet)
 					{
+						_timedOutPlayers.Clear();
 						foreach (var player in _previousPlayerSet)
 						{
 							var span = now - player.LastCommunication;
@@ -51,6 +52,9 @@ namespace Forge.Networking.Players
 		{
 			lock (_previousPlayerSet)
 			{
+				foreach (var player in _timedOutPlayers)
+					_networkMediator.PlayerRepository.RemovePlayer(player);
+
 				_previousPlayerSet.Clear();
 				var itr = _networkMediator.PlayerRepository.GetEnumerator();
 				while (itr.MoveNext())
@@ -58,8 +62,6 @@ namespace Forge.Networking.Players
 					if (itr.Current != null)
 						_previousPlayerSet.Add(itr.Current);
 				}
-				foreach (var player in _timedOutPlayers)
-					_networkMediator.PlayerRepository.RemovePlayer(player);
 			}
 		}
 	}
