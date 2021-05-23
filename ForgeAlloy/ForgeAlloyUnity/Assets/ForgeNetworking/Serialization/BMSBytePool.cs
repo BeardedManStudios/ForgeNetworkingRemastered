@@ -8,37 +8,51 @@ namespace Forge.Serialization
 		private const int APPROX_SIZE_ZONE = 128;
 		private readonly List<BMSByte> _availableBuffers = new List<BMSByte>();
 		private readonly List<BMSByte> _inUseBuffers = new List<BMSByte>();
+		private System.Object syncLock = new object();
 
 		public BMSByte Get(int size)
 		{
-			if (_availableBuffers.Count == 0)
-				return CreateNewBuffer(size);
-			else
+			BMSByte buff;
+
+			lock (syncLock)
 			{
-				BMSByte buff = GetAvailableBuffer(size);
-				if (buff.byteArr.Length < size)
-					buff.SetArraySize(size);
-				return buff;
+				if (_availableBuffers.Count == 0)
+					buff = CreateNewBuffer(size);
+				else
+				{
+					buff = GetAvailableBuffer(size);
+					if (buff.byteArr.Length < size)
+						buff.SetArraySize(size);
+				}
 			}
+			return buff;
 		}
 
 		public void Release(BMSByte buffer)
 		{
 			// TODO:  Figure out why _inUseBuffers.Remove(buffer) is returning false
 			bool found = false;
-			for (int i = 0; i < _inUseBuffers.Count; i++)
+
+			lock (syncLock)
 			{
-				if (_inUseBuffers[i] == buffer)
+				for (int i = 0; i < _inUseBuffers.Count; i++)
 				{
-					_inUseBuffers.RemoveAt(i);
-					found = true;
-					break;
+					if (_inUseBuffers[i] == buffer)
+					{
+						_inUseBuffers.RemoveAt(i);
+						found = true;
+						break;
+					}
+				}
+				if (found)
+                {
+					_availableBuffers.Add(buffer);
+					buffer.Clear();
 				}
 			}
 			if (!found)
 				throw new BMSBytePoolReleaseUnmanagedBufferException();
-			_availableBuffers.Add(buffer);
-			buffer.Clear();
+
 		}
 
 		private BMSByte GetAvailableBuffer(int size)
