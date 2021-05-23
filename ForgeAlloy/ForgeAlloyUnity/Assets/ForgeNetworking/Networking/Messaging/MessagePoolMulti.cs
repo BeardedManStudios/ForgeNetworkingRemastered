@@ -71,6 +71,9 @@ namespace Forge.Networking.Messaging
 		private void Release(IMessage message)
 		{
 			if (message.IsPooled) return; // Message has already been returned to pool
+			if (!message.IsSent) return;    // Message has not been sent, not ready to return to pool
+			if (message.IsBuffered) return; // Message is still buffered, not ready to return to pool
+			message.IsSent = false;
 			message.IsPooled = true;
 			ConcurrentQueue<IMessage> pool = GetPool(message.GetType());
 			pool.Enqueue(message);

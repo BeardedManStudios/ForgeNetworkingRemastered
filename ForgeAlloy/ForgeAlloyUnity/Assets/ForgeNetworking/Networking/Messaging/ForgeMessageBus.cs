@@ -70,8 +70,8 @@ namespace Forge.Networking.Messaging
 		public IMessageReceiptSignature SendReliableMessage(IMessage message, ISocket sender, EndPoint receiver)
 		{
 			message.Receipt = AbstractFactory.Get<INetworkTypeFactory>().GetNew<IMessageReceiptSignature>();
-			SendMessage(message, sender, receiver);
 			_messageRepeater.AddMessageToRepeat(message, receiver);
+			SendMessage(message, sender, receiver);
 			return message.Receipt;
 		}
 

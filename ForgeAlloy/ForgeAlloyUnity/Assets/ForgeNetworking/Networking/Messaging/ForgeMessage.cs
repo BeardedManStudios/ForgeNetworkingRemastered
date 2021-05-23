@@ -10,8 +10,16 @@ namespace Forge.Networking.Messaging
 		public abstract void Serialize(BMSByte buffer);
 		public abstract void Deserialize(BMSByte buffer);
 		public bool IsPooled { get; set; } = false;
+		public bool IsBuffered { get; set; } = false;
+		public bool IsSent { get; set; } = false;
 		public void Sent()
 		{
+			IsSent = true;
+			OnMessageSent?.Invoke(this);
+		}
+		public void Unbuffered()
+		{
+			IsBuffered = false;
 			OnMessageSent?.Invoke(this);
 		}
 	}
