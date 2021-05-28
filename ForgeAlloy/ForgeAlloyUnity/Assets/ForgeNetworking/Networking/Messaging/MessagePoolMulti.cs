@@ -20,6 +20,7 @@ namespace Forge.Networking.Messaging
 				if (pool.TryDequeue(out item))
 				{
 					item.IsPooled = false;
+					item.Receipt = null;
 					return item;
 				}
 				else return CreateNewMessageForPool(t, pool);
@@ -38,6 +39,7 @@ namespace Forge.Networking.Messaging
 				if (pool.TryDequeue(out item))
 				{
 					item.IsPooled = false;
+					item.Receipt = null;
 					return (T)item;
 				}
 				else return CreateNewMessageForPool<T>(pool);
@@ -75,7 +77,6 @@ namespace Forge.Networking.Messaging
 			if (message.IsBuffered) return; // Message is still buffered, not ready to return to pool
 			message.IsSent = false;
 			message.IsPooled = true;
-			message.Receipt = null;
 			ConcurrentQueue<IMessage> pool = GetPool(message.GetType());
 			pool.Enqueue(message);
 		}
