@@ -35,11 +35,16 @@ namespace Forge.Networking.Unity
 
 		private void OnDestroy()
 		{
-			_engine.EntityRepository.Remove(this);
+			if (_engine.EntityRepository.Exists(this.Id))
+				_engine.EntityRepository.Remove(this);
 		}
 
 		private void OnValidate()
 		{
+
+			// OnValidate is only called in the editor
+			if (Application.isPlaying) return;
+
 			var entities = GameObject.FindObjectsOfType<NetworkEntity>();
 			List<string> _currentIds = entities.Where(e => e != this).Select(e => e._sceneIdentifier).ToList();
 			foreach (var e in entities)

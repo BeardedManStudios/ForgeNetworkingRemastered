@@ -57,6 +57,11 @@ namespace Forge.Networking.Players
 			return _playerAddressLookup.TryGetValue(endpoint, out _);
 		}
 
+		public bool Exists(IPlayerSignature id)
+		{
+			return _playerLookup.TryGetValue(id, out _);
+		}
+
 		public IEnumerator<INetPlayer> GetEnumerator()
 		{
 			return _playerLookup.Values.GetEnumerator();

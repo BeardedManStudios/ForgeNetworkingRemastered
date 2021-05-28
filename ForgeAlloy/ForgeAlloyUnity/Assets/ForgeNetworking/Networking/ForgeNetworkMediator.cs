@@ -91,12 +91,12 @@ namespace Forge.Networking
 
 		public void SendReliableMessage(IMessage message, INetPlayer player)
 		{
-			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, player.EndPoint);
+			MessageBus.SendReliableMessage(message, SocketFacade.ManagedSocket, player.EndPoint);
 		}
 
 		public void SendReliableMessage(IMessage message, EndPoint endpoint)
 		{
-			MessageBus.SendMessage(message, SocketFacade.ManagedSocket, endpoint);
+			MessageBus.SendReliableMessage(message, SocketFacade.ManagedSocket, endpoint);
 		}
 	}
 }

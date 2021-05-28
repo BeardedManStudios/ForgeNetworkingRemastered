@@ -53,6 +53,12 @@ namespace Forge.Networking.Messaging
 			return code;
 		}
 
+		public static T Instantiate<T>()
+        {
+			int code = GetCodeFromType(typeof(T));
+			return (T)Instantiate(code);
+        }
+
 		public static void Clear()
 		{
 			_messageTypes.Clear();

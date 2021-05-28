@@ -102,6 +102,7 @@ namespace Forge.Networking.Players
 		/// </param>
 		/// <returns>True if the player matching the endpoint was found, otherwise false</returns>
 		bool Exists(EndPoint endpoint);
+		bool Exists(IPlayerSignature id);
 
 		/// <summary>
 		/// Used to get the internal enumerator of the repository

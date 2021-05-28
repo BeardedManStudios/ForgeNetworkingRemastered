@@ -82,3 +82,9 @@ sysinfo.txt
 /ForgeAlloy/ForgeServerRegistryService/obj/Debug/netcoreapp3.0
 /ForgeAlloy/ForgeSampleGameServer/obj/Debug/netcoreapp3.0
 /ForgeAlloy/ForgeNatHolePunch/obj/Debug/netcoreapp3.0
+/ForgeAlloy/ForgeSampleGameServer/obj/Release/netcoreapp3.0/.NETCoreApp,Version=v3.0.AssemblyAttributes.cs
+/ForgeAlloy/ForgeSampleGameServer/obj/Release/netcoreapp3.0/ForgeSampleGameServer.AssemblyInfo.cs
+/ForgeAlloy/ForgeNatHolePunch/obj/Release/netcoreapp3.0/.NETCoreApp,Version=v3.0.AssemblyAttributes.cs
+/ForgeAlloy/ForgeNatHolePunch/obj/Release/netcoreapp3.0/ForgeNatHolePunch.AssemblyInfo.cs
+/ForgeAlloy/ForgeServerRegistryService/obj/Release/netcoreapp3.0/.NETCoreApp,Version=v3.0.AssemblyAttributes.cs
+/ForgeAlloy/ForgeServerRegistryService/obj/Release/netcoreapp3.0/ForgeServerRegistryService.AssemblyInfo.cs

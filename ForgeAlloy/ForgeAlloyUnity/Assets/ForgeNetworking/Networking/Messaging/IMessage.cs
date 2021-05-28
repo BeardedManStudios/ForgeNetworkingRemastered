@@ -12,5 +12,10 @@ namespace Forge.Networking.Messaging
 		void Serialize(BMSByte buffer);
 		void Deserialize(BMSByte buffer);
 		void Sent();
+		void Unbuffered();
+		bool IsPooled { get; set; }
+		bool IsBuffered { get; set; }
+		bool IsSent { get; set; }
+
 	}
 }
