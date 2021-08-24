@@ -2,13 +2,14 @@
 
 namespace BeardedManStudios
 {
+	[System.Serializable]
 	public struct Vector
 	{
-		public float x { get; set; }
+		public float x;
 
-		public float y { get; set; }
+		public float y;
 
-		public float z { get; set; }
+		public float z;
 
 		/// <summary>
 		/// Get's the magnitude (pythagorean theorem) of this vector (the length
