@@ -465,6 +465,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 					if (scenesToLoad.Length == 0)
 						return;
 
+					if (!automaticScenes)
+						return;
+					
 					SceneManager.LoadScene(scenesToLoad[0], LoadSceneMode.Single);
 
 					for (int i = 1; i < scenesToLoad.Length; i++)
@@ -513,6 +516,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 			MainThreadManager.Run(() =>
 			{
+				if (!automaticScenes)
+					return;
+
 				// Load the scene that the server loaded in the same LoadSceneMode
 				if (mode == LoadSceneMode.Additive)
 					SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
