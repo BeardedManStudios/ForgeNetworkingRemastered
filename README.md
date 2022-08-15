@@ -4,7 +4,7 @@ Hey guys, sorry I've not been active. It's been about a decade since I wrote the
 
 Just because I myself am not actively working on the code anymore does not mean that the code all the sudden can't work. It also doesn't mean that Forge is dead, open source means it's kept alive and well by the community.
 
-Please, join the [community lead fork of Forge here](https://github.com/ForgeAlloyCommunity/ForgeAlloy) (be sure to read the wiki on there), and thank you to [@Daneeh](https://github.com/daneehAI) and @[Zaddo](https://github.com/zaddo67) for keeping it going. Please help by contributing to that repository!
+Please, join the [community lead fork of Forge here](https://github.com/ForgeAlloyCommunity/ForgeAlloy) (be sure to read the wiki on there), and thank you to [@Daneeh](https://github.com/daneehAI) and @[Zaddo](https://github.com/zaddo67) for keeping it going. Please help by contributing to that repository! If not, there are always hundreds of forks to choose from.
 
 Also thank you [@NFMynster](https://github.com/NFMynster), just in general; you've been awesome!
 
