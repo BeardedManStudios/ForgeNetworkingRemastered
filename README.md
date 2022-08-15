@@ -1,3 +1,17 @@
+# 2022 Update
+Hey guys, sorry I've not been active. It's been about a decade since I wrote the first line of code for Forge (which is crazy to think about). Since then, I did what any programmer does, re-wrote it 2 more times (Remastered and Alloy). Alloy is the best version, hands down, but as you may know; I've not been active. Since those days of old I've gotten married, had a child, moved 3 jobs, and spend most of my time in C writing systems code. Also since those days, bugs have not been fixed and pull requests have gone stale. If you care about the "where are they now" sgement, you can follow us on [Twitter](https://twitter.com/FarrisFaulds), [Instagram](https://www.instagram.com/FarrisFaulds/), and our [website](https://farrisfaulds.com/).
+
+
+Just because I myself am not actively working on the code anymore does not mean that the code all the sudden can't work. It also doesn't mean that Forge is dead, open source means it's kept alive and well by the community.
+
+Please, join the [community lead fork of Forge here](https://github.com/ForgeAlloyCommunity/ForgeAlloy) (be sure to read the wiki on there), and thank you to [@Daneeh](https://github.com/daneehAI) and @[Zaddo](https://github.com/zaddo67) for keeping it going. Please help by contributing to that repository!
+
+Also thank you [@NFMynster](https://github.com/NFMynster), just in general; you've been awesome!
+
+You can continue to [join the Discord](https://discord.gg/99mfUAH) as well!
+
+https://github.com/ForgeAlloyCommunity/ForgeAlloy
+
 
 ![](http://i.imgur.com/ezLjujn.png)
 
