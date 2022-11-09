@@ -22,8 +22,10 @@ using BeardedManStudios.Forge.Networking.Nat;
 using BeardedManStudios.Threading;
 using System;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
+using System.Linq;
 
 namespace BeardedManStudios.Forge.Networking
 {
@@ -122,8 +124,13 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					try
 					{
-						Client = new CachedUdpClient(clientPort);
-						break;
+						IPEndPoint[] activeEndPoints = IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners();
+						bool alreadyinuse = activeEndPoints.Any(p => p.Port == clientPort);
+						if(!alreadyinuse) 
+						{
+							Client = new CachedUdpClient(clientPort);
+							break;
+						}
 					}
 					catch
 					{
