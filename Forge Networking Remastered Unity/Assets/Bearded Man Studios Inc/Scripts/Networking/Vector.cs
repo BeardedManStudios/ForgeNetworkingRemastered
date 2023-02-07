@@ -2,13 +2,14 @@
 
 namespace BeardedManStudios
 {
+	[System.Serializable]
 	public struct Vector
 	{
-		public float x { get; set; }
+		public float x;
 
-		public float y { get; set; }
+		public float y;
 
-		public float z { get; set; }
+		public float z;
 
 		/// <summary>
 		/// Get's the magnitude (pythagorean theorem) of this vector (the length
@@ -53,6 +54,33 @@ namespace BeardedManStudios
 			this.y = y;
 			this.z = z;
 		}
+
+        public static implicit operator UnityEngine.Vector3(Vector x)
+        {
+            return new UnityEngine.Vector3(x.x, x.y, x.z);
+        }
+ 
+        public static implicit operator Vector(UnityEngine.Vector3 x)
+        {
+            return new Vector(x.x, x.y, x.z);
+        }
+
+		public static bool operator ==(Vector lhs, Vector rhs)
+        {
+			// If both null, true
+			if(ReferenceEquals(lhs, rhs)) return true;
+
+			// Else, any nulls are false
+     		if(ReferenceEquals(lhs, null) || ReferenceEquals(rhs, null)) return false;
+
+            // Equals handles case of null on right side.
+            return lhs.Equals(rhs);
+        }
+
+		public static bool operator !=(Vector lhs, Vector rhs)
+        {
+            return !(lhs == rhs);
+        }
 
 		/// <summary>
 		/// Get's the dot product of this vector and another

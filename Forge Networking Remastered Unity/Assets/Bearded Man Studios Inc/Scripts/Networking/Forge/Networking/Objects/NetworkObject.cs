@@ -172,6 +172,11 @@ namespace BeardedManStudios.Forge.Networking
 		protected Dictionary<byte, string> inverseRpcLookup = new Dictionary<byte, string>();
 
 		/// <summary>
+		/// Get the friendly name from the Method ID - useful for Debug output
+		/// </summary>
+		public string RPCName(byte methodId) => inverseRpcLookup[methodId];
+
+		/// <summary>
 		/// Is <c>true</c> if this object has been fully setup on the network
 		/// </summary>
 		public bool NetworkReady { get; private set; }
