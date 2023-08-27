@@ -99,6 +99,7 @@ namespace BeardedManStudios.Forge.Networking.Unity.Lobby
 		private void SetupService(NetworkObject obj)
 		{
 			LobbyService.Instance.Initialize(obj);
+			LobbyService.Instance.SendSyncAllPlayers();
 			SetupComplete();
 		}
 
